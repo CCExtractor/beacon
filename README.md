@@ -1,15 +1,30 @@
-# beacon
+# Beacon
 
-A new Flutter project.
+This project is a flutter build native interface to ease the group travelling (or hiking). By using this, the group leader would be able to share his location with the entire crew, and in case if someone loses contact with the group, he can quickly get in the right place by following the beacon. 
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+For setting up the development environment, follow the steps given below.
 
-A few resources to get you started if this is your first Flutter project:
+1. For making changes to the project, fork this repository using the green button on this page.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+2. Clone your fork or this repository, as applicable.
+
+```bash
+git clone https://github.com/<username>/beacon.git
+cd beacon
+```
+
+3. Check for flutter setup and connected devices
+
+```bash
+flutter doctor
+```
+
+4. Run the app using 
+```bash
+flutter run --no-sound-null-safety
+```
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
