@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+const Color kYellow = Color(0xFFFDBB2C);
+const Color kBlue = Color(0xFF222375);
+const Color kLightBlue = Color(0xFFE8F1F8);
+const Color kBlack = Color(0xFF343434);
+
 class AppConstants {
   static double lat = 0.0;
   static double long = 0.0;
@@ -11,8 +16,4 @@ class AppConstants {
     AppConstants.long = position.longitude;
     AppConstants.lat = position.latitude;
   }
-
-  static Color background = Color(0xff161427);
-  static Color foreground = Color(0xff6bd2ab);
-  static Color field = Color(0xff2a2549);
 }

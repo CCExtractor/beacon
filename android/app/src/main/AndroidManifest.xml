@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="beaconshare.page.link"
+                    android:host="beacon.page.link"
                     android:scheme="https" />
             </intent-filter>
         </activity>
