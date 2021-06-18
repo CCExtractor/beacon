@@ -1,1 +1,0 @@
-// display list of beacons of a specific users

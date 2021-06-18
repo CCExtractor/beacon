@@ -2,6 +2,8 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/utilities/indication_painter.dart';
+import 'package:beacon/view_model/auth_screen_model.dart';
+import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -13,111 +15,69 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  final FocusNode myFocusNodeEmailLogin = FocusNode();
-  final FocusNode myFocusNodePasswordLogin = FocusNode();
-
-  final FocusNode myFocusNodePassword = FocusNode();
-  final FocusNode myFocusNodeEmail = FocusNode();
-  final FocusNode myFocusNodeName = FocusNode();
-
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
-
-  bool _obscureTextLogin = true;
-  bool _obscureTextSignup = true;
-  bool _obscureTextSignupConfirm = true;
-
-  TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupNameController = new TextEditingController();
-  TextEditingController signupPasswordController = new TextEditingController();
-
-  PageController _pageController;
-
-  Color left = Colors.white;
-  Color right = Colors.black;
-
-  Color leftBg = kLightBlue;
-  Color rightBg = kBlue;
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        key: _scaffoldKey,
-        body: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 775.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 75.0),
-                  child: new Image(
-                      width: 250.0,
-                      height: 191.0,
-                      fit: BoxFit.fill,
-                      image: new AssetImage('images/hikers_group.png')),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: _buildMenuBar(context),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (i) {
-                      if (i == 0) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      } else if (i == 1) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      }
-                    },
-                    children: <Widget>[
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignIn(context),
-                      ),
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignUp(context),
-                      ),
-                    ],
+    return BaseView<AuthViewModel>(builder: (context, model, child) {
+      return new Scaffold(
+          key: model.scaffoldKey,
+          body: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height >= 775.0
+                  ? MediaQuery.of(context).size.height
+                  : 775.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 75.0),
+                    child: new Image(
+                        width: 250.0,
+                        height: 191.0,
+                        fit: BoxFit.fill,
+                        image: new AssetImage('images/hikers_group.png')),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: _buildMenuBar(context, model),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: PageView(
+                      controller: model.pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            model.right = Colors.black;
+                            model.left = Colors.white;
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            model.right = Colors.white;
+                            model.left = Colors.black;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        new ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignIn(context, model),
+                        ),
+                        new ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignUp(context, model),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ));
+          ));
+    });
   }
 
-  @override
-  void dispose() {
-    myFocusNodePassword.dispose();
-    myFocusNodeEmail.dispose();
-    myFocusNodeName.dispose();
-    _pageController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _pageController = PageController();
-  }
-
-  Widget _buildMenuBar(BuildContext context) {
+  Widget _buildMenuBar(BuildContext context, AuthViewModel model) {
     return Container(
       width: 300.0,
       height: 50.0,
@@ -125,7 +85,7 @@ class _AuthScreenState extends State<AuthScreen>
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
       child: CustomPaint(
-        painter: TabIndicationPainter(pageController: _pageController),
+        painter: TabIndicationPainter(pageController: model.pageController),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -133,11 +93,11 @@ class _AuthScreenState extends State<AuthScreen>
               child: FlatButton(
                 splashColor: Colors.white,
                 highlightColor: Colors.white,
-                onPressed: _onSignInButtonPress,
+                onPressed: model.onSignInButtonPress,
                 child: Text(
                   "Existing",
                   style: TextStyle(
-                    color: left,
+                    color: model.left,
                     fontSize: 16.0,
                   ),
                 ),
@@ -148,11 +108,11 @@ class _AuthScreenState extends State<AuthScreen>
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignUpButtonPress,
+                onPressed: model.onSignUpButtonPress,
                 child: Text(
                   "New",
                   style: TextStyle(
-                    color: right,
+                    color: model.right,
                     fontSize: 16.0,
                   ),
                 ),
@@ -164,7 +124,7 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildSignIn(BuildContext context) {
+  Widget _buildSignIn(BuildContext context, AuthViewModel model) {
     return Container(
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
@@ -188,8 +148,8 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeEmailLogin,
-                          controller: loginEmailController,
+                          focusNode: model.emailLogin,
+                          controller: model.loginEmailController,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -213,9 +173,9 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodePasswordLogin,
-                          controller: loginPasswordController,
-                          obscureText: _obscureTextLogin,
+                          focusNode: model.passwordLogin,
+                          controller: model.loginPasswordController,
+                          obscureText: model.obscureTextLogin,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -227,9 +187,14 @@ class _AuthScreenState extends State<AuthScreen>
                             hintText: "Password",
                             hintStyle: TextStyle(fontSize: 17.0),
                             suffixIcon: GestureDetector(
-                              onTap: _toggleLogin,
+                              onTap: () {
+                                setState(() {
+                                  model.obscureTextLogin =
+                                      !model.obscureTextLogin;
+                                });
+                              },
                               child: Icon(
-                                _obscureTextLogin
+                                model.obscureTextLogin
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
                                 size: 15.0,
@@ -278,7 +243,7 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildSignUp(BuildContext context) {
+  Widget _buildSignUp(BuildContext context, AuthViewModel model) {
     return Container(
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
@@ -302,8 +267,8 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeName,
-                          controller: signupNameController,
+                          focusNode: model.name,
+                          controller: model.signupNameController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
@@ -327,8 +292,8 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeEmail,
-                          controller: signupEmailController,
+                          focusNode: model.email,
+                          controller: model.signupEmailController,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -351,9 +316,9 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodePassword,
-                          controller: signupPasswordController,
-                          obscureText: _obscureTextSignup,
+                          focusNode: model.password,
+                          controller: model.signupPasswordController,
+                          obscureText: model.obscureTextSignup,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -362,9 +327,14 @@ class _AuthScreenState extends State<AuthScreen>
                               color: Colors.black,
                             ),
                             suffixIcon: GestureDetector(
-                              onTap: _toggleSignup,
+                              onTap: () {
+                                setState(() {
+                                  model.obscureTextLogin =
+                                      !model.obscureTextLogin;
+                                });
+                              },
                               child: Icon(
-                                _obscureTextSignup
+                                model.obscureTextSignup
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
                                 size: 15.0,
@@ -396,27 +366,5 @@ class _AuthScreenState extends State<AuthScreen>
         ],
       ),
     );
-  }
-
-  void _onSignInButtonPress() {
-    _pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _onSignUpButtonPress() {
-    _pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _toggleLogin() {
-    setState(() {
-      _obscureTextLogin = !_obscureTextLogin;
-    });
-  }
-
-  void _toggleSignup() {
-    setState(() {
-      _obscureTextSignup = !_obscureTextSignup;
-    });
   }
 }
