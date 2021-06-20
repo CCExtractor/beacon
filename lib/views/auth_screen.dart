@@ -1,6 +1,5 @@
 import 'package:beacon/components/hike_button.dart';
-import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/services/validators.dart';
 import 'package:beacon/utilities/indication_painter.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
@@ -214,7 +213,7 @@ class _AuthScreenState extends State<AuthScreen>
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
                   child: HikeButton(
-                    onTap: () {},
+                    onTap: model.next_login,
                     text: 'LOGIN',
                     buttonWidth: 90,
                     buttonHeight: 15,
@@ -233,7 +232,10 @@ class _AuthScreenState extends State<AuthScreen>
             ),
           ),
           HikeButton(
-            onTap: () {},
+            onTap: () {
+              model.signupNameController.text = "Anonymous";
+              model.next_signup();
+            },
             text: 'LOGIN AS GUEST',
             buttonHeight: 15,
             buttonWidth: 35,
@@ -258,95 +260,110 @@ class _AuthScreenState extends State<AuthScreen>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Container(
-                  width: 300.0,
-                  height: 280.0,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: model.name,
-                          controller: model.signupNameController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.account_box,
-                              color: Colors.black,
-                            ),
-                            hintText: "Name",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: model.email,
-                          controller: model.signupEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail,
-                              color: Colors.black,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: model.password,
-                          controller: model.signupPasswordController,
-                          obscureText: model.obscureTextSignup,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              color: Colors.black,
-                            ),
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  model.obscureTextLogin =
-                                      !model.obscureTextLogin;
-                                });
-                              },
-                              child: Icon(
-                                model.obscureTextSignup
-                                    ? Icons.remove_red_eye_sharp
-                                    : Icons.remove_red_eye_outlined,
-                                size: 15.0,
+                child: Form(
+                  key: model.formKeySignup,
+                  autovalidateMode: model.validate,
+                  child: Container(
+                    width: 300.0,
+                    height: 280.0,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextFormField(
+                            focusNode: model.name,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) => Validator.validateName(value),
+                            controller: model.signupNameController,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                Icons.account_box,
                                 color: Colors.black,
                               ),
+                              hintText: "Name",
+                              hintStyle: TextStyle(fontSize: 16.0),
                             ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 16.0),
                           ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          width: 250.0,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextFormField(
+                            validator: (value) =>
+                                Validator.validateEmail(value),
+                            focusNode: model.email,
+                            textInputAction: TextInputAction.next,
+                            controller: model.signupEmailController,
+                            keyboardType: TextInputType.emailAddress,
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                Icons.mail,
+                                color: Colors.black,
+                              ),
+                              hintText: "Email Address",
+                              hintStyle: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 250.0,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextFormField(
+                            focusNode: model.password,
+                            textInputAction: TextInputAction.done,
+                            validator: (value) =>
+                                Validator.validatePassword(value),
+                            controller: model.signupPasswordController,
+                            obscureText: model.obscureTextSignup,
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                Icons.lock,
+                                color: Colors.black,
+                              ),
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    model.obscureTextLogin =
+                                        !model.obscureTextLogin;
+                                  });
+                                },
+                                child: Icon(
+                                  model.obscureTextSignup
+                                      ? Icons.remove_red_eye_sharp
+                                      : Icons.remove_red_eye_outlined,
+                                  size: 15.0,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              hintText: "Password",
+                              hintStyle: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -356,7 +373,7 @@ class _AuthScreenState extends State<AuthScreen>
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
                   child: HikeButton(
-                    onTap: () {},
+                    onTap: model.next_signup,
                     text: 'SIGNIN',
                     buttonHeight: 18,
                     buttonWidth: 55,

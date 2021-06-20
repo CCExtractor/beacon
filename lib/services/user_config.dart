@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:beacon/services/graphql_config.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:beacon/models/user/user_info.dart';
@@ -9,6 +7,7 @@ import '../locator.dart';
 class UserConfig {
   User _currentUser = User(id: 'null', authToken: 'null');
   User get currentUser => _currentUser;
+
   Future<bool> userLoggedIn() async {
     final boxUser = Hive.box<User>('currentUser');
     _currentUser = boxUser.get('user');
@@ -33,6 +32,7 @@ class UserConfig {
     try {
       _currentUser = updatedUserDetails;
       saveUserInHive();
+      graphqlConfig.getToken();
       databaseFunctions.init();
       return true;
     } on Exception catch (e) {

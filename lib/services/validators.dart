@@ -49,14 +49,4 @@ class Validator {
 
     return null;
   }
-
-  static String validatePasswordConfirm(
-    String value,
-    String comparator,
-  ) {
-    if (value != comparator) {
-      return 'Password does not match original';
-    }
-    return null;
-  }
 }

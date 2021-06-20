@@ -23,6 +23,7 @@ class AuthViewModel extends BaseModel {
 
   bool obscureTextLogin = true;
   bool obscureTextSignup = true;
+  bool loginAsGuest = false;
 
   TextEditingController signupEmailController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
@@ -37,45 +38,43 @@ class AuthViewModel extends BaseModel {
   Color rightBg = kBlue;
 
   next_signup() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    setState(ViewState.busy);
-    validate = AutovalidateMode.always;
-    setState(ViewState.idle);
-    if (formKeySignup.currentState.validate()) {
-      validate = AutovalidateMode.disabled;
-      databaseFunctions.init();
-      final bool signUpSuccess = await databaseFunctions.signup(
-          signupNameController.text,
-          signupEmailController.text,
-          signupPasswordController.text);
-      if (signUpSuccess) {
-        userConfig.currentUser.print();
-        navigationService.removeAllAndPush('/main', '/');
-      } else {
-        navigationService.showSnackBar('SomeThing went wrong');
-      }
+    // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    // setState(ViewState.busy);
+    // validate = AutovalidateMode.always;
+    // setState(ViewState.idle);
+    // if (formKeySignup.currentState.validate()) {
+    // validate = AutovalidateMode.disabled;
+    databaseFunctions.init();
+    final bool signUpSuccess = await databaseFunctions.signup(
+        signupNameController.text ?? "Anonymous",
+        signupEmailController.text,
+        signupPasswordController.text);
+    if (signUpSuccess) {
+      userConfig.currentUser.print();
+      navigationService.pushScreen('/main');
+    } else {
+      navigationService.showSnackBar('SomeThing went wrong');
     }
+    // }
   }
 
   next_login() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    setState(ViewState.busy);
-    validate = AutovalidateMode.always;
-    setState(ViewState.idle);
-    if (formKeyLogin.currentState.validate()) {
-      validate = AutovalidateMode.disabled;
-      databaseFunctions.init();
-      final bool loginSuccess = await databaseFunctions.login(
-          userConfig.currentUser.id,
-          loginEmailController.text,
-          loginPasswordController.text);
-      if (loginSuccess) {
-        userConfig.currentUser.print();
-        navigationService.removeAllAndPush('/main', '/');
-      } else {
-        navigationService.showSnackBar('SomeThing went wrong');
-      }
+    // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    // setState(ViewState.busy);
+    // validate = AutovalidateMode.always;
+    // setState(ViewState.idle);
+    // if (formKeyLogin.currentState.validate()) {
+    validate = AutovalidateMode.disabled;
+    databaseFunctions.init();
+    final bool loginSuccess = await databaseFunctions.login(
+        loginEmailController.text, loginPasswordController.text);
+    if (loginSuccess) {
+      userConfig.currentUser.print();
+      navigationService.removeAllAndPush('/main', '/');
+    } else {
+      navigationService.showSnackBar('SomeThing went wrong');
     }
+    // }
   }
 
   void onSignInButtonPress() {

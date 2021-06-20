@@ -1,11 +1,8 @@
 import 'package:beacon/api/queries.dart';
 import 'package:beacon/services/navigation_service.dart';
-import 'package:beacon/services/user_config.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:beacon/models/user/user_info.dart';
-import 'package:beacon/services/graphql_config.dart';
-
 import '../locator.dart';
 
 class DataBaseMutationFunctions {
@@ -94,40 +91,39 @@ class DataBaseMutationFunctions {
     } else if (result.data != null && result.isConcrete) {
       final User signedInUser =
           User.fromJson(result.data['register'] as Map<String, dynamic>);
-      final bool userSaved = await UserConfig().updateUser(signedInUser);
-      final bool tokenRefreshed = await GraphQLConfig().getToken() as bool;
+      final bool userSaved = await userConfig.updateUser(signedInUser);
+      final bool tokenRefreshed = await graphqlConfig.getToken() as bool;
       return userSaved && tokenRefreshed;
     }
     return false;
   }
 
-  Future<bool> login(String id, String email, String password) async {
+  Future<bool> login(String email, String password) async {
     final QueryResult result = await clientNonAuth.mutate(
-        MutationOptions(document: gql(_query.loginUser(id, email, password))));
+        MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
       NavigationService().pop();
     } else if (result.data != null && result.isConcrete) {
       final User loggedInUser =
-          User.fromJson(result.data['login'] as Map<String, dynamic>);
-      final bool userSaved = await UserConfig().updateUser(loggedInUser);
-      final bool tokenRefreshed = await GraphQLConfig().getToken() as bool;
-      return userSaved && tokenRefreshed;
+          User(authToken: result.data['login'], id: 'null');
+      final bool userSaved = await userConfig.updateUser(loggedInUser);
+      final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
+      return userSaved && fetchInfo;
     }
     return false;
   }
 
   Future<bool> fetchCurrentUserInfo() async {
     final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_query.fetchUserInfo)));
-
+        .query(QueryOptions(document: gql(_query.fetchUserInfo())));
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
         fetchCurrentUserInfo();
       } else {
-        // navigatorService.pop();
+        navigationService.pop();
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(

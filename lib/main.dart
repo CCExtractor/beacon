@@ -1,8 +1,7 @@
 import 'package:beacon/locator.dart';
-import 'package:beacon/views/auth_screen.dart';
-import 'package:beacon/views/create_join_beacon.dart';
-import 'package:beacon/views/home.dart';
-import 'package:beacon/services/navigation_service.dart';
+import 'package:beacon/router.dart' as router;
+import 'package:beacon/view_model/base_view_model.dart';
+import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -26,13 +25,32 @@ void main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Beacon',
-    navigatorKey: NavigationService().navigatorKey,
+    navigatorKey: navigationService.navigatorKey,
     theme: ThemeData(fontFamily: 'FuturaBold'),
-    initialRoute: '/auth',
-    routes: <String, WidgetBuilder>{
-      '/init': (BuildContext context) => WelcomeScreen(),
-      '/auth': (BuildContext context) => AuthScreen(),
-      '/main': (BuildContext context) => MainScreen()
-    },
+    initialRoute: '/',
+    onGenerateRoute: router.generateRoute,
   ));
+}
+
+class DemoPageView extends StatelessWidget {
+  const DemoPageView({@required Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<DemoViewModel>(
+      builder: (context, model, child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Demo Page'),
+        ),
+        body: Container(
+          child: Text(model.title),
+        ),
+      ),
+    );
+  }
+}
+
+class DemoViewModel extends BaseModel {
+  final String _title = "Title from the viewMode GSoC branch";
+  String get title => _title;
 }

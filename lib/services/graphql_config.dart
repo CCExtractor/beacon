@@ -4,13 +4,13 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 class GraphQLConfig {
   static String token;
   static final HttpLink httpLink = HttpLink(
-    "http://127.0.0.1:4000/graphql",
+    "http://192.168.1.8:4000/graphql",
   );
 
   static final AuthLink authLink = AuthLink(getToken: () => token);
 
   static final WebSocketLink websocketLink = WebSocketLink(
-    'http://127.0.0.1:4000/graphql',
+    'http://192.168.1.8:4000/graphql',
     config: SocketClientConfig(
       autoReconnect: true,
       inactivityTimeout: Duration(seconds: 30),

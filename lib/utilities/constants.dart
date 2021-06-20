@@ -17,3 +17,12 @@ class AppConstants {
     AppConstants.lat = position.latitude;
   }
 }
+
+//routes
+
+class Routes {
+  static const String demoPageViewRoute = "/demoPageViewRoute";
+  static const String splashScreen = "/";
+  static const String authScreen = "/auth";
+  static const String mainScreen = "/main";
+}

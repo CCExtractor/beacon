@@ -1,29 +1,34 @@
 class Queries {
   String registerUser(String name, String email, String password) {
-    return """
+    return '''
         mutation{
           register(user: {name: "$name", credentials: {email: "$email", password: "$password"}})
           {
             _id
             name
+            email
           }
         }
-    """;
+    ''';
   }
 
-  String loginUser(String id, String email, String password) {
-    return """
+  String loginUser(String email, String password) {
+    return '''
         mutation{
-          login(id: "$id", credentials: {email: "$email", password: "$password"})
+          login(credentials: {email: "$email", password: "$password"})
         }
-    """;
+    ''';
   }
 
-  String fetchUserInfo = '''
-    query me{
-      email
-      name
-      _id
-    }
-  ''';
+  String fetchUserInfo() {
+    return '''
+      query{
+        me{
+          _id
+          email
+          name
+        }
+      }
+    ''';
+  }
 }
