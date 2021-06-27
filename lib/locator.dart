@@ -4,6 +4,7 @@ import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/services/user_config.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
+import 'package:beacon/view_model/home_view_model.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
@@ -25,4 +26,5 @@ void setupLocator() {
 
   locator.registerFactory(() => DemoViewModel());
   locator.registerFactory(() => AuthViewModel());
+  locator.registerFactory(() => HomeViewModel());
 }

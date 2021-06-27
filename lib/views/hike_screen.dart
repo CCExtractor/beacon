@@ -4,11 +4,10 @@ import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/views/create_join_beacon.dart';
+import 'package:beacon/views/home.dart';
 import 'package:beacon/utilities/handle_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:duration_picker/duration_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -302,21 +301,22 @@ class _HikeScreenState extends State<HikeScreen> {
                                                                                             style: TextStyle(color: kYellow, fontSize: 12),
                                                                                           ),
                                                                                           Expanded(
-                                                                                              flex: 8,
-                                                                                              // Use it from the context of a stateful widget, passing in
-                                                                                              // and saving the duration as a state variable.
-                                                                                              child: DurationPicker(
-                                                                                                height: 100,
-                                                                                                width: double.infinity,
-                                                                                                duration: _newDuration,
-                                                                                                onChange: (val) {
-                                                                                                  setState(() {
-                                                                                                    _newDuration = val;
-                                                                                                    print(_newDuration);
-                                                                                                  });
-                                                                                                },
-                                                                                                snapToMins: 5.0,
-                                                                                              ))
+                                                                                            flex: 8,
+                                                                                            // Use it from the context of a stateful widget, passing in
+                                                                                            // and saving the duration as a state variable.
+                                                                                            // child: DurationPicker(
+                                                                                            //   height: 100,
+                                                                                            //   width: double.infinity,
+                                                                                            //   duration: _newDuration,
+                                                                                            //   onChange: (val) {
+                                                                                            //     setState(() {
+                                                                                            //       _newDuration = val;
+                                                                                            //       print(_newDuration);
+                                                                                            //     });
+                                                                                            //   },
+                                                                                            //   snapToMins: 5.0,
+                                                                                            // )
+                                                                                          )
                                                                                         ],
                                                                                       ),
                                                                                     ),
@@ -377,10 +377,8 @@ class _HikeScreenState extends State<HikeScreen> {
                   if (widget.isReferred) {
                     Navigator.pop(context);
                   } else {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WelcomeScreen()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MainScreen()));
                   }
                 },
                 child: Icon(

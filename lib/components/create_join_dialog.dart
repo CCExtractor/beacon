@@ -1,21 +1,16 @@
-import 'package:beacon/components/duration_picker.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 
 class CreateJoinBeaconDialog {
-  static Future createHikeDialog(BuildContext context) {
-    String username = 'Anonymous';
-    String duration = '00:00:00';
-    DateTime selectedTime = DateTime.now().subtract(Duration(hours: 1));
-    Duration _duration = Duration(hours: 0, minutes: 0);
-    TextEditingController _durationController = new TextEditingController();
-
+  static Future createHikeDialog(BuildContext context, HomeViewModel model) {
     return showDialog(
         context: context,
         builder: (context) => Dialog(
               child: Container(
-                height: 500,
+                height: 320,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -26,14 +21,12 @@ class CreateJoinBeaconDialog {
                           padding: const EdgeInsets.all(4.0),
                           child: TextFormField(
                             onChanged: (name) {
-                              username = name;
+                              model.title = name;
                             },
                             decoration: InputDecoration(
-                              hintText: 'Name Here',
-                              hintStyle: TextStyle(fontSize: 20, color: kBlack),
-                              labelText: 'Username',
-                              labelStyle:
-                                  TextStyle(fontSize: 14, color: kYellow),
+                              hintText: 'Title Here',
+                              hintStyle: TextStyle(fontSize: 18, color: kBlack),
+                              labelText: 'Title',
                             ),
                           ),
                         ),
@@ -42,65 +35,29 @@ class CreateJoinBeaconDialog {
                       SizedBox(
                         height: 30,
                       ),
-                      Flexible(
-                        flex: 3,
-                        child: Container(
-                          color: kLightBlue,
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Select Beacon Duration',
-                                style: TextStyle(color: kYellow, fontSize: 12),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                // Use it from the context of a stateful widget, passing in
-                                // and saving the duration as a state variable.
-                                child: InkWell(
-                                  onTap: () {
-                                    _durationController.text =
-                                        showPicker(context);
-                                  },
-                                  child: Container(
-                                    // width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff2a2549),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0, horizontal: 15),
-                                      child: TextFormField(
-                                        controller: _durationController,
-                                        // onSaved: (value) {
-                                        //   duration = value;
-                                        // },
-                                        enabled: false,
-                                        style: TextStyle(color: Colors.white),
-                                        cursorColor: Colors.white,
-                                        decoration: InputDecoration(
-                                            alignLabelWithHint: true,
-                                            floatingLabelBehavior:
-                                                FloatingLabelBehavior.always,
-                                            labelText: 'Duration',
-                                            labelStyle: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500),
-                                            hintText: 'Select beacon duration',
-                                            hintStyle: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.white),
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      Container(
+                        child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: DateTimePicker(
+                              type: DateTimePickerType.dateTimeSeparate,
+                              dateMask: 'd MMM, yyyy',
+                              initialValue: DateTime.now().toString(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                              dateLabelText: 'Expiry Date',
+                              timeLabelText: "Expiry Time",
+                              onChanged: (val) => print(DateTime.parse(val)),
+                              validator: (val) {
+                                if (DateTime.parse(val)
+                                    .isAfter(DateTime.now())) {
+                                  return val;
+                                } else {
+                                  return DateTime.now().toString();
+                                }
+                              },
+                              onSaved: (val) => print(val),
+                            )),
+                        color: kLightBlue,
                       ),
                       SizedBox(
                         height: 30,
@@ -108,15 +65,14 @@ class CreateJoinBeaconDialog {
                       Flexible(
                         flex: 2,
                         child: HikeButton(
-                            buttonWidth: 48,
+                            buttonWidth: 20,
+                            buttonHeight: 20,
                             text: 'Create',
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {
                               Navigator.pop(context);
-                              selectedTime = DateTime.now().add(_duration);
-                              // TODO : create Beacon
-                              // createHikeRoom();
+                              model.createHikeRoom();
                             }),
                       ),
                     ],
