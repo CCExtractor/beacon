@@ -22,16 +22,22 @@ class Beacon extends HiveObject {
     return Beacon(
       id: json['_id'] as String,
       shortcode: json['shortcode'] as String,
-      title: json['title'] as String,
-      startsAt: json['startsAt'] as DateTime,
-      expiresAt: json['expiresAt'] as DateTime,
-      leader: User.fromJson(json['leader'] as Map<String, dynamic>),
-      followers: (json['followers'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      route: (json['route'] as List<dynamic>)
-          .map((e) => Location.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      title: json['title'] != null ? json['title'] as String : null,
+      startsAt: json['startsAt'] as int,
+      expiresAt: json['expiresAt'] as int,
+      leader: json['leader'] != null
+          ? User.fromJson(json['leader'] as Map<String, dynamic>)
+          : null,
+      followers: json['followers'] != null
+          ? (json['followers'] as List<dynamic>)
+              .map((e) => User.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
+      route: json['route'] != null
+          ? (json['route'] as List<dynamic>)
+              .map((e) => Location.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 
@@ -40,9 +46,9 @@ class Beacon extends HiveObject {
   @HiveField(1)
   String shortcode;
   @HiveField(2)
-  DateTime startsAt;
+  int startsAt;
   @HiveField(3)
-  DateTime expiresAt;
+  int expiresAt;
   @HiveField(4)
   User leader;
   @HiveField(5)

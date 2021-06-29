@@ -19,8 +19,9 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
     return Beacon(
       id: fields[0] as String,
       shortcode: fields[1] as String,
-      startsAt: fields[2] as DateTime,
-      expiresAt: fields[3] as DateTime,
+      startsAt: fields[2] as int,
+      expiresAt: fields[3] as int,
+      title: fields[7] as String,
       leader: fields[4] as User,
       followers: (fields[5] as List)?.cast<User>(),
       route: (fields[6] as List)?.cast<Location>(),
@@ -30,7 +31,7 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
   @override
   void write(BinaryWriter writer, Beacon obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       ..writeByte(5)
       ..write(obj.followers)
       ..writeByte(6)
-      ..write(obj.route);
+      ..write(obj.route)
+      ..writeByte(7)
+      ..write(obj.title);
   }
 
   @override

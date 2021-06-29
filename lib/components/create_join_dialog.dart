@@ -46,7 +46,9 @@ class CreateJoinBeaconDialog {
                               lastDate: DateTime(2100),
                               dateLabelText: 'Expiry Date',
                               timeLabelText: "Expiry Time",
-                              onChanged: (val) => print(DateTime.parse(val)),
+                              onChanged: (val) {
+                                model.expiryAt = val;
+                              },
                               validator: (val) {
                                 if (DateTime.parse(val)
                                     .isAfter(DateTime.now())) {
@@ -55,7 +57,9 @@ class CreateJoinBeaconDialog {
                                   return DateTime.now().toString();
                                 }
                               },
-                              onSaved: (val) => print(val),
+                              onSaved: (val) {
+                                model.expiryAt = val;
+                              },
                             )),
                         color: kLightBlue,
                       ),

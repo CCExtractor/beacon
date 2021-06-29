@@ -1,5 +1,10 @@
+import 'dart:ffi';
+
 import 'package:beacon/api/queries.dart';
+import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/location/location.dart';
 import 'package:beacon/services/navigation_service.dart';
+import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:beacon/models/user/user_info.dart';
@@ -134,5 +139,44 @@ class DataBaseMutationFunctions {
       return true;
     }
     return false;
+  }
+
+  Future<Beacon> createBeacon(String title, int expiresAt) async {
+    final QueryResult result = await clientAuth.mutate(
+        MutationOptions(document: gql(_query.createBeacon(title, expiresAt))));
+    if (result.hasException) {
+      navigationService
+          .showSnackBar("Something went wrong: ${result.exception}");
+      print("Something went wrong: ${result.exception}");
+      navigationService.pop();
+    } else if (result.data != null && result.isConcrete) {
+      final Beacon beacon = Beacon.fromJson(
+        result.data['createBeacon'] as Map<String, dynamic>,
+      );
+      final Location updateLeaderLoc =
+          await databaseFunctions.updateLeaderLoc(beacon.id);
+      beacon.route.add(updateLeaderLoc);
+      print('${beacon.leader.name}');
+      return beacon;
+    }
+    return null;
+  }
+
+  Future<Location> updateLeaderLoc(String id) async {
+    Location loc = await AppConstants.getLocation();
+    final QueryResult result = await clientAuth.mutate(MutationOptions(
+        document: gql(_query.updateLeaderLoc(id, loc.lat, loc.lon))));
+    if (result.hasException) {
+      print("Something went wrong: ${result.exception}");
+      navigationService.showSnackBar(
+          "Something went wrong in updating location: ${result.exception}");
+      navigationService.pop();
+    } else if (result.data != null && result.isConcrete) {
+      final Location location = Location.fromJson(
+        result.data['updateLocation'] as Map<String, dynamic>,
+      );
+      return location;
+    }
+    return null;
   }
 }

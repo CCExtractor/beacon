@@ -1,3 +1,4 @@
+import 'package:beacon/models/location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -7,14 +8,11 @@ const Color kLightBlue = Color(0xFFE8F1F8);
 const Color kBlack = Color(0xFF343434);
 
 class AppConstants {
-  static double lat = 0.0;
-  static double long = 0.0;
-
-  static Future<void> getLocation() async {
+  static Future<Location> getLocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    AppConstants.long = position.longitude;
-    AppConstants.lat = position.latitude;
+    return Location(
+        lat: position.latitude.toString(), lon: position.longitude.toString());
   }
 }
 
@@ -25,4 +23,5 @@ class Routes {
   static const String splashScreen = "/";
   static const String authScreen = "/auth";
   static const String mainScreen = "/main";
+  static const String hikeScreen = "/hikeScreen";
 }

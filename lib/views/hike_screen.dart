@@ -5,7 +5,6 @@ import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/views/home.dart';
-import 'package:beacon/utilities/handle_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
