@@ -156,7 +156,6 @@ class DataBaseMutationFunctions {
       final Location updateLeaderLoc =
           await databaseFunctions.updateLeaderLoc(beacon.id);
       beacon.route.add(updateLeaderLoc);
-      print('${beacon.leader.name}');
       return beacon;
     }
     return null;
@@ -176,6 +175,24 @@ class DataBaseMutationFunctions {
         result.data['updateLocation'] as Map<String, dynamic>,
       );
       return location;
+    }
+    return null;
+  }
+
+  Future<Beacon> joinBeacon(String shortcode) async {
+    final QueryResult result = await clientAuth
+        .mutate(MutationOptions(document: gql(_query.joinBeacon(shortcode))));
+    if (result.hasException) {
+      navigationService
+          .showSnackBar("Something went wrong: ${result.exception}");
+      print("Something went wrong: ${result.exception}");
+      navigationService.pop();
+    } else if (result.data != null && result.isConcrete) {
+      final Beacon beacon = Beacon.fromJson(
+        result.data['joinBeacon'] as Map<String, dynamic>,
+      );
+      // subscribe to location subscription
+      return beacon;
     }
     return null;
   }

@@ -74,4 +74,25 @@ class Queries {
         }
     ''';
   }
+
+  String joinBeacon(String shortcode) {
+    return '''
+        mutation {
+            joinBeacon(shortcode: "$shortcode"){
+              title
+              shortcode
+              leader {
+                _id
+                name
+              }
+              followers {
+                _id
+                name
+              }
+              startsAt
+              expiresAt
+            }
+        }
+    ''';
+  }
 }

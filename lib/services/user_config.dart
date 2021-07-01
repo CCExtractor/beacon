@@ -23,6 +23,7 @@ class UserConfig {
         return true;
       } else {
         navigationService.showSnackBar("Couldn't update User details");
+        return false;
       }
     });
     return true;

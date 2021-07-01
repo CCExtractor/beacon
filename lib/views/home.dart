@@ -6,7 +6,6 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class MainScreen extends StatefulWidget {
@@ -73,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
                       buttonColor: Colors.white,
                       buttonWidth: 64,
                       onTap: () async {
-                        CreateJoinBeaconDialog.joinBeaconDialog(context);
+                        CreateJoinBeaconDialog.joinBeaconDialog(context, model);
                       },
                     )
                   ],
@@ -81,46 +80,6 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
           ),
-          // Scaffold(
-          //   body: Column(
-          //     mainAxisSize: MainAxisSize.max,
-          //     children: [
-          //       Container(
-          //         alignment: Alignment.topCenter,
-          //         height: 250,
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Column(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             crossAxisAlignment: CrossAxisAlignment.center,
-          //             children: [
-          //               HikeButton(
-          //                 onTap: () {},
-          //                 text: "Create Hike",
-          //                 buttonWidth: 20,
-          //                 buttonHeight: 20,
-          //               ),
-          //               SizedBox(height: 10),
-          //               HikeButton(
-          //                 onTap: () {},
-          //                 text: "Join Hike",
-          //                 buttonWidth: 20,
-          //                 buttonHeight: 20,
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         height: MediaQuery.of(context).size.height - 290,
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-          //           color: kBlue,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ),
       );
     });

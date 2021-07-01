@@ -13,75 +13,60 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // Uri _initialUri;
-  // Uri _latestUri;
-  // StreamSubscription _sub;
+  Uri _initialUri;
+  Uri _latestUri;
+  StreamSubscription _sub;
 
-  // Future<void> _handleInitialUri() async {
-  //   _sub = uriLinkStream.listen((Uri uri) {
-  //     if (!mounted) return;
-  //     setState(() {
-  //       _latestUri = uri;
-  //     });
-  //   }, onError: (Object err) {
-  //     if (!mounted) return;
-  //     setState(() {
-  //       _latestUri = null;
-  //     });
-  //   });
-  //   try {
-  //     final uri = await getInitialUri();
-  //     if (!mounted) return;
-  //     setState(() => _initialUri = uri);
-  //   } on PlatformException {
-  //     if (!mounted) return;
-  //     setState(() => _initialUri = null);
-  //   } on FormatException catch (err) {
-  //     debugPrint(err.toString());
-  //     if (!mounted) return;
-  //     setState(() => _initialUri = null);
-  //   }
-  //   if (_latestUri == null && _initialUri == null) {
-  //     final bool userLoggedIn = await userConfig.userLoggedIn();
-  //     Future.delayed(const Duration(milliseconds: 750)).then((value) async {
-  //       if (userLoggedIn) {
-  //         navigationService.pushReplacementScreen('/main', arguments: '0');
-  //       } else {
-  //         navigationService.pushReplacementScreen('/auth', arguments: '0');
-  //       }
-  //     });
-  //   } else {
-  //     if (_initialUri != null) {
-  //       if (_initialUri.pathSegments[1] == 'invite') {
-  //         navigationService.fromInviteLink(
-  //             _initialUri.queryParameters.keys.toList(growable: false),
-  //             _initialUri.queryParameters.values.toList(growable: false));
-  //       }
-  //     }
-  //   }
-  // }
-
-  Future<void> _checkLogIn() async {
-    final bool userLoggedIn = await userConfig.userLoggedIn();
-    Future.delayed(const Duration(milliseconds: 750)).then((value) async {
-      if (userLoggedIn) {
-        navigationService.pushReplacementScreen('/main', arguments: '0');
-      } else {
-        navigationService.pushReplacementScreen('/auth', arguments: '0');
-      }
+  Future<void> _handleInitialUri() async {
+    _sub = uriLinkStream.listen((Uri uri) {
+      if (!mounted) return;
+      setState(() {
+        _latestUri = uri;
+      });
+    }, onError: (Object err) {
+      if (!mounted) return;
+      setState(() {
+        _latestUri = null;
+      });
     });
+    try {
+      final uri = await getInitialUri();
+      if (!mounted) return;
+      setState(() => _initialUri = uri);
+    } on PlatformException {
+      if (!mounted) return;
+      setState(() => _initialUri = null);
+    } on FormatException catch (err) {
+      debugPrint(err.toString());
+      if (!mounted) return;
+      setState(() => _initialUri = null);
+    }
+    if (_latestUri == null && _initialUri == null) {
+      final bool userLoggedIn = await userConfig.userLoggedIn();
+      Future.delayed(const Duration(milliseconds: 750)).then((value) async {
+        if (userLoggedIn) {
+          navigationService.pushReplacementScreen('/main');
+        } else {
+          navigationService.pushReplacementScreen('/auth');
+        }
+      });
+    } else {
+      if (_initialUri != null) {
+        String shortcode = _initialUri.queryParameters.toString();
+        navigationService.pushScreen('/hikeScreen');
+      }
+    }
   }
 
   @override
   void initState() {
-    // _handleInitialUri();
-    _checkLogIn();
+    _handleInitialUri();
     super.initState();
   }
 
   @override
   void dispose() {
-    // _sub.cancel();
+    _sub.cancel();
     super.dispose();
   }
 

@@ -19,9 +19,9 @@ class User extends HiveObject {
     return User(
         id: json['_id'] as String,
         name: json['name'] != null ? json['name'] as String : 'Anonymous',
-        email: json['email'] as String,
+        email: json['email'] != null ? json['email'] as String : '',
         // location: json['location'] as String,
-        beacon: json['name'] != null
+        beacon: json['beacons'] != null
             ? (json['beacons'] as List<dynamic>)
                 .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
                 .toList()

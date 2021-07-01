@@ -1,3 +1,4 @@
+import 'package:beacon/locator.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
@@ -75,7 +76,7 @@ class CreateJoinBeaconDialog {
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {
-                              Navigator.pop(context);
+                              navigationService.pop();
                               model.createHikeRoom();
                             }),
                       ),
@@ -86,8 +87,7 @@ class CreateJoinBeaconDialog {
             ));
   }
 
-  static Future joinBeaconDialog(BuildContext context) {
-    String enteredPasskey = '';
+  static Future joinBeaconDialog(BuildContext context, HomeViewModel model) {
     return showDialog(
         context: context,
         builder: (context) => Dialog(
@@ -103,7 +103,7 @@ class CreateJoinBeaconDialog {
                           padding: const EdgeInsets.all(4.0),
                           child: TextFormField(
                             onChanged: (key) {
-                              enteredPasskey = key;
+                              model.enteredPasskey = key;
                             },
                             decoration: InputDecoration(
                               hintText: 'Passkey Here',
@@ -126,9 +126,8 @@ class CreateJoinBeaconDialog {
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {
-                              Navigator.pop(context);
-                              // TODO: validate pass key
-                              // validatePasskey(enteredPasskey);
+                              navigationService.pop();
+                              model.joinHikeRoom();
                             }),
                       ),
                     ],
