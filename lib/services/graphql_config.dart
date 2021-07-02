@@ -10,7 +10,7 @@ class GraphQLConfig {
   static final AuthLink authLink = AuthLink(getToken: () => token);
 
   static final WebSocketLink websocketLink = WebSocketLink(
-    'http://192.168.1.8:4000/graphql',
+    'ws://192.168.1.8:4000/subscriptions/',
     config: SocketClientConfig(
       autoReconnect: true,
       inactivityTimeout: Duration(seconds: 30),

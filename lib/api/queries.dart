@@ -82,15 +82,28 @@ class Queries {
               title
               shortcode
               leader {
-                _id
                 name
+                location {
+                  lat
+                  lon
+                }
               }
               followers {
-                _id
                 name
               }
               startsAt
               expiresAt
+            }
+        }
+    ''';
+  }
+
+  String fetchLocationUpdates(String id) {
+    return '''
+        subscription (){
+            beaconLocation (id: "$id") {
+              lat
+              lon
             }
         }
     ''';

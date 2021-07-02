@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:beacon/locator.dart';
@@ -52,8 +54,24 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     } else {
       if (_initialUri != null) {
-        String shortcode = _initialUri.queryParameters.toString();
-        navigationService.pushScreen('/hikeScreen');
+        var shortcode = _initialUri.queryParameters['shortcode'];
+        final bool userLoggedIn = await userConfig.userLoggedIn();
+        if (userLoggedIn) {
+          databaseFunctions.init();
+          final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
+          if (beacon != null) {
+            navigationService.pushScreen('/hikeScreen',
+                arguments:
+                    HikeScreen(beacon, isReferred: false, isLeader: false));
+          } else {
+            navigationService.showSnackBar('SomeThing went wrong');
+            navigationService.pushReplacementScreen('/main');
+          }
+        } else {
+          navigationService
+              .showSnackBar('You need to be authenticated to join the beacon');
+          navigationService.pushReplacementScreen('/auth');
+        }
       }
     }
   }

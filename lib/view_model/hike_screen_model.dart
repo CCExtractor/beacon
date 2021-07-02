@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/enums/view_state.dart';
-import 'package:beacon/locator.dart';
+import 'package:share/share.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/view_model/base_view_model.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HikeScreenViewModel extends BaseModel {
   double screenHeight, screenWidth, lat, long;
@@ -16,7 +19,8 @@ class HikeScreenViewModel extends BaseModel {
   bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
   List<User> hikers = [];
   Duration newDuration = Duration(seconds: 0);
-  Completer<GoogleMapController> controller = Completer();
+  Completer<GoogleMapController> mapController = Completer();
+  String address;
 
   Future<void> createDynamicLink(bool short) async {
     // setState(() {
@@ -43,6 +47,7 @@ class HikeScreenViewModel extends BaseModel {
     hikers.addAll(beacon.followers);
     lat = double.parse(beacon.route.last.lat);
     long = double.parse(beacon.route.last.lon);
+    getAddress();
     setState(ViewState.idle);
   }
 
@@ -63,5 +68,23 @@ class HikeScreenViewModel extends BaseModel {
     setState(ViewState.busy);
 
     setState(ViewState.idle);
+  }
+
+  generateUrl(String shortcode) async {
+    setState(ViewState.busy);
+    var queryParameters = {'param1': 'one'};
+    Uri url = Uri(
+        host: 'https',
+        path: 'beacon.aadibajpai.com/',
+        queryParameters: {'shortcode': '$shortcode'});
+    Share.share('To join beacon follow this link: $url');
+    setState(ViewState.idle);
+  }
+
+  getAddress() async {
+    Coordinates coordinates = Coordinates(lat, long);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    address = addresses.first.addressLine;
   }
 }

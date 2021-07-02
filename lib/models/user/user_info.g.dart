@@ -20,6 +20,7 @@ class UserAdapter extends TypeAdapter<User> {
       authToken: fields[1] as String,
       email: fields[3] as String,
       name: fields[2] as String,
+      location: (fields[5] as List)?.cast<Location>(),
       beacon: (fields[4] as List)?.cast<Beacon>(),
       id: fields[0] as String,
     );
@@ -28,7 +29,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(3)
       ..write(obj.email)
       ..writeByte(4)
-      ..write(obj.beacon);
+      ..write(obj.beacon)
+      ..writeByte(5)
+      ..write(obj.location);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,5 +31,70 @@ class DialogBoxes {
         ),
       ],
     );
+  }
+
+  static Future changeDurationDialog(
+      BuildContext context, HikeScreenViewModel model) {
+    return showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              child: Container(
+                height: 500,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: Container(
+                          color: kLightBlue,
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'Change Beacon Duration',
+                                style: TextStyle(color: kYellow, fontSize: 12),
+                              ),
+                              Expanded(
+                                flex: 8,
+                                // Use it from the context of a stateful widget, passing in
+                                // and saving the duration as a state variable.
+                                // child: DurationPicker(
+                                //   height: 100,
+                                //   width: double.infinity,
+                                //   duration: _newDuration,
+                                //   onChange: (val) {
+                                //     setState(() {
+                                //       _newDuration = val;
+                                //       print(_newDuration);
+                                //     });
+                                //   },
+                                //   snapToMins: 5.0,
+                                // )
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Flexible(
+                        child: HikeButton(
+                            buttonWidth: 48,
+                            text: 'Done',
+                            textColor: Colors.white,
+                            buttonColor: kYellow,
+                            onTap: () {
+                              DateTime newTime =
+                                  DateTime.now().add(model.newDuration);
+                              // update time
+                              Navigator.pop(context);
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
   }
 }

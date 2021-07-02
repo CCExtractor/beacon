@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:beacon/api/queries.dart';
@@ -14,12 +15,18 @@ class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
   Queries _query;
+  Stream<Location> _locationStream;
+  StreamController<Location> _locStreamController =
+      StreamController<Location>();
 
   init() {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = graphqlConfig.authClient();
     _query = Queries();
+    _locationStream = _locStreamController.stream.asBroadcastStream();
   }
+
+  Stream<Location> get locationStream => _locationStream;
 
   GraphQLError userNotFound = const GraphQLError(message: 'User not found');
   GraphQLError userNotAuthenticated =
@@ -191,7 +198,11 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
-      // subscribe to location subscription
+      beacon.route.add(beacon.leader.location.last);
+      final Stream<QueryResult> _loc = clientAuth.subscribe(SubscriptionOptions(
+          document: gql(_query.fetchLocationUpdates(beacon.id))));
+      _locationStream =
+          _loc.map((event) => Location.fromJson(event.data['leaderLocation']));
       return beacon;
     }
     return null;

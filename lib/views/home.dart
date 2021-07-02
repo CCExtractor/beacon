@@ -17,71 +17,70 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   @override
-  void initState() {
-    super.initState();
-    AppConstants.getLocation();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BaseView<HomeViewModel>(builder: (context, model, child) {
-      return SafeArea(
-        child: ModalProgressHUD(
-          inAsyncCall: model.isCreatingHike,
-          child: Stack(
-            children: <Widget>[
-              Scaffold(
-                body: Container(
-                  margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Center(
-                    child: Image(
-                      image: AssetImage('images/hikers_group.png'),
-                    ),
-                  ),
-                ),
-              ),
-              CustomPaint(
-                size: Size(MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height),
-                painter: ShapePainter(),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 48),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      return model.isBusy
+          ? Scaffold(body: Center(child: CircularProgressIndicator()))
+          : SafeArea(
+              child: ModalProgressHUD(
+                inAsyncCall: model.isCreatingHike,
+                child: Stack(
                   children: <Widget>[
-                    HikeButton(
-                      text: 'Create Hike',
-                      textColor: Colors.white,
-                      borderColor: Colors.white,
-                      buttonColor: kYellow,
-                      buttonWidth: 64,
-                      onTap: () {
-                        CreateJoinBeaconDialog.createHikeDialog(context, model);
-                      },
+                    Scaffold(
+                      body: Container(
+                        margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                        child: Center(
+                          child: Image(
+                            image: AssetImage('images/hikers_group.png'),
+                          ),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 20,
+                    CustomPaint(
+                      size: Size(MediaQuery.of(context).size.width,
+                          MediaQuery.of(context).size.height),
+                      painter: ShapePainter(),
                     ),
-                    HikeButton(
-                      text: 'Join a Hike',
-                      textColor: kYellow,
-                      borderColor: kYellow,
-                      buttonColor: Colors.white,
-                      buttonWidth: 64,
-                      onTap: () async {
-                        CreateJoinBeaconDialog.joinBeaconDialog(context, model);
-                      },
-                    )
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 48),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          HikeButton(
+                            text: 'Create Hike',
+                            textColor: Colors.white,
+                            borderColor: Colors.white,
+                            buttonColor: kYellow,
+                            buttonWidth: 64,
+                            onTap: () {
+                              CreateJoinBeaconDialog.createHikeDialog(
+                                  context, model);
+                            },
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 20,
+                          ),
+                          HikeButton(
+                            text: 'Join a Hike',
+                            textColor: kYellow,
+                            borderColor: kYellow,
+                            buttonColor: Colors.white,
+                            buttonWidth: 64,
+                            onTap: () async {
+                              CreateJoinBeaconDialog.joinBeaconDialog(
+                                  context, model);
+                            },
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      );
+            );
     });
   }
 }

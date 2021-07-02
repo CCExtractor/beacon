@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 part 'user_info.g.dart';
@@ -11,7 +12,7 @@ class User extends HiveObject {
       {this.authToken,
       this.email,
       this.name,
-      // this.location,
+      this.location,
       this.beacon,
       @required this.id});
 
@@ -20,7 +21,11 @@ class User extends HiveObject {
         id: json['_id'] as String,
         name: json['name'] != null ? json['name'] as String : 'Anonymous',
         email: json['email'] != null ? json['email'] as String : '',
-        // location: json['location'] as String,
+        location: json['location'] != null
+            ? (json['location'] as List<dynamic>)
+                .map((e) => Location.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : [],
         beacon: json['beacons'] != null
             ? (json['beacons'] as List<dynamic>)
                 .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
@@ -38,15 +43,15 @@ class User extends HiveObject {
   String email;
   @HiveField(4)
   List<Beacon> beacon = [];
-  // @HiveField(4)
-  // String location;
+  @HiveField(5)
+  List<Location> location = [];
 
   print() {
     debugPrint('authToken: ${this.authToken}');
     debugPrint('_id: ${this.id}');
     debugPrint('firstName: ${this.name}');
     debugPrint('email: ${this.email}');
-    // debugPrint('location: ${this.location}');
+    debugPrint('location: ${this.location}');
     debugPrint('beacons: ${this.beacon}');
   }
 
@@ -58,7 +63,7 @@ class User extends HiveObject {
     this.authToken = details.authToken;
     this.name = details.name;
     this.email = details.email;
-    // this.location = details.location;
+    this.location = details.location;
     this.beacon = details.beacon;
   }
 }
