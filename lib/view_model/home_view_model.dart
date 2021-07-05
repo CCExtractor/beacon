@@ -28,7 +28,11 @@ class HomeViewModel extends BaseModel {
     setState(ViewState.idle);
     if (beacon != null) {
       navigationService.pushScreen('/hikeScreen',
-          arguments: HikeScreen(beacon, isReferred: false));
+          arguments: HikeScreen(
+            beacon,
+            isReferred: false,
+            isLeader: true,
+          ));
     } else {
       navigationService.showSnackBar('SomeThing went wrong');
     }

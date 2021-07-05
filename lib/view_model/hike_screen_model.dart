@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:beacon/models/location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,6 +19,7 @@ class HikeScreenViewModel extends BaseModel {
   Beacon beacon;
   bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
   List<User> hikers = [];
+  List<Location> route = [];
   Duration newDuration = Duration(seconds: 0);
   Completer<GoogleMapController> mapController = Completer();
   String address;
@@ -47,7 +49,11 @@ class HikeScreenViewModel extends BaseModel {
     hikers.addAll(beacon.followers);
     lat = double.parse(beacon.route.last.lat);
     long = double.parse(beacon.route.last.lon);
-    getAddress();
+    route.add(Location(lat: beacon.route.last.lat, lon: beacon.route.last.lon));
+    Coordinates coordinates = Coordinates(lat, long);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    address = addresses.first.addressLine;
     setState(ViewState.idle);
   }
 
@@ -64,12 +70,6 @@ class HikeScreenViewModel extends BaseModel {
     });
   }
 
-  fetchHikersData() async {
-    setState(ViewState.busy);
-
-    setState(ViewState.idle);
-  }
-
   generateUrl(String shortcode) async {
     setState(ViewState.busy);
     var queryParameters = {'param1': 'one'};
@@ -79,12 +79,5 @@ class HikeScreenViewModel extends BaseModel {
         queryParameters: {'shortcode': '$shortcode'});
     Share.share('To join beacon follow this link: $url');
     setState(ViewState.idle);
-  }
-
-  getAddress() async {
-    Coordinates coordinates = Coordinates(lat, long);
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    address = addresses.first.addressLine;
   }
 }

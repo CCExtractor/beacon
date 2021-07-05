@@ -7,6 +7,7 @@ import 'package:beacon/models/location/location.dart';
 import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:beacon/models/user/user_info.dart';
 import '../locator.dart';
@@ -14,16 +15,14 @@ import '../locator.dart';
 class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
+  GraphQLClient webSocketClient;
   Queries _query;
   Stream<Location> _locationStream;
-  StreamController<Location> _locStreamController =
-      StreamController<Location>();
-
   init() {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = graphqlConfig.authClient();
+    webSocketClient = graphqlConfig.webSocketClient();
     _query = Queries();
-    _locationStream = _locStreamController.stream.asBroadcastStream();
   }
 
   Stream<Location> get locationStream => _locationStream;
@@ -160,18 +159,19 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['createBeacon'] as Map<String, dynamic>,
       );
+      LatLng loc = await AppConstants.getLocation();
       final Location updateLeaderLoc =
-          await databaseFunctions.updateLeaderLoc(beacon.id);
+          await databaseFunctions.updateLeaderLoc(beacon.id, loc);
       beacon.route.add(updateLeaderLoc);
       return beacon;
     }
     return null;
   }
 
-  Future<Location> updateLeaderLoc(String id) async {
-    Location loc = await AppConstants.getLocation();
+  Future<Location> updateLeaderLoc(String id, LatLng latLng) async {
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_query.updateLeaderLoc(id, loc.lat, loc.lon))));
+        document: gql(_query.updateLeaderLoc(
+            id, latLng.latitude.toString(), latLng.longitude.toString()))));
     if (result.hasException) {
       print("Something went wrong: ${result.exception}");
       navigationService.showSnackBar(

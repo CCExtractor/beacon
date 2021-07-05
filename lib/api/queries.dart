@@ -35,6 +35,10 @@ class Queries {
               _id
               name
             }
+            followers{
+              _id
+              name
+            }
           }
         }
       }
@@ -100,7 +104,7 @@ class Queries {
 
   String fetchLocationUpdates(String id) {
     return '''
-        subscription (){
+        subscription {
             beaconLocation (id: "$id") {
               lat
               lon

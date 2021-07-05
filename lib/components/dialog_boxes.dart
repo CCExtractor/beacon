@@ -33,8 +33,7 @@ class DialogBoxes {
     );
   }
 
-  static Future changeDurationDialog(
-      BuildContext context, HikeScreenViewModel model) {
+  static Future changeDurationDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) => Dialog(
@@ -85,8 +84,8 @@ class DialogBoxes {
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {
-                              DateTime newTime =
-                                  DateTime.now().add(model.newDuration);
+                              // DateTime newTime =
+                              // DateTime.now().add(newDuration);
                               // update time
                               Navigator.pop(context);
                             }),

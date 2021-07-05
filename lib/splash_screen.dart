@@ -18,6 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Uri _initialUri;
   Uri _latestUri;
   StreamSubscription _sub;
+  bool isCheckingUrl = false;
 
   Future<void> _handleInitialUri() async {
     _sub = uriLinkStream.listen((Uri uri) {
