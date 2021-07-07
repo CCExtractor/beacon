@@ -15,26 +15,26 @@ class UserConfig {
       _currentUser = User(id: 'null', authToken: 'null');
       return false;
     }
+    bool userUpdated = true;
     graphqlConfig.getToken().then((value) async {
+      print('${userConfig._currentUser.authToken}');
       databaseFunctions.init();
       final bool fetchUpdates = await databaseFunctions.fetchCurrentUserInfo();
       if (fetchUpdates) {
         saveUserInHive();
-        return true;
+        userUpdated = true;
       } else {
         navigationService.showSnackBar("Couldn't update User details");
-        return false;
+        userUpdated = false;
       }
     });
-    return true;
+    return userUpdated;
   }
 
   Future<bool> updateUser(User updatedUserDetails) async {
     try {
       _currentUser = updatedUserDetails;
       saveUserInHive();
-      graphqlConfig.getToken();
-      databaseFunctions.init();
       return true;
     } on Exception catch (e) {
       debugPrint(e.toString());

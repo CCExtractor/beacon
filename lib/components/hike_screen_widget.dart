@@ -14,11 +14,7 @@ class HikeScreenWidget {
   }
 
   static generateUrl(String shortcode) async {
-    var queryParameters = {'param1': 'one'};
-    Uri url = Uri(
-        host: 'https',
-        path: 'beacon.aadibajpai.com/',
-        queryParameters: {'shortcode': '$shortcode'});
+    Uri url = Uri.parse('https://beacon.aadibajpai.com/?shortcode=$shortcode');
     Share.share('To join beacon follow this link: $url');
   }
 
@@ -67,7 +63,10 @@ class HikeScreenWidget {
                               text: 'Copy Passkey',
                               textColor: Colors.white,
                               buttonColor: kYellow,
-                              onTap: copyPasskey(passkey),
+                              onTap: () {
+                                copyPasskey(passkey);
+                                navigationService.pop();
+                              },
                             ),
                           )
                         ],

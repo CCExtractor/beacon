@@ -102,9 +102,8 @@ class DataBaseMutationFunctions {
     } else if (result.data != null && result.isConcrete) {
       final User signedInUser =
           User.fromJson(result.data['register'] as Map<String, dynamic>);
-      final bool userSaved = await userConfig.updateUser(signedInUser);
-      final bool tokenRefreshed = await graphqlConfig.getToken() as bool;
-      return userSaved && tokenRefreshed;
+      final bool logIn = await databaseFunctions.login(email, password);
+      return logIn;
     }
     return false;
   }
@@ -134,7 +133,8 @@ class DataBaseMutationFunctions {
       if (exception) {
         fetchCurrentUserInfo();
       } else {
-        navigationService.pop();
+        navigationService.pushReplacementScreen('/auth');
+        navigationService.showSnackBar('Token expired');
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(

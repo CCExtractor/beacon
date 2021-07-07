@@ -17,62 +17,64 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     return BaseView<AuthViewModel>(builder: (context, model, child) {
-      return new Scaffold(
-          key: model.scaffoldKey,
-          body: SingleChildScrollView(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height >= 775.0
-                  ? MediaQuery.of(context).size.height
-                  : 775.0,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 75.0),
-                    child: new Image(
-                        width: 250.0,
-                        height: 191.0,
-                        fit: BoxFit.fill,
-                        image: new AssetImage('images/hikers_group.png')),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20.0),
-                    child: _buildMenuBar(context, model),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: PageView(
-                      controller: model.pageController,
-                      onPageChanged: (i) {
-                        if (i == 0) {
-                          setState(() {
-                            model.right = Colors.black;
-                            model.left = Colors.white;
-                          });
-                        } else if (i == 1) {
-                          setState(() {
-                            model.right = Colors.white;
-                            model.left = Colors.black;
-                          });
-                        }
-                      },
-                      children: <Widget>[
-                        new ConstrainedBox(
-                          constraints: const BoxConstraints.expand(),
-                          child: _buildSignIn(context, model),
+      return (model.isBusy)
+          ? Center(child: CircularProgressIndicator())
+          : new Scaffold(
+              key: model.scaffoldKey,
+              body: SingleChildScrollView(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height >= 775.0
+                      ? MediaQuery.of(context).size.height
+                      : 775.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 75.0),
+                        child: new Image(
+                            width: 250.0,
+                            height: 191.0,
+                            fit: BoxFit.fill,
+                            image: new AssetImage('images/hikers_group.png')),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: _buildMenuBar(context, model),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: PageView(
+                          controller: model.pageController,
+                          onPageChanged: (i) {
+                            if (i == 0) {
+                              setState(() {
+                                model.right = Colors.black;
+                                model.left = Colors.white;
+                              });
+                            } else if (i == 1) {
+                              setState(() {
+                                model.right = Colors.white;
+                                model.left = Colors.black;
+                              });
+                            }
+                          },
+                          children: <Widget>[
+                            new ConstrainedBox(
+                              constraints: const BoxConstraints.expand(),
+                              child: _buildSignIn(context, model),
+                            ),
+                            new ConstrainedBox(
+                              constraints: const BoxConstraints.expand(),
+                              child: _buildSignUp(context, model),
+                            ),
+                          ],
                         ),
-                        new ConstrainedBox(
-                          constraints: const BoxConstraints.expand(),
-                          child: _buildSignUp(context, model),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ));
+                ),
+              ));
     });
   }
 

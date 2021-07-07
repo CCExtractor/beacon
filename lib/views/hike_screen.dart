@@ -93,8 +93,6 @@ class _HikeScreenState extends State<HikeScreen> {
     widget.isLeader
         ? _streamLocation =
             loc.onLocationChanged.listen((Loc.LocationData currentLocation) {
-            print('.........');
-            print(currentLocation.latitude);
             route.add(
                 LatLng(currentLocation.latitude, currentLocation.longitude));
             getAddress();
@@ -115,7 +113,16 @@ class _HikeScreenState extends State<HikeScreen> {
                 document:
                     gql(Queries().fetchLocationUpdates(widget.beacon.id))))
             .listen((event) {
-            print(event);
+            print(event.data['beaconLocation']);
+            route.add(LatLng(double.parse(event.data['beaconLocation']['lat']),
+                double.parse(event.data['beaconLocation']['lon'])));
+            getAddress();
+            if (address != prevAddress) {
+              setState(() {
+                _addMarker();
+                setPolyline();
+              });
+            }
           });
   }
 

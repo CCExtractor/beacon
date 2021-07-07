@@ -39,11 +39,10 @@ class AuthViewModel extends BaseModel {
 
   next_signup() async {
     // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    // setState(ViewState.busy);
     // validate = AutovalidateMode.always;
-    // setState(ViewState.idle);
     // if (formKeySignup.currentState.validate()) {
-    // validate = AutovalidateMode.disabled;
+    setState(ViewState.busy);
+    validate = AutovalidateMode.disabled;
     databaseFunctions.init();
     final bool signUpSuccess = await databaseFunctions.signup(
         signupNameController.text ?? "Anonymous",
@@ -55,15 +54,15 @@ class AuthViewModel extends BaseModel {
     } else {
       navigationService.showSnackBar('SomeThing went wrong');
     }
+    setState(ViewState.idle);
     // }
   }
 
   next_login() async {
     // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    // setState(ViewState.busy);
     // validate = AutovalidateMode.always;
-    // setState(ViewState.idle);
     // if (formKeyLogin.currentState.validate()) {
+    setState(ViewState.busy);
     validate = AutovalidateMode.disabled;
     databaseFunctions.init();
     final bool loginSuccess = await databaseFunctions.login(
@@ -74,6 +73,7 @@ class AuthViewModel extends BaseModel {
     } else {
       navigationService.showSnackBar('SomeThing went wrong');
     }
+    setState(ViewState.idle);
     // }
   }
 

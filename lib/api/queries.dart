@@ -83,6 +83,7 @@ class Queries {
     return '''
         mutation {
             joinBeacon(shortcode: "$shortcode"){
+              _id
               title
               shortcode
               leader {
@@ -93,6 +94,7 @@ class Queries {
                 }
               }
               followers {
+                _id
                 name
               }
               startsAt

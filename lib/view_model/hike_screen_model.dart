@@ -72,11 +72,7 @@ class HikeScreenViewModel extends BaseModel {
 
   generateUrl(String shortcode) async {
     setState(ViewState.busy);
-    var queryParameters = {'param1': 'one'};
-    Uri url = Uri(
-        host: 'https',
-        path: 'beacon.aadibajpai.com/',
-        queryParameters: {'shortcode': '$shortcode'});
+    Uri url = Uri.parse('https://beacon.aadibajpai.com/?shortcode=$shortcode');
     Share.share('To join beacon follow this link: $url');
     setState(ViewState.idle);
   }
