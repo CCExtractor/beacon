@@ -114,4 +114,15 @@ class Queries {
         }
     ''';
   }
+
+  String fetchFollowerUpdates(String id) {
+    return '''
+        subscription {
+            beaconLocation (id: "$id") {
+              lat
+              lon
+            }
+        }
+    ''';
+  }
 }

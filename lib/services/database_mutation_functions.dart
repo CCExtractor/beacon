@@ -98,26 +98,35 @@ class DataBaseMutationFunctions {
         document: gql(_query.registerUser(name, email, password))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
-      NavigationService().pop();
+      debugPrint('${result.exception.graphqlErrors}');
+      return false;
     } else if (result.data != null && result.isConcrete) {
       final User signedInUser =
           User.fromJson(result.data['register'] as Map<String, dynamic>);
-      final bool logIn = await databaseFunctions.login(email, password);
+      final bool logIn =
+          await databaseFunctions.login(email, password, user: signedInUser);
       return logIn;
     }
     return false;
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, {User user}) async {
     final QueryResult result = await clientNonAuth.mutate(
         MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
-      NavigationService().pop();
+      debugPrint('${result.exception.graphqlErrors}');
+      return false;
     } else if (result.data != null && result.isConcrete) {
-      final User loggedInUser =
-          User(authToken: result.data['login'], id: 'null');
-      final bool userSaved = await userConfig.updateUser(loggedInUser);
+      bool userSaved = false;
+      if (user != null) {
+        user.authToken = result.data['login'];
+        userSaved = await userConfig.updateUser(user);
+      } else {
+        final User loggedInUser =
+            User(authToken: result.data['login'], id: 'null');
+        userSaved = await userConfig.updateUser(loggedInUser);
+      }
       final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
       return userSaved && fetchInfo;
     }
@@ -198,11 +207,9 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
+
+      print('........${beacon.id}');
       beacon.route.add(beacon.leader.location.last);
-      final Stream<QueryResult> _loc = clientAuth.subscribe(SubscriptionOptions(
-          document: gql(_query.fetchLocationUpdates(beacon.id))));
-      _locationStream =
-          _loc.map((event) => Location.fromJson(event.data['leaderLocation']));
       return beacon;
     }
     return null;
