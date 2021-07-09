@@ -115,19 +115,20 @@ class DataBaseMutationFunctions {
         MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
-      debugPrint('${result.exception.graphqlErrors}');
+      debugPrint('..........${result.exception.graphqlErrors}...........');
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
       if (user != null) {
-        user.authToken = result.data['login'];
+        user.authToken = "Bearer ${result.data['login']}";
         userSaved = await userConfig.updateUser(user);
       } else {
         final User loggedInUser =
-            User(authToken: result.data['login'], id: 'null');
+            User(authToken: "Bearer ${result.data['login']}");
         userSaved = await userConfig.updateUser(loggedInUser);
       }
       final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
+      print('${result.data['login']}.......$fetchInfo.....$userSaved');
       return userSaved && fetchInfo;
     }
     return false;
@@ -136,6 +137,7 @@ class DataBaseMutationFunctions {
   Future<bool> fetchCurrentUserInfo() async {
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_query.fetchUserInfo())));
+    print('$result');
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -143,7 +145,7 @@ class DataBaseMutationFunctions {
         fetchCurrentUserInfo();
       } else {
         navigationService.pushReplacementScreen('/auth');
-        navigationService.showSnackBar('Token expired');
+        navigationService.showSnackBar('Something went wrong');
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(
@@ -168,7 +170,13 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['createBeacon'] as Map<String, dynamic>,
       );
-      LatLng loc = await AppConstants.getLocation();
+      LatLng loc;
+      try {
+        loc = await AppConstants.getLocation();
+      } catch (onErr) {
+        navigationService.showSnackBar("Allow location access to start beacon");
+        return null;
+      }
       final Location updateLeaderLoc =
           await databaseFunctions.updateLeaderLoc(beacon.id, loc);
       beacon.route.add(updateLeaderLoc);
@@ -209,7 +217,7 @@ class DataBaseMutationFunctions {
       );
 
       print('........${beacon.id}');
-      beacon.route.add(beacon.leader.location.last);
+      beacon.route.add(beacon.leader.location);
       return beacon;
     }
     return null;

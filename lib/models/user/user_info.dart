@@ -14,7 +14,7 @@ class User extends HiveObject {
       this.name,
       this.location,
       this.beacon,
-      @required this.id});
+      this.id});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -22,10 +22,8 @@ class User extends HiveObject {
         name: json['name'] != null ? json['name'] as String : 'Anonymous',
         email: json['email'] != null ? json['email'] as String : '',
         location: json['location'] != null
-            ? (json['location'] as List<dynamic>)
-                .map((e) => Location.fromJson(e as Map<String, dynamic>))
-                .toList()
-            : [],
+            ? Location.fromJson(json['location'] as Map<String, dynamic>)
+            : null,
         beacon: json['beacons'] != null
             ? (json['beacons'] as List<dynamic>)
                 .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
@@ -44,7 +42,7 @@ class User extends HiveObject {
   @HiveField(4)
   List<Beacon> beacon = [];
   @HiveField(5)
-  List<Location> location = [];
+  Location location;
 
   print() {
     debugPrint('authToken: ${this.authToken}');

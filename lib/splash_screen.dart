@@ -57,22 +57,26 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_initialUri != null) {
         var shortcode = _initialUri.queryParameters['shortcode'];
         final bool userLoggedIn = await userConfig.userLoggedIn();
-        if (userLoggedIn) {
-          databaseFunctions.init();
-          final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
-          if (beacon != null) {
-            navigationService.pushScreen('/hikeScreen',
-                arguments:
-                    HikeScreen(beacon, isReferred: false, isLeader: false));
+        Future.delayed(const Duration(milliseconds: 750)).then((value) async {
+          if (userLoggedIn) {
+            databaseFunctions.init();
+            final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
+            Future.delayed(const Duration(milliseconds: 750))
+                .then((value) async {
+              if (beacon != null) {
+                navigationService.pushScreen('/hikeScreen',
+                    arguments: HikeScreen(beacon, isLeader: false));
+              } else {
+                navigationService.showSnackBar('SomeThing went wrong');
+                navigationService.pushReplacementScreen('/main');
+              }
+            });
           } else {
-            navigationService.showSnackBar('SomeThing went wrong');
-            navigationService.pushReplacementScreen('/main');
+            navigationService.showSnackBar(
+                'You need to be authenticated to join the beacon');
+            navigationService.pushReplacementScreen('/auth');
           }
-        } else {
-          navigationService
-              .showSnackBar('You need to be authenticated to join the beacon');
-          navigationService.pushReplacementScreen('/auth');
-        }
+        });
       }
     }
   }

@@ -20,7 +20,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => HikeScreen(
                 arguments.beacon,
-                isReferred: arguments.isReferred,
                 isLeader: arguments.isLeader,
               ));
     default:

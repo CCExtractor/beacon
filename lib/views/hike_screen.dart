@@ -25,8 +25,8 @@ import 'package:rxdart/rxdart.dart';
 
 class HikeScreen extends StatefulWidget {
   final Beacon beacon;
-  final bool isReferred, isLeader;
-  HikeScreen(this.beacon, {this.isReferred, this.isLeader});
+  final bool isLeader;
+  HikeScreen(this.beacon, {this.isLeader});
   @override
   _HikeScreenState createState() => _HikeScreenState();
 }
@@ -343,12 +343,7 @@ class _HikeScreenState extends State<HikeScreen> {
                           alignment: Alignment(-0.8, -0.8),
                           child: GestureDetector(
                             onTap: () {
-                              if (widget.isReferred) {
-                                navigationService.pop();
-                              } else {
-                                navigationService
-                                    .pushReplacementScreen('/main');
-                              }
+                              navigationService.pushReplacementScreen('/main');
                             },
                             child: Icon(
                               Icons.arrow_back,

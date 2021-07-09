@@ -7,14 +7,13 @@ import 'package:web_socket_channel/io.dart';
 class GraphQLConfig {
   static String token;
   static final HttpLink httpLink = HttpLink(
-    "http://192.168.1.8:4000/graphql",
+    "https://beacon.aadibajpai.com/graphql",
   );
 
-  static final AuthLink authLink =
-      AuthLink(getToken: () async => 'Bearer $token');
+  static final AuthLink authLink = AuthLink(getToken: () async => token);
 
   static final WebSocketLink websocketLink =
-      WebSocketLink('ws://192.168.1.8:4000/subscriptions/',
+      WebSocketLink('ws://beacon.aadibajpai.com/subscriptions/',
           config: SocketClientConfig(
             autoReconnect: true,
           ));
@@ -34,7 +33,7 @@ class GraphQLConfig {
   }
 
   GraphQLClient authClient() {
-    final AuthLink authLink = AuthLink(getToken: () async => 'Bearer $token');
+    final AuthLink authLink = AuthLink(getToken: () async => token);
     final Link finalAuthLink = authLink.concat(httpLink);
     return GraphQLClient(
       cache: GraphQLCache(),
