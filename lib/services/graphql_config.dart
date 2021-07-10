@@ -33,7 +33,8 @@ class GraphQLConfig {
   }
 
   GraphQLClient authClient() {
-    final AuthLink authLink = AuthLink(getToken: () async => token);
+    final AuthLink authLink =
+        AuthLink(getToken: () async => userConfig.currentUser.authToken);
     final Link finalAuthLink = authLink.concat(httpLink);
     return GraphQLClient(
       cache: GraphQLCache(),

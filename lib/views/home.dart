@@ -2,6 +2,7 @@
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
@@ -37,9 +38,23 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                     CustomPaint(
-                      size: Size(MediaQuery.of(context).size.width,
+                      size: Size(MediaQuery.of(context).size.width - 35,
                           MediaQuery.of(context).size.height),
                       painter: ShapePainter(),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                          onTap: () async {
+                            await userConfig.currentUser.delete();
+                            navigationService.removeAllAndPush('/auth', '/');
+                          },
+                          child: Card(
+                              margin: EdgeInsets.only(right: 12, top: 5),
+                              child: Icon(
+                                Icons.logout,
+                                size: 40,
+                              ))),
                     ),
                     Padding(
                       padding:

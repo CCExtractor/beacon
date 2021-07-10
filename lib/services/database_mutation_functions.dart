@@ -115,7 +115,6 @@ class DataBaseMutationFunctions {
         MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
-      debugPrint('..........${result.exception.graphqlErrors}...........');
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
@@ -128,7 +127,6 @@ class DataBaseMutationFunctions {
         userSaved = await userConfig.updateUser(loggedInUser);
       }
       final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
-      print('${result.data['login']}.......$fetchInfo.....$userSaved');
       return userSaved && fetchInfo;
     }
     return false;
@@ -137,7 +135,6 @@ class DataBaseMutationFunctions {
   Future<bool> fetchCurrentUserInfo() async {
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_query.fetchUserInfo())));
-    print('$result');
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -215,8 +212,6 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
-
-      print('........${beacon.id}');
       beacon.route.add(beacon.leader.location);
       return beacon;
     }

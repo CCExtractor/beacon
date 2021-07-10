@@ -19,7 +19,7 @@ class _AuthScreenState extends State<AuthScreen>
   Widget build(BuildContext context) {
     return BaseView<AuthViewModel>(builder: (context, model, child) {
       return (model.isBusy)
-          ? Center(child: CircularProgressIndicator())
+          ? Scaffold(body: Center(child: CircularProgressIndicator()))
           : new Scaffold(
               key: model.scaffoldKey,
               // resizeToAvoidBottomInset: false,
@@ -220,17 +220,19 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
                 ),
-                Container(
-                    margin: EdgeInsets.only(top: 225),
-                    decoration: new BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    child: HikeButton(
-                      onTap: model.next_login,
-                      text: 'LOGIN',
-                      buttonWidth: 90,
-                      buttonHeight: 15,
-                    )),
+                Scaffold(
+                  body: Container(
+                      margin: EdgeInsets.only(top: 225),
+                      decoration: new BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      child: HikeButton(
+                        onTap: model.next_login,
+                        text: 'LOGIN',
+                        buttonWidth: 90,
+                        buttonHeight: 15,
+                      )),
+                ),
               ],
             ),
             Padding(
