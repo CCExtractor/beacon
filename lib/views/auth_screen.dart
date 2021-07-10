@@ -220,19 +220,17 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
                 ),
-                Scaffold(
-                  body: Container(
-                      margin: EdgeInsets.only(top: 225),
-                      decoration: new BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      child: HikeButton(
-                        onTap: model.next_login,
-                        text: 'LOGIN',
-                        buttonWidth: 90,
-                        buttonHeight: 15,
-                      )),
-                ),
+                Container(
+                    margin: EdgeInsets.only(top: 225),
+                    decoration: new BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: HikeButton(
+                      onTap: model.next_login,
+                      text: 'LOGIN',
+                      buttonWidth: 90,
+                      buttonHeight: 15,
+                    )),
               ],
             ),
             Padding(
