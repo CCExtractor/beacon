@@ -2,16 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class Validator {
-  static String validateName(String value) {
-    if (value.isEmpty) {
-      return 'Name must not be left blank.';
-    }
-    return null;
-  }
-
-  static String validateEmail(
-    String email,
-  ) {
+  static String validateEmail(String email) {
     // If email is empty return.
     if (email.isEmpty) {
       return "Email must not be left blank";
@@ -25,9 +16,7 @@ class Validator {
     return null;
   }
 
-  static String validatePassword(
-    String password,
-  ) {
+  static String validatePassword(String password) {
     // If password is empty return.
     if (password.isEmpty) {
       return "Password must not be left blank";
@@ -47,6 +36,25 @@ class Validator {
       return "Password must not contain spaces";
     }
 
+    return null;
+  }
+
+  static String validateBeaconTitle(String title) {
+    if (title.isEmpty) {
+      return "Title must not be left blank";
+    }
+    return null;
+  }
+
+  static String validatePasskey(String passkey) {
+    if (passkey.isEmpty) {
+      return "Passkey must not be left blank";
+    }
+    const String pattern = r'[A-Z]+';
+    final RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(passkey) || passkey.length != 6) {
+      return "Invalid passkey";
+    }
     return null;
   }
 }

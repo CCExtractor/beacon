@@ -6,6 +6,10 @@ import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewModel extends BaseModel {
+  final formKeyCreate = GlobalKey<FormState>();
+  final formKeyJoin = GlobalKey<FormState>();
+
+  AutovalidateMode validate = AutovalidateMode.onUserInteraction;
   bool isCreatingHike = false;
   String title;
   String expiryAt;
@@ -13,33 +17,47 @@ class HomeViewModel extends BaseModel {
   String enteredPasskey = '';
 
   createHikeRoom() async {
-    setState(ViewState.busy);
-    databaseFunctions.init();
-    final Beacon beacon = await databaseFunctions.createBeacon(
-        _titleController.text ?? "Event",
-        DateTime.parse(expiryAt).millisecondsSinceEpoch.toInt());
-    setState(ViewState.idle);
-    if (beacon != null) {
-      navigationService.pushScreen('/hikeScreen',
-          arguments: HikeScreen(
-            beacon,
-            isLeader: true,
-          ));
+    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    validate = AutovalidateMode.always;
+    if (formKeyCreate.currentState.validate()) {
+      setState(ViewState.busy);
+      validate = AutovalidateMode.disabled;
+      databaseFunctions.init();
+      final Beacon beacon = await databaseFunctions.createBeacon(
+          _titleController.text ?? "Event",
+          DateTime.parse(expiryAt).millisecondsSinceEpoch.toInt());
+      setState(ViewState.idle);
+      if (beacon != null) {
+        navigationService.pushScreen('/hikeScreen',
+            arguments: HikeScreen(
+              beacon,
+              isLeader: true,
+            ));
+      } else {
+        navigationService.showSnackBar('SomeThing went wrong');
+      }
     } else {
-      navigationService.showSnackBar('SomeThing went wrong');
+      navigationService.showSnackBar('Enter valid entries');
     }
   }
 
   joinHikeRoom() async {
-    setState(ViewState.busy);
-    databaseFunctions.init();
-    final Beacon beacon = await databaseFunctions.joinBeacon(enteredPasskey);
-    setState(ViewState.idle);
-    if (beacon != null) {
-      navigationService.pushScreen('/hikeScreen',
-          arguments: HikeScreen(beacon, isLeader: false));
+    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    validate = AutovalidateMode.always;
+    if (formKeyJoin.currentState.validate()) {
+      setState(ViewState.busy);
+      validate = AutovalidateMode.disabled;
+      databaseFunctions.init();
+      final Beacon beacon = await databaseFunctions.joinBeacon(enteredPasskey);
+      setState(ViewState.idle);
+      if (beacon != null) {
+        navigationService.pushScreen('/hikeScreen',
+            arguments: HikeScreen(beacon, isLeader: false));
+      } else {
+        navigationService.showSnackBar('SomeThing went wrong');
+      }
     } else {
-      navigationService.showSnackBar('SomeThing went wrong');
+      navigationService.showSnackBar('Enter valid passkey');
     }
   }
 }

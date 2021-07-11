@@ -8,7 +8,7 @@ class AuthViewModel extends BaseModel {
   final formKeySignup = GlobalKey<FormState>();
   final formKeyLogin = GlobalKey<FormState>();
 
-  AutovalidateMode validate = AutovalidateMode.disabled;
+  AutovalidateMode validate = AutovalidateMode.onUserInteraction;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final FocusNode emailLogin = FocusNode();
@@ -38,43 +38,47 @@ class AuthViewModel extends BaseModel {
   Color rightBg = kBlue;
 
   next_signup() async {
-    // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    // validate = AutovalidateMode.always;
-    // if (formKeySignup.currentState.validate()) {
-    setState(ViewState.busy);
-    validate = AutovalidateMode.disabled;
-    databaseFunctions.init();
-    final bool signUpSuccess = await databaseFunctions.signup(
-        signupNameController.text ?? "Anonymous",
-        signupEmailController.text,
-        signupPasswordController.text);
-    if (signUpSuccess) {
-      userConfig.currentUser.print();
-      navigationService.pushScreen('/main');
+    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    validate = AutovalidateMode.always;
+    if (formKeySignup.currentState.validate()) {
+      setState(ViewState.busy);
+      validate = AutovalidateMode.disabled;
+      databaseFunctions.init();
+      final bool signUpSuccess = await databaseFunctions.signup(
+          signupNameController.text ?? "Anonymous",
+          signupEmailController.text,
+          signupPasswordController.text);
+      if (signUpSuccess) {
+        userConfig.currentUser.print();
+        navigationService.pushScreen('/main');
+      } else {
+        navigationService.showSnackBar('SomeThing went wrong');
+      }
+      setState(ViewState.idle);
     } else {
-      navigationService.showSnackBar('SomeThing went wrong');
+      navigationService.showSnackBar('Enter valid entries');
     }
-    setState(ViewState.idle);
-    // }
   }
 
   next_login() async {
-    // FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    // validate = AutovalidateMode.always;
-    // if (formKeyLogin.currentState.validate()) {
-    setState(ViewState.busy);
-    validate = AutovalidateMode.disabled;
-    databaseFunctions.init();
-    final bool loginSuccess = await databaseFunctions.login(
-        loginEmailController.text, loginPasswordController.text);
-    if (loginSuccess) {
-      userConfig.currentUser.print();
-      navigationService.removeAllAndPush('/main', '/');
+    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    validate = AutovalidateMode.always;
+    if (formKeyLogin.currentState.validate()) {
+      setState(ViewState.busy);
+      validate = AutovalidateMode.disabled;
+      databaseFunctions.init();
+      final bool loginSuccess = await databaseFunctions.login(
+          loginEmailController.text, loginPasswordController.text);
+      if (loginSuccess) {
+        userConfig.currentUser.print();
+        navigationService.removeAllAndPush('/main', '/');
+      } else {
+        navigationService.showSnackBar('SomeThing went wrong');
+      }
+      setState(ViewState.idle);
     } else {
-      navigationService.showSnackBar('SomeThing went wrong');
+      navigationService.showSnackBar('Enter valid entries');
     }
-    setState(ViewState.idle);
-    // }
   }
 
   void onSignInButtonPress() {

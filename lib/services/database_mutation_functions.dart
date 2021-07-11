@@ -114,7 +114,8 @@ class DataBaseMutationFunctions {
     final QueryResult result = await clientNonAuth.mutate(
         MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
-      final bool exception = encounteredExceptionOrError(result.exception);
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
@@ -142,7 +143,8 @@ class DataBaseMutationFunctions {
         fetchCurrentUserInfo();
       } else {
         navigationService.pushReplacementScreen('/auth');
-        navigationService.showSnackBar('Something went wrong');
+        navigationService.showSnackBar(
+            "Something went wrong: ${result.exception.graphqlErrors.first.message}");
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(
@@ -159,10 +161,9 @@ class DataBaseMutationFunctions {
     final QueryResult result = await clientAuth.mutate(
         MutationOptions(document: gql(_query.createBeacon(title, expiresAt))));
     if (result.hasException) {
-      navigationService
-          .showSnackBar("Something went wrong: ${result.exception}");
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
       print("Something went wrong: ${result.exception}");
-      navigationService.pop();
     } else if (result.data != null && result.isConcrete) {
       final Beacon beacon = Beacon.fromJson(
         result.data['createBeacon'] as Map<String, dynamic>,
@@ -189,8 +190,7 @@ class DataBaseMutationFunctions {
     if (result.hasException) {
       print("Something went wrong: ${result.exception}");
       navigationService.showSnackBar(
-          "Something went wrong in updating location: ${result.exception}");
-      navigationService.pop();
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
     } else if (result.data != null && result.isConcrete) {
       final Location location = Location.fromJson(
         result.data['updateLocation'] as Map<String, dynamic>,
@@ -204,10 +204,9 @@ class DataBaseMutationFunctions {
     final QueryResult result = await clientAuth
         .mutate(MutationOptions(document: gql(_query.joinBeacon(shortcode))));
     if (result.hasException) {
-      navigationService
-          .showSnackBar("Something went wrong: ${result.exception}");
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
       print("Something went wrong: ${result.exception}");
-      navigationService.pop();
     } else if (result.data != null && result.isConcrete) {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
