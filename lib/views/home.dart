@@ -38,23 +38,20 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                     CustomPaint(
-                      size: Size(MediaQuery.of(context).size.width - 35,
+                      size: Size(MediaQuery.of(context).size.width,
                           MediaQuery.of(context).size.height),
                       painter: ShapePainter(),
                     ),
                     Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                          onTap: () async {
-                            await userConfig.currentUser.delete();
-                            navigationService.removeAllAndPush('/auth', '/');
-                          },
-                          child: Card(
-                              margin: EdgeInsets.only(right: 12, top: 5),
-                              child: Icon(
-                                Icons.logout,
-                                size: 40,
-                              ))),
+                      alignment: Alignment(0.9, -0.8),
+                      child: FloatingActionButton(
+                        onPressed: () async {
+                          await userConfig.currentUser.delete();
+                          navigationService.removeAllAndPush('/auth', '/');
+                        },
+                        backgroundColor: kYellow,
+                        child: Icon(Icons.logout),
+                      ),
                     ),
                     Padding(
                       padding:

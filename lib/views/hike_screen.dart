@@ -22,6 +22,7 @@ import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HikeScreen extends StatefulWidget {
   final Beacon beacon;
@@ -36,7 +37,44 @@ class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
   Beacon beacon;
   bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
-  List<User> hikers = [];
+  List<User> hikers = [
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+    User(name: 'xyz'),
+  ];
   List<LatLng> route = [];
   Duration newDuration = Duration(seconds: 0);
   Completer<GoogleMapController> mapController = Completer();
@@ -49,8 +87,9 @@ class _HikeScreenState extends State<HikeScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
 
-  ScrollController _scrollController;
+  ScrollController _scrollController = ScrollController();
   Loc.Location loc = new Loc.Location();
+  PanelController _panelController = PanelController();
 
   getAddress() async {
     prevAddress = address;
@@ -149,7 +188,6 @@ class _HikeScreenState extends State<HikeScreen> {
     super.initState();
     isBusy = true;
     fetchData();
-    _scrollController = ScrollController();
     initLocSubscription();
     _streamFollower = GraphQLConfig().client.value.subscribe(
         SubscriptionOptions(
@@ -185,178 +223,175 @@ class _HikeScreenState extends State<HikeScreen> {
                     if (snapshot.hasData) {
                       print(snapshot.data.data);
                     }
-                    return Stack(
-                      children: <Widget>[
-                        Scaffold(
-                          body: GoogleMap(
-                            mapType: MapType.normal,
-                            markers: markers.toSet(),
-                            polylines: Set<Polyline>.of(polylines.values),
-                            initialCameraPosition:
-                                CameraPosition(target: route.first, zoom: 12.0),
-                            onMapCreated: (GoogleMapController controller) {
-                              mapController.complete(controller);
-                            },
-                          ),
-                        ),
-                        CustomPaint(
-                          size: Size(screenWidth, screenHeight),
-                          painter: ShapePainter(),
-                        ),
-                        Container(
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0),
-                                child: Container(
+                    return SlidingUpPanel(
+                      maxHeight: MediaQuery.of(context).size.height * 0.6,
+                      minHeight: widget.isLeader ? 130 : 150,
+                      controller: _panelController,
+                      collapsed: Container(
+                        decoration: BoxDecoration(
+                            color: kBlue,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(10))),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 12.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  width: 60,
+                                  height: 5,
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(10),
-                                          topLeft: Radius.circular(10))),
-                                  height: 250,
-                                  child: Scaffold(
-                                    body: Column(children: <Widget>[
-                                      Container(
-                                        width: double.infinity,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: RichText(
-                                            maxLines: 4,
-                                            text: TextSpan(
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                children: [
-                                                  TextSpan(
-                                                      text: isBeaconExpired
-                                                          ? 'Beacon has been expired\n'
-                                                          : 'Beacon expiring at ${beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}\n',
-                                                      style: TextStyle(
-                                                          fontSize: 16)),
-                                                  TextSpan(
-                                                      text:
-                                                          'Beacon holder at: $address\n',
-                                                      style: TextStyle(
-                                                          fontSize: 14)),
-                                                  TextSpan(
-                                                      text:
-                                                          'Long press on any hiker to hand over the beacon\n',
-                                                      style: TextStyle(
-                                                          fontSize: 12)),
-                                                  TextSpan(
-                                                      text:
-                                                          'Double Tap on beacon to change the duration\n',
-                                                      style: TextStyle(
-                                                          fontSize: 12)),
-                                                ]),
-                                          ),
-                                        ),
-                                        decoration: BoxDecoration(
-                                            color: kBlue,
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10),
-                                                topLeft: Radius.circular(10))),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        clipBehavior: Clip.antiAlias,
-                                        scrollDirection: Axis.vertical,
-                                        controller: _scrollController,
-                                        physics:
-                                            AlwaysScrollableScrollPhysics(),
-                                        itemCount: hikers.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return ListTile(
-                                            onTap: () {
-                                              hikers[index].id ==
-                                                      userConfig.currentUser.id
-                                                  ? Fluttertoast.showToast(
-                                                      msg: 'Yeah, that\'s you')
-                                                  : beacon.leader.id ==
-                                                          userConfig
-                                                              .currentUser.id
-                                                      ? relayBeacon(
-                                                          hikers[index])
-                                                      : Fluttertoast.showToast(
-                                                          msg:
-                                                              'You dont have beacon to relay');
-                                            },
-                                            leading: CircleAvatar(
-                                              backgroundColor: isBeaconExpired
-                                                  ? Colors.grey
-                                                  : kYellow,
-                                              radius: 18,
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: Icon(
-                                                    Icons.person_outline,
-                                                    color: Colors.white,
-                                                  )),
-                                            ),
-                                            title: Text(
-                                              hikers[index].name,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                            ),
-                                            trailing: hikers[index].id ==
-                                                    beacon.leader.id
-                                                ? GestureDetector(
-                                                    onDoubleTap: () {
-                                                      !widget.isLeader
-                                                          ? Fluttertoast.showToast(
-                                                              msg:
-                                                                  'Only beacon holder has access to change the duration')
-                                                          : DialogBoxes
-                                                              .changeDurationDialog(
-                                                                  context);
-                                                    },
-                                                    child: Icon(
-                                                      Icons.room,
-                                                      color: isBeaconExpired
-                                                          ? Colors.grey
-                                                          : kYellow,
-                                                      size: 40,
-                                                    ),
-                                                  )
-                                                : Container(width: 10),
-                                          );
-                                        },
-                                      ),
-                                    ]),
-                                  ),
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0))),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 4),
+                                child: RichText(
+                                  text: TextSpan(
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                      children: [
+                                        TextSpan(
+                                            text: isBeaconExpired
+                                                ? 'Beacon has been expired\n'
+                                                : 'Beacon expiring at ${beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}\n',
+                                            style: TextStyle(fontSize: 16)),
+                                        TextSpan(
+                                            text:
+                                                'Beacon holder at: $address\n',
+                                            style: TextStyle(fontSize: 14)),
+                                        widget.isLeader
+                                            ? TextSpan(
+                                                text:
+                                                    'Long press on any hiker to hand over the beacon\n',
+                                                style: TextStyle(fontSize: 12))
+                                            : TextSpan(text: ''),
+                                        widget.isLeader
+                                            ? TextSpan(
+                                                text:
+                                                    'Double Tap on beacon to change the duration\n',
+                                                style: TextStyle(fontSize: 12))
+                                            : TextSpan(text: ''),
+                                      ]),
                                 ),
                               ),
-                            ],
-                          ),
+                              height: widget.isLeader ? 120 : 100,
+                            ),
+                          ],
                         ),
-                        Align(
-                            alignment: Alignment(1, -0.8),
-                            child: HikeScreenWidget.shareButton(
-                                context, beacon.shortcode)),
-                        Align(
-                          alignment: Alignment(-0.8, -0.8),
-                          child: GestureDetector(
-                            onTap: () {
-                              navigationService.pushReplacementScreen('/main');
-                            },
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 30,
-                              color: Colors.white,
+                      ),
+                      panel: _panel(_scrollController),
+                      body: Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          Scaffold(
+                            body: GoogleMap(
+                              mapType: MapType.normal,
+                              markers: markers.toSet(),
+                              polylines: Set<Polyline>.of(polylines.values),
+                              initialCameraPosition: CameraPosition(
+                                  target: route.first, zoom: 12.0),
+                              onMapCreated: (GoogleMapController controller) {
+                                mapController.complete(controller);
+                              },
                             ),
                           ),
-                        ),
-                      ],
+                          CustomPaint(
+                            size: Size(screenWidth, screenHeight),
+                            painter: ShapePainter(),
+                          ),
+                          Align(
+                              alignment: Alignment(0.9, -0.8),
+                              child: HikeScreenWidget.shareButton(
+                                  context, beacon.shortcode)),
+                          Align(
+                            alignment: Alignment(-0.8, -0.8),
+                            child: GestureDetector(
+                              onTap: () {
+                                navigationService
+                                    .pushReplacementScreen('/main');
+                              },
+                              child: Icon(
+                                Icons.arrow_back,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }),
             ),
           );
+  }
+
+  Widget _panel(ScrollController sc) {
+    return Material(
+      child: ListView.builder(
+        shrinkWrap: true,
+        clipBehavior: Clip.antiAlias,
+        scrollDirection: Axis.vertical,
+        controller: sc,
+        physics: AlwaysScrollableScrollPhysics(),
+        itemCount: hikers.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            onTap: () {
+              hikers[index].id == userConfig.currentUser.id
+                  ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
+                  : beacon.leader.id == userConfig.currentUser.id
+                      ? relayBeacon(hikers[index])
+                      : Fluttertoast.showToast(
+                          msg: 'You dont have beacon to relay');
+            },
+            leading: CircleAvatar(
+              backgroundColor: isBeaconExpired ? Colors.grey : kYellow,
+              radius: 18,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Icon(
+                    Icons.person_outline,
+                    color: Colors.white,
+                  )),
+            ),
+            title: Text(
+              hikers[index].name,
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
+            trailing: hikers[index].id == beacon.leader.id
+                ? GestureDetector(
+                    onDoubleTap: () {
+                      !widget.isLeader
+                          ? Fluttertoast.showToast(
+                              msg:
+                                  'Only beacon holder has access to change the duration')
+                          : DialogBoxes.changeDurationDialog(context);
+                    },
+                    child: Icon(
+                      Icons.room,
+                      color: isBeaconExpired ? Colors.grey : kYellow,
+                      size: 40,
+                    ),
+                  )
+                : Container(width: 10),
+          );
+        },
+      ),
+    );
   }
 
   Future<bool> onWillPop(context) async {
