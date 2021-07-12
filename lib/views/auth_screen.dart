@@ -5,6 +5,7 @@ import 'package:beacon/utilities/indication_painter.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key key}) : super(key: key);
@@ -136,7 +137,7 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildSignIn(BuildContext context, AuthViewModel model) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.only(top: 23.0, left: 50, right: 50),
+        padding: EdgeInsets.only(top: 23.0, left: 35, right: 35),
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,13 +152,13 @@ class _AuthScreenState extends State<AuthScreen>
                 key: model.formKeyLogin,
                 autovalidateMode: model.validate,
                 child: Container(
-                  width: 300.0,
+                  // width: MediaQuery.of(context).size.width - 35,
                   // height: MediaQuery.of(context).size.height / 4.3,
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
@@ -182,8 +183,8 @@ class _AuthScreenState extends State<AuthScreen>
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
                           focusNode: model.passwordLogin,
                           controller: model.loginPasswordController,
@@ -200,14 +201,9 @@ class _AuthScreenState extends State<AuthScreen>
                             ),
                             hintText: "Password",
                             hintStyle: TextStyle(fontSize: 17.0),
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  model.obscureTextLogin =
-                                      !model.obscureTextLogin;
-                                });
-                              },
-                              child: Icon(
+                            suffixIcon: IconButton(
+                              onPressed: () => model.displayPasswordLogin(),
+                              icon: Icon(
                                 model.obscureTextLogin
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
@@ -244,10 +240,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             HikeButton(
-              onTap: () {
-                model.signupNameController.text = "Anonymous";
-                model.next_signup();
-              },
+              onTap: () => model.loginAsGuest(),
               text: 'LOGIN AS GUEST',
               buttonHeight: 15,
               buttonWidth: 35,
@@ -274,12 +267,12 @@ class _AuthScreenState extends State<AuthScreen>
                 key: model.formKeySignup,
                 autovalidateMode: model.validate,
                 child: Container(
-                    width: 300.0,
+                    width: MediaQuery.of(context).size.width - 70,
                     // height: 280.0,
                     child: Column(children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 13, vertical: 20),
                         child: TextFormField(
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
@@ -304,8 +297,8 @@ class _AuthScreenState extends State<AuthScreen>
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
                           validator: (value) => Validator.validateEmail(value),
                           focusNode: model.email,
@@ -330,8 +323,8 @@ class _AuthScreenState extends State<AuthScreen>
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
@@ -346,14 +339,9 @@ class _AuthScreenState extends State<AuthScreen>
                               Icons.lock,
                               color: Colors.black,
                             ),
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  model.obscureTextLogin =
-                                      !model.obscureTextLogin;
-                                });
-                              },
-                              child: Icon(
+                            suffixIcon: IconButton(
+                              onPressed: () => model.displayPasswordSignup(),
+                              icon: Icon(
                                 model.obscureTextSignup
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
@@ -378,7 +366,7 @@ class _AuthScreenState extends State<AuthScreen>
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 ),
                 child: HikeButton(
-                  onTap: model.next_signup,
+                  onTap: () => model.next_signup(),
                   text: 'SIGNIN',
                   buttonHeight: 18,
                   buttonWidth: 55,

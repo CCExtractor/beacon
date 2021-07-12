@@ -93,9 +93,12 @@ class DataBaseMutationFunctions {
     return result.data;
   }
 
-  Future<bool> signup(String name, String email, String password) async {
-    final QueryResult result = await clientNonAuth.mutate(MutationOptions(
-        document: gql(_query.registerUser(name, email, password))));
+  Future<bool> signup({String name, String email, String password}) async {
+    final QueryResult result = email != null
+        ? await clientNonAuth.mutate(MutationOptions(
+            document: gql(_query.registerUser(name, email, password))))
+        : await clientNonAuth
+            .mutate(MutationOptions(document: gql(_query.loginAsGuest(name))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
       debugPrint('${result.exception.graphqlErrors}');
@@ -103,19 +106,25 @@ class DataBaseMutationFunctions {
     } else if (result.data != null && result.isConcrete) {
       final User signedInUser =
           User.fromJson(result.data['register'] as Map<String, dynamic>);
-      final bool logIn =
-          await databaseFunctions.login(email, password, user: signedInUser);
+      final bool logIn = email != null
+          ? await databaseFunctions.login(
+              email: email, password: password, user: signedInUser)
+          : await databaseFunctions.login(user: signedInUser);
       return logIn;
     }
     return false;
   }
 
-  Future<bool> login(String email, String password, {User user}) async {
-    final QueryResult result = await clientNonAuth.mutate(
-        MutationOptions(document: gql(_query.loginUser(email, password))));
+  Future<bool> login({String email, String password, User user}) async {
+    final QueryResult result = (user != null && email == null)
+        ? await clientNonAuth.mutate(
+            MutationOptions(document: gql(_query.loginUsingID(user.id))))
+        : await clientNonAuth.mutate(
+            MutationOptions(document: gql(_query.loginUser(email, password))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("${result.exception.graphqlErrors}");
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;

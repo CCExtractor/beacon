@@ -1,4 +1,5 @@
 import 'package:beacon/components/hike_button.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,11 @@ class DialogBoxes {
         HikeButton(
           buttonHeight: 20,
           buttonWidth: 40,
-          onTap: () =>
-              SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+          onTap: () {
+            navigationService.pop();
+            navigationService.pop();
+            navigationService.pushReplacementScreen('/home');
+          },
           text: 'Yes',
         ),
       ],

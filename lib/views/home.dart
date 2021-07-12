@@ -45,10 +45,7 @@ class _MainScreenState extends State<MainScreen> {
                     Align(
                       alignment: Alignment(0.9, -0.8),
                       child: FloatingActionButton(
-                        onPressed: () async {
-                          await userConfig.currentUser.delete();
-                          navigationService.removeAllAndPush('/auth', '/');
-                        },
+                        onPressed: () => model.logout(),
                         backgroundColor: kYellow,
                         child: Icon(Icons.logout),
                       ),

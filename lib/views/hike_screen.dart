@@ -37,44 +37,7 @@ class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
   Beacon beacon;
   bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
-  List<User> hikers = [
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-    User(name: 'xyz'),
-  ];
+  List<User> hikers = [];
   List<LatLng> route = [];
   Duration newDuration = Duration(seconds: 0);
   Completer<GoogleMapController> mapController = Completer();
@@ -225,7 +188,7 @@ class _HikeScreenState extends State<HikeScreen> {
                     }
                     return SlidingUpPanel(
                       maxHeight: MediaQuery.of(context).size.height * 0.6,
-                      minHeight: widget.isLeader ? 130 : 150,
+                      minHeight: widget.isLeader ? 150 : 110,
                       controller: _panelController,
                       collapsed: Container(
                         decoration: BoxDecoration(
@@ -267,7 +230,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                         TextSpan(
                                             text: isBeaconExpired
                                                 ? 'Beacon has been expired\n'
-                                                : 'Beacon expiring at ${beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}\n',
+                                                : 'Beacon expiring at ${beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}\n',
                                             style: TextStyle(fontSize: 16)),
                                         TextSpan(
                                             text:
@@ -288,7 +251,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                       ]),
                                 ),
                               ),
-                              height: widget.isLeader ? 120 : 100,
+                              height: widget.isLeader ? 120 : 80,
                             ),
                           ],
                         ),

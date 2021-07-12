@@ -60,4 +60,11 @@ class HomeViewModel extends BaseModel {
       navigationService.showSnackBar('Enter valid passkey');
     }
   }
+
+  logout() async {
+    setState(ViewState.busy);
+    await userConfig.currentUser.delete();
+    setState(ViewState.idle);
+    navigationService.removeAllAndPush('/auth', '/');
+  }
 }

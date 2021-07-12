@@ -8,7 +8,7 @@ class AuthViewModel extends BaseModel {
   final formKeySignup = GlobalKey<FormState>();
   final formKeyLogin = GlobalKey<FormState>();
 
-  AutovalidateMode validate = AutovalidateMode.onUserInteraction;
+  AutovalidateMode validate = AutovalidateMode.disabled;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final FocusNode emailLogin = FocusNode();
@@ -23,7 +23,6 @@ class AuthViewModel extends BaseModel {
 
   bool obscureTextLogin = true;
   bool obscureTextSignup = true;
-  bool loginAsGuest = false;
 
   TextEditingController signupEmailController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
@@ -45,9 +44,9 @@ class AuthViewModel extends BaseModel {
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final bool signUpSuccess = await databaseFunctions.signup(
-          signupNameController.text ?? "Anonymous",
-          signupEmailController.text,
-          signupPasswordController.text);
+          name: signupNameController.text ?? "Anonymous",
+          email: signupEmailController.text,
+          password: signupPasswordController.text);
       if (signUpSuccess) {
         userConfig.currentUser.print();
         navigationService.pushScreen('/main');
@@ -60,6 +59,20 @@ class AuthViewModel extends BaseModel {
     }
   }
 
+  loginAsGuest() async {
+    setState(ViewState.busy);
+    databaseFunctions.init();
+    final bool signUpSuccess =
+        await databaseFunctions.signup(name: "Anonymous");
+    if (signUpSuccess) {
+      userConfig.currentUser.print();
+      navigationService.pushScreen('/main');
+    } else {
+      navigationService.showSnackBar('SomeThing went wrong');
+    }
+    setState(ViewState.idle);
+  }
+
   next_login() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
@@ -68,7 +81,8 @@ class AuthViewModel extends BaseModel {
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final bool loginSuccess = await databaseFunctions.login(
-          loginEmailController.text, loginPasswordController.text);
+          email: loginEmailController.text,
+          password: loginPasswordController.text);
       if (loginSuccess) {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
@@ -89,5 +103,17 @@ class AuthViewModel extends BaseModel {
   void onSignUpButtonPress() {
     pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+  }
+
+  displayPasswordLogin() {
+    setState(ViewState.busy);
+    obscureTextLogin = !obscureTextLogin;
+    setState(ViewState.idle);
+  }
+
+  displayPasswordSignup() {
+    setState(ViewState.busy);
+    obscureTextSignup = !obscureTextSignup;
+    setState(ViewState.idle);
   }
 }

@@ -14,10 +14,30 @@ class Queries {
     ''';
   }
 
+  String loginAsGuest(String name) {
+    return '''
+        mutation{
+          register(user: {name: "$name"})
+          {
+            _id
+            name
+          }
+        }
+    ''';
+  }
+
   String loginUser(String email, String password) {
     return '''
         mutation{
           login(credentials: {email: "$email", password: "$password"})
+        }
+    ''';
+  }
+
+  String loginUsingID(String id) {
+    return '''
+        mutation{
+          login(id: "$id")
         }
     ''';
   }
