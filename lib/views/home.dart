@@ -1,5 +1,6 @@
 // TODO: display list of beacons of a specific user in a sliding panel
 import 'package:beacon/components/create_join_dialog.dart';
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
@@ -45,7 +46,35 @@ class _MainScreenState extends State<MainScreen> {
                     Align(
                       alignment: Alignment(0.9, -0.8),
                       child: FloatingActionButton(
-                        onPressed: () => model.logout(),
+                        onPressed: () => showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text(
+                                    'Logout',
+                                    style:
+                                        TextStyle(fontSize: 25, color: kYellow),
+                                  ),
+                                  content: Text(
+                                    'Are you sure you wanna logout?',
+                                    style:
+                                        TextStyle(fontSize: 16, color: kBlack),
+                                  ),
+                                  actions: <Widget>[
+                                    HikeButton(
+                                      buttonHeight: 20,
+                                      buttonWidth: 40,
+                                      onTap: () =>
+                                          Navigator.of(context).pop(false),
+                                      text: 'No',
+                                    ),
+                                    HikeButton(
+                                      buttonHeight: 20,
+                                      buttonWidth: 40,
+                                      onTap: () => model.logout(),
+                                      text: 'Yes',
+                                    ),
+                                  ],
+                                )),
                         backgroundColor: kYellow,
                         child: Icon(Icons.logout),
                       ),

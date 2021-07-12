@@ -1,15 +1,13 @@
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class DialogBoxes {
   static AlertDialog showExitDialog(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Exit App',
+        'Exit Beacon',
         style: TextStyle(fontSize: 25, color: kYellow),
       ),
       content: Text(
@@ -27,9 +25,7 @@ class DialogBoxes {
           buttonHeight: 20,
           buttonWidth: 40,
           onTap: () {
-            navigationService.pop();
-            navigationService.pop();
-            navigationService.pushReplacementScreen('/home');
+            navigationService.removeAllAndPush('/main', '/');
           },
           text: 'Yes',
         ),
@@ -57,23 +53,6 @@ class DialogBoxes {
                                 'Change Beacon Duration',
                                 style: TextStyle(color: kYellow, fontSize: 12),
                               ),
-                              Expanded(
-                                flex: 8,
-                                // Use it from the context of a stateful widget, passing in
-                                // and saving the duration as a state variable.
-                                // child: DurationPicker(
-                                //   height: 100,
-                                //   width: double.infinity,
-                                //   duration: _newDuration,
-                                //   onChange: (val) {
-                                //     setState(() {
-                                //       _newDuration = val;
-                                //       print(_newDuration);
-                                //     });
-                                //   },
-                                //   snapToMins: 5.0,
-                                // )
-                              )
                             ],
                           ),
                         ),
