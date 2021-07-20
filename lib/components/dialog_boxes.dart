@@ -4,14 +4,17 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class DialogBoxes {
-  static AlertDialog showExitDialog(BuildContext context) {
+  static AlertDialog showExitDialog(
+      BuildContext context, bool isLeader, int X) {
     return AlertDialog(
       title: Text(
-        'Exit Beacon',
+        'This will terminate the hike, Confirm?',
         style: TextStyle(fontSize: 25, color: kYellow),
       ),
       content: Text(
-        'Are you sure you wanna stop sending and receiving location?',
+        isLeader && (X - 1 > 0)
+            ? 'There are ${X - 1} followers and you are carrying the beacon. Do you want to terminate the hike?'
+            : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
       actions: <Widget>[

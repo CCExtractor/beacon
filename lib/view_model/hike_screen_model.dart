@@ -37,7 +37,7 @@ class HikeScreenViewModel extends BaseModel {
   Future<bool> onWillPop(context) async {
     return (await showDialog(
           context: context,
-          builder: (context) => DialogBoxes.showExitDialog(context),
+          // builder: (context) => DialogBoxes.showExitDialog(context),
         )) ??
         false;
   }

@@ -48,7 +48,7 @@ class HomeViewModel extends BaseModel {
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final Beacon beacon = await databaseFunctions.joinBeacon(enteredPasskey);
-      setState(ViewState.idle);
+      // setState(ViewState.idle);
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false));
@@ -63,7 +63,7 @@ class HomeViewModel extends BaseModel {
   logout() async {
     setState(ViewState.busy);
     await userConfig.currentUser.delete();
-    setState(ViewState.idle);
+    // setState(ViewState.idle);
     navigationService.removeAllAndPush('/auth', '/');
   }
 }

@@ -188,7 +188,7 @@ class _HikeScreenState extends State<HikeScreen> {
                     }
                     return SlidingUpPanel(
                       maxHeight: MediaQuery.of(context).size.height * 0.6,
-                      minHeight: widget.isLeader ? 150 : 110,
+                      minHeight: 154,
                       controller: _panelController,
                       collapsed: Container(
                         decoration: BoxDecoration(
@@ -220,8 +220,8 @@ class _HikeScreenState extends State<HikeScreen> {
                             Container(
                               width: double.infinity,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 4),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
                                 child: RichText(
                                   text: TextSpan(
                                       style: TextStyle(
@@ -236,22 +236,18 @@ class _HikeScreenState extends State<HikeScreen> {
                                             text:
                                                 'Beacon holder at: $address\n',
                                             style: TextStyle(fontSize: 14)),
-                                        widget.isLeader
-                                            ? TextSpan(
-                                                text:
-                                                    'Long press on any hiker to hand over the beacon\n',
-                                                style: TextStyle(fontSize: 12))
-                                            : TextSpan(text: ''),
-                                        widget.isLeader
-                                            ? TextSpan(
-                                                text:
-                                                    'Double Tap on beacon to change the duration\n',
-                                                style: TextStyle(fontSize: 12))
-                                            : TextSpan(text: ''),
+                                        TextSpan(
+                                            text:
+                                                'Total Followers: ${hikers.length - 1} (Swipe to view the list of followers)\n',
+                                            style: TextStyle(fontSize: 12)),
+                                        TextSpan(
+                                            text:
+                                                'Share this passkey to add user: ${beacon.shortcode}\n',
+                                            style: TextStyle(fontSize: 12)),
                                       ]),
                                 ),
                               ),
-                              height: widget.isLeader ? 120 : 80,
+                              height: 120,
                             ),
                           ],
                         ),
@@ -284,8 +280,7 @@ class _HikeScreenState extends State<HikeScreen> {
                             alignment: Alignment(-0.8, -0.8),
                             child: GestureDetector(
                               onTap: () {
-                                navigationService
-                                    .pushReplacementScreen('/main');
+                                onWillPop(context);
                               },
                               child: Icon(
                                 Icons.arrow_back,
@@ -302,65 +297,117 @@ class _HikeScreenState extends State<HikeScreen> {
           );
   }
 
-  Widget _panel(ScrollController sc) {
-    return Material(
-      child: ListView.builder(
-        shrinkWrap: true,
-        clipBehavior: Clip.antiAlias,
-        scrollDirection: Axis.vertical,
-        controller: sc,
-        physics: AlwaysScrollableScrollPhysics(),
-        itemCount: hikers.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            onTap: () {
-              hikers[index].id == userConfig.currentUser.id
-                  ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
-                  : beacon.leader.id == userConfig.currentUser.id
-                      ? relayBeacon(hikers[index])
-                      : Fluttertoast.showToast(
-                          msg: 'You dont have beacon to relay');
-            },
-            leading: CircleAvatar(
-              backgroundColor: isBeaconExpired ? Colors.grey : kYellow,
-              radius: 18,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Icon(
-                    Icons.person_outline,
-                    color: Colors.white,
-                  )),
-            ),
-            title: Text(
-              hikers[index].name,
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            trailing: hikers[index].id == beacon.leader.id
-                ? GestureDetector(
-                    onDoubleTap: () {
-                      !widget.isLeader
-                          ? Fluttertoast.showToast(
-                              msg:
-                                  'Only beacon holder has access to change the duration')
-                          : DialogBoxes.changeDurationDialog(context);
-                    },
-                    child: Icon(
-                      Icons.room,
-                      color: isBeaconExpired ? Colors.grey : kYellow,
-                      size: 40,
-                    ),
-                  )
-                : Container(width: 10),
-          );
-        },
+  Column _panel(ScrollController sc) {
+    return Column(children: [
+      SizedBox(
+        height: 15.0,
       ),
-    );
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 60,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+          ),
+        ],
+      ),
+      SizedBox(
+        height: 12,
+      ),
+      Container(
+        height: MediaQuery.of(context).size.height * 0.6 - 32,
+        child: ListView(
+            controller: sc,
+            physics: AlwaysScrollableScrollPhysics(),
+            children: [
+              widget.isLeader
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: kBlack),
+                            children: [
+                              TextSpan(
+                                  text:
+                                      'Long Press on any hiker to hand over the beacon\n',
+                                  style: TextStyle(fontSize: 16)),
+                              TextSpan(
+                                  text:
+                                      'Double tap on beacon to change the duration\n',
+                                  style: TextStyle(fontSize: 14)),
+                            ]),
+                      ),
+                    )
+                  : Container(),
+              SizedBox(
+                height: 6,
+              ),
+              Material(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  clipBehavior: Clip.antiAlias,
+                  scrollDirection: Axis.vertical,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: hikers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      onTap: () {
+                        hikers[index].id == userConfig.currentUser.id
+                            ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
+                            : beacon.leader.id == userConfig.currentUser.id
+                                ? relayBeacon(hikers[index])
+                                : Fluttertoast.showToast(
+                                    msg: 'You dont have beacon to relay');
+                      },
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            isBeaconExpired ? Colors.grey : kYellow,
+                        radius: 18,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Icon(
+                              Icons.person_outline,
+                              color: Colors.white,
+                            )),
+                      ),
+                      title: Text(
+                        hikers[index].name,
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                      trailing: hikers[index].id == beacon.leader.id
+                          ? GestureDetector(
+                              onDoubleTap: () {
+                                !widget.isLeader
+                                    ? Fluttertoast.showToast(
+                                        msg:
+                                            'Only beacon holder has access to change the duration')
+                                    : DialogBoxes.changeDurationDialog(context);
+                              },
+                              child: Icon(
+                                Icons.room,
+                                color: isBeaconExpired ? Colors.grey : kYellow,
+                                size: 40,
+                              ),
+                            )
+                          : Container(width: 10),
+                    );
+                  },
+                ),
+              ),
+            ]),
+      ),
+    ]);
   }
 
   Future<bool> onWillPop(context) async {
     return (await showDialog(
           context: context,
-          builder: (context) => DialogBoxes.showExitDialog(context),
+          builder: (context) => DialogBoxes.showExitDialog(
+              context, widget.isLeader, hikers.length),
         )) ??
         false;
   }

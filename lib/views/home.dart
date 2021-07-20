@@ -70,7 +70,10 @@ class _MainScreenState extends State<MainScreen> {
                                     HikeButton(
                                       buttonHeight: 20,
                                       buttonWidth: 40,
-                                      onTap: () => model.logout(),
+                                      onTap: () {
+                                        navigationService.pop();
+                                        model.logout();
+                                      },
                                       text: 'Yes',
                                     ),
                                   ],

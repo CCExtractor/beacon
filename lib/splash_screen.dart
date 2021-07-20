@@ -72,9 +72,20 @@ class _SplashScreenState extends State<SplashScreen> {
               }
             });
           } else {
-            navigationService.showSnackBar(
-                'You need to be authenticated to join the beacon');
-            navigationService.pushReplacementScreen('/auth');
+            // login in anonymously and join hike
+            databaseFunctions.init();
+            await databaseFunctions.signup(name: "Anonymous");
+            final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
+            Future.delayed(const Duration(milliseconds: 750))
+                .then((value) async {
+              if (beacon != null) {
+                navigationService.pushScreen('/hikeScreen',
+                    arguments: HikeScreen(beacon, isLeader: false));
+              } else {
+                navigationService.showSnackBar('SomeThing went wrong');
+                navigationService.pushReplacementScreen('/main');
+              }
+            });
           }
         });
       }
