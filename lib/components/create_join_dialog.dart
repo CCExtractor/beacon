@@ -82,7 +82,7 @@ class CreateJoinBeaconDialog {
                               textColor: Colors.white,
                               buttonColor: kYellow,
                               onTap: () {
-                                navigationService.pop();
+                                // navigationService.pop();
                                 model.createHikeRoom();
                               }),
                         ),

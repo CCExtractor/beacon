@@ -21,8 +21,8 @@ class Validator {
     if (password.isEmpty) {
       return "Password must not be left blank";
     }
-    const String pattern = r'^(?=.*?[0-9])(?=.*?[!@#\$&*%^~.]).{8,}$';
-    final RegExp regExp = RegExp(pattern);
+    // const String pattern = r'^(?=.*?[0-9])(?=.*?[!@#\$&*%^~.]).{8,}$';
+    // final RegExp regExp = RegExp(pattern);
 
     //Regex for no spaces allowed
     const String noSpaces = r'^\S+$';
@@ -31,9 +31,9 @@ class Validator {
     if (password.length < 8) {
       return "Must be of atleast 8 characters";
     }
-    if (!regExp.hasMatch(password)) {
-      return "At least 1 number and symbol required";
-    }
+    // if (!regExp.hasMatch(password)) {
+    //   return "At least 1 number and symbol required";
+    // }
     if (!noSpaceRegex.hasMatch(password)) {
       return "Password must not contain spaces";
     }

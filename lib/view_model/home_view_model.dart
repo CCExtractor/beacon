@@ -20,13 +20,14 @@ class HomeViewModel extends BaseModel {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyCreate.currentState.validate()) {
+      navigationService.pop();
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final Beacon beacon = await databaseFunctions.createBeacon(
           _titleController.text ?? "Event",
           DateTime.parse(expiryAt).millisecondsSinceEpoch.toInt());
-      setState(ViewState.idle);
+      // setState(ViewState.idle);
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(
@@ -36,8 +37,6 @@ class HomeViewModel extends BaseModel {
       } else {
         navigationService.showSnackBar('SomeThing went wrong');
       }
-    } else {
-      navigationService.showSnackBar('Enter valid entries');
     }
   }
 

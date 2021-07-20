@@ -17,15 +17,12 @@ class DataBaseMutationFunctions {
   GraphQLClient clientAuth;
   GraphQLClient webSocketClient;
   Queries _query;
-  Stream<Location> _locationStream;
   init() {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = graphqlConfig.authClient();
     webSocketClient = graphqlConfig.webSocketClient();
     _query = Queries();
   }
-
-  Stream<Location> get locationStream => _locationStream;
 
   GraphQLError userNotFound = const GraphQLError(message: 'User not found');
   GraphQLError userNotAuthenticated =
@@ -149,11 +146,9 @@ class DataBaseMutationFunctions {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
-        fetchCurrentUserInfo();
-      } else {
         navigationService.pushReplacementScreen('/auth');
         navigationService.showSnackBar(
-            "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+            "Something went wrong: ${result.exception.graphqlErrors}");
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(
