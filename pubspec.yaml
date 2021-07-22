@@ -31,6 +31,8 @@ dependencies:
   rxdart: ^0.26.0
   flutter_polyline_points: ^1.0.0
   sliding_up_panel: ^2.0.0+1
+  flutter_duration_picker:
+    git: https://github.com/bartektartanus/flutter_duration_picker
 
 dev_dependencies:
   flutter_test:

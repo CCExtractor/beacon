@@ -5,16 +5,19 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 
 class CreateJoinBeaconDialog {
   static Future createHikeDialog(BuildContext context, HomeViewModel model) {
+    model.resultingDuration = Duration(minutes: 30);
+    model.durationController = new TextEditingController();
     return showDialog(
         context: context,
         builder: (context) => Dialog(
               child: Form(
                 key: model.formKeyCreate,
                 child: Container(
-                  height: 320,
+                  height: 325,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
@@ -30,11 +33,15 @@ class CreateJoinBeaconDialog {
                                 model.title = name;
                               },
                               decoration: InputDecoration(
-                                hintText: 'Title Here',
-                                hintStyle:
-                                    TextStyle(fontSize: 18, color: kBlack),
-                                labelText: 'Title',
-                              ),
+                                  hintText: 'Title Here',
+                                  labelStyle:
+                                      TextStyle(fontSize: 18, color: kBlack),
+                                  labelText: 'Title',
+                                  alignLabelWithHint: true,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none),
                             ),
                           ),
                           color: kLightBlue,
@@ -44,30 +51,47 @@ class CreateJoinBeaconDialog {
                         ),
                         Container(
                           child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: DateTimePicker(
-                                type: DateTimePickerType.dateTimeSeparate,
-                                dateMask: 'd MMM, yyyy',
-                                initialValue: DateTime.now().toString(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                                dateLabelText: 'Expiry Date',
-                                timeLabelText: "Expiry Time",
-                                onChanged: (val) {
-                                  model.expiryAt = val;
+                            padding: const EdgeInsets.all(4.0),
+                            child: InkWell(
+                              onTap: () async {
+                                model.resultingDuration =
+                                    await showDurationPicker(
+                                  context: context,
+                                  initialTime: model.resultingDuration,
+                                );
+                                model.durationController.text = model
+                                    .resultingDuration
+                                    .toString()
+                                    .substring(0, 8);
+                              },
+                              child: TextFormField(
+                                enabled: false,
+                                controller: model.durationController,
+                                onChanged: (value) {
+                                  model.durationController.text = model
+                                      .resultingDuration
+                                      .toString()
+                                      .substring(0, 8);
                                 },
-                                validator: (val) {
-                                  if (DateTime.parse(val)
-                                      .isAfter(DateTime.now())) {
-                                    return null;
-                                  } else {
-                                    return "Please select correct expiry Date Time";
-                                  }
+                                validator: (value) {
+                                  if (value.startsWith("0:00:00"))
+                                    return "Enter valid duration";
+                                  return null;
                                 },
-                                onSaved: (val) {
-                                  model.expiryAt = val;
-                                },
-                              )),
+                                decoration: InputDecoration(
+                                    alignLabelWithHint: true,
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    labelText: 'Duration',
+                                    labelStyle:
+                                        TextStyle(fontSize: 18, color: kBlack),
+                                    hintText:
+                                        'How long should beacon last for?',
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none),
+                              ),
+                            ),
+                          ),
                           color: kLightBlue,
                         ),
                         SizedBox(

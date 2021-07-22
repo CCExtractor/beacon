@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 class HomeViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();
   final formKeyJoin = GlobalKey<FormState>();
-
+  Duration resultingDuration = Duration(minutes: 30);
   AutovalidateMode validate = AutovalidateMode.onUserInteraction;
   bool isCreatingHike = false;
   String title;
-  String expiryAt;
   TextEditingController _titleController = new TextEditingController();
+  TextEditingController durationController = new TextEditingController();
   String enteredPasskey = '';
 
   createHikeRoom() async {
@@ -26,7 +26,7 @@ class HomeViewModel extends BaseModel {
       databaseFunctions.init();
       final Beacon beacon = await databaseFunctions.createBeacon(
           _titleController.text ?? "Event",
-          DateTime.parse(expiryAt).millisecondsSinceEpoch.toInt());
+          DateTime.now().add(resultingDuration).millisecondsSinceEpoch.toInt());
       // setState(ViewState.idle);
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
