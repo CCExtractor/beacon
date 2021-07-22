@@ -23,13 +23,14 @@ class UserAdapter extends TypeAdapter<User> {
       location: fields[5] as Location,
       beacon: (fields[4] as List)?.cast<Beacon>(),
       id: fields[0] as String,
+      isGuest: fields[6] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(4)
       ..write(obj.beacon)
       ..writeByte(5)
-      ..write(obj.location);
+      ..write(obj.location)
+      ..writeByte(6)
+      ..write(obj.isGuest);
   }
 
   @override
