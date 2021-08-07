@@ -30,6 +30,7 @@ class User extends HiveObject {
               .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
               .toList()
           : [],
+      isGuest: json['isGuest'] != null ? json['isGuest'] as bool : false,
     );
   }
 

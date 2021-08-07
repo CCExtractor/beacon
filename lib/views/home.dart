@@ -50,12 +50,16 @@ class _MainScreenState extends State<MainScreen> {
                             context: context,
                             builder: (context) => AlertDialog(
                                   title: Text(
-                                    'Logout',
+                                    (userConfig.currentUser.isGuest)
+                                        ? 'Create Account'
+                                        : 'Logout',
                                     style:
                                         TextStyle(fontSize: 25, color: kYellow),
                                   ),
                                   content: Text(
-                                    'Are you sure you wanna logout?',
+                                    (userConfig.currentUser.isGuest)
+                                        ? 'Would you like to create an account?'
+                                        : 'Are you sure you wanna logout?',
                                     style:
                                         TextStyle(fontSize: 16, color: kBlack),
                                   ),
@@ -79,7 +83,9 @@ class _MainScreenState extends State<MainScreen> {
                                   ],
                                 )),
                         backgroundColor: kYellow,
-                        child: Icon(Icons.logout),
+                        child: (userConfig.currentUser.isGuest)
+                            ? Icon(Icons.person)
+                            : Icon(Icons.logout),
                       ),
                     ),
                     Padding(
@@ -89,17 +95,19 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          HikeButton(
-                            text: 'Create Hike',
-                            textColor: Colors.white,
-                            borderColor: Colors.white,
-                            buttonColor: kYellow,
-                            buttonWidth: 64,
-                            onTap: () {
-                              CreateJoinBeaconDialog.createHikeDialog(
-                                  context, model);
-                            },
-                          ),
+                          (userConfig.currentUser.isGuest)
+                              ? Container()
+                              : HikeButton(
+                                  text: 'Create Hike',
+                                  textColor: Colors.white,
+                                  borderColor: Colors.white,
+                                  buttonColor: kYellow,
+                                  buttonWidth: 64,
+                                  onTap: () {
+                                    CreateJoinBeaconDialog.createHikeDialog(
+                                        context, model);
+                                  },
+                                ),
                           SizedBox(
                             width: double.infinity,
                             height: 20,

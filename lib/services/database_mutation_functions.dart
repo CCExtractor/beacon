@@ -125,12 +125,13 @@ class DataBaseMutationFunctions {
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
-      if (user != null) {
+      if (user != null && email == null) {
+        user.isGuest = true;
         user.authToken = "Bearer ${result.data['login']}";
         userSaved = await userConfig.updateUser(user);
       } else {
         final User loggedInUser =
-            User(authToken: "Bearer ${result.data['login']}");
+            User(authToken: "Bearer ${result.data['login']}", isGuest: false);
         userSaved = await userConfig.updateUser(loggedInUser);
       }
       final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
@@ -155,6 +156,7 @@ class DataBaseMutationFunctions {
         result.data['me'] as Map<String, dynamic>,
       );
       userInfo.authToken = userConfig.currentUser.authToken;
+      userInfo.isGuest = userConfig.currentUser.isGuest;
       userConfig.updateUser(userInfo);
       return true;
     }

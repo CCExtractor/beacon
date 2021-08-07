@@ -34,6 +34,7 @@ class UserConfig {
   Future<bool> updateUser(User updatedUserDetails) async {
     try {
       _currentUser = updatedUserDetails;
+      print("User is guest or not: ${updatedUserDetails.isGuest}");
       saveUserInHive();
       return true;
     } on Exception catch (e) {
