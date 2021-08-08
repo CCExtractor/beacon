@@ -1,70 +1,6 @@
 import 'dart:ffi';
 
-class Queries {
-  String registerUser(String name, String email, String password) {
-    return '''
-        mutation{
-          register(user: {name: "$name", credentials: {email: "$email", password: "$password"}})
-          {
-            _id
-            name
-            email
-          }
-        }
-    ''';
-  }
-
-  String loginAsGuest(String name) {
-    return '''
-        mutation{
-          register(user: {name: "$name"})
-          {
-            _id
-            name
-          }
-        }
-    ''';
-  }
-
-  String loginUser(String email, String password) {
-    return '''
-        mutation{
-          login(credentials: {email: "$email", password: "$password"})
-        }
-    ''';
-  }
-
-  String loginUsingID(String id) {
-    return '''
-        mutation{
-          login(id: "$id")
-        }
-    ''';
-  }
-
-  String fetchUserInfo() {
-    return '''
-      query{
-        me{
-          _id
-          email
-          name
-          beacons{
-            _id
-            leader {
-              _id
-              name
-            }
-            followers{
-              _id
-              name
-            }
-          }
-        }
-      }
-    ''';
-  }
-
+class BeaconQueries {
   String createBeacon(String title, int expiresAt) {
     return '''
         mutation{
@@ -83,6 +19,13 @@ class Queries {
             }
             startsAt
             expiresAt
+            landmarks {
+              title
+              location {
+                lat
+                lon
+              }
+            }
           }
         }
     ''';
@@ -95,6 +38,28 @@ class Queries {
               lat
               lon
             }
+        }
+    ''';
+  }
+
+  String addLandmark(String title, String lat, String lon, String id) {
+    return '''
+        mutation{
+          createLandmark(
+            landmark: {
+              title: "$title", 
+              location: {
+                lat:"$lat", 
+                lon:"$lon"
+              }
+            }
+            beaconID:"$id"
+          ){
+            location{
+              lat
+              lon
+            }
+          }
         }
     ''';
   }
@@ -112,6 +77,10 @@ class Queries {
                   lat
                   lon
                 }
+              }
+              location {
+                lat
+                lon
               }
               followers {
                 _id
@@ -135,12 +104,31 @@ class Queries {
     ''';
   }
 
+  String fetchUserLocation(String id) {
+    return '''
+        subscription {
+            userLocation (id: "$id") {
+              _id
+              name
+              location{
+                lat
+                lon
+              }
+            }
+        }
+    ''';
+  }
+
   String fetchFollowerUpdates(String id) {
     return '''
         subscription {
-            beaconLocation (id: "$id") {
-              lat
-              lon
+            beaconJoined (id: "$id") {
+              _id
+              name
+              location{
+                lat
+                lon
+              }
             }
         }
     ''';

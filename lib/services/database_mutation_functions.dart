@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:ffi';
-
-import 'package:beacon/api/queries.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/location/location.dart';
+import 'package:beacon/queries/auth.dart';
+import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +16,14 @@ class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
   GraphQLClient webSocketClient;
-  Queries _query;
+  AuthQueries _authQuery;
+  BeaconQueries _beaconQuery;
   init() {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = graphqlConfig.authClient();
     webSocketClient = graphqlConfig.webSocketClient();
-    _query = Queries();
+    _authQuery = AuthQueries();
+    _beaconQuery = BeaconQueries();
   }
 
   GraphQLError userNotFound = const GraphQLError(message: 'User not found');
@@ -93,9 +95,9 @@ class DataBaseMutationFunctions {
   Future<bool> signup({String name, String email, String password}) async {
     final QueryResult result = email != null
         ? await clientNonAuth.mutate(MutationOptions(
-            document: gql(_query.registerUser(name, email, password))))
-        : await clientNonAuth
-            .mutate(MutationOptions(document: gql(_query.loginAsGuest(name))));
+            document: gql(_authQuery.registerUser(name, email, password))))
+        : await clientNonAuth.mutate(
+            MutationOptions(document: gql(_authQuery.loginAsGuest(name))));
     if (result.hasException) {
       final bool exception = encounteredExceptionOrError(result.exception);
       debugPrint('${result.exception.graphqlErrors}');
@@ -115,9 +117,9 @@ class DataBaseMutationFunctions {
   Future<bool> login({String email, String password, User user}) async {
     final QueryResult result = (user != null && email == null)
         ? await clientNonAuth.mutate(
-            MutationOptions(document: gql(_query.loginUsingID(user.id))))
-        : await clientNonAuth.mutate(
-            MutationOptions(document: gql(_query.loginUser(email, password))));
+            MutationOptions(document: gql(_authQuery.loginUsingID(user.id))))
+        : await clientNonAuth.mutate(MutationOptions(
+            document: gql(_authQuery.loginUser(email, password))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -142,7 +144,7 @@ class DataBaseMutationFunctions {
 
   Future<bool> fetchCurrentUserInfo() async {
     final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_query.fetchUserInfo())));
+        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -164,8 +166,8 @@ class DataBaseMutationFunctions {
   }
 
   Future<Beacon> createBeacon(String title, int expiresAt) async {
-    final QueryResult result = await clientAuth.mutate(
-        MutationOptions(document: gql(_query.createBeacon(title, expiresAt))));
+    final QueryResult result = await clientAuth.mutate(MutationOptions(
+        document: gql(_beaconQuery.createBeacon(title, expiresAt))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -191,7 +193,7 @@ class DataBaseMutationFunctions {
 
   Future<Location> updateLeaderLoc(String id, LatLng latLng) async {
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_query.updateLeaderLoc(
+        document: gql(_beaconQuery.updateLeaderLoc(
             id, latLng.latitude.toString(), latLng.longitude.toString()))));
     if (result.hasException) {
       print("Something went wrong: ${result.exception}");
@@ -208,8 +210,8 @@ class DataBaseMutationFunctions {
   }
 
   Future<Beacon> joinBeacon(String shortcode) async {
-    final QueryResult result = await clientAuth
-        .mutate(MutationOptions(document: gql(_query.joinBeacon(shortcode))));
+    final QueryResult result = await clientAuth.mutate(
+        MutationOptions(document: gql(_beaconQuery.joinBeacon(shortcode))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
