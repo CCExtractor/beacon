@@ -92,20 +92,22 @@ class _HikeScreenState extends State<HikeScreen> {
     ));
   }
 
-  initLocSubscription() {
+  initSubscriptions() {
     if (widget.isLeader) {
-      _leaderLocation =
-          loc.onLocationChanged.listen((Loc.LocationData currentLocation) {
+      _leaderLocation = loc.onLocationChanged
+          .listen((Loc.LocationData currentLocation) async {
         route.add(LatLng(currentLocation.latitude, currentLocation.longitude));
         getAddress();
         if (address != prevAddress) {
-          setState(() {
-            _addMarker();
-            setPolyline();
-          });
+          // setState(() {
+          //   _addMarker();
+          //   setPolyline();
+          // });
+          print('updatingg......');
           databaseFunctions.init();
-          databaseFunctions.updateLeaderLoc(widget.beacon.id,
+          await databaseFunctions.updateLeaderLoc(widget.beacon.id,
               LatLng(currentLocation.latitude, currentLocation.longitude));
+          print('updated');
         }
       });
     } else {
@@ -115,43 +117,6 @@ class _HikeScreenState extends State<HikeScreen> {
                   gql(BeaconQueries().fetchLocationUpdates(widget.beacon.id))));
     }
 
-    //   .listen((event) {
-    //   print(event.data['beaconLocation']);
-    //   route.add(LatLng(double.parse(event.data['beaconLocation']['lat']),
-    //       double.parse(event.data['beaconLocation']['lon'])));
-    //   getAddress();
-    //   if (address != prevAddress) {
-    //     setState(() {
-    //       _addMarker();
-    //       setPolyline();
-    //     });
-    //   }
-    // });
-  }
-
-  fetchData() async {
-    setState(() {
-      beacon = widget.beacon;
-      hikers.add(beacon.leader);
-      hikers.addAll(beacon.followers);
-      var lat = double.parse(beacon.route.last.lat);
-      var long = double.parse(beacon.route.last.lon);
-      route.add(LatLng(lat, long));
-      markers.add(Marker(
-        markerId: MarkerId((markers.length + 1).toString()),
-        position: route.last,
-      ));
-      getAddress();
-      isBusy = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    isBusy = true;
-    fetchData();
-    initLocSubscription();
     _streamFollower = GraphQLConfig().client.value.subscribe(
         SubscriptionOptions(
             document:
@@ -161,6 +126,32 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       _mixedStream = _streamFollower;
     }
+    setState(() {
+      isBusy = false;
+    });
+  }
+
+  fetchData() async {
+    setState(() {
+      beacon = widget.beacon;
+      hikers.add(beacon.leader);
+      hikers.addAll(beacon.followers);
+      var lat = double.parse(beacon.location.lat);
+      var long = double.parse(beacon.location.lon);
+      route.add(LatLng(lat, long));
+      markers.add(Marker(
+        markerId: MarkerId((markers.length + 1).toString()),
+        position: route.last,
+      ));
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isBusy = true;
+    fetchData();
+    initSubscriptions();
   }
 
   @override
@@ -182,10 +173,10 @@ class _HikeScreenState extends State<HikeScreen> {
             child: ModalProgressHUD(
               inAsyncCall: isGeneratingLink,
               child: StreamBuilder(
-                  stream: _mixedStream,
+                  stream: _streamFollower,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      print(snapshot.data.data);
+                      print(snapshot.data);
                     }
                     return SlidingUpPanel(
                       maxHeight: MediaQuery.of(context).size.height * 0.6,

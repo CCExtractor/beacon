@@ -201,6 +201,7 @@ class DataBaseMutationFunctions {
       final Location location = Location.fromJson(
         result.data['updateLocation'] as Map<String, dynamic>,
       );
+      print('location update successful');
       return location;
     }
     return null;
