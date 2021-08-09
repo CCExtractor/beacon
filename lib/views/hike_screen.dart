@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:beacon/queries/beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -9,8 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart' as Loc;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-
-import 'package:beacon/api/queries.dart';
 import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/components/shape_painter.dart';
@@ -112,7 +111,8 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       _streamLocation = GraphQLConfig().client.value.subscribe(
           SubscriptionOptions(
-              document: gql(Queries().fetchLocationUpdates(widget.beacon.id))));
+              document:
+                  gql(BeaconQueries().fetchLocationUpdates(widget.beacon.id))));
     }
 
     //   .listen((event) {
@@ -154,7 +154,8 @@ class _HikeScreenState extends State<HikeScreen> {
     initLocSubscription();
     _streamFollower = GraphQLConfig().client.value.subscribe(
         SubscriptionOptions(
-            document: gql(Queries().fetchFollowerUpdates(widget.beacon.id))));
+            document:
+                gql(BeaconQueries().fetchFollowerUpdates(widget.beacon.id))));
     if (!widget.isLeader) {
       _mixedStream = MergeStream([_streamFollower, _streamLocation]);
     } else {

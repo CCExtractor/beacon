@@ -166,8 +166,16 @@ class DataBaseMutationFunctions {
   }
 
   Future<Beacon> createBeacon(String title, int expiresAt) async {
+    LatLng loc;
+    try {
+      loc = await AppConstants.getLocation();
+    } catch (onErr) {
+      navigationService.showSnackBar("Allow location access to start beacon");
+      return null;
+    }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, expiresAt))));
+        document: gql(_beaconQuery.createBeacon(title, expiresAt,
+            loc.latitude.toString(), loc.longitude.toString()))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -176,16 +184,6 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['createBeacon'] as Map<String, dynamic>,
       );
-      LatLng loc;
-      try {
-        loc = await AppConstants.getLocation();
-      } catch (onErr) {
-        navigationService.showSnackBar("Allow location access to start beacon");
-        return null;
-      }
-      final Location updateLeaderLoc =
-          await databaseFunctions.updateLeaderLoc(beacon.id, loc);
-      beacon.route.add(updateLeaderLoc);
       return beacon;
     }
     return null;
@@ -203,7 +201,6 @@ class DataBaseMutationFunctions {
       final Location location = Location.fromJson(
         result.data['updateLocation'] as Map<String, dynamic>,
       );
-      print("${location.lat}");
       return location;
     }
     return null;

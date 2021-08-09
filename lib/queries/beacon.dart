@@ -1,10 +1,16 @@
 import 'dart:ffi';
 
 class BeaconQueries {
-  String createBeacon(String title, int expiresAt) {
+  String createBeacon(String title, int expiresAt, String lat, String lon) {
     return '''
         mutation{
-          createBeacon(beacon: {title: "$title", expiresAt: $expiresAt})
+          createBeacon(beacon: {
+            title: "$title", 
+            expiresAt: $expiresAt,
+            startLocation: {
+              lat: "$lat", lon: "$lon"
+            }
+          })
           {
             _id
             title
