@@ -19,6 +19,10 @@ class BeaconQueries {
               _id
               name
             }
+            location{
+              lat
+              lon
+            }
             followers {
               _id
               name

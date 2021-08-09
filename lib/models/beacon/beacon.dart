@@ -18,7 +18,8 @@ class Beacon extends HiveObject {
       this.leader,
       this.followers,
       this.route,
-      this.landmarks});
+      this.landmarks,
+      this.location});
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
@@ -30,11 +31,14 @@ class Beacon extends HiveObject {
       leader: json['leader'] != null
           ? User.fromJson(json['leader'] as Map<String, dynamic>)
           : null,
+      location: json['location'] != null
+          ? Location.fromJson(json['location'] as Map<String, dynamic>)
+          : null,
       followers: json['followers'] != null
           ? (json['followers'] as List<dynamic>)
               .map((e) => User.fromJson(e as Map<String, dynamic>))
               .toList()
-          : null,
+          : [],
       route: json['route'] != null
           ? (json['route'] as List<dynamic>)
               .map((e) => Location.fromJson(e as Map<String, dynamic>))
@@ -66,6 +70,8 @@ class Beacon extends HiveObject {
   String title;
   @HiveField(8)
   List<Landmark> landmarks = [];
+  @HiveField(9)
+  Location location;
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');
