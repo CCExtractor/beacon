@@ -25,13 +25,14 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       leader: fields[4] as User,
       followers: (fields[5] as List)?.cast<User>(),
       route: (fields[6] as List)?.cast<Location>(),
+      landmarks: (fields[8] as List)?.cast<Landmark>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Beacon obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       ..writeByte(6)
       ..write(obj.route)
       ..writeByte(7)
-      ..write(obj.title);
+      ..write(obj.title)
+      ..writeByte(8)
+      ..write(obj.landmarks);
   }
 
   @override

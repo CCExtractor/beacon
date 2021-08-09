@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class Beacon extends HiveObject {
       this.title,
       this.leader,
       this.followers,
-      this.route});
+      this.route,
+      this.landmarks});
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
@@ -38,6 +40,11 @@ class Beacon extends HiveObject {
               .map((e) => Location.fromJson(e as Map<String, dynamic>))
               .toList()
           : [],
+      landmarks: json['landmarks'] != null
+          ? (json['landmarks'] as List<dynamic>)
+              .map((e) => Landmark.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 
@@ -57,6 +64,8 @@ class Beacon extends HiveObject {
   List<Location> route = [];
   @HiveField(7)
   String title;
+  @HiveField(8)
+  List<Landmark> landmarks = [];
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');
