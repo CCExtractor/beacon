@@ -24,8 +24,7 @@ class HomeViewModel extends BaseModel {
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
-      final Beacon beacon = await databaseFunctions.createBeacon(
-          _titleController.text ?? "Event",
+      final Beacon beacon = await databaseFunctions.createBeacon(title,
           DateTime.now().add(resultingDuration).millisecondsSinceEpoch.toInt());
       // setState(ViewState.idle);
       if (beacon != null) {

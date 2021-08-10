@@ -165,6 +165,24 @@ class DataBaseMutationFunctions {
     return false;
   }
 
+  Future<List<Beacon>> fetchUserBeacons() async {
+    final QueryResult result = await clientAuth
+        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+    if (result.hasException) {
+      final bool exception =
+          encounteredExceptionOrError(result.exception, showSnackBar: false);
+      if (exception) {
+        print('.................$exception');
+        return [];
+      }
+    } else if (result.data != null && result.isConcrete) {
+      final User userInfo = User.fromJson(
+        result.data['me'] as Map<String, dynamic>,
+      );
+      return userInfo.beacon;
+    }
+  }
+
   Future<Beacon> createBeacon(String title, int expiresAt) async {
     LatLng loc;
     try {
@@ -222,5 +240,31 @@ class DataBaseMutationFunctions {
       return beacon;
     }
     return null;
+  }
+
+  Future<List<Beacon>> fetchNearbyBeacon() async {
+    List<Beacon> _nearbyBeacons = [];
+    LatLng loc;
+    try {
+      loc = await AppConstants.getLocation();
+    } catch (onErr) {
+      return null;
+    }
+    final QueryResult result = await clientAuth.query(QueryOptions(
+        document: gql(_beaconQuery.fetchNearbyBeacons(
+            loc.latitude.toString(), loc.longitude.toString()))));
+    if (result.hasException) {
+      final bool exception =
+          encounteredExceptionOrError(result.exception, showSnackBar: false);
+      if (exception) {
+        return null;
+      }
+    } else if (result.data != null && result.isConcrete) {
+      _nearbyBeacons = (result.data['nearbyBeacons'] as List<dynamic>)
+          .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return _nearbyBeacons;
+    }
+    return _nearbyBeacons;
   }
 }

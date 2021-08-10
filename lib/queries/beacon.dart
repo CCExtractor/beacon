@@ -98,6 +98,52 @@ class BeaconQueries {
               }
               startsAt
               expiresAt
+              landmarks {
+                title
+                location {
+                  lat
+                  lon
+                }
+              }
+            }
+        }
+    ''';
+  }
+
+  String fetchNearbyBeacons(String lat, String lon) {
+    return '''
+        query {
+            nearbyBeacons(location:{
+              lat: "$lat",
+              lon: "$lon"
+            }){
+              _id
+              title
+              shortcode
+              leader {
+                name
+                location {
+                  lat
+                  lon
+                }
+              }
+              location {
+                lat
+                lon
+              }
+              followers {
+                _id
+                name
+              }
+              startsAt
+              expiresAt
+              landmarks {
+                title
+                location {
+                  lat
+                  lon
+                }
+              }
             }
         }
     ''';
