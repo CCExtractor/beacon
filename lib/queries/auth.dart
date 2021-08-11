@@ -45,23 +45,41 @@ class AuthQueries {
   String fetchUserInfo() {
     return '''
       query{
-        me{
+      me{
+        _id
+        email
+        name
+        beacons{
           _id
-          email
-          name
-          beacons{
-            _id
-            leader {
-              _id
-              name
+          title
+          shortcode
+          leader {
+            name
+            location {
+              lat
+              lon
             }
-            followers{
-              _id
-              name
+          }
+          location {
+            lat
+            lon
+          }
+          followers {
+            _id
+            name
+          }
+          startsAt
+          expiresAt
+          landmarks {
+            title
+            location {
+              lat
+              lon
             }
           }
         }
       }
+    }
     ''';
   }
 }

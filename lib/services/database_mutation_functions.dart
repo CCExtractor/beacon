@@ -172,7 +172,7 @@ class DataBaseMutationFunctions {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
-        print('.................$exception');
+        print('$exception');
         return [];
       }
     } else if (result.data != null && result.isConcrete) {

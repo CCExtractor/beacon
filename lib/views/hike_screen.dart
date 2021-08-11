@@ -55,11 +55,13 @@ class _HikeScreenState extends State<HikeScreen> {
 
   getAddress() async {
     prevAddress = address;
-    Coordinates coordinates =
-        Coordinates(route.last.latitude, route.last.longitude);
+    Coordinates coordinates = Coordinates(
+        double.parse(beacon.location.lat), double.parse(beacon.location.lat));
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
     setState(() {
+      print('$address');
       address = addresses.first.addressLine;
     });
   }

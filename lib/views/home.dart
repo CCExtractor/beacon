@@ -1,10 +1,10 @@
-// TODO: display list of beacons of a specific user in a sliding panel
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
+import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     children: <Widget>[
                       CustomPaint(
                         size: Size(MediaQuery.of(context).size.width,
-                            MediaQuery.of(context).size.height - 100),
+                            MediaQuery.of(context).size.height - 200),
                         painter: ShapePainter(),
                       ),
                       Align(
@@ -83,7 +83,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(8, 200, 8, 5),
+                        padding: EdgeInsets.fromLTRB(8, 185, 8, 5),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
@@ -127,8 +127,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                                 color: kLightBlue,
                                 borderRadius: BorderRadius.only(
-                                    topLeft: const Radius.circular(40.0),
-                                    topRight: const Radius.circular(40.0))),
+                                    topLeft: const Radius.circular(50.0),
+                                    topRight: const Radius.circular(50.0))),
                             child: Column(
                               children: [
                                 TabBar(
@@ -162,7 +162,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   ),
                                                 );
                                               }
-                                              final posts = snapshot.data;
+                                              final List<Beacon> posts =
+                                                  snapshot.data;
                                               return Container(
                                                   alignment: Alignment.center,
                                                   child: posts.length == 0
@@ -189,8 +190,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                               EdgeInsets.all(8),
                                                           itemBuilder:
                                                               (context, index) {
-                                                            print(
-                                                                '${posts[index].shortcode}');
                                                             return BeaconCustomWidgets
                                                                 .getBeaconCard(
                                                                     context,
@@ -205,6 +204,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         ),
                                       ),
                                       Container(
+                                        alignment: Alignment.center,
                                         child: FutureBuilder(
                                           future: databaseFunctions
                                               .fetchNearbyBeacon(),
@@ -222,6 +222,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                               }
 
                                               final posts = snapshot.data;
+                                              if (posts.length == 0) {
+                                                return SingleChildScrollView(
+                                                  physics:
+                                                      AlwaysScrollableScrollPhysics(),
+                                                  child: Center(
+                                                      child: Text(
+                                                          'No nearby beacons found :(',
+                                                          style: TextStyle(
+                                                              color: kBlack,
+                                                              fontSize: 18))),
+                                                );
+                                              }
                                               return ListView.builder(
                                                 physics:
                                                     AlwaysScrollableScrollPhysics(),
@@ -235,7 +247,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                 },
                                               );
                                             } else {
-                                              return Center();
+                                              return SingleChildScrollView(
+                                                physics:
+                                                    AlwaysScrollableScrollPhysics(),
+                                                child: Center(
+                                                    child: Text(
+                                                        'No nearby beacons found :(',
+                                                        style: TextStyle(
+                                                            color: kBlack,
+                                                            fontSize: 18))),
+                                              );
                                             }
                                           },
                                         ),
