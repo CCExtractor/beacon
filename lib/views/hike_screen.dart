@@ -13,10 +13,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/components/shape_painter.dart';
-import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/models/location/location.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
@@ -31,7 +29,6 @@ class HikeScreen extends StatefulWidget {
   _HikeScreenState createState() => _HikeScreenState();
 }
 
-//Assuming passkey validation is done previously
 class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
   Beacon beacon;

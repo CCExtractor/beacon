@@ -1,5 +1,7 @@
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/landmarks/landmark.dart';
+import 'package:beacon/models/location/location.dart';
 import 'package:beacon/router.dart' as router;
 import 'package:beacon/view_model/base_view_model.dart';
 import 'package:beacon/views/base_view.dart';
@@ -21,7 +23,9 @@ void main() async {
   Hive
     ..init(appDocumentDirectory.path)
     ..registerAdapter(UserAdapter())
-    ..registerAdapter(BeaconAdapter());
+    ..registerAdapter(BeaconAdapter())
+    ..registerAdapter(LocationAdapter())
+    ..registerAdapter(LandmarkAdapter());
   await Hive.openBox<User>('currentUser');
   await Hive.openBox<Beacon>('beacons');
   setupLocator();
