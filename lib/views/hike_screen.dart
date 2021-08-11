@@ -7,7 +7,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart' as Loc;
+import 'package:location/location.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:beacon/components/dialog_boxes.dart';
@@ -47,21 +47,21 @@ class _HikeScreenState extends State<HikeScreen> {
   Map<PolylineId, Polyline> polylines = {};
 
   ScrollController _scrollController = ScrollController();
-  Loc.Location loc = new Loc.Location();
+  Location loc = new Location();
   PanelController _panelController = PanelController();
 
-  getAddress() async {
-    prevAddress = address;
-    Coordinates coordinates = Coordinates(
-        double.parse(beacon.location.lat), double.parse(beacon.location.lat));
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+  // getAddress() async {
+  //   prevAddress = address;
+  //   Coordinates coordinates = Coordinates(
+  //       double.parse(beacon.location.lat), double.parse(beacon.location.lat));
+  //   var addresses =
+  //       await Geocoder.local.findAddressesFromCoordinates(coordinates);
 
-    setState(() {
-      print('$address');
-      address = addresses.first.addressLine;
-    });
-  }
+  //   setState(() {
+  //     print('$address');
+  //     address = addresses.first.addressLine;
+  //   });
+  // }
 
   setPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -93,20 +93,23 @@ class _HikeScreenState extends State<HikeScreen> {
 
   initSubscriptions() {
     if (widget.isLeader) {
-      _leaderLocation = loc.onLocationChanged
-          .listen((Loc.LocationData currentLocation) async {
-        route.add(LatLng(currentLocation.latitude, currentLocation.longitude));
-        getAddress();
-        if (address != prevAddress) {
-          // setState(() {
-          //   _addMarker();
-          //   setPolyline();
-          // });
-          print('updatingg......');
+      _leaderLocation =
+          loc.onLocationChanged.listen((LocationData currentLocation) async {
+        Coordinates coordinates =
+            Coordinates(currentLocation.latitude, currentLocation.longitude);
+        var addresses =
+            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+        String _address = addresses.first.addressLine;
+        if (address != _address) {
           databaseFunctions.init();
           await databaseFunctions.updateLeaderLoc(widget.beacon.id,
               LatLng(currentLocation.latitude, currentLocation.longitude));
-          print('updated');
+          setState(() {
+            address = _address;
+            _addMarker();
+            setPolyline();
+          });
         }
       });
     } else {
@@ -131,13 +134,19 @@ class _HikeScreenState extends State<HikeScreen> {
   }
 
   fetchData() async {
+    Coordinates coordinates = Coordinates(
+        double.parse(widget.beacon.location.lat),
+        double.parse(widget.beacon.location.lon));
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {
       beacon = widget.beacon;
       hikers.add(beacon.leader);
       hikers.addAll(beacon.followers);
       var lat = double.parse(beacon.location.lat);
-      var long = double.parse(beacon.location.lon);
-      route.add(LatLng(lat, long));
+      var lon = double.parse(beacon.location.lon);
+      route.add(LatLng(lat, lon));
+      address = addresses.first.addressLine;
       markers.add(Marker(
         markerId: MarkerId((markers.length + 1).toString()),
         position: route.last,

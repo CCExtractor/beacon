@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
@@ -217,7 +218,7 @@ class DataBaseMutationFunctions {
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
     } else if (result.data != null && result.isConcrete) {
       final Location location = Location.fromJson(
-        result.data['updateLocation'] as Map<String, dynamic>,
+        result.data['updateBeaconLocation']['location'] as Map<String, dynamic>,
       );
       print('location update successful');
       return location;
@@ -238,6 +239,23 @@ class DataBaseMutationFunctions {
       );
       beacon.route.add(beacon.leader.location);
       return beacon;
+    }
+    return null;
+  }
+
+  Future<Landmark> createLandmark(String title, LatLng loc, String id) async {
+    final QueryResult result = await clientAuth.mutate(MutationOptions(
+        document: gql(_beaconQuery.createLandmark(
+            id, loc.latitude.toString(), loc.longitude.toString(), title))));
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+    } else if (result.data != null && result.isConcrete) {
+      final Landmark landmark = Landmark.fromJson(
+        result.data['createLandmark'] as Map<String, dynamic>,
+      );
+      return landmark;
     }
     return null;
   }

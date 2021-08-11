@@ -44,9 +44,11 @@ class BeaconQueries {
   String updateLeaderLoc(String id, String lat, String lon) {
     return '''
         mutation {
-            updateLocation(id: "$id", location: {lat: "$lat", lon:"$lon"}){
-              lat
-              lon
+            updateBeaconLocation(id: "$id", location: {lat: "$lat", lon:"$lon"}){
+              location{
+                lat
+                lon
+              }
             }
         }
     ''';
@@ -181,11 +183,27 @@ class BeaconQueries {
             beaconJoined (id: "$id") {
               _id
               name
-              location{
-                lat
-                lon
-              }
             }
+        }
+    ''';
+  }
+
+  String createLandmark(String id, String lat, String lon, String title) {
+    return '''
+      mutation{
+        createLandmark(
+          landmark:{
+            location:{lat:"$lat", lon:"$lon"}, 
+            title:"$title"
+          }, 
+          beaconID:"$id")
+        {
+          title
+          location{
+            lat
+            lon
+          }
+        }
         }
     ''';
   }
