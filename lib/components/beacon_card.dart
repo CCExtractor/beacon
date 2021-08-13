@@ -59,7 +59,7 @@ class BeaconCustomWidgets {
             SizedBox(height: 4.0),
             (beacon.startsAt != null)
                 ? Text(
-                    'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                    'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
                     style: Style.commonTextStyle)
                 : Container(),
             SizedBox(height: 4.0),

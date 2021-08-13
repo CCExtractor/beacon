@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:beacon/components/create_join_dialog.dart';
+import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -151,6 +153,32 @@ class _HikeScreenState extends State<HikeScreen> {
         markerId: MarkerId((markers.length + 1).toString()),
         position: route.last,
       ));
+      for (var i in beacon.landmarks) {
+        markers.add(Marker(
+          markerId: MarkerId((markers.length + 1).toString()),
+          position: LatLng(
+              double.parse(i.location.lat), double.parse(i.location.lon)),
+          infoWindow: InfoWindow(
+            title: '${i.title}',
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ));
+      }
+    });
+  }
+
+  Future _handleTap(LatLng loc) async {
+    Landmark landmark =
+        await CreateJoinBeaconDialog.addLandmarkDialog(context, loc, beacon.id);
+    setState(() {
+      markers.add(Marker(
+        markerId: MarkerId((markers.length + 1).toString()),
+        position: loc,
+        infoWindow: InfoWindow(
+          title: '${landmark.title}',
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ));
     });
   }
 
@@ -230,7 +258,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                         TextSpan(
                                             text: isBeaconExpired
                                                 ? 'Beacon has been expired\n'
-                                                : 'Beacon expiring at ${beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}\n',
+                                                : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
                                             style: TextStyle(fontSize: 16)),
                                         TextSpan(
                                             text:
@@ -262,10 +290,11 @@ class _HikeScreenState extends State<HikeScreen> {
                               markers: markers.toSet(),
                               polylines: Set<Polyline>.of(polylines.values),
                               initialCameraPosition: CameraPosition(
-                                  target: route.first, zoom: 12.0),
+                                  target: route.first, zoom: 17.0),
                               onMapCreated: (GoogleMapController controller) {
                                 mapController.complete(controller);
                               },
+                              onTap: (loc) => _handleTap(loc),
                             ),
                           ),
                           CustomPaint(

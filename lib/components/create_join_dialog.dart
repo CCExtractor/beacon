@@ -6,6 +6,7 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_duration_picker/flutter_duration_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateJoinBeaconDialog {
   static Future createHikeDialog(BuildContext context, HomeViewModel model) {
@@ -57,7 +58,9 @@ class CreateJoinBeaconDialog {
                                 model.resultingDuration =
                                     await showDurationPicker(
                                   context: context,
-                                  initialTime: model.resultingDuration,
+                                  initialTime: model.resultingDuration != null
+                                      ? model.resultingDuration
+                                      : Duration(minutes: 30),
                                 );
                                 model.durationController.text = model
                                     .resultingDuration
@@ -172,5 +175,60 @@ class CreateJoinBeaconDialog {
                 ),
               ),
             ));
+  }
+
+  static Future addLandmarkDialog(BuildContext context, LatLng loc, String id) {
+    String title;
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: 250,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: TextField(
+                      onChanged: (key) {
+                        title = key;
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Add title for the landmark',
+                        hintStyle: TextStyle(fontSize: 20, color: kBlack),
+                        labelText: 'Title',
+                        labelStyle: TextStyle(fontSize: 14, color: kYellow),
+                      ),
+                    ),
+                  ),
+                  color: kLightBlue,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Flexible(
+                  child: HikeButton(
+                      buttonWidth: 48,
+                      text: 'Create Landmark',
+                      textColor: Colors.white,
+                      buttonColor: kYellow,
+                      onTap: () async {
+                        navigationService.pop();
+                        await databaseFunctions.init();
+                        await databaseFunctions
+                            .createLandmark(title, loc, id)
+                            .then((value) {
+                          return value;
+                        });
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

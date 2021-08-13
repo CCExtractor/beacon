@@ -62,13 +62,13 @@ class HikeScreenViewModel extends BaseModel {
     Fluttertoast.showToast(msg: 'Beacon Expired');
   }
 
-  startCountdown() {
-    Future.delayed(
-        DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-            .difference(DateTime.now()), () {
-      beaconExpired();
-    });
-  }
+  // startCountdown() {
+  //   Future.delayed(
+  //       DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+  //           .difference(DateTime.now()), () {
+  //     beaconExpired();
+  //   });
+  // }
 
   generateUrl(String shortcode) async {
     setState(ViewState.busy);
