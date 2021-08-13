@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/queries/beacon.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -51,19 +53,6 @@ class _HikeScreenState extends State<HikeScreen> {
   ScrollController _scrollController = ScrollController();
   Location loc = new Location();
   PanelController _panelController = PanelController();
-
-  // getAddress() async {
-  //   prevAddress = address;
-  //   Coordinates coordinates = Coordinates(
-  //       double.parse(beacon.location.lat), double.parse(beacon.location.lat));
-  //   var addresses =
-  //       await Geocoder.local.findAddressesFromCoordinates(coordinates);
-
-  //   setState(() {
-  //     print('$address');
-  //     address = addresses.first.addressLine;
-  //   });
-  // }
 
   setPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -150,7 +139,11 @@ class _HikeScreenState extends State<HikeScreen> {
       route.add(LatLng(lat, lon));
       address = addresses.first.addressLine;
       markers.add(Marker(
-        markerId: MarkerId((markers.length + 1).toString()),
+        markerId: MarkerId("0"),
+        position: route.first,
+      ));
+      markers.add(Marker(
+        markerId: MarkerId("1"),
         position: route.last,
       ));
       for (var i in beacon.landmarks) {
@@ -213,6 +206,25 @@ class _HikeScreenState extends State<HikeScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       print(snapshot.data);
+                      if (snapshot.data.data['beaconJoined'] != null) {
+                        User newJoinee =
+                            User.fromJson(snapshot.data.data['beaconJoined']);
+                        setState(() {
+                          hikers.add(newJoinee);
+                        });
+                      } else if (snapshot.data.data['beaconLocation'] != null) {
+                        setState(() {
+                          markers.removeWhere(
+                              (element) => element.markerId == MarkerId("1"));
+                          markers.add(Marker(
+                              markerId: MarkerId("1"),
+                              position: LatLng(
+                                  double.parse(snapshot
+                                      .data.data['beaconLocation']['lat']),
+                                  double.parse(snapshot
+                                      .data.data['beaconLocation']['lon']))));
+                        });
+                      }
                     }
                     return SlidingUpPanel(
                       maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -286,6 +298,11 @@ class _HikeScreenState extends State<HikeScreen> {
                         children: <Widget>[
                           Scaffold(
                             body: GoogleMap(
+                              zoomGesturesEnabled: true,
+                              scrollGesturesEnabled: true,
+                              gestureRecognizers: Set()
+                                ..add(Factory<TapGestureRecognizer>(
+                                    () => TapGestureRecognizer())),
                               mapType: MapType.normal,
                               markers: markers.toSet(),
                               polylines: Set<Polyline>.of(polylines.values),
