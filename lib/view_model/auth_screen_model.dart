@@ -49,7 +49,7 @@ class AuthViewModel extends BaseModel {
           password: signupPasswordController.text);
       if (signUpSuccess) {
         userConfig.currentUser.print();
-        navigationService.pushScreen('/main');
+        navigationService.removeAllAndPush('/main', '/');
       } else {
         navigationService.showSnackBar('SomeThing went wrong');
       }
@@ -66,7 +66,7 @@ class AuthViewModel extends BaseModel {
         await databaseFunctions.signup(name: "Anonymous");
     if (signUpSuccess) {
       userConfig.currentUser.print();
-      navigationService.pushScreen('/main');
+      navigationService.removeAllAndPush('/main', '/');
     } else {
       navigationService.showSnackBar('SomeThing went wrong');
     }

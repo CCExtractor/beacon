@@ -28,6 +28,7 @@ class UserConfig {
         userUpdated = false;
       }
     });
+    print('user updated: $userUpdated');
     return userUpdated;
   }
 

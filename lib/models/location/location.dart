@@ -10,8 +10,8 @@ class Location extends HiveObject {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      lat: json['lat'] as String,
-      lon: json['lon'] as String,
+      lat: json['lat'] != null ? json['lat'] as String : null,
+      lon: json['lon'] != null ? json['lon'] as String : null,
     );
   }
 

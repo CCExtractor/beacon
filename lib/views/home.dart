@@ -87,19 +87,25 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            (userConfig.currentUser.isGuest)
-                                ? Container()
-                                : HikeButton(
-                                    text: 'Create Hike',
-                                    textColor: Colors.white,
-                                    borderColor: Colors.white,
-                                    buttonColor: kYellow,
-                                    buttonWidth: 14,
-                                    onTap: () {
-                                      CreateJoinBeaconDialog.createHikeDialog(
-                                          context, model);
-                                    },
-                                  ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            HikeButton(
+                              text: 'Create Hike',
+                              textColor: Colors.white,
+                              borderColor: Colors.white,
+                              buttonColor: kYellow,
+                              buttonWidth: 14,
+                              onTap: () {
+                                if (userConfig.currentUser.isGuest) {
+                                  navigationService.showSnackBar(
+                                      'You need to login with credentials to start a hike');
+                                } else {
+                                  CreateJoinBeaconDialog.createHikeDialog(
+                                      context, model);
+                                }
+                              },
+                            ),
                             SizedBox(
                               width: 20,
                             ),

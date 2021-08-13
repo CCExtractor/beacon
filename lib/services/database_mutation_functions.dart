@@ -28,8 +28,8 @@ class DataBaseMutationFunctions {
   }
 
   GraphQLError userNotFound = const GraphQLError(message: 'User not found');
-  GraphQLError userNotAuthenticated =
-      const GraphQLError(message: 'User is not authenticated');
+  GraphQLError userNotAuthenticated = const GraphQLError(
+      message: 'Authentication required to perform this action.');
   GraphQLError emailAccountPresent =
       const GraphQLError(message: 'Email address already exists');
   GraphQLError wrongCredentials =
@@ -150,9 +150,8 @@ class DataBaseMutationFunctions {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
+        await userConfig.currentUser.delete();
         navigationService.pushReplacementScreen('/auth');
-        navigationService.showSnackBar(
-            "Something went wrong: ${result.exception.graphqlErrors}");
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(
@@ -167,6 +166,7 @@ class DataBaseMutationFunctions {
   }
 
   Future<List<Beacon>> fetchUserBeacons() async {
+    List<Beacon> beacons = [];
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -174,14 +174,14 @@ class DataBaseMutationFunctions {
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
         print('$exception');
-        return [];
       }
     } else if (result.data != null && result.isConcrete) {
       final User userInfo = User.fromJson(
         result.data['me'] as Map<String, dynamic>,
       );
-      return userInfo.beacon;
+      beacons = userInfo.beacon;
     }
+    return beacons;
   }
 
   Future<Beacon> createBeacon(String title, int expiresAt) async {

@@ -57,7 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_initialUri != null) {
         var shortcode = _initialUri.queryParameters['shortcode'];
         final bool userLoggedIn = await userConfig.userLoggedIn();
-        Future.delayed(const Duration(milliseconds: 750)).then((value) async {
+
+        Future.delayed(const Duration(milliseconds: 1200)).then((value) async {
           if (userLoggedIn) {
             databaseFunctions.init();
             final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
