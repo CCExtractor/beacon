@@ -40,6 +40,12 @@ dev_dependencies:
     sdk: flutter
   hive_generator: ^1.1.0
   build_runner: ^2.0.4
+  flutter_launcher_icons: "^0.9.1"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/icon.jpg"
 
 flutter:
   uses-material-design: true

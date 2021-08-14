@@ -261,6 +261,7 @@ class DataBaseMutationFunctions {
   }
 
   Future<List<Beacon>> fetchNearbyBeacon() async {
+    await databaseFunctions.init();
     List<Beacon> _nearbyBeacons = [];
     LatLng loc;
     try {
@@ -275,6 +276,7 @@ class DataBaseMutationFunctions {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
       if (exception) {
+        print('${result.exception}');
         return null;
       }
     } else if (result.data != null && result.isConcrete) {

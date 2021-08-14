@@ -202,17 +202,19 @@ class _HikeScreenState extends State<HikeScreen> {
             child: ModalProgressHUD(
               inAsyncCall: isGeneratingLink,
               child: StreamBuilder(
-                  stream: _streamFollower,
+                  stream: _mixedStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       print(snapshot.data);
-                      if (snapshot.data.data['beaconJoined'] != null) {
+                      if (snapshot.data.data != null &&
+                          snapshot?.data?.data['beaconJoined'] != null) {
                         User newJoinee =
                             User.fromJson(snapshot.data.data['beaconJoined']);
                         setState(() {
                           hikers.add(newJoinee);
                         });
-                      } else if (snapshot.data.data['beaconLocation'] != null) {
+                      } else if (snapshot.data.data != null &&
+                          snapshot?.data?.data['beaconLocation'] != null) {
                         setState(() {
                           markers.removeWhere(
                               (element) => element.markerId == MarkerId("1"));
@@ -282,7 +284,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                             style: TextStyle(fontSize: 12)),
                                         TextSpan(
                                             text:
-                                                'Share this passkey to add user: ${beacon.shortcode}\n',
+                                                'Share this passkey to add user: ${widget.beacon.shortcode}\n',
                                             style: TextStyle(fontSize: 12)),
                                       ]),
                                 ),
