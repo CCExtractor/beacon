@@ -1,4 +1,5 @@
 import 'package:beacon/locator.dart';
+import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/services/validators.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:beacon/components/hike_button.dart';
@@ -177,7 +178,8 @@ class CreateJoinBeaconDialog {
             ));
   }
 
-  static Future addLandmarkDialog(BuildContext context, LatLng loc, String id) {
+  static Future<Landmark> addLandmarkDialog(
+      BuildContext context, LatLng loc, String id) {
     String title;
     return showDialog(
       context: context,
@@ -189,6 +191,7 @@ class CreateJoinBeaconDialog {
             child: Column(
               children: <Widget>[
                 Container(
+                  height: 100,
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: TextField(
@@ -196,10 +199,12 @@ class CreateJoinBeaconDialog {
                         title = key;
                       },
                       decoration: InputDecoration(
+                        alignLabelWithHint: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: 'Add title for the landmark',
-                        hintStyle: TextStyle(fontSize: 20, color: kBlack),
+                        hintStyle: TextStyle(fontSize: 15, color: kBlack),
                         labelText: 'Title',
-                        labelStyle: TextStyle(fontSize: 14, color: kYellow),
+                        labelStyle: TextStyle(fontSize: 20, color: kYellow),
                       ),
                     ),
                   ),
@@ -210,7 +215,7 @@ class CreateJoinBeaconDialog {
                 ),
                 Flexible(
                   child: HikeButton(
-                      buttonWidth: 48,
+                      buttonWidth: 25,
                       text: 'Create Landmark',
                       textColor: Colors.white,
                       buttonColor: kYellow,
@@ -220,6 +225,7 @@ class CreateJoinBeaconDialog {
                         await databaseFunctions
                             .createLandmark(title, loc, id)
                             .then((value) {
+                          print('${value.title}:: idhar hi null aa raha');
                           return value;
                         });
                       }),

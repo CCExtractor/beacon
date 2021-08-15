@@ -14,7 +14,7 @@ dependencies:
   fluttertoast: ^8.0.3
   connectivity_plus: ^1.0.2
   geolocator: ^7.0.1
-  google_maps_flutter: ^2.0.2
+  google_maps_flutter: ^2.0.6
   intl: ^0.17.0
   date_time_picker: ^2.0.0
   modal_progress_hud: ^0.1.3

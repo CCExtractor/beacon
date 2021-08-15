@@ -84,11 +84,8 @@ class BeaconQueries {
               title
               shortcode
               leader {
+                _id
                 name
-                location {
-                  lat
-                  lon
-                }
               }
               location {
                 lat
@@ -100,14 +97,39 @@ class BeaconQueries {
               }
               startsAt
               expiresAt
-              landmarks {
-                title
-                location {
-                  lat
-                  lon
-                }
+            }
+        }
+    ''';
+  }
+
+  String fetchBeaconDetail(String id) {
+    return '''
+        query{
+          beacon(id:"$id"){
+            _id
+            title
+            leader{
+              name
+            }
+            followers {
+              _id
+              name
+            }
+            landmarks{
+              title
+              location{
+                lat
+                lon
               }
             }
+            location{
+              lat
+              lon
+            }
+            startsAt
+            expiresAt
+            shortcode
+          }
         }
     ''';
   }
@@ -204,7 +226,7 @@ class BeaconQueries {
             lon
           }
         }
-        }
+      }
     ''';
   }
 }

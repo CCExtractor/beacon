@@ -165,6 +165,24 @@ class DataBaseMutationFunctions {
     return false;
   }
 
+  Future<Beacon> fetchBeaconInfo(String id) async {
+    final QueryResult result = await clientAuth
+        .query(QueryOptions(document: gql(_beaconQuery.fetchBeaconDetail(id))));
+    if (result.hasException) {
+      final bool exception =
+          encounteredExceptionOrError(result.exception, showSnackBar: false);
+      if (exception) {
+        print('Exception: ${result.exception}');
+      }
+    } else if (result.data != null && result.isConcrete) {
+      final Beacon beacon = Beacon.fromJson(
+        result.data['beacon'] as Map<String, dynamic>,
+      );
+      return beacon;
+    }
+    return null;
+  }
+
   Future<List<Beacon>> fetchUserBeacons() async {
     List<Beacon> beacons = [];
     final QueryResult result = await clientAuth
@@ -244,19 +262,23 @@ class DataBaseMutationFunctions {
   }
 
   Future<Landmark> createLandmark(String title, LatLng loc, String id) async {
-    final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createLandmark(
-            id, loc.latitude.toString(), loc.longitude.toString(), title))));
-    if (result.hasException) {
-      navigationService.showSnackBar(
-          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
-      print("Something went wrong: ${result.exception}");
-    } else if (result.data != null && result.isConcrete) {
-      final Landmark landmark = Landmark.fromJson(
-        result.data['createLandmark'] as Map<String, dynamic>,
-      );
-      return landmark;
-    }
+    await clientAuth
+        .mutate(MutationOptions(
+            document: gql(_beaconQuery.createLandmark(
+                id, loc.latitude.toString(), loc.longitude.toString(), title))))
+        .then((value) {
+      if (value.hasException) {
+        navigationService.showSnackBar(
+            "Something went wrong: ${value.exception.graphqlErrors.first.message}");
+        print("Something went wrong: ${value.exception}");
+      } else if (value.data != null && value.isConcrete) {
+        final Landmark landmark = Landmark.fromJson(
+          value.data['createLandmark'] as Map<String, dynamic>,
+        );
+        return landmark;
+      }
+      return null;
+    });
     return null;
   }
 

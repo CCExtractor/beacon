@@ -54,29 +54,19 @@ class AuthQueries {
           title
           shortcode
           leader {
+            _id
             name
-            location {
-              lat
-              lon
-            }
+          }
+          followers{
+            _id
+            name
           }
           location {
             lat
             lon
           }
-          followers {
-            _id
-            name
-          }
           startsAt
           expiresAt
-          landmarks {
-            title
-            location {
-              lat
-              lon
-            }
-          }
         }
       }
     }
