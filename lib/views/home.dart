@@ -217,7 +217,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.done) {
-                                              if (snapshot.hasError) {
+                                              if (snapshot == null) {
+                                                return SingleChildScrollView(
+                                                  physics:
+                                                      AlwaysScrollableScrollPhysics(),
+                                                  child: Center(
+                                                      child: Text(
+                                                          'Please allow location access to fetch nearby beacons',
+                                                          style: TextStyle(
+                                                              color: kBlack,
+                                                              fontSize: 18))),
+                                                );
+                                              } else if (snapshot.hasError) {
                                                 return Center(
                                                   child: Text(
                                                     snapshot.error.toString(),
