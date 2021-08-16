@@ -200,7 +200,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                           },
                                                         ));
                                             } else {
-                                              return Center();
+                                              return Center(
+                                                child: BeaconCustomWidgets
+                                                    .getPlaceholder(),
+                                              );
                                             }
                                           },
                                         ),

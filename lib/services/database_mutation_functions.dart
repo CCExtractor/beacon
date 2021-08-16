@@ -207,7 +207,8 @@ class DataBaseMutationFunctions {
     try {
       loc = await AppConstants.getLocation();
     } catch (onErr) {
-      navigationService.showSnackBar("Allow location access to start beacon");
+      navigationService
+          .showSnackBar("$onErr : Allow location access to start beacon");
       return null;
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(

@@ -34,7 +34,8 @@ class HomeViewModel extends BaseModel {
               isLeader: true,
             ));
       } else {
-        navigationService.showSnackBar('SomeThing went wrong');
+        // navigationService.showSnackBar('Something went wrong');
+        setState(ViewState.idle);
       }
     }
   }
