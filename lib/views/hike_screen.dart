@@ -50,7 +50,7 @@ class _HikeScreenState extends State<HikeScreen> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
-
+  final GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
   ScrollController _scrollController = ScrollController();
   Location loc = new Location();
   PanelController _panelController = PanelController();
@@ -310,74 +310,91 @@ class _HikeScreenState extends State<HikeScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 32, vertical: 16),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 100,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: TextField(
-                                                  onChanged: (key) {
-                                                    title = key;
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    alignLabelWithHint: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .always,
-                                                    hintText:
-                                                        'Add title for the landmark',
-                                                    hintStyle: TextStyle(
-                                                        fontSize: 15,
-                                                        color: kBlack),
-                                                    labelText: 'Title',
-                                                    labelStyle: TextStyle(
-                                                        fontSize: 20,
-                                                        color: kYellow),
+                                        child: Form(
+                                          key: _landmarkFormKey,
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 100,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: TextFormField(
+                                                    onChanged: (key) {
+                                                      title = key;
+                                                    },
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Please enter title for landmark";
+                                                      } else {
+                                                        return null;
+                                                      }
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      alignLabelWithHint: true,
+                                                      floatingLabelBehavior:
+                                                          FloatingLabelBehavior
+                                                              .always,
+                                                      hintText:
+                                                          'Add title for the landmark',
+                                                      hintStyle: TextStyle(
+                                                          fontSize: 15,
+                                                          color: kBlack),
+                                                      labelText: 'Title',
+                                                      labelStyle: TextStyle(
+                                                          fontSize: 20,
+                                                          color: kYellow),
+                                                    ),
                                                   ),
                                                 ),
+                                                color: kLightBlue,
                                               ),
-                                              color: kLightBlue,
-                                            ),
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            Flexible(
-                                              child: HikeButton(
-                                                  buttonWidth: 25,
-                                                  text: 'Create Landmark',
-                                                  textColor: Colors.white,
-                                                  buttonColor: kYellow,
-                                                  onTap: () async {
-                                                    navigationService.pop();
-                                                    await databaseFunctions
-                                                        .init();
-                                                    await databaseFunctions
-                                                        .createLandmark(title,
-                                                            loc, beacon.id)
-                                                        .then((value) {
-                                                      setState(() {
-                                                        markers.add(Marker(
-                                                          markerId: MarkerId(
-                                                              (markers.length +
-                                                                      1)
-                                                                  .toString()),
-                                                          position: loc,
-                                                          infoWindow:
-                                                              InfoWindow(
-                                                            title: '$title',
-                                                          ),
-                                                          icon: BitmapDescriptor
-                                                              .defaultMarkerWithHue(
-                                                                  BitmapDescriptor
-                                                                      .hueBlue),
-                                                        ));
-                                                      });
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              Flexible(
+                                                child: HikeButton(
+                                                    buttonWidth: 25,
+                                                    text: 'Create Landmark',
+                                                    textColor: Colors.white,
+                                                    buttonColor: kYellow,
+                                                    onTap: () async {
+                                                      if (_landmarkFormKey
+                                                          .currentState
+                                                          .validate()) {
+                                                        navigationService.pop();
+                                                        await databaseFunctions
+                                                            .init();
+                                                        await databaseFunctions
+                                                            .createLandmark(
+                                                                title,
+                                                                loc,
+                                                                beacon.id)
+                                                            .then((value) {
+                                                          setState(() {
+                                                            markers.add(Marker(
+                                                              markerId: MarkerId(
+                                                                  (markers.length +
+                                                                          1)
+                                                                      .toString()),
+                                                              position: loc,
+                                                              infoWindow:
+                                                                  InfoWindow(
+                                                                title: '$title',
+                                                              ),
+                                                              icon: BitmapDescriptor
+                                                                  .defaultMarkerWithHue(
+                                                                      BitmapDescriptor
+                                                                          .hueBlue),
+                                                            ));
+                                                          });
+                                                        });
+                                                      }
+                                                    }),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
