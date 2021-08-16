@@ -85,17 +85,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       Padding(
                         padding: EdgeInsets.fromLTRB(8, 185, 8, 5),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            SizedBox(
-                              width: 5,
-                            ),
                             HikeButton(
                               text: 'Create Hike',
                               textColor: Colors.white,
                               borderColor: Colors.white,
                               buttonColor: kYellow,
-                              buttonWidth: 14,
+                              buttonWidth: 12,
                               onTap: () {
                                 if (userConfig.currentUser.isGuest) {
                                   navigationService.showSnackBar(
@@ -106,15 +105,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 }
                               },
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
                             HikeButton(
                               text: 'Join a Hike',
                               textColor: kYellow,
                               borderColor: kYellow,
                               buttonColor: Colors.white,
-                              buttonWidth: 14,
+                              buttonWidth: 12,
                               onTap: () async {
                                 CreateJoinBeaconDialog.joinBeaconDialog(
                                     context, model);
@@ -217,18 +213,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.done) {
-                                              if (snapshot == null) {
-                                                return SingleChildScrollView(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  child: Center(
-                                                      child: Text(
-                                                          'Please allow location access to fetch nearby beacons',
-                                                          style: TextStyle(
-                                                              color: kBlack,
-                                                              fontSize: 18))),
-                                                );
-                                              } else if (snapshot.hasError) {
+                                              if (snapshot.hasError) {
                                                 return Center(
                                                   child: Text(
                                                     snapshot.error.toString(),
@@ -239,7 +224,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                               }
 
                                               final posts = snapshot.data;
-                                              if (posts.length == 0) {
+                                              if (posts == null ||
+                                                  posts.length == 0) {
                                                 return SingleChildScrollView(
                                                   physics:
                                                       AlwaysScrollableScrollPhysics(),

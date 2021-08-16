@@ -225,7 +225,6 @@ class CreateJoinBeaconDialog {
                         await databaseFunctions
                             .createLandmark(title, loc, id)
                             .then((value) {
-                          print('${value.title}:: idhar hi null aa raha');
                           return value;
                         });
                       }),
