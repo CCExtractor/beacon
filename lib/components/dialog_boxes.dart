@@ -1,17 +1,20 @@
 import 'package:beacon/components/hike_button.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class DialogBoxes {
-  static AlertDialog showExitDialog(BuildContext context) {
+  static AlertDialog showExitDialog(
+      BuildContext context, bool isLeader, int X) {
     return AlertDialog(
       title: Text(
-        'Exit App',
+        'This will terminate the hike, Confirm?',
         style: TextStyle(fontSize: 25, color: kYellow),
       ),
       content: Text(
-        'Are you sure you wanna stop sending and receiving location?',
+        isLeader && (X - 1 > 0)
+            ? 'There are ${X - 1} followers and you are carrying the beacon. Do you want to terminate the hike?'
+            : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
       actions: <Widget>[
@@ -24,11 +27,59 @@ class DialogBoxes {
         HikeButton(
           buttonHeight: 20,
           buttonWidth: 40,
-          onTap: () =>
-              SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+          onTap: () {
+            navigationService.removeAllAndPush('/main', '/');
+          },
           text: 'Yes',
         ),
       ],
     );
+  }
+
+  static Future changeDurationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              child: Container(
+                height: 500,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: Container(
+                          color: kLightBlue,
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'Change Beacon Duration',
+                                style: TextStyle(color: kYellow, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Flexible(
+                        child: HikeButton(
+                            buttonWidth: 48,
+                            text: 'Done',
+                            textColor: Colors.white,
+                            buttonColor: kYellow,
+                            onTap: () {
+                              // DateTime newTime =
+                              // DateTime.now().add(newDuration);
+                              // update time
+                              Navigator.pop(context);
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
   }
 }

@@ -11,28 +11,41 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  url_launcher: ^6.0.3
   fluttertoast: ^8.0.3
   connectivity_plus: ^1.0.2
   geolocator: ^7.0.1
-  google_maps_flutter: ^2.0.2
+  google_maps_flutter: ^2.0.6
   intl: ^0.17.0
-  flutter_picker: ^2.0.1
-  sliding_up_panel: ^2.0.0+1
+  date_time_picker: ^2.0.0
   modal_progress_hud: ^0.1.3
-  duration_picker: ^1.0.1
   hive: ^2.0.4
   path_provider: ^2.0.2
   shared_preferences: ^2.0.6
   graphql_flutter: ^5.0.0
   get_it: ^7.1.3
   provider: ^5.0.0
+  uni_links: ^0.5.1
+  geocoder: ^0.2.1
+  share: ^2.0.4 
+  location: ^4.3.0
+  rxdart: ^0.26.0
+  flutter_polyline_points: ^1.0.0
+  sliding_up_panel: ^2.0.0+1
+  skeleton_text: ^1.0.0
+  flutter_duration_picker:
+    git: https://github.com/bartektartanus/flutter_duration_picker
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^1.1.0
   build_runner: ^2.0.4
+  flutter_launcher_icons: "^0.9.1"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/icon.jpg"
 
 flutter:
   uses-material-design: true

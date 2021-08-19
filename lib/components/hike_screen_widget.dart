@@ -1,14 +1,21 @@
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/utilities/handle_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
 
 class HikeScreenWidget {
   static copyPasskey(String passkey) {
     Clipboard.setData(ClipboardData(text: passkey));
     Fluttertoast.showToast(msg: 'PASSKEY: $passkey  COPIED');
+  }
+
+  static generateUrl(String shortcode) async {
+    Uri url = Uri.parse('https://beacon.aadibajpai.com/?shortcode=$shortcode');
+    Share.share('To join beacon follow this link: $url');
   }
 
   static Widget shareButton(BuildContext context, String passkey) {
@@ -43,8 +50,8 @@ class HikeScreenWidget {
                                 textColor: Colors.white,
                                 buttonColor: kYellow,
                                 onTap: () async {
-                                  DynamicLinks.generateUrl();
-                                  Navigator.pop(context);
+                                  generateUrl(passkey);
+                                  navigationService.pop();
                                 }),
                           ),
                           SizedBox(
@@ -56,7 +63,10 @@ class HikeScreenWidget {
                               text: 'Copy Passkey',
                               textColor: Colors.white,
                               buttonColor: kYellow,
-                              onTap: copyPasskey(passkey),
+                              onTap: () {
+                                copyPasskey(passkey);
+                                navigationService.pop();
+                              },
                             ),
                           )
                         ],

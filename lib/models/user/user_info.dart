@@ -1,3 +1,7 @@
+import 'dart:ffi';
+
+import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 part 'user_info.g.dart';
@@ -10,17 +14,23 @@ class User extends HiveObject {
       this.name,
       this.location,
       this.beacon,
-      @required this.id});
+      this.id,
+      this.isGuest});
 
-  factory User.fromJson(Map<String, dynamic> json1) {
-    Map<String, dynamic> json = json1['user'] as Map<String, dynamic>;
+  factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] as String,
-      authToken: json['authToken'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      location: json['location'] as String,
-      beacon: (json['beacon'] as List<dynamic>).toList(),
+      name: json['name'] != null ? json['name'] as String : 'Anonymous',
+      email: json['email'] != null ? json['email'] as String : '',
+      location: json['location'] != null
+          ? Location.fromJson(json['location'] as Map<String, dynamic>)
+          : null,
+      beacon: json['beacons'] != null
+          ? (json['beacons'] as List<dynamic>)
+              .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
+      isGuest: json['isGuest'] != null ? json['isGuest'] as bool : false,
     );
   }
 
@@ -33,22 +43,24 @@ class User extends HiveObject {
   @HiveField(3)
   String email;
   @HiveField(4)
-  String location;
+  List<Beacon> beacon = [];
   @HiveField(5)
-  List<String> beacon = [];
+  Location location;
+  @HiveField(6)
+  bool isGuest = false;
 
   print() {
     debugPrint('authToken: ${this.authToken}');
     debugPrint('_id: ${this.id}');
     debugPrint('firstName: ${this.name}');
     debugPrint('email: ${this.email}');
-    debugPrint('joinedOrganizations: ${this.location}');
-    debugPrint('adminFor: ${this.beacon}');
+    debugPrint('location: ${this.location}');
+    debugPrint('beacons: ${this.beacon}');
   }
 
-  updateBeacon(List<String> beaconList) {
-    this.beacon = beaconList;
-  }
+  // updateBeacon(List<String> beaconList) {
+  //   this.beacon = beaconList;
+  // }
 
   update(User details) {
     this.authToken = details.authToken;
@@ -56,5 +68,6 @@ class User extends HiveObject {
     this.email = details.email;
     this.location = details.location;
     this.beacon = details.beacon;
+    this.isGuest = details.isGuest;
   }
 }

@@ -1,24 +1,22 @@
 import 'package:beacon/locator.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/io.dart';
 
 class GraphQLConfig {
   static String token;
   static final HttpLink httpLink = HttpLink(
-    "http://127.0.0.1:4000/graphql",
+    "https://beacon.aadibajpai.com/graphql",
   );
 
-  static final AuthLink authLink = AuthLink(getToken: () => token);
+  static final AuthLink authLink = AuthLink(getToken: () async => token);
 
-  static final WebSocketLink websocketLink = WebSocketLink(
-    'http://127.0.0.1:4000/graphql',
-    config: SocketClientConfig(
-      autoReconnect: true,
-      inactivityTimeout: Duration(seconds: 30),
-      initialPayload: {
-        'headers': {'Authorization': token},
-      },
-    ),
-  );
+  static final WebSocketLink websocketLink =
+      WebSocketLink('ws://beacon.aadibajpai.com/subscriptions/',
+          config: SocketClientConfig(
+            autoReconnect: true,
+          ));
 
   Future getToken() async {
     final _token = userConfig.currentUser.authToken;
@@ -35,11 +33,25 @@ class GraphQLConfig {
   }
 
   GraphQLClient authClient() {
-    final AuthLink authLink = AuthLink(getToken: () async => 'Bearer $token');
+    final AuthLink authLink =
+        AuthLink(getToken: () async => userConfig.currentUser.authToken);
     final Link finalAuthLink = authLink.concat(httpLink);
     return GraphQLClient(
       cache: GraphQLCache(),
       link: finalAuthLink,
     );
   }
+
+  GraphQLClient webSocketClient() {
+    return GraphQLClient(
+      cache: GraphQLCache(),
+      link:
+          Link.split((request) => request.isSubscription, websocketLink, link),
+    );
+  }
+
+  ValueNotifier<GraphQLClient> client = ValueNotifier(GraphQLClient(
+    link: link,
+    cache: GraphQLCache(),
+  ));
 }

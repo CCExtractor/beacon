@@ -38,43 +38,60 @@ class AuthViewModel extends BaseModel {
 
   next_signup() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    setState(ViewState.busy);
     validate = AutovalidateMode.always;
-    setState(ViewState.idle);
     if (formKeySignup.currentState.validate()) {
+      setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final bool signUpSuccess = await databaseFunctions.signup(
-          signupNameController.text,
-          signupEmailController.text,
-          signupPasswordController.text);
+          name: signupNameController.text ?? "Anonymous",
+          email: signupEmailController.text,
+          password: signupPasswordController.text);
       if (signUpSuccess) {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
       } else {
         navigationService.showSnackBar('SomeThing went wrong');
       }
+      setState(ViewState.idle);
+    } else {
+      navigationService.showSnackBar('Enter valid entries');
     }
+  }
+
+  loginAsGuest() async {
+    setState(ViewState.busy);
+    databaseFunctions.init();
+    final bool signUpSuccess =
+        await databaseFunctions.signup(name: "Anonymous");
+    if (signUpSuccess) {
+      userConfig.currentUser.print();
+      navigationService.removeAllAndPush('/main', '/');
+    } else {
+      navigationService.showSnackBar('SomeThing went wrong');
+    }
+    setState(ViewState.idle);
   }
 
   next_login() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    setState(ViewState.busy);
     validate = AutovalidateMode.always;
-    setState(ViewState.idle);
     if (formKeyLogin.currentState.validate()) {
+      setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final bool loginSuccess = await databaseFunctions.login(
-          userConfig.currentUser.id,
-          loginEmailController.text,
-          loginPasswordController.text);
+          email: loginEmailController.text,
+          password: loginPasswordController.text);
       if (loginSuccess) {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
       } else {
         navigationService.showSnackBar('SomeThing went wrong');
       }
+      setState(ViewState.idle);
+    } else {
+      navigationService.showSnackBar('Enter valid entries');
     }
   }
 
@@ -86,5 +103,17 @@ class AuthViewModel extends BaseModel {
   void onSignUpButtonPress() {
     pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+  }
+
+  displayPasswordLogin() {
+    setState(ViewState.busy);
+    obscureTextLogin = !obscureTextLogin;
+    setState(ViewState.idle);
+  }
+
+  displayPasswordSignup() {
+    setState(ViewState.busy);
+    obscureTextSignup = !obscureTextSignup;
+    setState(ViewState.idle);
   }
 }
