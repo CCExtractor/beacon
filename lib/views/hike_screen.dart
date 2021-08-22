@@ -46,14 +46,137 @@ class _HikeScreenState extends State<HikeScreen> {
   bool isBusy = false;
   Set<Marker> markers = {};
   StreamSubscription _leaderLocation;
-  Stream _streamLocation, _streamFollower, _mixedStream;
+  Stream beaconLocationStream, beaconJoinedStream, mergedStream;
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
   final GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
   ScrollController _scrollController = ScrollController();
   Location loc = new Location();
+  GraphQLConfig graphQLConfig;
+  GraphQLClient graphQlClient;
   PanelController _panelController = PanelController();
+  final List<StreamSubscription> mergedStreamSubscriptions = [];
+
+  final beaconLocationSubGql = gql(r'''
+    subscription StreamBeaconLocation($id: ID!){
+      beaconLocation(id: $id){
+        lat
+        lon
+      }
+    }
+  ''');
+
+  // Gql for oreder updated subscription.
+  final beaconJoinedSubGql = gql(r'''
+    subscription StreamNewlyJoinedBeacons($id: ID!){
+      beaconJoined(id: $id){
+        name
+        location{
+          lat
+          lon
+        }
+      }
+    }
+  ''');
+
+  void setupSubscriptions() {
+    if (widget.isLeader) {
+      _leaderLocation =
+          loc.onLocationChanged.listen((LocationData currentLocation) async {
+        Coordinates coordinates =
+            Coordinates(currentLocation.latitude, currentLocation.longitude);
+        var addresses =
+            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+        String _address = addresses.first.addressLine;
+        if (address != _address) {
+          databaseFunctions.init();
+          await databaseFunctions.updateLeaderLoc(widget.beacon.id,
+              LatLng(currentLocation.latitude, currentLocation.longitude));
+          setState(() {
+            address = _address;
+            _addMarker();
+            setPolyline();
+          });
+        }
+      });
+    } else {
+      beaconLocationStream = graphQlClient.subscribe(
+        SubscriptionOptions(
+          document: beaconLocationSubGql,
+          variables: <String, dynamic>{
+            'id': widget.beacon.id,
+          },
+        ),
+      );
+    }
+
+    beaconJoinedStream = graphQlClient.subscribe(
+      SubscriptionOptions(
+        document: beaconJoinedSubGql,
+        variables: <String, dynamic>{
+          'id': widget.beacon.id,
+        },
+      ),
+    );
+    if (!widget.isLeader) {
+      mergedStream = MergeStream([beaconLocationStream, beaconJoinedStream]);
+    } else {
+      mergedStream = beaconJoinedStream;
+    }
+    final mergeStreamSubscription = mergedStream.listen((event) async {
+      if (event.data != null) {
+        print('${event.data}');
+        if (event.data.containsKey('beaconJoined')) {
+          User newJoinee = User.fromJson(event.data['beaconJoined']);
+          setState(() {
+            hikers.add(newJoinee);
+            // markers.add(Marker(
+            //   markerId: MarkerId((markers.length + 1).toString()),
+            //   position: LatLng(double.parse(newJoinee.location.lat),
+            //       double.parse(newJoinee.location.lon)),
+            //   infoWindow: InfoWindow(
+            //     title: '${newJoinee.name}',
+            //   ),
+            //   icon: BitmapDescriptor.defaultMarkerWithHue(
+            //       BitmapDescriptor.hueYellow),
+            // ));
+          });
+        }
+        if (event.data.containsKey('beaconLocation')) {
+          print('......');
+          LatLng coord = LatLng(
+              double.parse(event.data['beaconLocation']['lat']),
+              double.parse(event.data['beaconLocation']['lon']));
+          var addresses = await Geocoder.local.findAddressesFromCoordinates(
+              Coordinates(coord.latitude, coord.longitude));
+
+          String _address = addresses.first.addressLine;
+          route.add(coord);
+          setState(() {
+            markers.removeWhere((element) => element.markerId == MarkerId("1"));
+            markers.add(Marker(markerId: MarkerId("1"), position: coord));
+            address = _address;
+            setPolyline();
+          });
+        }
+      }
+    });
+
+    mergedStreamSubscriptions.add(mergeStreamSubscription);
+  }
+
+  @override
+  void dispose() {
+    if (widget.isLeader) {
+      _leaderLocation.cancel();
+    }
+    for (var streamSub in mergedStreamSubscriptions) {
+      streamSub.cancel();
+    }
+    super.dispose();
+  }
 
   setPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -81,48 +204,6 @@ class _HikeScreenState extends State<HikeScreen> {
       markerId: MarkerId((markers.length + 1).toString()),
       position: route.last,
     ));
-  }
-
-  initSubscriptions() {
-    if (widget.isLeader) {
-      _leaderLocation =
-          loc.onLocationChanged.listen((LocationData currentLocation) async {
-        Coordinates coordinates =
-            Coordinates(currentLocation.latitude, currentLocation.longitude);
-        var addresses =
-            await Geocoder.local.findAddressesFromCoordinates(coordinates);
-
-        String _address = addresses.first.addressLine;
-        if (address != _address) {
-          databaseFunctions.init();
-          await databaseFunctions.updateLeaderLoc(widget.beacon.id,
-              LatLng(currentLocation.latitude, currentLocation.longitude));
-          setState(() {
-            address = _address;
-            _addMarker();
-            setPolyline();
-          });
-        }
-      });
-    } else {
-      _streamLocation = GraphQLConfig().client.value.subscribe(
-          SubscriptionOptions(
-              document:
-                  gql(BeaconQueries().fetchLocationUpdates(widget.beacon.id))));
-    }
-
-    _streamFollower = GraphQLConfig().client.value.subscribe(
-        SubscriptionOptions(
-            document:
-                gql(BeaconQueries().fetchFollowerUpdates(widget.beacon.id))));
-    if (!widget.isLeader) {
-      _mixedStream = MergeStream([_streamFollower, _streamLocation]);
-    } else {
-      _mixedStream = _streamFollower;
-    }
-    setState(() {
-      isBusy = false;
-    });
   }
 
   fetchData() async {
@@ -160,6 +241,18 @@ class _HikeScreenState extends State<HikeScreen> {
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           ));
         }
+        // for (var i in value.followers) {
+        //   markers.add(Marker(
+        //     markerId: MarkerId((markers.length + 1).toString()),
+        //     position: LatLng(
+        //         double.parse(i.location.lat), double.parse(i.location.lon)),
+        //     infoWindow: InfoWindow(
+        //       title: '${i.name}',
+        //     ),
+        //     icon: BitmapDescriptor.defaultMarkerWithHue(
+        //         BitmapDescriptor.hueYellow),
+        //   ));
+        // }
       });
     });
   }
@@ -169,15 +262,9 @@ class _HikeScreenState extends State<HikeScreen> {
     super.initState();
     isBusy = true;
     fetchData();
-    initSubscriptions();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (widget.isLeader) {
-      _leaderLocation.cancel();
-    }
+    graphQlClient = GraphQLConfig().graphQlClient();
+    setupSubscriptions();
+    isBusy = false;
   }
 
   @override
@@ -190,244 +277,254 @@ class _HikeScreenState extends State<HikeScreen> {
             onWillPop: () => onWillPop(context),
             child: Scaffold(
               body: ModalProgressHUD(
-                inAsyncCall: isGeneratingLink || isBusy,
-                child: StreamBuilder(
-                    stream: _mixedStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print(snapshot.data);
-                        if (snapshot.data.data != null &&
-                            snapshot?.data?.data['beaconJoined'] != null) {
-                          User newJoinee =
-                              User.fromJson(snapshot.data.data['beaconJoined']);
-                          setState(() {
-                            hikers.add(newJoinee);
-                          });
-                        } else if (snapshot.data.data != null &&
-                            snapshot?.data?.data['beaconLocation'] != null) {
-                          setState(() {
-                            markers.removeWhere(
-                                (element) => element.markerId == MarkerId("1"));
-                            markers.add(Marker(
-                                markerId: MarkerId("1"),
-                                position: LatLng(
-                                    double.parse(snapshot
-                                        .data.data['beaconLocation']['lat']),
-                                    double.parse(snapshot
-                                        .data.data['beaconLocation']['lon']))));
-                          });
-                        }
-                      }
-                      return SlidingUpPanel(
-                        maxHeight: MediaQuery.of(context).size.height * 0.6,
-                        minHeight: 154,
-                        controller: _panelController,
-                        collapsed: Container(
-                          decoration: BoxDecoration(
-                              color: kBlue,
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  topLeft: Radius.circular(10))),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 12.0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: 60,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.0))),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                  inAsyncCall: isGeneratingLink || isBusy,
+                  child:
+                      // StreamBuilder(
+                      //     stream: graphQlClient.subscribe(SubscriptionOptions(
+                      //         document: gql(r'''
+                      //           subscription BeaconJoined($id: ID!){
+                      //                   beaconJoined (id: $id) {
+                      //                     _id
+                      //                     name
+                      //                   }
+                      //               }
+                      //         '''),
+                      //         operationName: "BeaconJoined",
+                      //         variables: <String, dynamic>{'id': widget.beacon.id})),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.hasData) {
+                      //         print(snapshot.data);
+                      //         if (snapshot.data.data != null &&
+                      //             snapshot?.data?.data['beaconJoined'] != null) {
+                      //           print('${snapshot.data}');
+                      //           User newJoinee =
+                      //               User.fromJson(snapshot.data.data['beaconJoined']);
+                      //           setState(() {
+                      //             hikers.add(newJoinee);
+                      //           });
+                      //         } else if (snapshot.data.data != null &&
+                      //             snapshot?.data?.data['beaconLocation'] != null) {
+                      //           setState(() {
+                      //             markers.removeWhere(
+                      //                 (element) => element.markerId == MarkerId("1"));
+                      //             markers.add(Marker(
+                      //                 markerId: MarkerId("1"),
+                      //                 position: LatLng(
+                      //                     double.parse(snapshot
+                      //                         .data.data['beaconLocation']['lat']),
+                      //                     double.parse(snapshot
+                      //                         .data.data['beaconLocation']['lon']))));
+                      //           });
+                      //         }
+                      //       }
+                      //       return
+                      SlidingUpPanel(
+                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                    minHeight: 154,
+                    controller: _panelController,
+                    collapsed: Container(
+                      decoration: BoxDecoration(
+                          color: kBlue,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              topLeft: Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 12.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
                               Container(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: RichText(
-                                    text: TextSpan(
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                        children: [
-                                          TextSpan(
-                                              text: isBeaconExpired
-                                                  ? 'Beacon has been expired\n'
-                                                  : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                              style: TextStyle(fontSize: 16)),
-                                          TextSpan(
-                                              text:
-                                                  'Beacon holder at: $address\n',
-                                              style: TextStyle(fontSize: 14)),
-                                          TextSpan(
-                                              text:
-                                                  'Total Followers: ${hikers.length - 1} (Swipe to view the list of followers)\n',
-                                              style: TextStyle(fontSize: 12)),
-                                          TextSpan(
-                                              text:
-                                                  'Share this passkey to add user: ${widget.beacon.shortcode}\n',
-                                              style: TextStyle(fontSize: 12)),
-                                        ]),
-                                  ),
-                                ),
-                                height: 120,
+                                width: 60,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(12.0))),
                               ),
                             ],
                           ),
-                        ),
-                        panel: _panel(_scrollController),
-                        body: Stack(
-                          alignment: Alignment.topCenter,
-                          children: <Widget>[
-                            GoogleMap(
-                              mapType: MapType.terrain,
-                              markers: markers.toSet(),
-                              polylines: Set<Polyline>.of(polylines.values),
-                              initialCameraPosition: CameraPosition(
-                                  target: LatLng(
-                                      double.parse(widget.beacon.location.lat),
-                                      double.parse(widget.beacon.location.lon)),
-                                  zoom: 17.0),
-                              onMapCreated: (GoogleMapController controller) {
-                                mapController.complete(controller);
-                              },
-                              onTap: (loc) async {
-                                String title;
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => Dialog(
-                                    child: Container(
-                                      height: 250,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 32, vertical: 16),
-                                        child: Form(
-                                          key: _landmarkFormKey,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 100,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: TextFormField(
-                                                    onChanged: (key) {
-                                                      title = key;
-                                                    },
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Please enter title for landmark";
-                                                      } else {
-                                                        return null;
-                                                      }
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      alignLabelWithHint: true,
-                                                      floatingLabelBehavior:
-                                                          FloatingLabelBehavior
-                                                              .always,
-                                                      hintText:
-                                                          'Add title for the landmark',
-                                                      hintStyle: TextStyle(
-                                                          fontSize: 15,
-                                                          color: kBlack),
-                                                      labelText: 'Title',
-                                                      labelStyle: TextStyle(
-                                                          fontSize: 20,
-                                                          color: kYellow),
-                                                    ),
-                                                  ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: RichText(
+                                text: TextSpan(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    children: [
+                                      TextSpan(
+                                          text: isBeaconExpired
+                                              ? 'Beacon has been expired\n'
+                                              : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
+                                          style: TextStyle(fontSize: 16)),
+                                      TextSpan(
+                                          text: 'Beacon holder at: $address\n',
+                                          style: TextStyle(fontSize: 14)),
+                                      TextSpan(
+                                          text:
+                                              'Total Followers: ${hikers.length - 1} (Swipe to view the list of followers)\n',
+                                          style: TextStyle(fontSize: 12)),
+                                      TextSpan(
+                                          text:
+                                              'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                          style: TextStyle(fontSize: 12)),
+                                    ]),
+                              ),
+                            ),
+                            height: 120,
+                          ),
+                        ],
+                      ),
+                    ),
+                    panel: _panel(_scrollController),
+                    body: Stack(
+                      alignment: Alignment.topCenter,
+                      children: <Widget>[
+                        GoogleMap(
+                          mapType: MapType.terrain,
+                          markers: markers.toSet(),
+                          polylines: Set<Polyline>.of(polylines.values),
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                  double.parse(widget.beacon.location.lat),
+                                  double.parse(widget.beacon.location.lon)),
+                              zoom: 17.0),
+                          onMapCreated: (GoogleMapController controller) {
+                            mapController.complete(controller);
+                          },
+                          onTap: (loc) async {
+                            String title;
+                            showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                child: Container(
+                                  height: 250,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32, vertical: 16),
+                                    child: Form(
+                                      key: _landmarkFormKey,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 100,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: TextFormField(
+                                                onChanged: (key) {
+                                                  title = key;
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Please enter title for landmark";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
+                                                decoration: InputDecoration(
+                                                  alignLabelWithHint: true,
+                                                  floatingLabelBehavior:
+                                                      FloatingLabelBehavior
+                                                          .always,
+                                                  hintText:
+                                                      'Add title for the landmark',
+                                                  hintStyle: TextStyle(
+                                                      fontSize: 15,
+                                                      color: kBlack),
+                                                  labelText: 'Title',
+                                                  labelStyle: TextStyle(
+                                                      fontSize: 20,
+                                                      color: kYellow),
                                                 ),
-                                                color: kLightBlue,
                                               ),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                              Flexible(
-                                                child: HikeButton(
-                                                    buttonWidth: 25,
-                                                    text: 'Create Landmark',
-                                                    textColor: Colors.white,
-                                                    buttonColor: kYellow,
-                                                    onTap: () async {
-                                                      if (_landmarkFormKey
-                                                          .currentState
-                                                          .validate()) {
-                                                        navigationService.pop();
-                                                        await databaseFunctions
-                                                            .init();
-                                                        await databaseFunctions
-                                                            .createLandmark(
-                                                                title,
-                                                                loc,
-                                                                beacon.id)
-                                                            .then((value) {
-                                                          setState(() {
-                                                            markers.add(Marker(
-                                                              markerId: MarkerId(
-                                                                  (markers.length +
-                                                                          1)
-                                                                      .toString()),
-                                                              position: loc,
-                                                              infoWindow:
-                                                                  InfoWindow(
-                                                                title: '$title',
-                                                              ),
-                                                              icon: BitmapDescriptor
-                                                                  .defaultMarkerWithHue(
-                                                                      BitmapDescriptor
-                                                                          .hueBlue),
-                                                            ));
-                                                          });
-                                                        });
-                                                      }
-                                                    }),
-                                              ),
-                                            ],
+                                            ),
+                                            color: kLightBlue,
                                           ),
-                                        ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          Flexible(
+                                            child: HikeButton(
+                                                buttonWidth: 25,
+                                                text: 'Create Landmark',
+                                                textColor: Colors.white,
+                                                buttonColor: kYellow,
+                                                onTap: () async {
+                                                  if (_landmarkFormKey
+                                                      .currentState
+                                                      .validate()) {
+                                                    navigationService.pop();
+                                                    await databaseFunctions
+                                                        .init();
+                                                    await databaseFunctions
+                                                        .createLandmark(title,
+                                                            loc, beacon.id)
+                                                        .then((value) {
+                                                      setState(() {
+                                                        markers.add(Marker(
+                                                          markerId: MarkerId(
+                                                              (markers.length +
+                                                                      1)
+                                                                  .toString()),
+                                                          position: loc,
+                                                          infoWindow:
+                                                              InfoWindow(
+                                                            title: '$title',
+                                                          ),
+                                                          icon: BitmapDescriptor
+                                                              .defaultMarkerWithHue(
+                                                                  BitmapDescriptor
+                                                                      .hueBlue),
+                                                        ));
+                                                      });
+                                                    });
+                                                  }
+                                                }),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                            CustomPaint(
-                              size: Size(screenWidth, screenHeight),
-                              foregroundPainter: ShapePainter(),
-                            ),
-                            Align(
-                                alignment: Alignment(0.9, -0.8),
-                                child: HikeScreenWidget.shareButton(
-                                    context, widget.beacon.shortcode)),
-                            Align(
-                              alignment: Alignment(-0.8, -0.8),
-                              child: GestureDetector(
-                                onTap: () {
-                                  onWillPop(context);
-                                },
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  size: 30,
-                                  color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      );
-                    }),
-              ),
+                        CustomPaint(
+                          size: Size(screenWidth, screenHeight),
+                          foregroundPainter: ShapePainter(),
+                        ),
+                        Align(
+                            alignment: Alignment(0.9, -0.8),
+                            child: HikeScreenWidget.shareButton(
+                                context, widget.beacon.shortcode)),
+                        Align(
+                          alignment: Alignment(-0.8, -0.8),
+                          child: GestureDetector(
+                            onTap: () {
+                              onWillPop(context);
+                            },
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  // }),
+                  ),
             ),
           );
   }

@@ -16,13 +16,11 @@ import '../locator.dart';
 class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
-  GraphQLClient webSocketClient;
   AuthQueries _authQuery;
   BeaconQueries _beaconQuery;
   init() {
     clientNonAuth = graphqlConfig.clientToQuery();
-    clientAuth = graphqlConfig.authClient();
-    webSocketClient = graphqlConfig.webSocketClient();
+    clientAuth = graphqlConfig.graphQlClient();
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
   }

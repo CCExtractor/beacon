@@ -114,6 +114,10 @@ class BeaconQueries {
             followers {
               _id
               name
+              location{
+                lat
+                lon
+              }
             }
             landmarks{
               title
