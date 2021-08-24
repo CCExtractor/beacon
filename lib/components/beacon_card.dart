@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:intl/intl.dart';
 

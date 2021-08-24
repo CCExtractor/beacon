@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'package:beacon/components/hike_button.dart';
-import 'package:flutter/rendering.dart';
-import 'package:beacon/components/create_join_dialog.dart';
-import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -45,40 +41,39 @@ class _HikeScreenState extends State<HikeScreen> {
   String address, prevAddress;
   bool isBusy = false;
   Set<Marker> markers = {};
+  Set<Polyline> _polylines = Set<Polyline>();
   StreamSubscription _leaderLocation;
   Stream beaconLocationStream, beaconJoinedStream, mergedStream;
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
-  Map<PolylineId, Polyline> polylines = {};
   final GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
   ScrollController _scrollController = ScrollController();
   Location loc = new Location();
-  GraphQLConfig graphQLConfig;
   GraphQLClient graphQlClient;
   PanelController _panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
 
-  final beaconLocationSubGql = gql(r'''
-    subscription StreamBeaconLocation($id: ID!){
-      beaconLocation(id: $id){
-        lat
-        lon
-      }
-    }
-  ''');
-
-  // Gql for oreder updated subscription.
-  final beaconJoinedSubGql = gql(r'''
-    subscription StreamNewlyJoinedBeacons($id: ID!){
-      beaconJoined(id: $id){
-        name
-        location{
-          lat
-          lon
-        }
-      }
-    }
-  ''');
+  void updatePinOnMap(LatLng loc) async {
+    CameraPosition cPosition = CameraPosition(
+      zoom: CAMERA_ZOOM,
+      tilt: CAMERA_TILT,
+      bearing: CAMERA_BEARING,
+      target: loc,
+    );
+    final GoogleMapController controller = await mapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+    setState(() {
+      var pinPosition = loc;
+      markers.removeWhere((m) => m.markerId.value == "1");
+      markers.add(Marker(
+        markerId: MarkerId("1"),
+        position: pinPosition, // updated position
+        infoWindow: InfoWindow(
+          title: 'Current Location',
+        ),
+      ));
+    });
+  }
 
   void setupSubscriptions() {
     if (widget.isLeader) {
@@ -96,7 +91,8 @@ class _HikeScreenState extends State<HikeScreen> {
               LatLng(currentLocation.latitude, currentLocation.longitude));
           setState(() {
             address = _address;
-            _addMarker();
+            updatePinOnMap(
+                LatLng(currentLocation.latitude, currentLocation.longitude));
             setPolyline();
           });
         }
@@ -104,7 +100,7 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       beaconLocationStream = graphQlClient.subscribe(
         SubscriptionOptions(
-          document: beaconLocationSubGql,
+          document: BeaconQueries().beaconLocationSubGql,
           variables: <String, dynamic>{
             'id': widget.beacon.id,
           },
@@ -114,7 +110,7 @@ class _HikeScreenState extends State<HikeScreen> {
 
     beaconJoinedStream = graphQlClient.subscribe(
       SubscriptionOptions(
-        document: beaconJoinedSubGql,
+        document: BeaconQueries().beaconJoinedSubGql,
         variables: <String, dynamic>{
           'id': widget.beacon.id,
         },
@@ -145,7 +141,6 @@ class _HikeScreenState extends State<HikeScreen> {
           });
         }
         if (event.data.containsKey('beaconLocation')) {
-          print('......');
           LatLng coord = LatLng(
               double.parse(event.data['beaconLocation']['lat']),
               double.parse(event.data['beaconLocation']['lon']));
@@ -155,10 +150,9 @@ class _HikeScreenState extends State<HikeScreen> {
           String _address = addresses.first.addressLine;
           route.add(coord);
           setState(() {
-            markers.removeWhere((element) => element.markerId == MarkerId("1"));
-            markers.add(Marker(markerId: MarkerId("1"), position: coord));
+            updatePinOnMap(coord);
             address = _address;
-            setPolyline();
+            // setPolyline();
           });
         }
       }
@@ -179,7 +173,7 @@ class _HikeScreenState extends State<HikeScreen> {
   }
 
   setPolyline() async {
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
       'AIzaSyCXlRxfbr9Y368nLy8o59r0_XZmHdK5-2w', // Google Maps API Key
       PointLatLng(route.first.latitude, route.first.longitude),
       PointLatLng(route.last.latitude, route.last.longitude),
@@ -189,21 +183,15 @@ class _HikeScreenState extends State<HikeScreen> {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
     }
-    PolylineId id = PolylineId('poly');
-    Polyline polyline = Polyline(
-      polylineId: id,
-      color: Colors.red,
-      points: polylineCoordinates,
-      width: 3,
-    );
-    polylines[id] = polyline;
-  }
-
-  _addMarker() {
-    markers.add(Marker(
-      markerId: MarkerId((markers.length + 1).toString()),
-      position: route.last,
-    ));
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('poly'),
+        color: Colors.red,
+        points: polylineCoordinates,
+        width: 3,
+      );
+      _polylines.add(polyline);
+    });
   }
 
   fetchData() async {
@@ -224,10 +212,16 @@ class _HikeScreenState extends State<HikeScreen> {
         markers.add(Marker(
           markerId: MarkerId("0"),
           position: route.first,
+          infoWindow: InfoWindow(
+            title: 'Initial Location',
+          ),
         ));
         markers.add(Marker(
           markerId: MarkerId("1"),
           position: route.last,
+          infoWindow: InfoWindow(
+            title: 'Current Location',
+          ),
         ));
         for (var i in value.landmarks) {
           markers.add(Marker(
@@ -261,6 +255,7 @@ class _HikeScreenState extends State<HikeScreen> {
   void initState() {
     super.initState();
     isBusy = true;
+    beacon = widget.beacon;
     fetchData();
     graphQlClient = GraphQLConfig().graphQlClient();
     setupSubscriptions();
@@ -278,47 +273,7 @@ class _HikeScreenState extends State<HikeScreen> {
             child: Scaffold(
               body: ModalProgressHUD(
                   inAsyncCall: isGeneratingLink || isBusy,
-                  child:
-                      // StreamBuilder(
-                      //     stream: graphQlClient.subscribe(SubscriptionOptions(
-                      //         document: gql(r'''
-                      //           subscription BeaconJoined($id: ID!){
-                      //                   beaconJoined (id: $id) {
-                      //                     _id
-                      //                     name
-                      //                   }
-                      //               }
-                      //         '''),
-                      //         operationName: "BeaconJoined",
-                      //         variables: <String, dynamic>{'id': widget.beacon.id})),
-                      //     builder: (context, snapshot) {
-                      //       if (snapshot.hasData) {
-                      //         print(snapshot.data);
-                      //         if (snapshot.data.data != null &&
-                      //             snapshot?.data?.data['beaconJoined'] != null) {
-                      //           print('${snapshot.data}');
-                      //           User newJoinee =
-                      //               User.fromJson(snapshot.data.data['beaconJoined']);
-                      //           setState(() {
-                      //             hikers.add(newJoinee);
-                      //           });
-                      //         } else if (snapshot.data.data != null &&
-                      //             snapshot?.data?.data['beaconLocation'] != null) {
-                      //           setState(() {
-                      //             markers.removeWhere(
-                      //                 (element) => element.markerId == MarkerId("1"));
-                      //             markers.add(Marker(
-                      //                 markerId: MarkerId("1"),
-                      //                 position: LatLng(
-                      //                     double.parse(snapshot
-                      //                         .data.data['beaconLocation']['lat']),
-                      //                     double.parse(snapshot
-                      //                         .data.data['beaconLocation']['lon']))));
-                      //           });
-                      //         }
-                      //       }
-                      //       return
-                      SlidingUpPanel(
+                  child: SlidingUpPanel(
                     maxHeight: MediaQuery.of(context).size.height * 0.6,
                     minHeight: 154,
                     controller: _panelController,
@@ -388,16 +343,20 @@ class _HikeScreenState extends State<HikeScreen> {
                       alignment: Alignment.topCenter,
                       children: <Widget>[
                         GoogleMap(
+                          compassEnabled: true,
                           mapType: MapType.terrain,
                           markers: markers.toSet(),
-                          polylines: Set<Polyline>.of(polylines.values),
+                          polylines: _polylines,
                           initialCameraPosition: CameraPosition(
                               target: LatLng(
                                   double.parse(widget.beacon.location.lat),
                                   double.parse(widget.beacon.location.lon)),
-                              zoom: 17.0),
+                              zoom: CAMERA_ZOOM,
+                              tilt: CAMERA_TILT,
+                              bearing: CAMERA_BEARING),
                           onMapCreated: (GoogleMapController controller) {
                             mapController.complete(controller);
+                            // setPolyline();
                           },
                           onTap: (loc) async {
                             String title;

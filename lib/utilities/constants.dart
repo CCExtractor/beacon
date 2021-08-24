@@ -7,6 +7,9 @@ const Color kBlue = Color(0xFF222375);
 const Color kLightBlue = Color(0xFFE8F1F8);
 const Color kBlack = Color(0xFF343434);
 const Color shimmerSkeletonColor = Color(0xff4e4f91);
+const double CAMERA_ZOOM = 15;
+const double CAMERA_TILT = 80;
+const double CAMERA_BEARING = 30;
 
 class AppConstants {
   static Future<LatLng> getLocation() async {

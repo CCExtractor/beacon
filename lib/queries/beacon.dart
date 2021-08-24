@@ -1,5 +1,7 @@
 import 'dart:ffi';
 
+import 'package:graphql_flutter/graphql_flutter.dart';
+
 class BeaconQueries {
   String createBeacon(String title, int expiresAt, String lat, String lon) {
     return '''
@@ -177,31 +179,27 @@ class BeaconQueries {
     ''';
   }
 
-  String fetchLocationUpdates(String id) {
-    return '''
-        subscription {
-            beaconLocation (id: "$id") {
-              lat
-              lon
-            }
-        }
-    ''';
-  }
+  final beaconLocationSubGql = gql(r'''
+    subscription StreamBeaconLocation($id: ID!){
+      beaconLocation(id: $id){
+        lat
+        lon
+      }
+    }
+  ''');
 
-  String fetchUserLocation(String id) {
-    return '''
-        subscription {
-            userLocation (id: "$id") {
-              _id
-              name
-              location{
-                lat
-                lon
-              }
-            }
+  // Gql for oreder updated subscription.
+  final beaconJoinedSubGql = gql(r'''
+    subscription StreamNewlyJoinedBeacons($id: ID!){
+      beaconJoined(id: $id){
+        name
+        location{
+          lat
+          lon
         }
-    ''';
-  }
+      }
+    }
+  ''');
 
   String fetchFollowerUpdates(String id) {
     return '''
