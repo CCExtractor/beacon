@@ -19,6 +19,7 @@ import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -126,6 +127,30 @@ class _HikeScreenState extends State<HikeScreen> {
         print('${event.data}');
         if (event.data.containsKey('beaconJoined')) {
           User newJoinee = User.fromJson(event.data['beaconJoined']);
+
+          showOverlayNotification((context) {
+            return Card(
+              color: kLightBlue,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              child: SafeArea(
+                child: ListTile(
+                  leading: SizedBox.fromSize(
+                      size: const Size(40, 40),
+                      child: ClipOval(
+                          child: Container(
+                        child:
+                            Image(image: AssetImage('images/male_avatar.png')),
+                      ))),
+                  title: Text('${newJoinee.name} joined the hike!'),
+                  trailing: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        OverlaySupportEntry.of(context).dismiss();
+                      }),
+                ),
+              ),
+            );
+          }, duration: Duration(milliseconds: 4000));
           setState(() {
             hikers.add(newJoinee);
             // markers.add(Marker(

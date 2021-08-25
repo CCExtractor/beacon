@@ -8,6 +8,7 @@ import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'models/user/user_info.dart';
@@ -29,13 +30,15 @@ void main() async {
   await Hive.openBox<User>('currentUser');
   await Hive.openBox<Beacon>('beacons');
   setupLocator();
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: 'Beacon',
-    navigatorKey: navigationService.navigatorKey,
-    theme: ThemeData(fontFamily: 'FuturaBold'),
-    initialRoute: '/',
-    onGenerateRoute: router.generateRoute,
+  runApp(OverlaySupport(
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Beacon',
+      navigatorKey: navigationService.navigatorKey,
+      theme: ThemeData(fontFamily: 'FuturaBold'),
+      initialRoute: '/',
+      onGenerateRoute: router.generateRoute,
+    ),
   ));
 }
 

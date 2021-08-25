@@ -30,7 +30,8 @@ dependencies:
   location: ^4.3.0
   rxdart: ^0.26.0
   flutter_polyline_points: ^1.0.0
-  awesome_notifications: ^0.0.6+10
+  flutter_local_notifications: ^8.1.1+1
+  overlay_support: ^1.2.1
   sliding_up_panel: ^2.0.0+1
   skeleton_text: ^1.0.0
   flutter_duration_picker:
