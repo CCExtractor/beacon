@@ -56,7 +56,7 @@ Whether you have some feauture requests/ideas, code improvements, refactoring, p
 
 If you found any bugs, consider opening an [issue](https://github.com/CCExtractor/beacon/issues/new).
 
-**To know the details about features implemented till Google Summer of Code'21 and future todo's please visit [this blog](https://nishthab.tech/blog/1)**
+**To know the details about features implemented till Google Summer of Code'21 and future todo's please visit [this blog](https://blog.nishthab.tech/gsoc-2021-ccextractor-beacon)**
 
 ## Community
 
