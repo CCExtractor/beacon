@@ -82,7 +82,6 @@ class _HikeScreenState extends State<HikeScreen> {
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation =
           loc.onLocationChanged.listen((LocationData currentLocation) async {
-        print('............');
         Coordinates coordinates =
             Coordinates(currentLocation.latitude, currentLocation.longitude);
         var addresses =
@@ -201,25 +200,25 @@ class _HikeScreenState extends State<HikeScreen> {
   }
 
   setPolyline() async {
-    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-      'AIzaSyCXlRxfbr9Y368nLy8o59r0_XZmHdK5-2w', // Google Maps API Key
-      PointLatLng(route.first.latitude, route.first.longitude),
-      PointLatLng(route.last.latitude, route.last.longitude),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    }
-    setState(() {
-      Polyline polyline = Polyline(
-        polylineId: PolylineId('poly'),
-        color: Colors.red,
-        points: polylineCoordinates,
-        width: 3,
-      );
-      _polylines.add(polyline);
-    });
+    // PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
+    //   '${localProperties[MAPS_API_KEY]}', // Google Maps API Key
+    //   PointLatLng(route.first.latitude, route.first.longitude),
+    //   PointLatLng(route.last.latitude, route.last.longitude),
+    // );
+    // if (result.points.isNotEmpty) {
+    //   result.points.forEach((PointLatLng point) {
+    //     polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+    //   });
+    // }
+    // setState(() {
+    //   Polyline polyline = Polyline(
+    //     polylineId: PolylineId('poly'),
+    //     color: Colors.red,
+    //     points: polylineCoordinates,
+    //     width: 3,
+    //   );
+    //   _polylines.add(polyline);
+    // });
   }
 
   fetchData() async {
