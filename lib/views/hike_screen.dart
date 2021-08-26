@@ -76,10 +76,13 @@ class _HikeScreenState extends State<HikeScreen> {
     });
   }
 
-  void setupSubscriptions() {
+  Future<void> setupSubscriptions() async {
     if (widget.isLeader) {
+      // distanceFilter (in m) can be changed to reduce the backend calls
+      await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation =
           loc.onLocationChanged.listen((LocationData currentLocation) async {
+        print('............');
         Coordinates coordinates =
             Coordinates(currentLocation.latitude, currentLocation.longitude);
         var addresses =
