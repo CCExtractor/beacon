@@ -12,9 +12,7 @@ For setting up the development environment, follow the steps given below.
 - `cd` into `beacon`
 - Check for flutter setup and connected devices using `flutter doctor`
 - Get all the dependencies using `flutter pub get`
-- Add your Google Maps API key either by adding `MAPS_API_KEY` variable in `android/local.properties` file or by exporting it as a System environment variable by using the command `export MAPS_API_KEY=YOUR_API_KEY` (You can get your API Key with this [steps](https://developers.google.com/maps/documentation/android-sdk/get-api-key)).
-  
-  By this `build.gradle` will first find the `MAPS_API_KEY` on the `local.properties` file, but if there’s none (such as in production), it will search for the variable on the environment variable.
+- Create a .env file in the root folder and add `MAPS_API_KEY=your_google_maps_api_key_here`
 - Run the app using `flutter run`
 
 For help getting started with Flutter, view our

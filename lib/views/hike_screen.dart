@@ -3,6 +3,7 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -200,25 +201,25 @@ class _HikeScreenState extends State<HikeScreen> {
   }
 
   setPolyline() async {
-    // PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-    //   '${localProperties[MAPS_API_KEY]}', // Google Maps API Key
-    //   PointLatLng(route.first.latitude, route.first.longitude),
-    //   PointLatLng(route.last.latitude, route.last.longitude),
-    // );
-    // if (result.points.isNotEmpty) {
-    //   result.points.forEach((PointLatLng point) {
-    //     polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-    //   });
-    // }
-    // setState(() {
-    //   Polyline polyline = Polyline(
-    //     polylineId: PolylineId('poly'),
-    //     color: Colors.red,
-    //     points: polylineCoordinates,
-    //     width: 3,
-    //   );
-    //   _polylines.add(polyline);
-    // });
+    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
+      '${FlutterConfig.get('MAPS_API_KEY')}', // Google Maps API Key
+      PointLatLng(route.first.latitude, route.first.longitude),
+      PointLatLng(route.last.latitude, route.last.longitude),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('poly'),
+        color: Colors.red,
+        points: polylineCoordinates,
+        width: 3,
+      );
+      _polylines.add(polyline);
+    });
   }
 
   fetchData() async {

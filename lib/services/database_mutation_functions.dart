@@ -18,9 +18,9 @@ class DataBaseMutationFunctions {
   GraphQLClient clientAuth;
   AuthQueries _authQuery;
   BeaconQueries _beaconQuery;
-  init() {
+  init() async {
     clientNonAuth = graphqlConfig.clientToQuery();
-    clientAuth = graphqlConfig.graphQlClient();
+    clientAuth = await graphqlConfig.authClient();
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
   }
@@ -114,24 +114,24 @@ class DataBaseMutationFunctions {
   }
 
   Future<bool> login({String email, String password, User user}) async {
-    final QueryResult result = (user != null && email == null)
+    final QueryResult result = (email == null)
         ? await clientNonAuth.mutate(
             MutationOptions(document: gql(_authQuery.loginUsingID(user.id))))
         : await clientNonAuth.mutate(MutationOptions(
             document: gql(_authQuery.loginUser(email, password))));
     if (result.hasException) {
-      navigationService.showSnackBar(
-          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      navigationService
+          .showSnackBar("${result.exception.graphqlErrors.first.message}");
       print("${result.exception.graphqlErrors}");
       return false;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
-      if (user != null && email == null) {
+      if (email == null) {
         user.isGuest = true;
         user.authToken = "Bearer ${result.data['login']}";
         userSaved = await userConfig.updateUser(user);
       } else {
-        final User loggedInUser =
+        User loggedInUser =
             User(authToken: "Bearer ${result.data['login']}", isGuest: false);
         userSaved = await userConfig.updateUser(loggedInUser);
       }
@@ -142,6 +142,7 @@ class DataBaseMutationFunctions {
   }
 
   Future<bool> fetchCurrentUserInfo() async {
+    await databaseFunctions.init();
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -152,12 +153,12 @@ class DataBaseMutationFunctions {
         navigationService.pushReplacementScreen('/auth');
       }
     } else if (result.data != null && result.isConcrete) {
-      final User userInfo = User.fromJson(
+      User userInfo = User.fromJson(
         result.data['me'] as Map<String, dynamic>,
       );
       userInfo.authToken = userConfig.currentUser.authToken;
       userInfo.isGuest = userConfig.currentUser.isGuest;
-      userConfig.updateUser(userInfo);
+      await userConfig.updateUser(userInfo);
       return true;
     }
     return false;

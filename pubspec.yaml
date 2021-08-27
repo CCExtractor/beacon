@@ -34,6 +34,7 @@ dependencies:
   overlay_support: ^1.2.1
   sliding_up_panel: ^2.0.0+1
   skeleton_text: ^1.0.0
+  flutter_config: ^2.0.0
   flutter_duration_picker:
     git: https://github.com/bartektartanus/flutter_duration_picker
 

@@ -51,7 +51,8 @@ class AuthViewModel extends BaseModel {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
       } else {
-        navigationService.showSnackBar('SomeThing went wrong');
+        navigationService.removeAllAndPush('/auth', '/');
+        navigationService.showSnackBar('Something went wrong');
       }
       setState(ViewState.idle);
     } else {
@@ -61,14 +62,16 @@ class AuthViewModel extends BaseModel {
 
   loginAsGuest() async {
     setState(ViewState.busy);
-    databaseFunctions.init();
+    await databaseFunctions.init();
     final bool signUpSuccess =
         await databaseFunctions.signup(name: "Anonymous");
     if (signUpSuccess) {
       userConfig.currentUser.print();
+
       navigationService.removeAllAndPush('/main', '/');
     } else {
-      navigationService.showSnackBar('SomeThing went wrong');
+      navigationService.removeAllAndPush('/auth', '/');
+      navigationService.showSnackBar('Something went wrong');
     }
     setState(ViewState.idle);
   }
@@ -87,7 +90,8 @@ class AuthViewModel extends BaseModel {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
       } else {
-        navigationService.showSnackBar('SomeThing went wrong');
+        navigationService.removeAllAndPush('/auth', '/');
+        navigationService.showSnackBar('Something went wrong');
       }
       setState(ViewState.idle);
     } else {

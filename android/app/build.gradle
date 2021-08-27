@@ -5,10 +5,6 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
-def localPropertyApiToken = localProperties.getProperty("MAPS_API_KEY")
-def systemEnvApiToken = System.getenv('MAPS_API_KEY')
-def MAPS_API_KEY = localPropertyApiToken != null ? localPropertyApiToken : systemEnvApiToken
-
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -27,7 +23,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
+apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
 
 android {
     compileSdkVersion 30
@@ -45,7 +41,6 @@ android {
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [mapsApiKey: MAPS_API_KEY]
     }
 
     buildTypes {
