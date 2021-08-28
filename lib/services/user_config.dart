@@ -17,17 +17,18 @@ class UserConfig {
       return false;
     }
     bool userUpdated = true;
-    graphqlConfig.getToken().then((value) async {
+    await graphqlConfig.getToken().then((value) async {
       print('${userConfig._currentUser.authToken}');
-      databaseFunctions.init();
-      final bool fetchUpdates = await databaseFunctions.fetchCurrentUserInfo();
-      if (fetchUpdates) {
-        saveUserInHive();
-        userUpdated = true;
-      } else {
-        navigationService.showSnackBar("Couldn't update User details");
-        userUpdated = false;
-      }
+      await databaseFunctions.init();
+      await databaseFunctions.fetchCurrentUserInfo().then((value) {
+        if (value) {
+          saveUserInHive();
+          userUpdated = true;
+        } else {
+          navigationService.showSnackBar("Couldn't update User details");
+          userUpdated = false;
+        }
+      });
     });
     print('user updated: $userUpdated');
     return userUpdated;

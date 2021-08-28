@@ -82,7 +82,7 @@ class AuthViewModel extends BaseModel {
     if (formKeyLogin.currentState.validate()) {
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
-      databaseFunctions.init();
+      await databaseFunctions.init();
       final bool loginSuccess = await databaseFunctions.login(
           email: loginEmailController.text,
           password: loginPasswordController.text);

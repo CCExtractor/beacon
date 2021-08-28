@@ -201,17 +201,6 @@ class BeaconQueries {
     }
   ''');
 
-  String fetchFollowerUpdates(String id) {
-    return '''
-        subscription {
-            beaconJoined (id: "$id") {
-              _id
-              name
-            }
-        }
-    ''';
-  }
-
   String createLandmark(String id, String lat, String lon, String title) {
     return '''
       mutation{

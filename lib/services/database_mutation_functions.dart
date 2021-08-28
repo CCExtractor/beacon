@@ -184,6 +184,7 @@ class DataBaseMutationFunctions {
 
   Future<List<Beacon>> fetchUserBeacons() async {
     List<Beacon> beacons = [];
+    Set<String> beaconIds = {};
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -196,7 +197,12 @@ class DataBaseMutationFunctions {
       final User userInfo = User.fromJson(
         result.data['me'] as Map<String, dynamic>,
       );
-      beacons = userInfo.beacon;
+      for (var i in userInfo.beacon) {
+        if (!beaconIds.contains(i.id)) {
+          beaconIds.add(i.id);
+          beacons.add(i);
+        }
+      }
     }
     return beacons;
   }
@@ -251,6 +257,7 @@ class DataBaseMutationFunctions {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
       print("Something went wrong: ${result.exception}");
+      navigationService.removeAllAndPush('/main', '/');
     } else if (result.data != null && result.isConcrete) {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,

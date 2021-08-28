@@ -27,7 +27,7 @@ class BeaconCustomWidgets {
                 isLeader: (beacon.leader.id == userConfig.currentUser.id),
               ));
         } else {
-          databaseFunctions.init();
+          await databaseFunctions.init();
           final Beacon _beacon =
               await databaseFunctions.joinBeacon(beacon.shortcode);
           if (_beacon != null) {

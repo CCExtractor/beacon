@@ -44,53 +44,41 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return;
       setState(() => _initialUri = null);
     }
-    if (_latestUri == null && _initialUri == null) {
-      final bool userLoggedIn = await userConfig.userLoggedIn();
-      Future.delayed(const Duration(milliseconds: 750)).then((value) async {
-        if (userLoggedIn) {
+    await databaseFunctions.init();
+    await userConfig.userLoggedIn().then((value) async {
+      if (_latestUri == null && _initialUri == null) {
+        if (value) {
           navigationService.pushReplacementScreen('/main');
         } else {
           navigationService.pushReplacementScreen('/auth');
         }
-      });
-    } else {
-      if (_initialUri != null) {
-        var shortcode = _initialUri.queryParameters['shortcode'];
-        final bool userLoggedIn = await userConfig.userLoggedIn();
-
-        Future.delayed(const Duration(milliseconds: 1200)).then((value) async {
-          if (userLoggedIn) {
-            databaseFunctions.init();
-            final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
-            Future.delayed(const Duration(milliseconds: 750))
-                .then((value) async {
-              if (beacon != null) {
+      } else {
+        if (_initialUri != null) {
+          var shortcode = _initialUri.queryParameters['shortcode'];
+          if (value) {
+            await databaseFunctions.joinBeacon(shortcode).then((val) {
+              if (val != null) {
                 navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(beacon, isLeader: false));
+                    arguments: HikeScreen(val, isLeader: false));
               } else {
-                navigationService.showSnackBar('SomeThing went wrong');
                 navigationService.pushReplacementScreen('/main');
               }
             });
           } else {
             // login in anonymously and join hike
-            databaseFunctions.init();
             await databaseFunctions.signup(name: "Anonymous");
-            final Beacon beacon = await databaseFunctions.joinBeacon(shortcode);
-            Future.delayed(const Duration(milliseconds: 750))
-                .then((value) async {
-              if (beacon != null) {
+            await databaseFunctions.joinBeacon(shortcode).then((val) async {
+              if (value != null) {
                 navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(beacon, isLeader: false));
+                    arguments: HikeScreen(val, isLeader: false));
               } else {
-                navigationService.showSnackBar('SomeThing went wrong');
                 navigationService.pushReplacementScreen('/main');
               }
             });
           }
-        });
+        }
       }
-    }
+    });
   }
 
   @override
