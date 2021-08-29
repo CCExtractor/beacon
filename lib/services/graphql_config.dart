@@ -1,16 +1,17 @@
 import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 class GraphQLConfig {
   static String token;
   static final HttpLink httpLink = HttpLink(
-    "https://beacon.aadibajpai.com/graphql",
+    "${FlutterConfig.get('HTTP_ENDPOINT')}",
   );
 
   static final AuthLink authLink = AuthLink(getToken: () async => token);
 
   static WebSocketLink websocketLink =
-      WebSocketLink('wss://beacon.aadibajpai.com/subscriptions',
+      WebSocketLink('${FlutterConfig.get('WEBSOCKET_ENDPOINT')}',
           config: SocketClientConfig(
             autoReconnect: true,
             initialPayload: {

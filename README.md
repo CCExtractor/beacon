@@ -12,7 +12,7 @@ For setting up the development environment, follow the steps given below.
 - `cd` into `beacon`
 - Check for flutter setup and connected devices using `flutter doctor`
 - Get all the dependencies using `flutter pub get`
-- Create a .env file in the root folder and add `MAPS_API_KEY=your_google_maps_api_key_here`
+- Create a .env file in the root folder, copy the content from .env.example and add respected key's value
 - Run the app using `flutter run`
 
 For help getting started with Flutter, view our
