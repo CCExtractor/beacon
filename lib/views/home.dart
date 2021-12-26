@@ -10,6 +10,7 @@ import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:sizer/sizer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
@@ -83,7 +84,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(8, 185, 8, 5),
+                        padding: EdgeInsets.fromLTRB(4.w, 185, 4.w, 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
@@ -109,7 +110,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               ),
                             ),
                             SizedBox(
-                              width: 8,
+                              width: 2.w,
                             ),
                             Expanded(
                               child: HikeButton(
