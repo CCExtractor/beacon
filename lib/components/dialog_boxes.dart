@@ -2,6 +2,7 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class DialogBoxes {
   static AlertDialog showExitDialog(
@@ -17,25 +18,21 @@ class DialogBoxes {
             : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
-      //actionsAlignment: MainAxisAlignment.end,
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: <Widget>[
-        Expanded(
-          child: HikeButton(
-            buttonHeight: 20,
-            //buttonWidth: 20,
-            onTap: () => Navigator.of(context).pop(false),
-            text: 'No',
-          ),
+        HikeButton(
+          buttonHeight: 2.5.h,
+          buttonWidth: 8.w,
+          onTap: () => Navigator.of(context).pop(false),
+          text: 'No',
         ),
-        Expanded(
-          child: HikeButton(
-            buttonHeight: 20,
-            //buttonWidth: 20,
-            onTap: () {
-              navigationService.removeAllAndPush('/main', '/');
-            },
-            text: 'Yes',
-          ),
+        HikeButton(
+          buttonHeight: 2.5.h,
+          buttonWidth: 8.w,
+          onTap: () {
+            navigationService.removeAllAndPush('/main', '/');
+          },
+          text: 'Yes',
         ),
       ],
     );
