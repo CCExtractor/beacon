@@ -90,10 +90,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Expanded(
+                            Container(
+                              width: 45.w,
                               child: HikeButton(
-                                buttonHeight: 32,
-                                buttonWidth: 0,
+                                buttonWidth: 0.h,
                                 text: 'Create Hike',
                                 textColor: Colors.white,
                                 borderColor: Colors.white,
@@ -112,10 +112,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             SizedBox(
                               width: 2.w,
                             ),
-                            Expanded(
+                            Container(
+                              width: 45.w,
                               child: HikeButton(
-                                buttonHeight: 32,
-                                buttonWidth: 0,
+                                buttonWidth: 0.h,
                                 text: 'Join a Hike',
                                 textColor: kYellow,
                                 borderColor: kYellow,
@@ -125,7 +125,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                       context, model);
                                 },
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
