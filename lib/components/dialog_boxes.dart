@@ -17,20 +17,25 @@ class DialogBoxes {
             : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
+      //actionsAlignment: MainAxisAlignment.end,
       actions: <Widget>[
-        HikeButton(
-          buttonHeight: 20,
-          buttonWidth: 40,
-          onTap: () => Navigator.of(context).pop(false),
-          text: 'No',
+        Expanded(
+          child: HikeButton(
+            buttonHeight: 20,
+            //buttonWidth: 20,
+            onTap: () => Navigator.of(context).pop(false),
+            text: 'No',
+          ),
         ),
-        HikeButton(
-          buttonHeight: 20,
-          buttonWidth: 40,
-          onTap: () {
-            navigationService.removeAllAndPush('/main', '/');
-          },
-          text: 'Yes',
+        Expanded(
+          child: HikeButton(
+            buttonHeight: 20,
+            //buttonWidth: 20,
+            onTap: () {
+              navigationService.removeAllAndPush('/main', '/');
+            },
+            text: 'Yes',
+          ),
         ),
       ],
     );
