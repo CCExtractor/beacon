@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
