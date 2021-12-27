@@ -36,8 +36,7 @@ dependencies:
   skeleton_text: ^1.0.0
   flutter_config: ^2.0.0
   sizer: ^2.0.15
-  duration_picker:
-    git: https://github.com/juliansteenbakker/duration_picker  
+  duration_picker: ^1.1.0+1  
 
 dev_dependencies:
   flutter_test:

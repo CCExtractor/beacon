@@ -235,11 +235,9 @@ packages:
   duration_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "4a70208bc05e19ac998262613f717203dcde2308"
-      url: "https://github.com/juliansteenbakker/duration_picker"
-    source: git
+      name: duration_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "1.1.0+1"
   fake_async:
     dependency: transitive
@@ -288,6 +286,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.1"
+  flutter_lints:
+    dependency: transitive
+    description:
+      name: flutter_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -536,6 +541,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   location:
     dependency: "direct main"
     description:
