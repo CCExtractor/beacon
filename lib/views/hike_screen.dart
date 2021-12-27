@@ -85,6 +85,8 @@ class _HikeScreenState extends State<HikeScreen> {
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation =
           loc.onLocationChanged.listen((LocationData currentLocation) async {
+        if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now())) _leaderLocation.cancel();
         Coordinates coordinates =
             Coordinates(currentLocation.latitude, currentLocation.longitude);
         var addresses =
@@ -127,7 +129,10 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       mergedStream = beaconJoinedStream;
     }
-    final mergeStreamSubscription = mergedStream.listen((event) async {
+    StreamSubscription<dynamic> mergeStreamSubscription;
+    mergeStreamSubscription = mergedStream.listen((event) async {
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) mergeStreamSubscription.cancel();
       if (event.data != null) {
         print('${event.data}');
         if (event.data.containsKey('beaconJoined')) {
