@@ -266,8 +266,17 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) {
+        navigationService.showSnackBar(
+            "Looks like the beacon you are trying join has expired");
+        return null;
+      }
       beacon.route.add(beacon.leader.location);
       return beacon;
+    } else {
+      navigationService
+          .showSnackBar("Something went wrong while trying to join Beacon");
     }
     return null;
   }

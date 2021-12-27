@@ -31,9 +31,8 @@ class BeaconCustomWidgets {
           if (_beacon != null) {
             navigationService.pushScreen('/hikeScreen',
                 arguments: HikeScreen(beacon, isLeader: false));
-          } else {
-            navigationService.showSnackBar('Something went wrong');
           }
+          //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
         }
       },
       child: Container(

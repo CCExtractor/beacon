@@ -52,9 +52,8 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false));
-      } else {
-        navigationService.showSnackBar('SomeThing went wrong');
       }
+      //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
     } else {
       navigationService.showSnackBar('Enter valid passkey');
     }
