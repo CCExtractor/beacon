@@ -57,10 +57,19 @@ class _AuthScreenState extends State<AuthScreen>
                                     model.right = Colors.black;
                                     model.left = Colors.white;
                                   });
+                                  Future.delayed(Duration(milliseconds: 500),
+                                      () {
+                                    model.requestFocusForFocusNode(
+                                        model.emailLogin);
+                                  });
                                 } else if (i == 1) {
                                   setState(() {
                                     model.right = Colors.white;
                                     model.left = Colors.black;
+                                  });
+                                  Future.delayed(Duration(milliseconds: 500),
+                                      () {
+                                    model.requestFocusForFocusNode(model.name);
                                   });
                                 }
                               },

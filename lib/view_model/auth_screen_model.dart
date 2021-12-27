@@ -99,14 +99,27 @@ class AuthViewModel extends BaseModel {
     }
   }
 
+  void requestFocusForFocusNode(FocusNode focusNode) {
+    FocusScope.of(navigationService.navigatorKey.currentContext)
+        .requestFocus(focusNode);
+  }
+
   void onSignInButtonPress() {
-    pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    pageController
+        .animateToPage(0,
+            duration: Duration(milliseconds: 500), curve: Curves.decelerate)
+        .then((value) {
+      requestFocusForFocusNode(emailLogin);
+    });
   }
 
   void onSignUpButtonPress() {
-    pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    pageController
+        .animateToPage(1,
+            duration: Duration(milliseconds: 500), curve: Curves.decelerate)
+        .then((value) {
+      requestFocusForFocusNode(name);
+    });
   }
 
   displayPasswordLogin() {
