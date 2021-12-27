@@ -79,6 +79,7 @@ class _HikeScreenState extends State<HikeScreen> {
   }
 
   Future<void> setupSubscriptions() async {
+    if (isBeaconExpired) return;
     if (widget.isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
@@ -195,12 +196,13 @@ class _HikeScreenState extends State<HikeScreen> {
 
   @override
   void dispose() {
-    if (widget.isLeader) {
+    if (widget.isLeader && !isBeaconExpired) {
       _leaderLocation.cancel();
     }
-    for (var streamSub in mergedStreamSubscriptions) {
-      streamSub.cancel();
-    }
+    if (!isBeaconExpired)
+      for (var streamSub in mergedStreamSubscriptions) {
+        streamSub.cancel();
+      }
     super.dispose();
   }
 
@@ -234,6 +236,8 @@ class _HikeScreenState extends State<HikeScreen> {
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     await databaseFunctions.fetchBeaconInfo(widget.beacon.id).then((value) {
       beacon = value;
+      isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now());
       setState(() {
         hikers.add(value.leader);
         for (var i in value.followers) {

@@ -183,6 +183,7 @@ class DataBaseMutationFunctions {
   Future<List<Beacon>> fetchUserBeacons() async {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
+    List<Beacon> expiredBeacons = [];
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -198,10 +199,15 @@ class DataBaseMutationFunctions {
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
           beaconIds.add(i.id);
-          beacons.add(i);
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
         }
       }
     }
+    beacons.addAll(expiredBeacons);
     return beacons;
   }
 
