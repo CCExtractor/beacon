@@ -132,7 +132,10 @@ class _HikeScreenState extends State<HikeScreen> {
     StreamSubscription<dynamic> mergeStreamSubscription;
     mergeStreamSubscription = mergedStream.listen((event) async {
       if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-          .isBefore(DateTime.now())) mergeStreamSubscription.cancel();
+          .isBefore(DateTime.now())) {
+        mergeStreamSubscription.cancel();
+        isBeaconExpired = true;
+      }
       if (event.data != null) {
         print('${event.data}');
         if (event.data.containsKey('beaconJoined')) {
