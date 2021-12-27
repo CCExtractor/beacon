@@ -1,6 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-
 class Validator {
   static String validateEmail(String email) {
     // If email is empty return.
