@@ -35,7 +35,8 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.1"
+    version: "2.8.2"
+    
   boolean_selector:
     dependency: transitive
     description:
@@ -105,7 +106,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   charcode:
     dependency: transitive
     description:
@@ -235,11 +236,9 @@ packages:
   duration_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: efe89ef6f3a4431a1e003c5d0b44a40f578a485d
-      url: "https://github.com/juliansteenbakker/duration_picker"
-    source: git
+      name: duration_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "1.1.0+1"
   fake_async:
     dependency: transitive
@@ -584,7 +583,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.10"
+    version: "0.12.11"
   meta:
     dependency: transitive
     description:
@@ -897,7 +896,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   timezone:
     dependency: transitive
     description:
@@ -960,7 +959,7 @@ packages:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   watcher:
     dependency: transitive
     description:
@@ -1004,5 +1003,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.13.0 <3.0.0"
+  dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.2.0"

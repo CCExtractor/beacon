@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:flutter/material.dart';

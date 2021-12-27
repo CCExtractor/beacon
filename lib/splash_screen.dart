@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
