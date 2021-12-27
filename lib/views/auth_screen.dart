@@ -100,9 +100,11 @@ class _AuthScreenState extends State<AuthScreen>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.white,
-                highlightColor: Colors.white,
+              child: TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                ),
+                //highlightColor: Colors.white,
                 onPressed: model.onSignInButtonPress,
                 child: Text(
                   "Existing",
@@ -115,9 +117,12 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             //Container(height: 33.0, width: 1.0, color: Colors.white),
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                ),
+                //splashColor: Colors.transparent,
+                //highlightColor: Colors.transparent,
                 onPressed: model.onSignUpButtonPress,
                 child: Text(
                   "New",
