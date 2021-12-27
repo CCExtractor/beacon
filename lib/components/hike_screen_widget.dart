@@ -1,4 +1,3 @@
-import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';

@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
