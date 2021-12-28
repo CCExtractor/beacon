@@ -12,7 +12,8 @@ class HomeViewModel extends BaseModel {
   AutovalidateMode validate = AutovalidateMode.onUserInteraction;
   bool isCreatingHike = false;
   String title;
-  TextEditingController _titleController = new TextEditingController();
+  //commenting out since its value isnt used anywhere.
+  //TextEditingController _titleController = new TextEditingController();
   TextEditingController durationController = new TextEditingController();
   String enteredPasskey = '';
 
