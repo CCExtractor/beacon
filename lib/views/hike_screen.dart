@@ -78,8 +78,9 @@ class _HikeScreenState extends State<HikeScreen> {
     });
   }
 
-  Future<void> setupSubscriptions() async {
-    if (isBeaconExpired) return;
+  Future<void> setupSubscriptions(bool isExpired) async {
+    if (isBeaconExpired || isExpired) return;
+    print('Works');
     if (widget.isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
@@ -244,9 +245,9 @@ class _HikeScreenState extends State<HikeScreen> {
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     await databaseFunctions.fetchBeaconInfo(widget.beacon.id).then((value) {
       beacon = value;
-      isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-          .isBefore(DateTime.now());
       setState(() {
+        isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now());
         hikers.add(value.leader);
         for (var i in value.followers) {
           if (!followerId.contains(i.id)) {
@@ -307,7 +308,8 @@ class _HikeScreenState extends State<HikeScreen> {
     beacon = widget.beacon;
     fetchData();
     graphQlClient = GraphQLConfig().graphQlClient();
-    setupSubscriptions();
+    setupSubscriptions(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+        .isBefore(DateTime.now()));
     isBusy = false;
   }
 
