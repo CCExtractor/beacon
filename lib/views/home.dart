@@ -86,39 +86,48 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(8, 185, 8, 5),
+                        padding: EdgeInsets.fromLTRB(4.w, 185, 4.w, 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            HikeButton(
-                              text: 'Create Hike',
-                              textColor: Colors.white,
-                              borderColor: Colors.white,
-                              buttonColor: kYellow,
-                              buttonWidth: 12,
-                              onTap: () {
-                                if (userConfig.currentUser.isGuest) {
-                                  navigationService.showSnackBar(
-                                      'You need to login with credentials to start a hike');
-                                } else {
-                                  CreateJoinBeaconDialog.createHikeDialog(
-                                      context, model);
-                                }
-                              },
+                            Container(
+                              width: 45.w,
+                              child: HikeButton(
+                                buttonWidth: 0.h,
+                                text: 'Create Hike',
+                                textColor: Colors.white,
+                                borderColor: Colors.white,
+                                buttonColor: kYellow,
+                                onTap: () {
+                                  if (userConfig.currentUser.isGuest) {
+                                    navigationService.showSnackBar(
+                                        'You need to login with credentials to start a hike');
+                                  } else {
+                                    CreateJoinBeaconDialog.createHikeDialog(
+                                        context, model);
+                                  }
+                                },
+                              ),
                             ),
-                            HikeButton(
-                              text: 'Join a Hike',
-                              textColor: kYellow,
-                              borderColor: kYellow,
-                              buttonColor: Colors.white,
-                              buttonWidth: 12,
-                              onTap: () async {
-                                CreateJoinBeaconDialog.joinBeaconDialog(
-                                    context, model);
-                              },
-                            )
+                            SizedBox(
+                              width: 2.w,
+                            ),
+                            Container(
+                              width: 45.w,
+                              child: HikeButton(
+                                buttonWidth: 0.h,
+                                text: 'Join a Hike',
+                                textColor: kYellow,
+                                borderColor: kYellow,
+                                buttonColor: Colors.white,
+                                onTap: () async {
+                                  CreateJoinBeaconDialog.joinBeaconDialog(
+                                      context, model);
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),
