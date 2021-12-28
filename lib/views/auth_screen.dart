@@ -1,11 +1,13 @@
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/services/validators.dart';
+import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/utilities/indication_painter.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sizer/sizer.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key key}) : super(key: key);
@@ -18,28 +20,25 @@ class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    Size screensize = MediaQuery.of(context).size;
     return BaseView<AuthViewModel>(builder: (context, model, child) {
       return (model.isBusy)
           ? Scaffold(body: Center(child: CircularProgressIndicator()))
           : new Scaffold(
               key: model.scaffoldKey,
-              // resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               body: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height >= 775.0
-                    ? MediaQuery.of(context).size.height
-                    : 775.0,
+                width: screensize.width,
+                height: screensize.height >= 775.0 ? screensize.height : 775.0,
                 child: Stack(
                   children: <Widget>[
                     CustomPaint(
-                      size: Size(MediaQuery.of(context).size.width,
-                          MediaQuery.of(context).size.height),
+                      size: Size(screensize.width, screensize.height),
                       painter: ShapePainter(),
                     ),
                     Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 3.5),
+                      padding: EdgeInsets.only(top: screensize.height / 3.5),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -57,10 +56,19 @@ class _AuthScreenState extends State<AuthScreen>
                                     model.right = Colors.black;
                                     model.left = Colors.white;
                                   });
+                                  Future.delayed(Duration(milliseconds: 500),
+                                      () {
+                                    model.requestFocusForFocusNode(
+                                        model.emailLogin);
+                                  });
                                 } else if (i == 1) {
                                   setState(() {
                                     model.right = Colors.white;
                                     model.left = Colors.black;
+                                  });
+                                  Future.delayed(Duration(milliseconds: 500),
+                                      () {
+                                    model.requestFocusForFocusNode(model.name);
                                   });
                                 }
                               },
@@ -87,10 +95,11 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildMenuBar(BuildContext context, AuthViewModel model) {
+    Size screensize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 50),
-      width: MediaQuery.of(context).size.width,
-      height: 50.0,
+      padding: EdgeInsets.symmetric(horizontal: 13.w),
+      width: screensize.width,
+      height: 7.5.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
@@ -110,25 +119,22 @@ class _AuthScreenState extends State<AuthScreen>
                   "Existing",
                   style: TextStyle(
                     color: model.left,
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                   ),
                 ),
               ),
             ),
-            //Container(height: 33.0, width: 1.0, color: Colors.white),
             Expanded(
               child: TextButton(
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                 ),
-                //splashColor: Colors.transparent,
-                //highlightColor: Colors.transparent,
                 onPressed: model.onSignUpButtonPress,
                 child: Text(
                   "New",
                   style: TextStyle(
                     color: model.right,
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                   ),
                 ),
               ),
@@ -140,10 +146,11 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildSignIn(BuildContext context, AuthViewModel model) {
+    Size screensize = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.only(top: 23.0, left: 35, right: 35),
-        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
+        width: screensize.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -157,13 +164,13 @@ class _AuthScreenState extends State<AuthScreen>
                 key: model.formKeyLogin,
                 autovalidateMode: model.validate,
                 child: Container(
-                  // width: MediaQuery.of(context).size.width - 35,
-                  // height: MediaQuery.of(context).size.height / 4.3,
+                  width: screensize.width - 70,
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
@@ -175,21 +182,23 @@ class _AuthScreenState extends State<AuthScreen>
                             icon: Icon(
                               Icons.mail_outline,
                               color: Colors.black,
-                              size: 22.0,
+                              size: 24.0,
                             ),
                             hintText: "Email Address",
-                            hintStyle: TextStyle(fontSize: 17.0),
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
                           ),
                         ),
                       ),
                       Container(
-                        width: 250.0,
+                        width: 65.w,
                         height: 1.0,
                         color: Colors.grey[400],
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           focusNode: model.passwordLogin,
                           controller: model.loginPasswordController,
@@ -201,18 +210,19 @@ class _AuthScreenState extends State<AuthScreen>
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.lock,
-                              size: 22.0,
+                              size: 24.0,
                               color: Colors.black,
                             ),
                             hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 17.0),
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
                             suffixIcon: IconButton(
                               onPressed: () => model.displayPasswordLogin(),
                               icon: Icon(
                                 model.obscureTextLogin
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
-                                size: 15.0,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -225,17 +235,17 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 3.5.h,
             ),
             HikeButton(
               onTap: model.next_login,
               text: 'LOGIN',
-              buttonWidth: 90,
+              buttonWidth: optbwidth,
               buttonHeight: 15,
             ),
             Padding(
-              padding:
-                  EdgeInsets.only(left: 15.0, right: 15.0, top: 20, bottom: 20),
+              padding: EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15.0, bottom: 15.0),
               child: Text(
                 "Or",
                 style: TextStyle(
@@ -248,7 +258,7 @@ class _AuthScreenState extends State<AuthScreen>
               onTap: () => model.loginAsGuest(),
               text: 'LOGIN AS GUEST',
               buttonHeight: 15,
-              buttonWidth: 35,
+              buttonWidth: optbwidth,
             ),
           ],
         ),
@@ -257,9 +267,10 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildSignUp(BuildContext context, AuthViewModel model) {
+    Size screensize = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.only(top: 23.0),
+        padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
         child: Column(
           children: <Widget>[
             Card(
@@ -272,27 +283,30 @@ class _AuthScreenState extends State<AuthScreen>
                 key: model.formKeySignup,
                 autovalidateMode: model.validate,
                 child: Container(
-                    width: MediaQuery.of(context).size.width - 70,
+                    width: screensize.width - 70,
                     // height: 280.0,
                     child: Column(children: <Widget>[
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 13, vertical: 20),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
                           controller: model.signupNameController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          style: TextStyle(fontSize: 18.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.account_box,
                               color: Colors.black,
+                              size: 24,
                             ),
                             hintText: "Name",
-                            hintStyle: TextStyle(fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
                           ),
                         ),
                       ),
@@ -301,9 +315,10 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 1.0,
                         color: Colors.grey[400],
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           validator: (value) => Validator.validateEmail(value),
                           focusNode: model.email,
@@ -316,9 +331,11 @@ class _AuthScreenState extends State<AuthScreen>
                             icon: Icon(
                               Icons.mail,
                               color: Colors.black,
+                              size: 24,
                             ),
                             hintText: "Email Address",
-                            hintStyle: TextStyle(fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
                           ),
                         ),
                       ),
@@ -327,9 +344,10 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 1.0,
                         color: Colors.grey[400],
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
@@ -343,6 +361,7 @@ class _AuthScreenState extends State<AuthScreen>
                             icon: Icon(
                               Icons.lock,
                               color: Colors.black,
+                              size: 24,
                             ),
                             suffixIcon: IconButton(
                               onPressed: () => model.displayPasswordSignup(),
@@ -350,12 +369,13 @@ class _AuthScreenState extends State<AuthScreen>
                                 model.obscureTextSignup
                                     ? Icons.remove_red_eye_sharp
                                     : Icons.remove_red_eye_outlined,
-                                size: 15.0,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
                             hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
                           ),
                         ),
                       ),
@@ -363,7 +383,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             SizedBox(
-              height: 15,
+              height: 3.5.h,
             ),
             Container(
                 // margin: EdgeInsets.only(top: 300.0),
@@ -372,9 +392,9 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
                 child: HikeButton(
                   onTap: () => model.next_signup(),
-                  text: 'SIGNIN',
-                  buttonHeight: 18,
-                  buttonWidth: 55,
+                  text: 'SIGN UP',
+                  buttonHeight: 15,
+                  buttonWidth: optbwidth,
                 )),
           ],
         ),

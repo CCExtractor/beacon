@@ -25,6 +25,7 @@ class DialogBoxes {
           buttonWidth: 8.w,
           onTap: () => Navigator.of(context).pop(false),
           text: 'No',
+          textSize: 18.0,
         ),
         HikeButton(
           buttonHeight: 2.5.h,
@@ -33,6 +34,7 @@ class DialogBoxes {
             navigationService.removeAllAndPush('/main', '/');
           },
           text: 'Yes',
+          textSize: 18.0,
         ),
       ],
     );
@@ -56,19 +58,21 @@ class DialogBoxes {
                             children: <Widget>[
                               Text(
                                 'Change Beacon Duration',
-                                style: TextStyle(color: kYellow, fontSize: 12),
+                                style:
+                                    TextStyle(color: kYellow, fontSize: 14.0),
                               ),
                             ],
                           ),
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 3.h,
                       ),
                       Flexible(
                         child: HikeButton(
-                            buttonWidth: 48,
+                            buttonWidth: optbwidth,
                             text: 'Done',
+                            textSize: 18.0,
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {

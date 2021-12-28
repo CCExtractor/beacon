@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sizer/sizer.dart';
 
 const Color kYellow = Color(0xFFFDBB2C);
 const Color kBlue = Color(0xFF222375);
@@ -73,3 +74,11 @@ class Style {
   static final headerTextStyle = baseTextStyle.copyWith(
       color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w400);
 }
+
+final double labelsize = 20;
+final double hintsize = 18;
+final double homebheight = 4.45.h;
+final double homebwidth = 3.w;
+final double optbheight = 3.5.h;
+final double optbwidth = 8.w;
+const Color hintColor = Colors.black54;

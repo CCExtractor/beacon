@@ -53,10 +53,10 @@ class HomeViewModel extends BaseModel {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false));
       } else {
-        navigationService.showSnackBar('SomeThing went wrong');
+        navigationService.showSnackBar('Something went wrong');
       }
     } else {
-      navigationService.showSnackBar('Enter valid passkey');
+      navigationService.showSnackBar('Enter Valid Passkey');
     }
   }
 
