@@ -1,8 +1,9 @@
 # Beacon
+[![CI](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/)
 
 ## About the Project
 
-This project is a flutter build native interface to ease the group travelling (or hiking). By using this, the group leader would be able to share his location with the entire crew, and in case if someone loses contact with the group, he can quickly get in the right place by following the beacon. 
+This project is a flutter build native interface to ease the group travelling (or hiking). By using this, the group leader would be able to share his location with the entire crew, and in case if someone loses contact with the group, he can quickly get in the right place by following the beacon.
 
 ## Getting Started
 
@@ -28,7 +29,7 @@ beacon/lib/
 ├── components/                             # Shared Components such as dialog boxes, button, and other shared widgets
 ├── enums/                                  # enum files
 |   └── view_state.dart                     # defines view states i.e Idle, Busy, Error
-├── models/                                 # model classes: beacon, location, landmark, user  
+├── models/                                 # model classes: beacon, location, landmark, user
 ├── queries/                                # includes all graphql query strings
 ├── services/                               # services
 |   ├── database_mutation_function.dart/    # Graphql Queries implementations
@@ -36,7 +37,7 @@ beacon/lib/
 |   └── ...                                 # all config files
 ├── utilities/                              # Utilities that includes constants file
 ├── views/                                  # Views/UI layer
-|  ├── auth_screen.dart                     
+|  ├── auth_screen.dart
 |  ├── base_view.dart
 |  ├── hike_screen.dart
 |  ├── home.dart
@@ -51,7 +52,7 @@ beacon/lib/
 
 <img src="screenshots/1.jpg" width="24%" /> <img src="screenshots/2.jpg" width="24%"/> <img src="screenshots/3.jpg" width="24%"/> <img src="screenshots/4.jpg" width="24%"/>
 
-## Contributing 
+## Contributing
 
 Whether you have some feauture requests/ideas, code improvements, refactoring, performance improvements, help is always Welcome. The more is done, better it gets.
 
