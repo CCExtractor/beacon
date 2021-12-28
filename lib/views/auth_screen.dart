@@ -238,7 +238,7 @@ class _AuthScreenState extends State<AuthScreen>
               height: 3.5.h,
             ),
             HikeButton(
-              onTap: model.next_login,
+              onTap: model.nextLogin,
               text: 'LOGIN',
               buttonWidth: optbwidth,
               buttonHeight: 15,
@@ -395,7 +395,8 @@ class _AuthScreenState extends State<AuthScreen>
                   text: 'SIGN UP',
                   buttonHeight: 15,
                   buttonWidth: optbwidth,
-                )),
+                ),
+            ),
           ],
         ),
       ),
