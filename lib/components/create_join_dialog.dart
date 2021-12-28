@@ -6,7 +6,6 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:duration_picker/duration_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateJoinBeaconDialog {
@@ -77,13 +76,13 @@ class CreateJoinBeaconDialog {
                                       .toString()
                                       .substring(0, 8);
                                 },
-                                validator: (value) {
-                                  if (value.startsWith("0:00:00"))
-                                    return "Enter valid duration";
-                                  return null;
-                                },
+                                validator: (value) =>
+                                    Validator.validateDuration(
+                                        value.toString()),
                                 decoration: InputDecoration(
                                     alignLabelWithHint: true,
+                                    errorStyle:
+                                        TextStyle(color: Colors.red[800]),
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.always,
                                     labelText: 'Duration',
