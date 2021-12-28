@@ -44,6 +44,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           onPressed: () => showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
+                                    actionsAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     title: Text(
                                       (userConfig.currentUser.isGuest)
                                           ? 'Create Account'
@@ -60,15 +62,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     ),
                                     actions: <Widget>[
                                       HikeButton(
-                                        buttonHeight: 20,
-                                        buttonWidth: 40,
+                                        buttonHeight: 2.5.h,
+                                        buttonWidth: 8.w,
                                         onTap: () =>
                                             Navigator.of(context).pop(false),
                                         text: 'No',
                                       ),
                                       HikeButton(
-                                        buttonHeight: 20,
-                                        buttonWidth: 40,
+                                        buttonHeight: 2.5.h,
+                                        buttonWidth: 8.w,
                                         onTap: () {
                                           navigationService.pop();
                                           model.logout();
