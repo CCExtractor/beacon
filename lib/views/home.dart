@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               child: HikeButton(
                                 textSize: 20.0,
                                 buttonWidth: homebwidth,
-                              buttonHeight: homebheight,
+                                buttonHeight: homebheight,
                                 text: 'Create Hike',
                                 textColor: Colors.white,
                                 borderColor: Colors.white,
@@ -123,7 +123,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               child: HikeButton(
                                 textSize: 20.0,
                                 buttonWidth: homebwidth,
-                              buttonHeight: homebheight,
+                                buttonHeight: homebheight,
                                 text: 'Join a Hike',
                                 textColor: kYellow,
                                 borderColor: kYellow,

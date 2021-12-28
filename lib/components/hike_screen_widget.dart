@@ -25,7 +25,7 @@ class HikeScreenWidget {
             context: context,
             builder: (context) => Dialog(
                   child: Container(
-                    height: 38.h,
+                    height: 35.h,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 16),

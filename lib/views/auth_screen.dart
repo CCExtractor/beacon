@@ -191,8 +191,8 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       ),
                       Container(
-                        width: 65.w,
-                        height: 1.0,
+                        width: 62.w,
+                        height: 0.2.h,
                         color: Colors.grey[400],
                       ),
                       Container(
@@ -311,8 +311,8 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       ),
                       Container(
-                        width: 250.0,
-                        height: 1.0,
+                        width: 62.w,
+                        height: 0.2.h,
                         color: Colors.grey[400],
                       ),
                       Container(
@@ -340,8 +340,8 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       ),
                       Container(
-                        width: 250.0,
-                        height: 1.0,
+                        width: 62.w,
+                        height: 0.2.h,
                         color: Colors.grey[400],
                       ),
                       Container(
@@ -386,16 +386,16 @@ class _AuthScreenState extends State<AuthScreen>
               height: 3.5.h,
             ),
             Container(
-                // margin: EdgeInsets.only(top: 300.0),
-                decoration: new BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                ),
-                child: HikeButton(
-                  onTap: () => model.next_signup(),
-                  text: 'SIGN UP',
-                  buttonHeight: 15,
-                  buttonWidth: optbwidth,
-                ),
+              // margin: EdgeInsets.only(top: 300.0),
+              decoration: new BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              ),
+              child: HikeButton(
+                onTap: () => model.nextSignup(),
+                text: 'SIGN UP',
+                buttonHeight: 15,
+                buttonWidth: optbwidth,
+              ),
             ),
           ],
         ),
