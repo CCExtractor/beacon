@@ -1,4 +1,3 @@
-
 # Beacon
 [![Flutter CI](https://github.com/CCExtractor/beacon/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/CCExtractor/beacon/actions/workflows/flutter-ci.yml)
 
