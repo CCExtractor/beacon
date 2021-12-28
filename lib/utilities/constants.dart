@@ -8,9 +8,18 @@ const Color kBlue = Color(0xFF222375);
 const Color kLightBlue = Color(0xFFE8F1F8);
 const Color kBlack = Color(0xFF343434);
 const Color shimmerSkeletonColor = Color(0xff4e4f91);
+const Color hintColor = Colors.black54; // Hint Text Color
 const double CAMERA_ZOOM = 15;
 const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
+
+// Button Sizings
+final double labelsize = 20;
+final double hintsize = 18;
+final double homebheight = 4.45.h;
+final double homebwidth = 3.w;
+final double optbheight = 3.5.h;
+final double optbwidth = 8.w;
 
 class AppConstants {
   static Future<LatLng> getLocation() async {
@@ -74,11 +83,3 @@ class Style {
   static final headerTextStyle = baseTextStyle.copyWith(
       color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w400);
 }
-
-final double labelsize = 20;
-final double hintsize = 18;
-final double homebheight = 4.45.h;
-final double homebwidth = 3.w;
-final double optbheight = 3.5.h;
-final double optbwidth = 8.w;
-const Color hintColor = Colors.black54;
