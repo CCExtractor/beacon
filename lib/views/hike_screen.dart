@@ -584,10 +584,12 @@ class _HikeScreenState extends State<HikeScreen> {
                                   text:
                                       'Long Press on any hiker to hand over the beacon\n',
                                   style: TextStyle(fontSize: 16)),
-                              TextSpan(
-                                  text:
-                                      'Double tap on beacon to change the duration\n',
-                                  style: TextStyle(fontSize: 14)),
+                              //TODO: enable this once backend has updated.
+                              //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                              // TextSpan(
+                              //     text:
+                              //         'Double tap on beacon to change the duration\n',
+                              //     style: TextStyle(fontSize: 14)),
                             ]),
                       ),
                     )
@@ -634,7 +636,10 @@ class _HikeScreenState extends State<HikeScreen> {
                                     ? Fluttertoast.showToast(
                                         msg:
                                             'Only beacon holder has access to change the duration')
-                                    : DialogBoxes.changeDurationDialog(context);
+                                    //TODO: enable this once backend has updated.
+                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                    // : DialogBoxes.changeDurationDialog(context);
+                                    : Container();
                               },
                               child: Icon(
                                 Icons.room,
