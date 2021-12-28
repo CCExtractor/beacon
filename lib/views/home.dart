@@ -10,6 +10,7 @@ import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:sizer/sizer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
@@ -43,6 +44,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           onPressed: () => showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
+                                    actionsAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     title: Text(
                                       (userConfig.currentUser.isGuest)
                                           ? 'Create Account'
@@ -59,15 +62,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     ),
                                     actions: <Widget>[
                                       HikeButton(
-                                        buttonHeight: 20,
-                                        buttonWidth: 40,
+                                        buttonHeight: 2.5.h,
+                                        buttonWidth: 8.w,
                                         onTap: () =>
                                             Navigator.of(context).pop(false),
                                         text: 'No',
                                       ),
                                       HikeButton(
-                                        buttonHeight: 20,
-                                        buttonWidth: 40,
+                                        buttonHeight: 2.5.h,
+                                        buttonWidth: 8.w,
                                         onTap: () {
                                           navigationService.pop();
                                           model.logout();
