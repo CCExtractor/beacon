@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:beacon/models/user/user_info.dart';
 import '../locator.dart';
 
 class UserConfig {
