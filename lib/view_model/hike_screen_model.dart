@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:beacon/models/location/location.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -33,11 +32,12 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<bool> onWillPop(context) async {
-    return (await showDialog(
-          context: context,
-          // builder: (context) => DialogBoxes.showExitDialog(context),
-        )) ??
-        false;
+    // return (await showDialog(
+    //       context: context,
+    //       // builder: (context) => DialogBoxes.showExitDialog(context),
+    //     )) ??
+    //     false;
+    return false;
   }
 
   void initialise(Beacon beaconParsed) async {
