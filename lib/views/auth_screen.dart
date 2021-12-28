@@ -237,7 +237,7 @@ class _AuthScreenState extends State<AuthScreen>
               height: 20,
             ),
             HikeButton(
-              onTap: model.next_login,
+              onTap: model.nextLogin,
               text: 'LOGIN',
               buttonWidth: 90,
               buttonHeight: 15,
@@ -380,7 +380,7 @@ class _AuthScreenState extends State<AuthScreen>
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 ),
                 child: HikeButton(
-                  onTap: () => model.next_signup(),
+                  onTap: () => model.nextSignup(),
                   text: 'SIGNIN',
                   buttonHeight: 18,
                   buttonWidth: 55,

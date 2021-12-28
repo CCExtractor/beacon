@@ -36,7 +36,7 @@ class AuthViewModel extends BaseModel {
   Color leftBg = kLightBlue;
   Color rightBg = kBlue;
 
-  next_signup() async {
+  nextSignup() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeySignup.currentState.validate()) {
@@ -76,7 +76,7 @@ class AuthViewModel extends BaseModel {
     setState(ViewState.idle);
   }
 
-  next_login() async {
+  nextLogin() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyLogin.currentState.validate()) {
