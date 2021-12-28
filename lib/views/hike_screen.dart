@@ -80,7 +80,6 @@ class _HikeScreenState extends State<HikeScreen> {
 
   Future<void> setupSubscriptions(bool isExpired) async {
     if (isBeaconExpired || isExpired) return;
-    print('Works');
     if (widget.isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
@@ -134,8 +133,10 @@ class _HikeScreenState extends State<HikeScreen> {
     mergeStreamSubscription = mergedStream.listen((event) async {
       if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
           .isBefore(DateTime.now())) {
+        setState(() {
+          isBeaconExpired = true;
+        });
         mergeStreamSubscription.cancel();
-        isBeaconExpired = true;
       }
       if (event.data != null) {
         print('${event.data}');
@@ -380,8 +381,9 @@ class _HikeScreenState extends State<HikeScreen> {
                                                 'Total Followers: ${hikers.length - 1} (Swipe up to view the list of followers)\n',
                                             style: TextStyle(fontSize: 12)),
                                         TextSpan(
-                                            text:
-                                                'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                            text: isBeaconExpired
+                                                ? ''
+                                                : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
                                             style: TextStyle(fontSize: 12)),
                                       ]),
                                 ),
@@ -517,8 +519,10 @@ class _HikeScreenState extends State<HikeScreen> {
                           ),
                           Align(
                               alignment: Alignment(0.87, -0.85),
-                              child: HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode)),
+                              child: isBeaconExpired
+                                  ? Container()
+                                  : HikeScreenWidget.shareButton(
+                                      context, widget.beacon.shortcode)),
                           Align(
                             alignment: Alignment(-0.8, -0.9),
                             child: GestureDetector(
