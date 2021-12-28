@@ -1,4 +1,4 @@
-[! [CI](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/)
+[![CI](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/devansh12b2/beacon/actions/workflows/flutter-ci.yml/)
 
 # Beacon
 
