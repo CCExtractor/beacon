@@ -20,77 +20,81 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
-    return BaseView<AuthViewModel>(builder: (context, model, child) {
-      return (model.isBusy)
-          ? Scaffold(body: Center(child: CircularProgressIndicator()))
-          : new Scaffold(
-              key: model.scaffoldKey,
-              resizeToAvoidBottomInset: true,
-              body: Container(
-                width: screensize.width,
-                height: screensize.height >= 775.0 ? screensize.height : 775.0,
-                child: Stack(
-                  children: <Widget>[
-                    CustomPaint(
-                      size: Size(screensize.width, screensize.height),
-                      painter: ShapePainter(),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(top: screensize.height / 3.5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: _buildMenuBar(context, model),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: PageView(
-                              controller: model.pageController,
-                              onPageChanged: (i) {
-                                if (i == 0) {
-                                  setState(() {
-                                    model.right = Colors.black;
-                                    model.left = Colors.white;
-                                  });
-                                  Future.delayed(Duration(milliseconds: 500),
-                                      () {
-                                    model.requestFocusForFocusNode(
-                                        model.emailLogin);
-                                  });
-                                } else if (i == 1) {
-                                  setState(() {
-                                    model.right = Colors.white;
-                                    model.left = Colors.black;
-                                  });
-                                  Future.delayed(Duration(milliseconds: 500),
-                                      () {
-                                    model.requestFocusForFocusNode(model.name);
-                                  });
-                                }
-                              },
-                              children: <Widget>[
-                                new ConstrainedBox(
-                                  constraints: const BoxConstraints.expand(),
-                                  child: _buildSignIn(context, model),
-                                ),
-                                new ConstrainedBox(
-                                  constraints: const BoxConstraints.expand(),
-                                  child: _buildSignUp(context, model),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+    return BaseView<AuthViewModel>(
+      builder: (context, model, child) {
+        return (model.isBusy)
+            ? Scaffold(body: Center(child: CircularProgressIndicator()))
+            : new Scaffold(
+                key: model.scaffoldKey,
+                resizeToAvoidBottomInset: true,
+                body: Container(
+                  width: screensize.width,
+                  height:
+                      screensize.height >= 775.0 ? screensize.height : 775.0,
+                  child: Stack(
+                    children: <Widget>[
+                      CustomPaint(
+                        size: Size(screensize.width, screensize.height),
+                        painter: ShapePainter(),
                       ),
-                    ),
-                  ],
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: screensize.height / 3.5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: _buildMenuBar(context, model),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: PageView(
+                                controller: model.pageController,
+                                onPageChanged: (i) {
+                                  if (i == 0) {
+                                    setState(() {
+                                      model.right = Colors.black;
+                                      model.left = Colors.white;
+                                    });
+                                    Future.delayed(Duration(milliseconds: 500),
+                                        () {
+                                      model.requestFocusForFocusNode(
+                                          model.emailLogin);
+                                    });
+                                  } else if (i == 1) {
+                                    setState(() {
+                                      model.right = Colors.white;
+                                      model.left = Colors.black;
+                                    });
+                                    Future.delayed(Duration(milliseconds: 500),
+                                        () {
+                                      model
+                                          .requestFocusForFocusNode(model.name);
+                                    });
+                                  }
+                                },
+                                children: <Widget>[
+                                  new ConstrainedBox(
+                                    constraints: const BoxConstraints.expand(),
+                                    child: _buildSignIn(context, model),
+                                  ),
+                                  new ConstrainedBox(
+                                    constraints: const BoxConstraints.expand(),
+                                    child: _buildSignUp(context, model),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-    });
+              );
+      },
+    );
   }
 
   Widget _buildMenuBar(BuildContext context, AuthViewModel model) {
