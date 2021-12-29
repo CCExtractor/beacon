@@ -133,10 +133,10 @@ class _HikeScreenState extends State<HikeScreen> {
     mergeStreamSubscription = mergedStream.listen((event) async {
       if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
           .isBefore(DateTime.now())) {
+        mergeStreamSubscription.cancel();
         setState(() {
           isBeaconExpired = true;
         });
-        mergeStreamSubscription.cancel();
       }
       if (event.data != null) {
         print('${event.data}');
