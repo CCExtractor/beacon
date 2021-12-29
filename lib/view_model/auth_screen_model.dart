@@ -8,7 +8,8 @@ class AuthViewModel extends BaseModel {
   final formKeySignup = GlobalKey<FormState>();
   final formKeyLogin = GlobalKey<FormState>();
 
-  AutovalidateMode validate = AutovalidateMode.disabled;
+  AutovalidateMode loginValidate = AutovalidateMode.disabled;
+  AutovalidateMode signupValidate = AutovalidateMode.disabled;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final FocusNode emailLogin = FocusNode();
@@ -38,10 +39,10 @@ class AuthViewModel extends BaseModel {
 
   nextSignup() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    validate = AutovalidateMode.always;
+    signupValidate = AutovalidateMode.always;
     if (formKeySignup.currentState.validate()) {
       setState(ViewState.busy);
-      validate = AutovalidateMode.disabled;
+      signupValidate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final bool signUpSuccess = await databaseFunctions.signup(
           name: signupNameController.text ?? "Anonymous",
@@ -78,10 +79,10 @@ class AuthViewModel extends BaseModel {
 
   nextLogin() async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
-    validate = AutovalidateMode.always;
+    loginValidate = AutovalidateMode.always;
     if (formKeyLogin.currentState.validate()) {
       setState(ViewState.busy);
-      validate = AutovalidateMode.disabled;
+      loginValidate = AutovalidateMode.disabled;
       await databaseFunctions.init();
       final bool loginSuccess = await databaseFunctions.login(
           email: loginEmailController.text,
@@ -99,14 +100,27 @@ class AuthViewModel extends BaseModel {
     }
   }
 
+  void requestFocusForFocusNode(FocusNode focusNode) {
+    FocusScope.of(navigationService.navigatorKey.currentContext)
+        .requestFocus(focusNode);
+  }
+
   void onSignInButtonPress() {
-    pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    pageController
+        .animateToPage(0,
+            duration: Duration(milliseconds: 500), curve: Curves.decelerate)
+        .then((value) {
+      requestFocusForFocusNode(emailLogin);
+    });
   }
 
   void onSignUpButtonPress() {
-    pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    pageController
+        .animateToPage(1,
+            duration: Duration(milliseconds: 500), curve: Curves.decelerate)
+        .then((value) {
+      requestFocusForFocusNode(name);
+    });
   }
 
   displayPasswordLogin() {
