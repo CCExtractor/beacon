@@ -98,7 +98,6 @@ class CreateJoinBeaconDialog {
                               border: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none),
-
                         ),
                       ),
                     ),
