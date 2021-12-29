@@ -6,7 +6,6 @@ import 'package:beacon/utilities/indication_painter.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -97,9 +96,9 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildMenuBar(BuildContext context, AuthViewModel model) {
     Size screensize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 13.w),
+      padding: EdgeInsets.symmetric(horizontal: 13.5.w),
       width: screensize.width,
-      height: 7.5.h,
+      height: 6.75.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
