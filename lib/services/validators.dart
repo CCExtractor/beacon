@@ -55,4 +55,11 @@ class Validator {
     }
     return null;
   }
+
+  static String validateDuration(String duration) {
+    if (duration.startsWith("0:00:00.")) {
+      return "Duration cannot be $duration";
+    }
+    return null;
+  }
 }
