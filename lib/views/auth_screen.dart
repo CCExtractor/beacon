@@ -163,7 +163,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
               child: Form(
                 key: model.formKeyLogin,
-                autovalidateMode: model.validate,
+                autovalidateMode: model.loginValidate,
                 child: Container(
                   // width: MediaQuery.of(context).size.width - 35,
                   // height: MediaQuery.of(context).size.height / 4.3,
@@ -173,6 +173,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
+                          autovalidateMode: model.loginValidate,
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
                           validator: (value) => Validator.validateEmail(value),
@@ -199,6 +200,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
+                          autovalidateMode: model.loginValidate,
                           focusNode: model.passwordLogin,
                           controller: model.loginPasswordController,
                           obscureText: model.obscureTextLogin,
@@ -278,7 +280,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
               child: Form(
                 key: model.formKeySignup,
-                autovalidateMode: model.validate,
+                autovalidateMode: model.signupValidate,
                 child: Container(
                     width: MediaQuery.of(context).size.width - 70,
                     // height: 280.0,
@@ -287,6 +289,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding:
                             EdgeInsets.symmetric(horizontal: 13, vertical: 20),
                         child: TextFormField(
+                          autovalidateMode: model.signupValidate,
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
                           controller: model.signupNameController,
@@ -313,6 +316,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
+                          autovalidateMode: model.signupValidate,
                           validator: (value) => Validator.validateEmail(value),
                           focusNode: model.email,
                           textInputAction: TextInputAction.next,
@@ -339,6 +343,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: TextFormField(
+                          autovalidateMode: model.signupValidate,
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
                           validator: (value) =>
