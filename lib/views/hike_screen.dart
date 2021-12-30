@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
