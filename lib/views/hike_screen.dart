@@ -77,12 +77,15 @@ class _HikeScreenState extends State<HikeScreen> {
     });
   }
 
-  Future<void> setupSubscriptions() async {
+  Future<void> setupSubscriptions(bool isExpired) async {
+    if (isBeaconExpired || isExpired) return;
     if (widget.isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation =
           loc.onLocationChanged.listen((LocationData currentLocation) async {
+        if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now())) _leaderLocation.cancel();
         Coordinates coordinates =
             Coordinates(currentLocation.latitude, currentLocation.longitude);
         var addresses =
@@ -125,7 +128,15 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       mergedStream = beaconJoinedStream;
     }
-    final mergeStreamSubscription = mergedStream.listen((event) async {
+    StreamSubscription<dynamic> mergeStreamSubscription;
+    mergeStreamSubscription = mergedStream.listen((event) async {
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) {
+        mergeStreamSubscription.cancel();
+        setState(() {
+          isBeaconExpired = true;
+        });
+      }
       if (event.data != null) {
         print('${event.data}');
         if (event.data.containsKey('beaconJoined')) {
@@ -194,12 +205,13 @@ class _HikeScreenState extends State<HikeScreen> {
 
   @override
   void dispose() {
-    if (widget.isLeader) {
+    if (widget.isLeader && !isBeaconExpired) {
       _leaderLocation.cancel();
     }
-    for (var streamSub in mergedStreamSubscriptions) {
-      streamSub.cancel();
-    }
+    if (!isBeaconExpired)
+      for (var streamSub in mergedStreamSubscriptions) {
+        streamSub.cancel();
+      }
     super.dispose();
   }
 
@@ -234,6 +246,8 @@ class _HikeScreenState extends State<HikeScreen> {
     await databaseFunctions.fetchBeaconInfo(widget.beacon.id).then((value) {
       beacon = value;
       setState(() {
+        isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now());
         hikers.add(value.leader);
         for (var i in value.followers) {
           if (!followerId.contains(i.id)) {
@@ -294,7 +308,8 @@ class _HikeScreenState extends State<HikeScreen> {
     beacon = widget.beacon;
     fetchData();
     graphQlClient = GraphQLConfig().graphQlClient();
-    setupSubscriptions();
+    setupSubscriptions(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+        .isBefore(DateTime.now()));
     isBusy = false;
   }
 
@@ -365,8 +380,9 @@ class _HikeScreenState extends State<HikeScreen> {
                                                 'Total Followers: ${hikers.length - 1} (Swipe up to view the list of followers)\n',
                                             style: TextStyle(fontSize: 12)),
                                         TextSpan(
-                                            text:
-                                                'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                            text: isBeaconExpired
+                                                ? ''
+                                                : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
                                             style: TextStyle(fontSize: 12)),
                                       ]),
                                 ),
@@ -502,8 +518,10 @@ class _HikeScreenState extends State<HikeScreen> {
                           ),
                           Align(
                               alignment: Alignment(0.87, -0.85),
-                              child: HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode)),
+                              child: isBeaconExpired
+                                  ? Container()
+                                  : HikeScreenWidget.shareButton(
+                                      context, widget.beacon.shortcode)),
                           Align(
                             alignment: Alignment(-0.8, -0.9),
                             child: GestureDetector(
@@ -642,7 +660,7 @@ class _HikeScreenState extends State<HikeScreen> {
     return (await showDialog(
           context: context,
           builder: (context) => DialogBoxes.showExitDialog(
-              context, widget.isLeader, hikers.length),
+              context, widget.isLeader, hikers.length, isBeaconExpired),
         )) ??
         false;
   }
