@@ -63,7 +63,14 @@ class _HikeScreenState extends State<HikeScreen> {
       target: loc,
     );
     final GoogleMapController controller = await mapController.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+    controller
+        .animateCamera(CameraUpdate.newCameraPosition(cPosition))
+        .then((v) async {
+      CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(
+          calculateMapBoundsFromListOfLatLng(route), 0);
+      controller.animateCamera(cameraUpdate);
+    });
+
     setState(() {
       var pinPosition = loc;
       markers.removeWhere((m) => m.markerId.value == "1");
@@ -517,11 +524,23 @@ class _HikeScreenState extends State<HikeScreen> {
                             foregroundPainter: ShapePainter(),
                           ),
                           Align(
-                              alignment: Alignment(0.87, -0.85),
-                              child: isBeaconExpired
-                                  ? Container()
-                                  : HikeScreenWidget.shareButton(
-                                      context, widget.beacon.shortcode)),
+                            alignment: Alignment(0.9, -0.85),
+                            child: isBeaconExpired
+                                ? Container()
+                                : HikeScreenWidget.shareButton(
+                                    context, widget.beacon.shortcode),
+                          ),
+                          if (!isBeaconExpired)
+                            //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
+                            Align(
+                              alignment: Alignment(0.5, -0.85),
+                              child: AnimatedOpacity(
+                                duration: Duration(milliseconds: 500),
+                                opacity: mapController.isCompleted ? 1.0 : 0.0,
+                                child: HikeScreenWidget.shareRouteButton(
+                                    context, beacon, mapController, route),
+                              ),
+                            ),
                           Align(
                             alignment: Alignment(-0.8, -0.9),
                             child: GestureDetector(
@@ -663,6 +682,36 @@ class _HikeScreenState extends State<HikeScreen> {
               context, widget.isLeader, hikers.length, isBeaconExpired),
         )) ??
         false;
+  }
+
+  LatLngBounds calculateMapBoundsFromListOfLatLng(List<LatLng> pointsList,
+      {double padding = 0.0001}) {
+    double southWestLatitude = 90;
+    double southWestLongitude = 90;
+    double northEastLatitude = -180;
+    double northEastLongitude = -180;
+    pointsList.forEach((point) {
+      if (point.latitude < southWestLatitude) {
+        southWestLatitude = point.latitude;
+      }
+      if (point.longitude < southWestLongitude) {
+        southWestLongitude = point.longitude;
+      }
+      if (point.latitude > northEastLatitude) {
+        northEastLatitude = point.latitude;
+      }
+      if (point.longitude > northEastLongitude) {
+        northEastLongitude = point.longitude;
+      }
+    });
+    southWestLatitude = southWestLatitude - padding;
+    southWestLongitude = southWestLongitude - padding;
+    northEastLatitude = northEastLatitude + padding;
+    northEastLongitude = northEastLongitude + padding;
+    LatLngBounds bound = LatLngBounds(
+        southwest: LatLng(southWestLatitude, southWestLongitude),
+        northeast: LatLng(northEastLatitude, northEastLongitude));
+    return bound;
   }
 
   void relayBeacon(User newHolder) {
