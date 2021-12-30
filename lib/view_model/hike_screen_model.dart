@@ -6,10 +6,10 @@ import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:beacon/enums/view_state.dart';
-import 'package:share/share.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/view_model/base_view_model.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HikeScreenViewModel extends BaseModel {
   double screenHeight, screenWidth, lat, long;
