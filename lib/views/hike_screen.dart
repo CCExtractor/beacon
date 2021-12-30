@@ -660,7 +660,7 @@ class _HikeScreenState extends State<HikeScreen> {
     return (await showDialog(
           context: context,
           builder: (context) => DialogBoxes.showExitDialog(
-              context, widget.isLeader, hikers.length),
+              context, widget.isLeader, hikers.length, isBeaconExpired),
         )) ??
         false;
   }

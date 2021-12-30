@@ -6,16 +6,18 @@ import 'package:sizer/sizer.dart';
 
 class DialogBoxes {
   static AlertDialog showExitDialog(
-      BuildContext context, bool isLeader, int X) {
+      BuildContext context, bool isLeader, int X, bool isBeaconExpired) {
     return AlertDialog(
       title: Text(
         'This will terminate the hike, Confirm?',
         style: TextStyle(fontSize: 25, color: kYellow),
       ),
       content: Text(
-        isLeader && (X - 1 > 0)
-            ? 'There are ${X - 1} followers and you are carrying the beacon. Do you want to terminate the hike?'
-            : 'Are you sure you want to terminate the hike?',
+        isBeaconExpired
+            ? 'Are you sure you want to exit?'
+            : isLeader && (X - 1 > 0)
+                ? 'There are ${X - 1} followers and you are carrying the beacon. Do you want to terminate the hike?'
+                : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
