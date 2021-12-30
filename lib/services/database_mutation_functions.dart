@@ -184,6 +184,7 @@ class DataBaseMutationFunctions {
   Future<List<Beacon>> fetchUserBeacons() async {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
+    List<Beacon> expiredBeacons = [];
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -199,10 +200,15 @@ class DataBaseMutationFunctions {
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
           beaconIds.add(i.id);
-          beacons.add(i);
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
         }
       }
     }
+    beacons.addAll(expiredBeacons);
     return beacons;
   }
 
@@ -261,8 +267,17 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) {
+        navigationService.showSnackBar(
+            "Looks like the beacon you are trying join has expired");
+        return null;
+      }
       beacon.route.add(beacon.leader.location);
       return beacon;
+    } else {
+      navigationService
+          .showSnackBar("Something went wrong while trying to join Beacon");
     }
     return null;
   }
