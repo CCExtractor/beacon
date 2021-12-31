@@ -54,8 +54,10 @@ class HomeViewModel extends BaseModel {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false));
       } else {
-        navigationService.showSnackBar('SomeThing went wrong');
+        //there was some error, go back to homescreen.
+        setState(ViewState.idle);
       }
+      //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
     } else {
       navigationService.showSnackBar('Enter valid passkey');
     }
