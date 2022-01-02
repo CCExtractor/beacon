@@ -10,11 +10,16 @@ class HomeViewModel extends BaseModel {
   final formKeyJoin = GlobalKey<FormState>();
   Duration resultingDuration = Duration(minutes: 30);
   AutovalidateMode validate = AutovalidateMode.onUserInteraction;
+  DateTime startsAt;
+  DateTime startingdate;
+  TimeOfDay startingTime;
   bool isCreatingHike = false;
   String title;
   //commenting out since its value isnt used anywhere.
   //TextEditingController _titleController = new TextEditingController();
   TextEditingController durationController = new TextEditingController();
+  TextEditingController startsAtDate = new TextEditingController();
+  TextEditingController startsAtTime = new TextEditingController();
   String enteredPasskey = '';
 
   createHikeRoom() async {
@@ -25,8 +30,11 @@ class HomeViewModel extends BaseModel {
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
-      final Beacon beacon = await databaseFunctions.createBeacon(title,
-          DateTime.now().add(resultingDuration).millisecondsSinceEpoch.toInt());
+      final Beacon beacon = await databaseFunctions.createBeacon(
+        title,
+        startsAt.millisecondsSinceEpoch.toInt(),
+        startsAt.add(resultingDuration).millisecondsSinceEpoch.toInt(),
+      );
       // setState(ViewState.idle);
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
@@ -34,6 +42,7 @@ class HomeViewModel extends BaseModel {
               beacon,
               isLeader: true,
             ));
+        localNotif.scheduleNotification(beacon);
       } else {
         // navigationService.showSnackBar('Something went wrong');
         setState(ViewState.idle);
@@ -53,6 +62,7 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         navigationService.pushScreen('/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false));
+        localNotif.scheduleNotification(beacon);
       } else {
         //there was some error, go back to homescreen.
         setState(ViewState.idle);

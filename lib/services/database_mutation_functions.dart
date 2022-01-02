@@ -212,7 +212,7 @@ class DataBaseMutationFunctions {
     return beacons;
   }
 
-  Future<Beacon> createBeacon(String title, int expiresAt) async {
+  Future<Beacon> createBeacon(String title, int startsAt, int expiresAt) async {
     LatLng loc;
     try {
       loc = await AppConstants.getLocation();
@@ -222,7 +222,7 @@ class DataBaseMutationFunctions {
       return null;
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, expiresAt,
+        document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
             loc.latitude.toString(), loc.longitude.toString()))));
     if (result.hasException) {
       navigationService.showSnackBar(

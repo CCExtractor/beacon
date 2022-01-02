@@ -12,13 +12,15 @@ class CreateJoinBeaconDialog {
   static Future createHikeDialog(BuildContext context, HomeViewModel model) {
     model.resultingDuration = Duration(minutes: 30);
     model.durationController = new TextEditingController();
+    model.startsAtDate = new TextEditingController();
+    model.startsAtTime = new TextEditingController();
     return showDialog(
         context: context,
         builder: (context) => Dialog(
               child: Form(
                 key: model.formKeyCreate,
                 child: Container(
-                  height: 325,
+                  height: 500,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
@@ -43,6 +45,90 @@ class CreateJoinBeaconDialog {
                                       FloatingLabelBehavior.always,
                                   focusedBorder: InputBorder.none,
                                   enabledBorder: InputBorder.none),
+                            ),
+                          ),
+                          color: kLightBlue,
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: InkWell(
+                              onTap: () async {
+                                model.startingdate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2100),
+                                );
+                                model.startsAtDate.text = model.startingdate
+                                    .toString()
+                                    .substring(0, 10);
+                              },
+                              child: TextFormField(
+                                enabled: false,
+                                controller: model.startsAtDate,
+                                onChanged: (value) {
+                                  model.startsAtDate.text = model.startingdate
+                                      .toString()
+                                      .substring(0, 10);
+                                },
+                                decoration: InputDecoration(
+                                  alignLabelWithHint: true,
+                                  errorStyle: TextStyle(color: Colors.red[800]),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  labelText: 'Start Date',
+                                  labelStyle:
+                                      TextStyle(fontSize: 18, color: kBlack),
+                                  hintText: 'Choose start date',
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                          color: kLightBlue,
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: InkWell(
+                              onTap: () async {
+                                model.startingTime = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                );
+                                model.startsAtTime.text = model.startingTime
+                                    .toString()
+                                    .substring(10, 15);
+                              },
+                              child: TextFormField(
+                                enabled: false,
+                                controller: model.startsAtTime,
+                                onChanged: (value) {
+                                  model.startsAtTime.text = model.startingTime
+                                      .toString()
+                                      .substring(10, 15);
+                                },
+                                decoration: InputDecoration(
+                                  alignLabelWithHint: true,
+                                  errorStyle: TextStyle(color: Colors.red[800]),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  labelText: 'Start Time',
+                                  labelStyle:
+                                      TextStyle(fontSize: 18, color: kBlack),
+                                  hintText: 'Choose start time',
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                ),
+                              ),
                             ),
                           ),
                           color: kLightBlue,
@@ -110,6 +196,19 @@ class CreateJoinBeaconDialog {
                               buttonColor: kYellow,
                               onTap: () {
                                 // navigationService.pop();
+                                model.startsAt = DateTime(
+                                  model.startingdate.year,
+                                  model.startingdate.month,
+                                  model.startingdate.day,
+                                  model.startingTime.hour,
+                                  model.startingTime.minute,
+                                );
+                                // localNotif.scheduleNotification();
+                                if (model.startsAt.isBefore(DateTime.now())) {
+                                  navigationService.showSnackBar(
+                                      "Enter a valid date and time!!");
+                                  return;
+                                }
                                 model.createHikeRoom();
                               }),
                         ),

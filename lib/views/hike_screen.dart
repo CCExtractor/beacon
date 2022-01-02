@@ -22,6 +22,7 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sizer/sizer.dart';
 
 class HikeScreen extends StatefulWidget {
   final Beacon beacon;
@@ -54,6 +55,7 @@ class _HikeScreenState extends State<HikeScreen> {
   GraphQLClient graphQlClient;
   PanelController _panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
+  bool hasStarted;
 
   void updatePinOnMap(LatLng loc) async {
     CameraPosition cPosition = CameraPosition(
@@ -304,6 +306,14 @@ class _HikeScreenState extends State<HikeScreen> {
   @override
   void initState() {
     super.initState();
+    hasStarted = DateTime.now()
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(widget.beacon.startsAt));
+    if (!hasStarted) {
+      Future.delayed(Duration(seconds: 3), () {
+        navigationService.removeAllAndPush('/main', '/');
+      });
+      return;
+    }
     isBusy = true;
     beacon = widget.beacon;
     fetchData();
@@ -317,6 +327,22 @@ class _HikeScreenState extends State<HikeScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+    if (!hasStarted)
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.startsAt)).toString()}',
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: kBlue,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
     return isBusy
         ? CircularProgressIndicator()
         : WillPopScope(
