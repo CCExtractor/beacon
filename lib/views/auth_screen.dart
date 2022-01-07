@@ -263,8 +263,8 @@ class _AuthScreenState extends State<AuthScreen>
                               onPressed: () => model.displayPasswordLogin(),
                               icon: Icon(
                                 model.obscureTextLogin
-                                    ? Icons.remove_red_eye_sharp
-                                    : Icons.remove_red_eye_outlined,
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
