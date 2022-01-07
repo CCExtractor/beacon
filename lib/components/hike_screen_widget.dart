@@ -23,6 +23,9 @@ class HikeScreenWidget {
         showDialog(
             context: context,
             builder: (context) => Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Container(
                     height: 400,
                     child: Padding(

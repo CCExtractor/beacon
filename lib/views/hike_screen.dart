@@ -417,6 +417,9 @@ class _HikeScreenState extends State<HikeScreen> {
                               showDialog(
                                 context: context,
                                 builder: (context) => Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
                                   child: Container(
                                     height: 250,
                                     child: Padding(
