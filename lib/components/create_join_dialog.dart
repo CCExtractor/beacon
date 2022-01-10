@@ -1,12 +1,10 @@
 import 'package:beacon/locator.dart';
-import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/services/validators.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 class CreateJoinBeaconDialog {
