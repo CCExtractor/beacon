@@ -97,7 +97,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             Container(
                               width: 45.w,
                               child: HikeButton(
-                                textSize: 20.0,
                                 buttonWidth: homebwidth,
                                 buttonHeight: homebheight,
                                 text: 'Create Hike',
@@ -121,7 +120,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             Container(
                               width: 45.w,
                               child: HikeButton(
-                                textSize: 20.0,
                                 buttonWidth: homebwidth,
                                 buttonHeight: homebheight,
                                 text: 'Join a Hike',
