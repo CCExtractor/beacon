@@ -44,50 +44,49 @@ class DialogBoxes {
 
   static Future changeDurationDialog(BuildContext context) {
     return showDialog(
-        context: context,
-        builder: (context) => Dialog(
-              child: Container(
-                height: 500,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  child: Column(
-                    children: <Widget>[
-                      Flexible(
-                        child: Container(
-                          color: kLightBlue,
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Change Beacon Duration',
-                                style:
-                                    TextStyle(color: kYellow, fontSize: 14.0),
-                              ),
-                            ],
-                          ),
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: 500,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            child: Column(
+              children: <Widget>[
+                Flexible(
+                  child: Container(
+                    color: kLightBlue,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'Change Beacon Duration',
+                          style: TextStyle(color: kYellow, fontSize: 14.0),
                         ),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Flexible(
-                        child: HikeButton(
-                            buttonWidth: optbwidth,
-                            text: 'Done',
-                            textSize: 18.0,
-                            textColor: Colors.white,
-                            buttonColor: kYellow,
-                            onTap: () {
-                              // DateTime newTime =
-                              // DateTime.now().add(newDuration);
-                              // update time
-                              Navigator.pop(context);
-                            }),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ));
+                SizedBox(
+                  height: 3.h,
+                ),
+                Flexible(
+                  child: HikeButton(
+                      buttonWidth: optbwidth,
+                      text: 'Done',
+                      textSize: 18.0,
+                      textColor: Colors.white,
+                      buttonColor: kYellow,
+                      onTap: () {
+                        // DateTime newTime =
+                        // DateTime.now().add(newDuration);
+                        // update time
+                        Navigator.pop(context);
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
