@@ -59,7 +59,7 @@ class HomeViewModel extends BaseModel {
       }
       //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
     } else {
-      navigationService.showSnackBar('Enter valid passkey');
+      navigationService.showSnackBar('Enter Valid Passkey');
     }
   }
 
