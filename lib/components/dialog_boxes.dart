@@ -8,6 +8,9 @@ class DialogBoxes {
   static AlertDialog showExitDialog(
       BuildContext context, bool isLeader, int X, bool isBeaconExpired) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       title: Text(
         'This will terminate the hike, Confirm?',
         style: TextStyle(fontSize: 25, color: kYellow),
@@ -46,6 +49,9 @@ class DialogBoxes {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         child: Container(
           height: 500,
           child: Padding(
