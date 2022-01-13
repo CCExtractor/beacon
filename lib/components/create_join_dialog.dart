@@ -105,7 +105,6 @@ class CreateJoinBeaconDialog {
                   Flexible(
                     flex: 2,
                     child: HikeButton(
-
                       text: 'Create',
                       textSize: 18.0,
                       textColor: Colors.white,
@@ -166,7 +165,6 @@ class CreateJoinBeaconDialog {
                   ),
                   Flexible(
                     child: HikeButton(
-
                       text: 'Validate',
                       textSize: 18.0,
                       textColor: Colors.white,

@@ -274,7 +274,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   return Center(
                                                     child: Text(
                                                       snapshot.error.toString(),
-                                                      textAlign: TextAlign.center,
+                                                      textAlign:
+                                                          TextAlign.center,
                                                       textScaleFactor: 1.3,
                                                     ),
                                                   );
@@ -299,10 +300,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                 return ListView.builder(
                                                   physics:
                                                       AlwaysScrollableScrollPhysics(),
-                                                  scrollDirection: Axis.vertical,
+                                                  scrollDirection:
+                                                      Axis.vertical,
                                                   itemCount: posts.length,
                                                   padding: EdgeInsets.all(8),
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return BeaconCustomWidgets
                                                         .getBeaconCard(context,
                                                             posts[index]);

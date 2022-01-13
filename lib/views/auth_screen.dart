@@ -245,7 +245,6 @@ class _AuthScreenState extends State<AuthScreen>
             HikeButton(
               onTap: model.nextLogin,
               text: 'LOGIN',
-
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -261,7 +260,6 @@ class _AuthScreenState extends State<AuthScreen>
             HikeButton(
               onTap: () => model.loginAsGuest(),
               text: 'LOGIN AS GUEST',
-
             ),
           ],
         ),
@@ -399,7 +397,6 @@ class _AuthScreenState extends State<AuthScreen>
               child: HikeButton(
                 onTap: () => model.nextSignup(),
                 text: 'SIGN UP',
-
               ),
             ),
           ],

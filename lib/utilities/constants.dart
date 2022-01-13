@@ -16,7 +16,7 @@ const double CAMERA_BEARING = 30;
 // Button Sizings
 const double labelsize = 20;
 const double hintsize = 16;
-final double homebheight = 4.h;
+final double homebheight = 4.5.h;
 final double homebwidth = 3.5.w;
 const double optbheight = 18.0;
 const double optbwidth = 30.0;
