@@ -67,6 +67,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         onTap: () =>
                                             Navigator.of(context).pop(false),
                                         text: 'No',
+                                        textSize: 18.0,
                                       ),
                                       HikeButton(
                                         buttonHeight: 2.5.h,
@@ -76,6 +77,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           model.logout();
                                         },
                                         text: 'Yes',
+                                        textSize: 18.0,
                                       ),
                                     ],
                                   )),
@@ -86,7 +88,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(4.w, 185, 4.w, 5),
+                        padding: EdgeInsets.fromLTRB(4.w, 25.h, 4.w, 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
@@ -95,7 +97,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             Container(
                               width: 45.w,
                               child: HikeButton(
-                                buttonWidth: 0.h,
+                                buttonWidth: homebwidth,
+                                buttonHeight: homebheight,
                                 text: 'Create Hike',
                                 textColor: Colors.white,
                                 borderColor: Colors.white,
@@ -117,7 +120,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             Container(
                               width: 45.w,
                               child: HikeButton(
-                                buttonWidth: 0.h,
+                                buttonWidth: homebwidth,
+                                buttonHeight: homebheight,
                                 text: 'Join a Hike',
                                 textColor: kYellow,
                                 borderColor: kYellow,
@@ -184,14 +188,50 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                       ? SingleChildScrollView(
                                                           physics:
                                                               AlwaysScrollableScrollPhysics(),
-                                                          child: Center(
-                                                              child: Text(
-                                                                  'You haven\'t joined or created any beacon yet :(',
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          kBlack,
-                                                                      fontSize:
-                                                                          18))),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'You haven\'t joined or created any beacon yet',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        kBlack,
+                                                                    fontSize:
+                                                                        20),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 2.h,
+                                                              ),
+                                                              RichText(
+                                                                  text: TextSpan(
+                                                                      // textAlign:
+                                                                      //   TextAlign
+                                                                      //       .center,
+                                                                      style: TextStyle(color: kBlack, fontSize: 20),
+                                                                      children: [
+                                                                    TextSpan(
+                                                                        text:
+                                                                            'Join',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                kYellow)),
+                                                                    TextSpan(
+                                                                        text:
+                                                                            ' a Hike or '),
+                                                                    TextSpan(
+                                                                        text:
+                                                                            'Create',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                kYellow)),
+                                                                    TextSpan(
+                                                                        text:
+                                                                            '  a new one! '),
+                                                                  ])),
+                                                            ],
+                                                          ),
                                                         )
                                                       : ListView.builder(
                                                           physics:
@@ -245,11 +285,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   physics:
                                                       AlwaysScrollableScrollPhysics(),
                                                   child: Center(
-                                                      child: Text(
-                                                          'No nearby beacons found :(',
-                                                          style: TextStyle(
-                                                              color: kBlack,
-                                                              fontSize: 18))),
+                                                    child: Text(
+                                                      'No nearby beacons found :(',
+                                                      style: TextStyle(
+                                                          color: kBlack,
+                                                          fontSize: 20),
+                                                    ),
+                                                  ),
                                                 );
                                               }
                                               return ListView.builder(
