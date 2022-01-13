@@ -471,8 +471,6 @@ class _HikeScreenState extends State<HikeScreen> {
                                             ),
                                             Flexible(
                                               child: HikeButton(
-                                                  buttonWidth: optbwidth,
-                                                  buttonHeight: optbheight,
                                                   text: 'Create Landmark',
                                                   textSize: 16.0,
                                                   textColor: Colors.white,
