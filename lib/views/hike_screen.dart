@@ -419,7 +419,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                 context: context,
                                 builder: (context) => Dialog(
                                   child: Container(
-                                    height: 30.h,
+                                    height: 28.h,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 32, vertical: 16),
@@ -467,14 +467,14 @@ class _HikeScreenState extends State<HikeScreen> {
                                               color: kLightBlue,
                                             ),
                                             SizedBox(
-                                              height: 2.h,
+                                              height: 3.h,
                                             ),
                                             Flexible(
                                               child: HikeButton(
                                                   buttonWidth: optbwidth,
                                                   buttonHeight: optbheight,
                                                   text: 'Create Landmark',
-                                                  textSize: 18.0,
+                                                  textSize: 16.0,
                                                   textColor: Colors.white,
                                                   buttonColor: kYellow,
                                                   onTap: () async {

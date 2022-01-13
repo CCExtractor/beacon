@@ -115,7 +115,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               ),
                             ),
                             SizedBox(
-                              width: 2.w,
+                              width: 1.w,
                             ),
                             Container(
                               width: 45.w,
@@ -260,65 +260,68 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           },
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: FutureBuilder(
-                                          future: databaseFunctions
-                                              .fetchNearbyBeacon(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.done) {
-                                              if (snapshot.hasError) {
-                                                return Center(
-                                                  child: Text(
-                                                    snapshot.error.toString(),
-                                                    textAlign: TextAlign.center,
-                                                    textScaleFactor: 1.3,
-                                                  ),
-                                                );
-                                              }
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: FutureBuilder(
+                                            future: databaseFunctions
+                                                .fetchNearbyBeacon(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.done) {
+                                                if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Text(
+                                                      snapshot.error.toString(),
+                                                      textAlign: TextAlign.center,
+                                                      textScaleFactor: 1.3,
+                                                    ),
+                                                  );
+                                                }
 
-                                              final posts = snapshot.data;
-                                              if (posts == null ||
-                                                  posts.length == 0) {
+                                                final posts = snapshot.data;
+                                                if (posts == null ||
+                                                    posts.length == 0) {
+                                                  return SingleChildScrollView(
+                                                    physics:
+                                                        AlwaysScrollableScrollPhysics(),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'No nearby beacons found :(',
+                                                        style: TextStyle(
+                                                            color: kBlack,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                  physics:
+                                                      AlwaysScrollableScrollPhysics(),
+                                                  scrollDirection: Axis.vertical,
+                                                  itemCount: posts.length,
+                                                  padding: EdgeInsets.all(8),
+                                                  itemBuilder: (context, index) {
+                                                    return BeaconCustomWidgets
+                                                        .getBeaconCard(context,
+                                                            posts[index]);
+                                                  },
+                                                );
+                                              } else {
                                                 return SingleChildScrollView(
                                                   physics:
                                                       AlwaysScrollableScrollPhysics(),
                                                   child: Center(
-                                                    child: Text(
-                                                      'No nearby beacons found :(',
-                                                      style: TextStyle(
-                                                          color: kBlack,
-                                                          fontSize: 20),
-                                                    ),
-                                                  ),
+                                                      child: Text(
+                                                          'No nearby beacons found :(',
+                                                          style: TextStyle(
+                                                              color: kBlack,
+                                                              fontSize: 18))),
                                                 );
                                               }
-                                              return ListView.builder(
-                                                physics:
-                                                    AlwaysScrollableScrollPhysics(),
-                                                scrollDirection: Axis.vertical,
-                                                itemCount: posts.length,
-                                                padding: EdgeInsets.all(8),
-                                                itemBuilder: (context, index) {
-                                                  return BeaconCustomWidgets
-                                                      .getBeaconCard(context,
-                                                          posts[index]);
-                                                },
-                                              );
-                                            } else {
-                                              return SingleChildScrollView(
-                                                physics:
-                                                    AlwaysScrollableScrollPhysics(),
-                                                child: Center(
-                                                    child: Text(
-                                                        'No nearby beacons found :(',
-                                                        style: TextStyle(
-                                                            color: kBlack,
-                                                            fontSize: 18))),
-                                              );
-                                            }
-                                          },
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ],

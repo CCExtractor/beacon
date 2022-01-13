@@ -25,7 +25,7 @@ class HikeScreenWidget {
             context: context,
             builder: (context) => Dialog(
                   child: Container(
-                    height: 35.h,
+                    height: 30.h,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 16),
@@ -41,7 +41,7 @@ class HikeScreenWidget {
                             ),
                           ),
                           SizedBox(
-                            height: 3.h,
+                            height: 3.5.h,
                           ),
                           Flexible(
                             child: HikeButton(
@@ -57,11 +57,11 @@ class HikeScreenWidget {
                                 }),
                           ),
                           SizedBox(
-                            height: 1.h,
+                            height: 2.h,
                           ),
                           Flexible(
                             child: HikeButton(
-                              buttonHeight: optbheight * 1,
+                              buttonHeight: optbheight,
                               buttonWidth: optbwidth,
                               textSize: 18,
                               text: 'Copy Passkey',

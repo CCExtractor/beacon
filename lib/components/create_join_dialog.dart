@@ -17,7 +17,7 @@ class CreateJoinBeaconDialog {
         child: Form(
           key: model.formKeyCreate,
           child: Container(
-            height: 48.h,
+            height: 45.h,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: Column(
@@ -105,8 +105,7 @@ class CreateJoinBeaconDialog {
                   Flexible(
                     flex: 2,
                     child: HikeButton(
-                      buttonWidth: optbwidth,
-                      buttonHeight: optbheight,
+
                       text: 'Create',
                       textSize: 18.0,
                       textColor: Colors.white,
@@ -133,7 +132,7 @@ class CreateJoinBeaconDialog {
         child: Form(
           key: model.formKeyJoin,
           child: Container(
-            height: 28.h,
+            height: 25.h,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: Column(
@@ -167,8 +166,7 @@ class CreateJoinBeaconDialog {
                   ),
                   Flexible(
                     child: HikeButton(
-                      buttonWidth: optbwidth,
-                      buttonHeight: optbheight,
+
                       text: 'Validate',
                       textSize: 18.0,
                       textColor: Colors.white,

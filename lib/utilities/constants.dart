@@ -14,12 +14,12 @@ const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 
 // Button Sizings
-final double labelsize = 20;
-final double hintsize = 18;
-final double homebheight = 4.45.h;
-final double homebwidth = 3.w;
-final double optbheight = 3.5.h;
-final double optbwidth = 8.w;
+const double labelsize = 20;
+const double hintsize = 16;
+final double homebheight = 4.h;
+final double homebwidth = 3.5.w;
+const double optbheight = 18.0;
+const double optbwidth = 30.0;
 
 class AppConstants {
   static Future<LatLng> getLocation() async {
