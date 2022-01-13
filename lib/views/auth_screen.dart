@@ -297,6 +297,7 @@ class _AuthScreenState extends State<AuthScreen>
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
+                          validator: (value) => Validator.validateName(value),
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
                           controller: model.signupNameController,
