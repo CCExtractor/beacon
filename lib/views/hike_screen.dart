@@ -21,6 +21,7 @@ import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sizer/sizer.dart';
 
@@ -352,8 +353,8 @@ class _HikeScreenState extends State<HikeScreen> {
                 child: ModalProgressHUD(
                     inAsyncCall: isGeneratingLink || isBusy,
                     child: SlidingUpPanel(
-                      maxHeight: MediaQuery.of(context).size.height * 0.6,
-                      minHeight: 154,
+                      maxHeight: 60.h,
+                      minHeight: 20.h,
                       controller: _panelController,
                       collapsed: Container(
                         decoration: BoxDecoration(
@@ -364,13 +365,13 @@ class _HikeScreenState extends State<HikeScreen> {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 12.0,
+                              height: 1.5.h,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  width: 60,
+                                  width: 65,
                                   height: 5,
                                   decoration: BoxDecoration(
                                       color: Colors.grey[300],
@@ -380,7 +381,7 @@ class _HikeScreenState extends State<HikeScreen> {
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 1.5.h,
                             ),
                             Container(
                               width: double.infinity,
@@ -396,7 +397,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                             text: isBeaconExpired
                                                 ? 'Beacon has been expired\n'
                                                 : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                            style: TextStyle(fontSize: 16)),
+                                            style: TextStyle(fontSize: 18)),
                                         TextSpan(
                                             text:
                                                 'Beacon holder at: $address\n',
@@ -413,7 +414,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                       ]),
                                 ),
                               ),
-                              height: 120,
+                              height: 15.h,
                             ),
                           ],
                         ),
@@ -444,7 +445,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                 context: context,
                                 builder: (context) => Dialog(
                                   child: Container(
-                                    height: 250,
+                                    height: 30.h,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 32, vertical: 16),
@@ -453,11 +454,13 @@ class _HikeScreenState extends State<HikeScreen> {
                                         child: Column(
                                           children: <Widget>[
                                             Container(
-                                              height: 100,
+                                              height: 12.h,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(4.0),
                                                 child: TextFormField(
+                                                  style:
+                                                      TextStyle(fontSize: 20.0),
                                                   onChanged: (key) {
                                                     title = key;
                                                   },
@@ -470,6 +473,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                                     }
                                                   },
                                                   decoration: InputDecoration(
+                                                    border: InputBorder.none,
                                                     alignLabelWithHint: true,
                                                     floatingLabelBehavior:
                                                         FloatingLabelBehavior
@@ -477,11 +481,11 @@ class _HikeScreenState extends State<HikeScreen> {
                                                     hintText:
                                                         'Add title for the landmark',
                                                     hintStyle: TextStyle(
-                                                        fontSize: 15,
-                                                        color: kBlack),
+                                                        fontSize: hintsize,
+                                                        color: hintColor),
                                                     labelText: 'Title',
                                                     labelStyle: TextStyle(
-                                                        fontSize: 20,
+                                                        fontSize: labelsize,
                                                         color: kYellow),
                                                   ),
                                                 ),
@@ -489,12 +493,14 @@ class _HikeScreenState extends State<HikeScreen> {
                                               color: kLightBlue,
                                             ),
                                             SizedBox(
-                                              height: 30,
+                                              height: 2.h,
                                             ),
                                             Flexible(
                                               child: HikeButton(
-                                                  buttonWidth: 25,
+                                                  buttonWidth: optbwidth,
+                                                  buttonHeight: optbheight,
                                                   text: 'Create Landmark',
+                                                  textSize: 18.0,
                                                   textColor: Colors.white,
                                                   buttonColor: kYellow,
                                                   onTap: () async {

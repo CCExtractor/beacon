@@ -33,18 +33,20 @@ void main() async {
   await Hive.openBox<Beacon>('beacons');
   setupLocator();
   localNotif.initialize();
-  runApp(OverlaySupport(
-    child: Sizer(
-      builder: (context, orientation, deviceType) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Beacon',
-        navigatorKey: navigationService.navigatorKey,
-        theme: ThemeData(fontFamily: 'FuturaBold'),
-        initialRoute: '/',
-        onGenerateRoute: router.generateRoute,
+  runApp(
+    OverlaySupport(
+      child: Sizer(
+        builder: (context, orientation, deviceType) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Beacon',
+          navigatorKey: navigationService.navigatorKey,
+          theme: ThemeData(fontFamily: 'FuturaBold'),
+          initialRoute: '/',
+          onGenerateRoute: router.generateRoute,
+        ),
       ),
     ),
-  ));
+  );
 }
 
 class DemoPageView extends StatelessWidget {

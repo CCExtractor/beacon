@@ -16,7 +16,7 @@ class HikeButton extends StatelessWidget {
       this.buttonColor = kYellow,
       this.text,
       this.textColor = Colors.white,
-      this.buttonWidth = 32,
+      this.buttonWidth = 32, //button sizes have been defined in constants.dart
       this.buttonHeight = 32,
       this.textSize = 18});
 
