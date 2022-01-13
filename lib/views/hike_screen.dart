@@ -23,7 +23,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:sizer/sizer.dart';
 
 class HikeScreen extends StatefulWidget {
   final Beacon beacon;
