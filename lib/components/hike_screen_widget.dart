@@ -5,6 +5,7 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -147,6 +148,193 @@ class HikeScreenWidget {
       backgroundColor: kYellow,
       child: Icon(
         Icons.share,
+      ),
+    );
+  }
+
+  static Column panel(ScrollController sc, HikeScreenViewModel model,
+      BuildContext context, bool isLeader) {
+    return Column(children: [
+      SizedBox(
+        height: 15.0,
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 60,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+          ),
+        ],
+      ),
+      SizedBox(
+        height: 12,
+      ),
+      Container(
+        height: MediaQuery.of(context).size.height * 0.6 - 32,
+        child: ListView(
+            controller: sc,
+            physics: AlwaysScrollableScrollPhysics(),
+            children: [
+              isLeader
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: kBlack),
+                            children: [
+                              TextSpan(
+                                  text:
+                                      'Long Press on any hiker to hand over the beacon\n',
+                                  style: TextStyle(fontSize: 16)),
+                              //TODO: enable this once backend has updated.
+                              //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                              // TextSpan(
+                              //     text:
+                              //         'Double tap on beacon to change the duration\n',
+                              //     style: TextStyle(fontSize: 14)),
+                            ]),
+                      ),
+                    )
+                  : Container(),
+              SizedBox(
+                height: 6,
+              ),
+              Material(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  clipBehavior: Clip.antiAlias,
+                  scrollDirection: Axis.vertical,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: model.hikers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      onTap: () {
+                        model.hikers[index].id == userConfig.currentUser.id
+                            ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
+                            : model.beacon.leader.id ==
+                                    userConfig.currentUser.id
+                                ? model.relayBeacon(model.hikers[index])
+                                : Fluttertoast.showToast(
+                                    msg: 'You dont have beacon to relay');
+                      },
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            model.isBeaconExpired ? Colors.grey : kYellow,
+                        radius: 18,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Icon(
+                              Icons.person_outline,
+                              color: Colors.white,
+                            )),
+                      ),
+                      title: Text(
+                        model.hikers[index].name,
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                      trailing: model.hikers[index].id == model.beacon.leader.id
+                          ? GestureDetector(
+                              onDoubleTap: () {
+                                isLeader
+                                    ? Fluttertoast.showToast(
+                                        msg:
+                                            'Only beacon holder has access to change the duration')
+                                    //TODO: enable this once backend has updated.
+                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                    // : DialogBoxes.changeDurationDialog(context);
+                                    : Container();
+                              },
+                              child: Icon(
+                                Icons.room,
+                                color: model.isBeaconExpired
+                                    ? Colors.grey
+                                    : kYellow,
+                                size: 40,
+                              ),
+                            )
+                          : Container(width: 10),
+                    );
+                  },
+                ),
+              ),
+            ]),
+      ),
+    ]);
+  }
+
+  static void showCreateLandMarkDialogueDialog(
+    BuildContext context,
+    var landmarkFormKey,
+    var title,
+    var loc,
+    Future<void> createLandmark(var landmarkTitle, var location),
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: 30.h,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            child: Form(
+              key: landmarkFormKey,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 12.h,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: TextFormField(
+                        style: TextStyle(fontSize: 20.0),
+                        onChanged: (key) {
+                          title = key;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter title for landmark";
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          alignLabelWithHint: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          hintText: 'Add title for the landmark',
+                          hintStyle:
+                              TextStyle(fontSize: hintsize, color: hintColor),
+                          labelText: 'Title',
+                          labelStyle:
+                              TextStyle(fontSize: labelsize, color: kYellow),
+                        ),
+                      ),
+                    ),
+                    color: kLightBlue,
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Flexible(
+                    child: HikeButton(
+                      buttonWidth: optbwidth,
+                      buttonHeight: optbheight,
+                      text: 'Create Landmark',
+                      textSize: 18.0,
+                      textColor: Colors.white,
+                      buttonColor: kYellow,
+                      onTap: () => createLandmark(title, loc),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
