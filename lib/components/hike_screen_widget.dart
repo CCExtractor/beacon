@@ -45,7 +45,8 @@ class HikeScreenWidget {
                           ),
                           Flexible(
                             child: HikeButton(
-                                textSize: 18,
+                                buttonHeight: optbheight - 4,
+                                textSize: 16,
                                 text: 'Generate URL',
                                 textColor: Colors.white,
                                 buttonColor: kYellow,
@@ -59,7 +60,8 @@ class HikeScreenWidget {
                           ),
                           Flexible(
                             child: HikeButton(
-                              textSize: 18,
+                              buttonHeight: optbheight - 4,
+                              textSize: 16,
                               text: 'Copy Passkey',
                               textColor: Colors.white,
                               buttonColor: kYellow,
