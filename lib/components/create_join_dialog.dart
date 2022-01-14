@@ -19,13 +19,13 @@ class CreateJoinBeaconDialog {
         child: Form(
           key: model.formKeyCreate,
           child: Container(
-            height: 48.h,
+            height: 65.h,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: 14.h,
+                    height: 10.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
@@ -54,7 +54,7 @@ class CreateJoinBeaconDialog {
                     height: 2.h,
                   ),
                   Container(
-                    height: 14.h,
+                    height: 10.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: InkWell(
@@ -94,10 +94,10 @@ class CreateJoinBeaconDialog {
                     color: kLightBlue,
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 2.h,
                   ),
                   Container(
-                    height: 14.h,
+                    height: 10.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: InkWell(
@@ -138,7 +138,7 @@ class CreateJoinBeaconDialog {
                     height: 2.h,
                   ),
                   Container(
-                    height: 14.h,
+                    height: 10.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: InkWell(
@@ -197,6 +197,12 @@ class CreateJoinBeaconDialog {
                         buttonColor: kYellow,
                         onTap: () {
                           // navigationService.pop();
+                          if (model.startingdate == null ||
+                              model.startingTime == null) {
+                            navigationService
+                                .showSnackBar("Enter date and time");
+                            return;
+                          }
                           model.startsAt = DateTime(
                             model.startingdate.year,
                             model.startingdate.month,

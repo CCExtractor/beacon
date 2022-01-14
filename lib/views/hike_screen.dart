@@ -207,7 +207,7 @@ class _HikeScreenState extends State<HikeScreen> {
 
   @override
   void dispose() {
-    if (widget.isLeader && !isBeaconExpired) {
+    if (widget.isLeader && !isBeaconExpired && hasStarted) {
       _leaderLocation.cancel();
     }
     if (!isBeaconExpired)
