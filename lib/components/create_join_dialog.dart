@@ -16,6 +16,9 @@ class CreateJoinBeaconDialog {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         child: Form(
           key: model.formKeyCreate,
           child: Container(
@@ -232,6 +235,9 @@ class CreateJoinBeaconDialog {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         child: Form(
           key: model.formKeyJoin,
           child: Container(

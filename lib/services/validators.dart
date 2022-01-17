@@ -1,4 +1,11 @@
 class Validator {
+  static String validateName(String name) {
+    if (name.isEmpty) {
+      return "Name must not be left blank";
+    }
+    return null;
+  }
+
   static String validateEmail(String email) {
     // If email is empty return.
     if (email.isEmpty) {
