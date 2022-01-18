@@ -40,7 +40,6 @@ class BeaconCustomWidgets {
           vertical: 10.0,
           horizontal: 10.0,
         ),
-        height: 110,
         padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8, top: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
