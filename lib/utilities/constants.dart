@@ -14,7 +14,7 @@ const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 
 // Button Sizings
-const double labelsize = 20;
+const double labelsize = 24;
 const double hintsize = 16;
 final double homebheight = 4.5.h;
 final double homebwidth = 3.5.w;
