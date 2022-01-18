@@ -205,28 +205,30 @@ class HikeScreenViewModel extends BaseModel {
     if (isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
-      _leaderLocation =
-          loc.onLocationChanged.listen((LocationData currentLocation) async {
-        if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-            .isBefore(DateTime.now())) _leaderLocation.cancel();
-        Coordinates coordinates =
-            Coordinates(currentLocation.latitude, currentLocation.longitude);
-        var addresses =
-            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      _leaderLocation = loc.onLocationChanged.listen(
+        (LocationData currentLocation) async {
+          if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+              .isBefore(DateTime.now())) _leaderLocation.cancel();
+          Coordinates coordinates =
+              Coordinates(currentLocation.latitude, currentLocation.longitude);
+          var addresses =
+              await Geocoder.local.findAddressesFromCoordinates(coordinates);
 
-        String _address = addresses.first.addressLine;
-        if (true) {
-          databaseFunctions.init();
-          await databaseFunctions.updateLeaderLoc(beacon.id,
-              LatLng(currentLocation.latitude, currentLocation.longitude));
-
-          address = _address;
-          updatePinOnMap(
-              LatLng(currentLocation.latitude, currentLocation.longitude));
-          setPolyline();
-          notifyListeners();
-        }
-      });
+          String _address = addresses.first.addressLine;
+          if (address != _address) {
+            databaseFunctions.init();
+            await databaseFunctions.updateLeaderLoc(beacon.id,
+                LatLng(currentLocation.latitude, currentLocation.longitude));
+            address = _address;
+            route.add(
+                LatLng(currentLocation.latitude, currentLocation.longitude));
+            updatePinOnMap(
+                LatLng(currentLocation.latitude, currentLocation.longitude));
+            setPolyline();
+            notifyListeners();
+          }
+        },
+      );
     } else {
       beaconLocationStream = graphQlClient.subscribe(
         SubscriptionOptions(
@@ -258,6 +260,7 @@ class HikeScreenViewModel extends BaseModel {
         mergeStreamSubscription.cancel();
         isBeaconExpired = true;
         notifyListeners();
+        return;
       }
       if (event.data != null) {
         print('${event.data}');
