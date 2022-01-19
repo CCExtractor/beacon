@@ -1,4 +1,11 @@
 class Validator {
+  static String validateName(String name) {
+    if (name.isEmpty) {
+      return "Name must not be left blank";
+    }
+    return null;
+  }
+
   static String validateEmail(String email) {
     // If email is empty return.
     if (email.isEmpty) {
@@ -52,6 +59,13 @@ class Validator {
     final RegExp regExp = RegExp(pattern);
     if (!regExp.hasMatch(passkey) || passkey.length != 6) {
       return "Invalid passkey";
+    }
+    return null;
+  }
+
+  static String validateDuration(String duration) {
+    if (duration.startsWith("0:00:00.")) {
+      return "Duration cannot be $duration";
     }
     return null;
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
+import 'package:sizer/sizer.dart';
 
 class HikeScreenWidget {
   static copyPasskey(String passkey) {
@@ -23,8 +24,11 @@ class HikeScreenWidget {
         showDialog(
             context: context,
             builder: (context) => Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Container(
-                    height: 400,
+                    height: 35.h,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 16),
@@ -40,11 +44,13 @@ class HikeScreenWidget {
                             ),
                           ),
                           SizedBox(
-                            height: 30,
+                            height: 3.h,
                           ),
                           Flexible(
                             child: HikeButton(
-                                textSize: 20,
+                                buttonHeight: optbheight,
+                                buttonWidth: optbwidth,
+                                textSize: 18,
                                 text: 'Generate URL',
                                 textColor: Colors.white,
                                 buttonColor: kYellow,
@@ -54,11 +60,13 @@ class HikeScreenWidget {
                                 }),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 1.h,
                           ),
                           Flexible(
                             child: HikeButton(
-                              textSize: 20,
+                              buttonHeight: optbheight * 1,
+                              buttonWidth: optbwidth,
+                              textSize: 18,
                               text: 'Copy Passkey',
                               textColor: Colors.white,
                               buttonColor: kYellow,
