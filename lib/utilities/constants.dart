@@ -21,6 +21,11 @@ final double homebwidth = 3.w;
 final double optbheight = 3.5.h;
 final double optbwidth = 8.w;
 
+// GraphQL Registering Errors
+const String exceptionError = "Exception Errors";
+const String otherError = "Other Errors";
+const String logSuccess = "Successful Login";
+
 class AppConstants {
   static Future<LatLng> getLocation() async {
     bool serviceEnabled;
@@ -83,7 +88,3 @@ class Style {
   static final headerTextStyle = baseTextStyle.copyWith(
       color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w400);
 }
-
-const String exceptionError = "Exception Errors";
-const String otherError = "Other Errors";
-const String logSuccess = "Successful Login";
