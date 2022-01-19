@@ -32,8 +32,6 @@ class LocalNotification {
   Future<void> onSelectNotification(String payload) async {
     if (payload != null) {
       Beacon beacon = await databaseFunctions.fetchBeaconInfo(payload);
-      print(beacon.id + " asdk1");
-      print(beacon.title + " asdk2");
       bool isLeader = beacon.leader.id == userConfig.currentUser.id;
       navigationService.pushScreen('/hikeScreen',
           arguments: HikeScreen(beacon, isLeader: isLeader));
@@ -43,7 +41,6 @@ class LocalNotification {
 
   Future<void> deleteNotification() async {
     await flutterLocalNotificationsPlugin.cancelAll();
-    print('all notifications deleted' + " asdk");
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
