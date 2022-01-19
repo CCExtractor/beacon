@@ -179,7 +179,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              height: MediaQuery.of(context).size.height * 0.57,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.565,
                               margin: EdgeInsets.only(top: 20),
                               decoration: BoxDecoration(
                                   color: kLightBlue,
