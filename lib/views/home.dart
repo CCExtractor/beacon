@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 width: 45.w,
                                 child: HikeButton(
                                   buttonWidth: homebwidth,
-                                  buttonHeight: homebheight,
+                                  buttonHeight: homebheight - 2,
                                   text: 'Create Hike',
                                   textColor: Colors.white,
                                   borderColor: Colors.white,
@@ -160,7 +160,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 width: 45.w,
                                 child: HikeButton(
                                   buttonWidth: homebwidth,
-                                  buttonHeight: homebheight,
+                                  buttonHeight: homebheight - 2,
                                   text: 'Join a Hike',
                                   textColor: kYellow,
                                   borderColor: kYellow,
@@ -179,7 +179,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              height: MediaQuery.of(context).size.height / 1.75,
+                              height: MediaQuery.of(context).size.height * 0.57,
                               margin: EdgeInsets.only(top: 20),
                               decoration: BoxDecoration(
                                   color: kLightBlue,
