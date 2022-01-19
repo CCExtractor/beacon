@@ -29,7 +29,7 @@ class DataBaseMutationFunctions {
   GraphQLError emailAccountPresent =
       const GraphQLError(message: 'Email address already exists');
   GraphQLError wrongCredentials =
-      const GraphQLError(message: 'Invalid credentials');
+      const GraphQLError(message: 'credentials don\'t match');
 
   bool encounteredExceptionOrError(OperationException exception,
       {bool showSnackBar = true}) {
