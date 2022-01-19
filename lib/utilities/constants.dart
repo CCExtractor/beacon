@@ -83,3 +83,7 @@ class Style {
   static final headerTextStyle = baseTextStyle.copyWith(
       color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w400);
 }
+
+const String exceptionError = "Exception Errors";
+const String otherError = "Other Errors";
+const String logSuccess = "Successful Login";
