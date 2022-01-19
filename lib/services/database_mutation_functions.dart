@@ -96,8 +96,6 @@ class DataBaseMutationFunctions {
         : await clientNonAuth.mutate(
             MutationOptions(document: gql(_authQuery.loginAsGuest(name))));
     if (result.hasException) {
-      //commenting this since value of exception wasnt used.
-      // final bool exception = encounteredExceptionOrError(result.exception);
       navigationService
           .showSnackBar("${result.exception.graphqlErrors.first.message}");
       debugPrint('${result.exception.graphqlErrors}');
