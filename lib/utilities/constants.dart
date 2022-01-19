@@ -18,8 +18,8 @@ final double labelsize = 20;
 final double hintsize = 18;
 final double homebheight = 4.45.h;
 final double homebwidth = 3.w;
-final double optbheight = 3.5.h;
-final double optbwidth = 8.w;
+final double optbheight = 3.h;
+final double optbwidth = 6.w;
 
 class AppConstants {
   static Future<LatLng> getLocation() async {

@@ -4,6 +4,7 @@ import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/view_model/base_view_model.dart';
 import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomeViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();
@@ -15,6 +16,7 @@ class HomeViewModel extends BaseModel {
   TimeOfDay startingTime;
   bool isCreatingHike = false;
   String title;
+  bool hasStarted;
   //commenting out since its value isnt used anywhere.
   //TextEditingController _titleController = new TextEditingController();
   TextEditingController durationController = new TextEditingController();
@@ -37,12 +39,22 @@ class HomeViewModel extends BaseModel {
       );
       // setState(ViewState.idle);
       if (beacon != null) {
-        navigationService.pushScreen('/hikeScreen',
-            arguments: HikeScreen(
-              beacon,
-              isLeader: true,
-            ));
-        localNotif.scheduleNotification(beacon);
+        hasStarted = DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
+        if (hasStarted) {
+          navigationService.pushScreen('/hikeScreen',
+              arguments: HikeScreen(
+                beacon,
+                isLeader: true,
+              ));
+        } else {
+          localNotif.scheduleNotification(beacon);
+          setState(ViewState.idle);
+          navigationService.showSnackBar(
+            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+          );
+          return;
+        }
       } else {
         // navigationService.showSnackBar('Something went wrong');
         setState(ViewState.idle);
@@ -60,9 +72,20 @@ class HomeViewModel extends BaseModel {
       final Beacon beacon = await databaseFunctions.joinBeacon(enteredPasskey);
       // setState(ViewState.idle);
       if (beacon != null) {
-        navigationService.pushScreen('/hikeScreen',
-            arguments: HikeScreen(beacon, isLeader: false));
-        localNotif.scheduleNotification(beacon);
+        hasStarted = DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
+
+        if (hasStarted) {
+          navigationService.pushScreen('/hikeScreen',
+              arguments: HikeScreen(beacon, isLeader: false));
+        } else {
+          localNotif.scheduleNotification(beacon);
+          setState(ViewState.idle);
+          navigationService.showSnackBar(
+            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+          );
+          return;
+        }
       } else {
         //there was some error, go back to homescreen.
         setState(ViewState.idle);
@@ -77,6 +100,7 @@ class HomeViewModel extends BaseModel {
     setState(ViewState.busy);
     await userConfig.currentUser.delete();
     // setState(ViewState.idle);
+    await localNotif.deleteNotification();
     navigationService.removeAllAndPush('/auth', '/');
   }
 }

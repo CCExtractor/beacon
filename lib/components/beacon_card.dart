@@ -12,13 +12,23 @@ class BeaconCustomWidgets {
   static Widget getBeaconCard(BuildContext context, Beacon beacon) {
     return GestureDetector(
       onTap: () async {
+        bool hasStarted;
+        hasStarted = DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
         bool isJoinee = false;
         for (var i in beacon.followers) {
           if (i.id == userConfig.currentUser.id) {
             isJoinee = true;
           }
         }
-        if (beacon.leader.id == userConfig.currentUser.id || isJoinee) {
+        if (!hasStarted) {
+          navigationService.showSnackBar(
+            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+          );
+          return;
+        }
+        if (hasStarted &&
+            (beacon.leader.id == userConfig.currentUser.id || isJoinee)) {
           navigationService.pushScreen('/hikeScreen',
               arguments: HikeScreen(
                 beacon,
@@ -28,7 +38,13 @@ class BeaconCustomWidgets {
           await databaseFunctions.init();
           final Beacon _beacon =
               await databaseFunctions.joinBeacon(beacon.shortcode);
-          if (_beacon != null) {
+          if (!hasStarted) {
+            navigationService.showSnackBar(
+              'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+            );
+            return;
+          }
+          if (hasStarted && _beacon != null) {
             navigationService.pushScreen('/hikeScreen',
                 arguments: HikeScreen(beacon, isLeader: false));
           }

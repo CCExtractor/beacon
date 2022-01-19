@@ -1,4 +1,6 @@
+import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -23,33 +25,53 @@ class LocalNotification {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
+      onSelectNotification: (payload) => onSelectNotification(payload),
     );
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      Beacon beacon = await databaseFunctions.fetchBeaconInfo(payload);
+      print(beacon.id + " asdk1");
+      print(beacon.title + " asdk2");
+      bool isLeader = beacon.leader.id == userConfig.currentUser.id;
+      navigationService.pushScreen('/hikeScreen',
+          arguments: HikeScreen(beacon, isLeader: isLeader));
+    }
+    return;
+  }
+
+  Future<void> deleteNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+    print('all notifications deleted' + " asdk");
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        beacon.id.hashCode,
-        beacon.title + ' starting soon',
-        'Join !!!',
-        tz.TZDateTime.from(
-            DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            'channel ID',
-            'channel name',
-            playSound: true,
-            priority: Priority.high,
-            importance: Importance.high,
-          ),
-          iOS: IOSNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-            badgeNumber: 1,
-          ),
+      beacon.id.hashCode,
+      beacon.title + ' starting soon',
+      'Join !!!',
+      tz.TZDateTime.from(
+          DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel ID',
+          'channel name',
+          playSound: true,
+          priority: Priority.high,
+          importance: Importance.high,
         ),
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);
+        iOS: IOSNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          badgeNumber: 1,
+        ),
+      ),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidAllowWhileIdle: true,
+      payload: beacon.id,
+    );
   }
 }
