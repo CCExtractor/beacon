@@ -330,6 +330,9 @@ class _HikeScreenState extends State<HikeScreen> {
                       maxHeight: 60.h,
                       minHeight: 20.h,
                       controller: _panelController,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10)),
                       collapsed: Container(
                         decoration: BoxDecoration(
                             color: kBlue,
@@ -414,111 +417,117 @@ class _HikeScreenState extends State<HikeScreen> {
                               // setPolyline();
                             },
                             onTap: (loc) async {
-                              String title;
-                              showDialog(
-                                context: context,
-                                builder: (context) => Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Container(
-                                    height: 30.h,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 32, vertical: 16),
-                                      child: Form(
-                                        key: _landmarkFormKey,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 12.h,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: TextFormField(
-                                                  style:
-                                                      TextStyle(fontSize: 20.0),
-                                                  onChanged: (key) {
-                                                    title = key;
-                                                  },
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Please enter title for landmark";
-                                                    } else {
-                                                      return null;
-                                                    }
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    alignLabelWithHint: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .always,
-                                                    hintText:
-                                                        'Add title for the landmark',
-                                                    hintStyle: TextStyle(
-                                                        fontSize: hintsize,
-                                                        color: hintColor),
-                                                    labelText: 'Title',
-                                                    labelStyle: TextStyle(
-                                                        fontSize: labelsize,
-                                                        color: kYellow),
+                              if (_panelController.isPanelOpen)
+                                _panelController.close();
+                              else {
+                                String title;
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Container(
+                                      height: 30.h,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 32, vertical: 16),
+                                        child: Form(
+                                          key: _landmarkFormKey,
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 12.h,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: TextFormField(
+                                                    style: TextStyle(
+                                                        fontSize: 20.0),
+                                                    onChanged: (key) {
+                                                      title = key;
+                                                    },
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Please enter title for landmark";
+                                                      } else {
+                                                        return null;
+                                                      }
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      alignLabelWithHint: true,
+                                                      floatingLabelBehavior:
+                                                          FloatingLabelBehavior
+                                                              .always,
+                                                      hintText:
+                                                          'Add title for the landmark',
+                                                      hintStyle: TextStyle(
+                                                          fontSize: hintsize,
+                                                          color: hintColor),
+                                                      labelText: 'Title',
+                                                      labelStyle: TextStyle(
+                                                          fontSize: labelsize,
+                                                          color: kYellow),
+                                                    ),
                                                   ),
                                                 ),
+                                                color: kLightBlue,
                                               ),
-                                              color: kLightBlue,
-                                            ),
-                                            SizedBox(
-                                              height: 2.h,
-                                            ),
-                                            Flexible(
-                                              child: HikeButton(
-                                                  buttonWidth: optbwidth,
-                                                  buttonHeight: optbheight,
-                                                  text: 'Create Landmark',
-                                                  textSize: 18.0,
-                                                  textColor: Colors.white,
-                                                  buttonColor: kYellow,
-                                                  onTap: () async {
-                                                    if (_landmarkFormKey
-                                                        .currentState
-                                                        .validate()) {
-                                                      navigationService.pop();
-                                                      await databaseFunctions
-                                                          .init();
-                                                      await databaseFunctions
-                                                          .createLandmark(title,
-                                                              loc, beacon.id)
-                                                          .then((value) {
-                                                        setState(() {
-                                                          markers.add(Marker(
-                                                            markerId: MarkerId(
-                                                                (markers.length +
-                                                                        1)
-                                                                    .toString()),
-                                                            position: loc,
-                                                            infoWindow:
-                                                                InfoWindow(
-                                                              title: '$title',
-                                                            ),
-                                                            icon: BitmapDescriptor
-                                                                .defaultMarkerWithHue(
-                                                                    BitmapDescriptor
-                                                                        .hueBlue),
-                                                          ));
+                                              SizedBox(
+                                                height: 2.h,
+                                              ),
+                                              Flexible(
+                                                child: HikeButton(
+                                                    buttonWidth: optbwidth,
+                                                    buttonHeight: optbheight,
+                                                    text: 'Create Landmark',
+                                                    textSize: 18.0,
+                                                    textColor: Colors.white,
+                                                    buttonColor: kYellow,
+                                                    onTap: () async {
+                                                      if (_landmarkFormKey
+                                                          .currentState
+                                                          .validate()) {
+                                                        navigationService.pop();
+                                                        await databaseFunctions
+                                                            .init();
+                                                        await databaseFunctions
+                                                            .createLandmark(
+                                                                title,
+                                                                loc,
+                                                                beacon.id)
+                                                            .then((value) {
+                                                          setState(() {
+                                                            markers.add(Marker(
+                                                              markerId: MarkerId(
+                                                                  (markers.length +
+                                                                          1)
+                                                                      .toString()),
+                                                              position: loc,
+                                                              infoWindow:
+                                                                  InfoWindow(
+                                                                title: '$title',
+                                                              ),
+                                                              icon: BitmapDescriptor
+                                                                  .defaultMarkerWithHue(
+                                                                      BitmapDescriptor
+                                                                          .hueBlue),
+                                                            ));
+                                                          });
                                                         });
-                                                      });
-                                                    }
-                                                  }),
-                                            ),
-                                          ],
+                                                      }
+                                                    }),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                             },
                           ),
                           CustomPaint(
