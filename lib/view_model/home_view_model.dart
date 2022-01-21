@@ -41,9 +41,7 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
-        if (hasStarted ||
-            DateTime.now() ==
-                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)) {
+        if (hasStarted) {
           navigationService.pushScreen(
             '/hikeScreen',
             arguments: HikeScreen(
@@ -55,7 +53,7 @@ class HomeViewModel extends BaseModel {
           localNotif.scheduleNotification(beacon);
           setState(ViewState.idle);
           navigationService.showSnackBar(
-            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+            'Yay! New beacon created for ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );
           return;
         }
@@ -78,9 +76,7 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
-        if (hasStarted ||
-            DateTime.now() ==
-                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)) {
+        if (hasStarted) {
           navigationService.pushScreen(
             '/hikeScreen',
             arguments: HikeScreen(beacon, isLeader: false),
