@@ -198,11 +198,11 @@ class CreateJoinBeaconDialog {
                     ),
                     Flexible(
                       flex: 2,
-                    child: HikeButton(
-                      text: 'Create',
-                      textSize: 18.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
+                      child: HikeButton(
+                          text: 'Create',
+                          textSize: 18.0,
+                          textColor: Colors.white,
+                          buttonColor: kYellow,
                           onTap: () {
                             // navigationService.pop();
                             if (model.startingdate == null ||
