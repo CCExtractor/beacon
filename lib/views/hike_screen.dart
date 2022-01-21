@@ -260,31 +260,37 @@ class _HikeScreenState extends State<HikeScreen> {
         var lon = double.parse(value.location.lon);
         route.add(LatLng(lat, lon));
         address = addresses.first.addressLine;
-        markers.add(Marker(
-          markerId: MarkerId("0"),
-          position: route.first,
-          infoWindow: InfoWindow(
-            title: 'Initial Location',
-          ),
-        ));
-        markers.add(Marker(
-          markerId: MarkerId("1"),
-          position: route.last,
-          infoWindow: InfoWindow(
-            title: 'Current Location',
-          ),
-        ));
-        for (var i in value.landmarks) {
-          markers.add(Marker(
-            markerId: MarkerId((markers.length + 1).toString()),
-            position: LatLng(
-                double.parse(i.location.lat), double.parse(i.location.lon)),
+        markers.add(
+          Marker(
+            markerId: MarkerId("0"),
+            position: route.first,
             infoWindow: InfoWindow(
-              title: '${i.title}',
+              title: 'Initial Location',
             ),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          ));
+          ),
+        );
+        markers.add(
+          Marker(
+            markerId: MarkerId("1"),
+            position: route.last,
+            infoWindow: InfoWindow(
+              title: 'Current Location',
+            ),
+          ),
+        );
+        for (var i in value.landmarks) {
+          markers.add(
+            Marker(
+              markerId: MarkerId((markers.length + 1).toString()),
+              position: LatLng(
+                  double.parse(i.location.lat), double.parse(i.location.lon)),
+              infoWindow: InfoWindow(
+                title: '${i.title}',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueBlue),
+            ),
+          );
         }
         // for (var i in value.followers) {
         //   markers.add(Marker(
@@ -480,27 +486,26 @@ class _HikeScreenState extends State<HikeScreen> {
                                               ),
                                               Flexible(
                                                 child: HikeButton(
-                                                    buttonWidth: optbwidth,
-                                                    buttonHeight: optbheight,
-                                                    text: 'Create Landmark',
-                                                    textSize: 18.0,
-                                                    textColor: Colors.white,
-                                                    buttonColor: kYellow,
-                                                    onTap: () async {
-                                                      if (_landmarkFormKey
-                                                          .currentState
-                                                          .validate()) {
-                                                        navigationService.pop();
-                                                        await databaseFunctions
-                                                            .init();
-                                                        await databaseFunctions
-                                                            .createLandmark(
-                                                                title,
-                                                                loc,
-                                                                beacon.id)
-                                                            .then((value) {
-                                                          setState(() {
-                                                            markers.add(Marker(
+                                                  buttonWidth: optbwidth,
+                                                  buttonHeight: optbheight,
+                                                  text: 'Create Landmark',
+                                                  textSize: 18.0,
+                                                  textColor: Colors.white,
+                                                  buttonColor: kYellow,
+                                                  onTap: () async {
+                                                    if (_landmarkFormKey
+                                                        .currentState
+                                                        .validate()) {
+                                                      navigationService.pop();
+                                                      await databaseFunctions
+                                                          .init();
+                                                      await databaseFunctions
+                                                          .createLandmark(title,
+                                                              loc, beacon.id)
+                                                          .then((value) {
+                                                        setState(() {
+                                                          markers.add(
+                                                            Marker(
                                                               markerId: MarkerId(
                                                                   (markers.length +
                                                                           1)
@@ -514,11 +519,13 @@ class _HikeScreenState extends State<HikeScreen> {
                                                                   .defaultMarkerWithHue(
                                                                       BitmapDescriptor
                                                                           .hueBlue),
-                                                            ));
-                                                          });
+                                                            ),
+                                                          );
                                                         });
-                                                      }
-                                                    }),
+                                                      });
+                                                    }
+                                                  },
+                                                ),
                                               ),
                                             ],
                                           ),
