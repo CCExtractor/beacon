@@ -223,8 +223,8 @@ class CreateJoinBeaconDialog {
                             // localNotif.scheduleNotification();
                             if (model.startsAt.isBefore(DateTime.now()
                                 .subtract(Duration(minutes: 1)))) {
-                              navigationService.showSnackBar(
-                                  "Enter a valid date and time!!");
+                              navigationService
+                                  .showSnackBar("Enter a valid date and time!");
                               return;
                             }
                             model.createHikeRoom();
