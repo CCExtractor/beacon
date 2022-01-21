@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -91,29 +89,32 @@ class DataBaseMutationFunctions {
     return result.data;
   }
 
-  Future<bool> signup({String name, String email, String password}) async {
+  Future<String> signup({String name, String email, String password}) async {
     final QueryResult result = email != null
         ? await clientNonAuth.mutate(MutationOptions(
             document: gql(_authQuery.registerUser(name, email, password))))
         : await clientNonAuth.mutate(
             MutationOptions(document: gql(_authQuery.loginAsGuest(name))));
     if (result.hasException) {
-      final bool exception = encounteredExceptionOrError(result.exception);
+      navigationService
+          .showSnackBar("${result.exception.graphqlErrors.first.message}");
+      //commenting this since value of exception wasnt used.
+      //final bool exception = encounteredExceptionOrError(result.exception);
       debugPrint('${result.exception.graphqlErrors}');
-      return false;
+      return exceptionError;
     } else if (result.data != null && result.isConcrete) {
       final User signedInUser =
           User.fromJson(result.data['register'] as Map<String, dynamic>);
-      final bool logIn = email != null
+      final String logIn = email != null
           ? await databaseFunctions.login(
               email: email, password: password, user: signedInUser)
           : await databaseFunctions.login(user: signedInUser);
       return logIn;
     }
-    return false;
+    return otherError;
   }
 
-  Future<bool> login({String email, String password, User user}) async {
+  Future<String> login({String email, String password, User user}) async {
     final QueryResult result = (email == null)
         ? await clientNonAuth.mutate(
             MutationOptions(document: gql(_authQuery.loginUsingID(user.id))))
@@ -123,7 +124,7 @@ class DataBaseMutationFunctions {
       navigationService
           .showSnackBar("${result.exception.graphqlErrors.first.message}");
       print("${result.exception.graphqlErrors}");
-      return false;
+      return exceptionError;
     } else if (result.data != null && result.isConcrete) {
       bool userSaved = false;
       if (email == null) {
@@ -136,9 +137,12 @@ class DataBaseMutationFunctions {
         userSaved = await userConfig.updateUser(loggedInUser);
       }
       final bool fetchInfo = await databaseFunctions.fetchCurrentUserInfo();
-      return userSaved && fetchInfo;
+      if (userSaved && fetchInfo)
+        return logSuccess;
+      else
+        return otherError;
     }
-    return false;
+    return otherError;
   }
 
   Future<bool> fetchCurrentUserInfo() async {
@@ -185,6 +189,7 @@ class DataBaseMutationFunctions {
   Future<List<Beacon>> fetchUserBeacons() async {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
+    List<Beacon> expiredBeacons = [];
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -200,14 +205,19 @@ class DataBaseMutationFunctions {
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
           beaconIds.add(i.id);
-          beacons.add(i);
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
         }
       }
     }
+    beacons.addAll(expiredBeacons);
     return beacons;
   }
 
-  Future<Beacon> createBeacon(String title, int expiresAt) async {
+  Future<Beacon> createBeacon(String title, int startsAt, int expiresAt) async {
     LatLng loc;
     try {
       loc = await AppConstants.getLocation();
@@ -217,7 +227,7 @@ class DataBaseMutationFunctions {
       return null;
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, expiresAt,
+        document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
             loc.latitude.toString(), loc.longitude.toString()))));
     if (result.hasException) {
       navigationService.showSnackBar(
@@ -262,8 +272,17 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['joinBeacon'] as Map<String, dynamic>,
       );
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) {
+        navigationService.showSnackBar(
+            "Looks like the beacon you are trying join has expired");
+        return null;
+      }
       beacon.route.add(beacon.leader.location);
       return beacon;
+    } else {
+      navigationService
+          .showSnackBar("Something went wrong while trying to join Beacon");
     }
     return null;
   }

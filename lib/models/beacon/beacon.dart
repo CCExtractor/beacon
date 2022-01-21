@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/models/user/user_info.dart';

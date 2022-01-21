@@ -1,10 +1,12 @@
 name: beacon
 description: A new Flutter project.
 
+publish_to: "none"
+
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,17 +28,17 @@ dependencies:
   provider: ^5.0.0
   uni_links: ^0.5.1
   geocoder: ^0.2.1
-  share: ^2.0.4 
+  share: ^2.0.4
   location: ^4.3.0
   rxdart: ^0.26.0
   flutter_polyline_points: ^1.0.0
-  flutter_local_notifications: ^8.1.1+1
+  flutter_local_notifications: ^9.2.0
   overlay_support: ^1.2.1
   sliding_up_panel: ^2.0.0+1
   skeleton_text: ^1.0.0
   flutter_config: ^2.0.0
-  flutter_duration_picker:
-    git: https://github.com/bartektartanus/flutter_duration_picker
+  sizer: ^2.0.15
+  duration_picker: ^1.1.0+1
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +46,7 @@ dev_dependencies:
   hive_generator: ^1.1.0
   build_runner: ^2.0.4
   flutter_launcher_icons: "^0.9.1"
+
 
 flutter_icons:
   android: "launcher_icon"

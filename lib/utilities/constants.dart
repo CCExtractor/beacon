@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sizer/sizer.dart';
 
 const Color kYellow = Color(0xFFFDBB2C);
 const Color kBlue = Color(0xFF222375);
 const Color kLightBlue = Color(0xFFE8F1F8);
 const Color kBlack = Color(0xFF343434);
 const Color shimmerSkeletonColor = Color(0xff4e4f91);
+const Color hintColor = Colors.black54; // Hint Text Color
 const double CAMERA_ZOOM = 15;
 const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
+
+// Button Sizings
+final double labelsize = 20;
+final double hintsize = 18;
+final double homebheight = 4.45.h;
+final double homebwidth = 3.w;
+final double optbheight = 3.h;
+final double optbwidth = 6.w;
+
+// GraphQL Registering Errors
+const String exceptionError = "Exception Errors";
+const String otherError = "Other Errors";
+const String logSuccess = "Successful Login";
 
 class AppConstants {
   static Future<LatLng> getLocation() async {

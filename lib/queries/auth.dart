@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class AuthQueries {
   String registerUser(String name, String email, String password) {
     return '''

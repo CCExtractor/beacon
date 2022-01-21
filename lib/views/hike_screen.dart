@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,6 +21,7 @@ import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HikeScreen extends StatefulWidget {
@@ -55,6 +55,7 @@ class _HikeScreenState extends State<HikeScreen> {
   GraphQLClient graphQlClient;
   PanelController _panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
+  bool hasStarted;
 
   void updatePinOnMap(LatLng loc) async {
     CameraPosition cPosition = CameraPosition(
@@ -78,12 +79,15 @@ class _HikeScreenState extends State<HikeScreen> {
     });
   }
 
-  Future<void> setupSubscriptions() async {
+  Future<void> setupSubscriptions(bool isExpired) async {
+    if (isBeaconExpired || isExpired) return;
     if (widget.isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation =
           loc.onLocationChanged.listen((LocationData currentLocation) async {
+        if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now())) _leaderLocation.cancel();
         Coordinates coordinates =
             Coordinates(currentLocation.latitude, currentLocation.longitude);
         var addresses =
@@ -126,7 +130,15 @@ class _HikeScreenState extends State<HikeScreen> {
     } else {
       mergedStream = beaconJoinedStream;
     }
-    final mergeStreamSubscription = mergedStream.listen((event) async {
+    StreamSubscription<dynamic> mergeStreamSubscription;
+    mergeStreamSubscription = mergedStream.listen((event) async {
+      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          .isBefore(DateTime.now())) {
+        mergeStreamSubscription.cancel();
+        setState(() {
+          isBeaconExpired = true;
+        });
+      }
       if (event.data != null) {
         print('${event.data}');
         if (event.data.containsKey('beaconJoined')) {
@@ -195,12 +207,13 @@ class _HikeScreenState extends State<HikeScreen> {
 
   @override
   void dispose() {
-    if (widget.isLeader) {
+    if (widget.isLeader && !isBeaconExpired && hasStarted) {
       _leaderLocation.cancel();
     }
-    for (var streamSub in mergedStreamSubscriptions) {
-      streamSub.cancel();
-    }
+    if (!isBeaconExpired)
+      for (var streamSub in mergedStreamSubscriptions) {
+        streamSub.cancel();
+      }
     super.dispose();
   }
 
@@ -235,6 +248,8 @@ class _HikeScreenState extends State<HikeScreen> {
     await databaseFunctions.fetchBeaconInfo(widget.beacon.id).then((value) {
       beacon = value;
       setState(() {
+        isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+            .isBefore(DateTime.now());
         hikers.add(value.leader);
         for (var i in value.followers) {
           if (!followerId.contains(i.id)) {
@@ -291,11 +306,14 @@ class _HikeScreenState extends State<HikeScreen> {
   @override
   void initState() {
     super.initState();
+    hasStarted = DateTime.now()
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(widget.beacon.startsAt));
     isBusy = true;
     beacon = widget.beacon;
     fetchData();
     graphQlClient = GraphQLConfig().graphQlClient();
-    setupSubscriptions();
+    setupSubscriptions(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+        .isBefore(DateTime.now()));
     isBusy = false;
   }
 
@@ -303,6 +321,7 @@ class _HikeScreenState extends State<HikeScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
     return isBusy
         ? CircularProgressIndicator()
         : WillPopScope(
@@ -312,8 +331,8 @@ class _HikeScreenState extends State<HikeScreen> {
                 child: ModalProgressHUD(
                     inAsyncCall: isGeneratingLink || isBusy,
                     child: SlidingUpPanel(
-                      maxHeight: MediaQuery.of(context).size.height * 0.6,
-                      minHeight: 154,
+                      maxHeight: 60.h,
+                      minHeight: 20.h,
                       controller: _panelController,
                       collapsed: Container(
                         decoration: BoxDecoration(
@@ -324,13 +343,13 @@ class _HikeScreenState extends State<HikeScreen> {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 12.0,
+                              height: 1.5.h,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  width: 60,
+                                  width: 65,
                                   height: 5,
                                   decoration: BoxDecoration(
                                       color: Colors.grey[300],
@@ -340,7 +359,7 @@ class _HikeScreenState extends State<HikeScreen> {
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 1.5.h,
                             ),
                             Container(
                               width: double.infinity,
@@ -356,7 +375,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                             text: isBeaconExpired
                                                 ? 'Beacon has been expired\n'
                                                 : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                            style: TextStyle(fontSize: 16)),
+                                            style: TextStyle(fontSize: 18)),
                                         TextSpan(
                                             text:
                                                 'Beacon holder at: $address\n',
@@ -366,13 +385,14 @@ class _HikeScreenState extends State<HikeScreen> {
                                                 'Total Followers: ${hikers.length - 1} (Swipe up to view the list of followers)\n',
                                             style: TextStyle(fontSize: 12)),
                                         TextSpan(
-                                            text:
-                                                'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                            text: isBeaconExpired
+                                                ? ''
+                                                : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
                                             style: TextStyle(fontSize: 12)),
                                       ]),
                                 ),
                               ),
-                              height: 120,
+                              height: 15.h,
                             ),
                           ],
                         ),
@@ -402,8 +422,11 @@ class _HikeScreenState extends State<HikeScreen> {
                               showDialog(
                                 context: context,
                                 builder: (context) => Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
                                   child: Container(
-                                    height: 250,
+                                    height: 30.h,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 32, vertical: 16),
@@ -412,11 +435,13 @@ class _HikeScreenState extends State<HikeScreen> {
                                         child: Column(
                                           children: <Widget>[
                                             Container(
-                                              height: 100,
+                                              height: 12.h,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(4.0),
                                                 child: TextFormField(
+                                                  style:
+                                                      TextStyle(fontSize: 20.0),
                                                   onChanged: (key) {
                                                     title = key;
                                                   },
@@ -429,6 +454,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                                     }
                                                   },
                                                   decoration: InputDecoration(
+                                                    border: InputBorder.none,
                                                     alignLabelWithHint: true,
                                                     floatingLabelBehavior:
                                                         FloatingLabelBehavior
@@ -436,11 +462,11 @@ class _HikeScreenState extends State<HikeScreen> {
                                                     hintText:
                                                         'Add title for the landmark',
                                                     hintStyle: TextStyle(
-                                                        fontSize: 15,
-                                                        color: kBlack),
+                                                        fontSize: hintsize,
+                                                        color: hintColor),
                                                     labelText: 'Title',
                                                     labelStyle: TextStyle(
-                                                        fontSize: 20,
+                                                        fontSize: labelsize,
                                                         color: kYellow),
                                                   ),
                                                 ),
@@ -448,12 +474,14 @@ class _HikeScreenState extends State<HikeScreen> {
                                               color: kLightBlue,
                                             ),
                                             SizedBox(
-                                              height: 30,
+                                              height: 2.h,
                                             ),
                                             Flexible(
                                               child: HikeButton(
-                                                  buttonWidth: 25,
+                                                  buttonWidth: optbwidth,
+                                                  buttonHeight: optbheight,
                                                   text: 'Create Landmark',
+                                                  textSize: 18.0,
                                                   textColor: Colors.white,
                                                   buttonColor: kYellow,
                                                   onTap: () async {
@@ -503,8 +531,10 @@ class _HikeScreenState extends State<HikeScreen> {
                           ),
                           Align(
                               alignment: Alignment(0.87, -0.85),
-                              child: HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode)),
+                              child: isBeaconExpired
+                                  ? Container()
+                                  : HikeScreenWidget.shareButton(
+                                      context, widget.beacon.shortcode)),
                           Align(
                             alignment: Alignment(-0.8, -0.9),
                             child: GestureDetector(
@@ -566,10 +596,12 @@ class _HikeScreenState extends State<HikeScreen> {
                                   text:
                                       'Long Press on any hiker to hand over the beacon\n',
                                   style: TextStyle(fontSize: 16)),
-                              TextSpan(
-                                  text:
-                                      'Double tap on beacon to change the duration\n',
-                                  style: TextStyle(fontSize: 14)),
+                              //TODO: enable this once backend has updated.
+                              //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                              // TextSpan(
+                              //     text:
+                              //         'Double tap on beacon to change the duration\n',
+                              //     style: TextStyle(fontSize: 14)),
                             ]),
                       ),
                     )
@@ -616,7 +648,10 @@ class _HikeScreenState extends State<HikeScreen> {
                                     ? Fluttertoast.showToast(
                                         msg:
                                             'Only beacon holder has access to change the duration')
-                                    : DialogBoxes.changeDurationDialog(context);
+                                    //TODO: enable this once backend has updated.
+                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                    // : DialogBoxes.changeDurationDialog(context);
+                                    : Container();
                               },
                               child: Icon(
                                 Icons.room,
@@ -638,7 +673,7 @@ class _HikeScreenState extends State<HikeScreen> {
     return (await showDialog(
           context: context,
           builder: (context) => DialogBoxes.showExitDialog(
-              context, widget.isLeader, hikers.length),
+              context, widget.isLeader, hikers.length, isBeaconExpired),
         )) ??
         false;
   }

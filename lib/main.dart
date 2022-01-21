@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:hive/hive.dart';
+import 'package:sizer/sizer.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'models/user/user_info.dart';
@@ -31,16 +32,21 @@ void main() async {
   await Hive.openBox<User>('currentUser');
   await Hive.openBox<Beacon>('beacons');
   setupLocator();
-  runApp(OverlaySupport(
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Beacon',
-      navigatorKey: navigationService.navigatorKey,
-      theme: ThemeData(fontFamily: 'FuturaBold'),
-      initialRoute: '/',
-      onGenerateRoute: router.generateRoute,
+  localNotif.initialize();
+  runApp(
+    OverlaySupport(
+      child: Sizer(
+        builder: (context, orientation, deviceType) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Beacon',
+          navigatorKey: navigationService.navigatorKey,
+          theme: ThemeData(fontFamily: 'FuturaBold'),
+          initialRoute: '/',
+          onGenerateRoute: router.generateRoute,
+        ),
+      ),
     ),
-  ));
+  );
 }
 
 class DemoPageView extends StatelessWidget {

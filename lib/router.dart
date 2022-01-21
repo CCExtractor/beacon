@@ -1,6 +1,4 @@
-import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/splash_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/views/auth_screen.dart';

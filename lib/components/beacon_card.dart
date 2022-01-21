@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
@@ -14,13 +12,23 @@ class BeaconCustomWidgets {
   static Widget getBeaconCard(BuildContext context, Beacon beacon) {
     return GestureDetector(
       onTap: () async {
+        bool hasStarted;
+        hasStarted = DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
         bool isJoinee = false;
         for (var i in beacon.followers) {
           if (i.id == userConfig.currentUser.id) {
             isJoinee = true;
           }
         }
-        if (beacon.leader.id == userConfig.currentUser.id || isJoinee) {
+        if (!hasStarted) {
+          navigationService.showSnackBar(
+            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+          );
+          return;
+        }
+        if (hasStarted &&
+            (beacon.leader.id == userConfig.currentUser.id || isJoinee)) {
           navigationService.pushScreen('/hikeScreen',
               arguments: HikeScreen(
                 beacon,
@@ -30,12 +38,17 @@ class BeaconCustomWidgets {
           await databaseFunctions.init();
           final Beacon _beacon =
               await databaseFunctions.joinBeacon(beacon.shortcode);
-          if (_beacon != null) {
+          if (!hasStarted) {
+            navigationService.showSnackBar(
+              'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+            );
+            return;
+          }
+          if (hasStarted && _beacon != null) {
             navigationService.pushScreen('/hikeScreen',
                 arguments: HikeScreen(beacon, isLeader: false));
-          } else {
-            navigationService.showSnackBar('Something went wrong');
           }
+          //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
         }
       },
       child: Container(
@@ -43,7 +56,6 @@ class BeaconCustomWidgets {
           vertical: 10.0,
           horizontal: 10.0,
         ),
-        height: 110,
         padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8, top: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
