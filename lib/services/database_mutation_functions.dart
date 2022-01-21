@@ -207,7 +207,7 @@ class DataBaseMutationFunctions {
           beaconIds.add(i.id);
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
               .isBefore(DateTime.now()))
-            expiredBeacons.add(i);
+            expiredBeacons.insert(0, i);
           else
             beacons.add(i);
         }
