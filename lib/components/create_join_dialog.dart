@@ -261,7 +261,9 @@ class CreateJoinBeaconDialog {
                         style: TextStyle(fontSize: 22.0),
                         validator: (value) => Validator.validatePasskey(value),
                         onChanged: (key) {
+                          key = key.toUpperCase();
                           model.enteredPasskey = key;
+                          print(key);
                         },
                         decoration: InputDecoration(
                           alignLabelWithHint: true,
