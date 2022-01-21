@@ -41,12 +41,16 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
-        if (hasStarted) {
-          navigationService.pushScreen('/hikeScreen',
-              arguments: HikeScreen(
-                beacon,
-                isLeader: true,
-              ));
+        if (hasStarted ||
+            DateTime.now() ==
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)) {
+          navigationService.pushScreen(
+            '/hikeScreen',
+            arguments: HikeScreen(
+              beacon,
+              isLeader: true,
+            ),
+          );
         } else {
           localNotif.scheduleNotification(beacon);
           setState(ViewState.idle);
@@ -74,10 +78,13 @@ class HomeViewModel extends BaseModel {
       if (beacon != null) {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
-
-        if (hasStarted) {
-          navigationService.pushScreen('/hikeScreen',
-              arguments: HikeScreen(beacon, isLeader: false));
+        if (hasStarted ||
+            DateTime.now() ==
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)) {
+          navigationService.pushScreen(
+            '/hikeScreen',
+            arguments: HikeScreen(beacon, isLeader: false),
+          );
         } else {
           localNotif.scheduleNotification(beacon);
           setState(ViewState.idle);
