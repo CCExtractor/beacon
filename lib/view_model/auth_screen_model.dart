@@ -44,13 +44,15 @@ class AuthViewModel extends BaseModel {
       setState(ViewState.busy);
       signupValidate = AutovalidateMode.disabled;
       databaseFunctions.init();
-      final bool signUpSuccess = await databaseFunctions.signup(
+      final String signUpSuccess = await databaseFunctions.signup(
           name: signupNameController.text ?? "Anonymous",
           email: signupEmailController.text,
           password: signupPasswordController.text);
-      if (signUpSuccess) {
+      if (signUpSuccess == logSuccess) {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
+      } else if (signUpSuccess == exceptionError) {
+        navigationService.removeAllAndPush('/auth', '/');
       } else {
         navigationService.removeAllAndPush('/auth', '/');
         navigationService.showSnackBar('Something went wrong');
@@ -64,11 +66,10 @@ class AuthViewModel extends BaseModel {
   loginAsGuest() async {
     setState(ViewState.busy);
     await databaseFunctions.init();
-    final bool signUpSuccess =
+    final String signUpSuccess =
         await databaseFunctions.signup(name: "Anonymous");
-    if (signUpSuccess) {
+    if (signUpSuccess == logSuccess) {
       userConfig.currentUser.print();
-
       navigationService.removeAllAndPush('/main', '/');
     } else {
       navigationService.removeAllAndPush('/auth', '/');
@@ -84,12 +85,14 @@ class AuthViewModel extends BaseModel {
       setState(ViewState.busy);
       loginValidate = AutovalidateMode.disabled;
       await databaseFunctions.init();
-      final bool loginSuccess = await databaseFunctions.login(
+      final String loginSuccess = await databaseFunctions.login(
           email: loginEmailController.text,
           password: loginPasswordController.text);
-      if (loginSuccess) {
+      if (loginSuccess == logSuccess) {
         userConfig.currentUser.print();
         navigationService.removeAllAndPush('/main', '/');
+      } else if (loginSuccess == exceptionError) {
+        navigationService.removeAllAndPush('/auth', '/');
       } else {
         navigationService.removeAllAndPush('/auth', '/');
         navigationService.showSnackBar('Something went wrong');

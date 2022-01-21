@@ -21,6 +21,11 @@ final double homebwidth = 3.5.w;
 const double optbheight = 18.0;
 const double optbwidth = 30.0;
 
+// GraphQL Registering Errors
+const String exceptionError = "Exception Errors";
+const String otherError = "Other Errors";
+const String logSuccess = "Successful Login";
+
 class AppConstants {
   static Future<LatLng> getLocation() async {
     bool serviceEnabled;

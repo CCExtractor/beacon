@@ -55,6 +55,7 @@ class _HikeScreenState extends State<HikeScreen> {
   GraphQLClient graphQlClient;
   PanelController _panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
+  bool hasStarted;
 
   void updatePinOnMap(LatLng loc) async {
     CameraPosition cPosition = CameraPosition(
@@ -206,7 +207,7 @@ class _HikeScreenState extends State<HikeScreen> {
 
   @override
   void dispose() {
-    if (widget.isLeader && !isBeaconExpired) {
+    if (widget.isLeader && !isBeaconExpired && hasStarted) {
       _leaderLocation.cancel();
     }
     if (!isBeaconExpired)
@@ -305,6 +306,8 @@ class _HikeScreenState extends State<HikeScreen> {
   @override
   void initState() {
     super.initState();
+    hasStarted = DateTime.now()
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(widget.beacon.startsAt));
     isBusy = true;
     beacon = widget.beacon;
     fetchData();
@@ -318,6 +321,7 @@ class _HikeScreenState extends State<HikeScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
     return isBusy
         ? CircularProgressIndicator()
         : WillPopScope(
