@@ -80,7 +80,10 @@ class BeaconCustomWidgets {
           ],
         ),
         decoration: BoxDecoration(
-          color: kBlue,
+          color: !DateTime.now().isAfter(
+                  DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt))
+              ? kBlue
+              : lightkBlue,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: <BoxShadow>[
