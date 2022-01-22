@@ -525,25 +525,22 @@ class _HikeScreenState extends State<HikeScreen> {
                               );
                             },
                           ),
-                          CustomPaint(
-                            size: Size(screenWidth, screenHeight - 200),
-                            foregroundPainter: ShapePainter(),
-                          ),
                           Align(
-                              alignment: Alignment(0.87, -0.85),
+                              alignment: Alignment(0.9, -0.98),
                               child: isBeaconExpired
                                   ? Container()
                                   : HikeScreenWidget.shareButton(
                                       context, widget.beacon.shortcode)),
                           Align(
-                            alignment: Alignment(-0.8, -0.9),
-                            child: GestureDetector(
-                              onTap: () {
+                            alignment: Alignment(-0.93, -0.98),
+                            child: FloatingActionButton(
+                              onPressed: () {
                                 onWillPop(context);
                               },
+                              backgroundColor: kBlue,
                               child: Icon(
                                 Icons.arrow_back,
-                                size: 30,
+                                size: 35,
                                 color: Colors.white,
                               ),
                             ),
