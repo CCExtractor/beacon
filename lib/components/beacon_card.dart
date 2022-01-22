@@ -80,7 +80,7 @@ class BeaconCustomWidgets {
           ],
         ),
         decoration: BoxDecoration(
-          color: !DateTime.now().isAfter(
+          color: DateTime.now().isBefore(
                   DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt))
               ? kBlue
               : lightkBlue,
