@@ -355,10 +355,12 @@ packages:
   geocoder:
     dependency: "direct main"
     description:
-      name: geocoder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1"
+      path: "."
+      ref: "443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028"
+      resolved-ref: "443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028"
+      url: "https://github.com/nguyenxdat/flutter_geocoder.git"
+    source: git
+    version: "0.3.0"
   geolocator:
     dependency: "direct main"
     description:
