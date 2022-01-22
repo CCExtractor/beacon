@@ -13,7 +13,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/user/user_info.dart';
