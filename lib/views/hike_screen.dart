@@ -82,7 +82,7 @@ class _HikeScreenState extends State<HikeScreen> {
 
                           Align(
                               alignment: Alignment(0.9, -0.98),
-                              child: isBeaconExpired
+                              child: model.isBeaconExpired
                                   ? Container()
                                   : HikeScreenWidget.shareButton(
                                       context, widget.beacon.shortcode)),
@@ -97,7 +97,7 @@ class _HikeScreenState extends State<HikeScreen> {
                                 Icons.arrow_back,
                                 size: 35,
                                 color: Colors.white,
-
+                              ))),
                           SizedBox(
                             height: 1.5.h,
                           ),
@@ -188,7 +188,7 @@ class _HikeScreenState extends State<HikeScreen> {
                               child: Icon(
                                 Icons.arrow_back,
                                 size: 35,
-                                color: Colors.white,
+                                color: Colors.white,));
                         if (!model.isBeaconExpired)
                           //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                           Align(
