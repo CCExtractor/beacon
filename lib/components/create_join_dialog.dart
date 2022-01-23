@@ -259,7 +259,7 @@ class CreateJoinBeaconDialog {
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
                         keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
+                        textCapitalization: TextCapitalization.characters,
                         style: TextStyle(fontSize: 22.0),
                         validator: (value) => Validator.validatePasskey(value),
                         onChanged: (key) {
