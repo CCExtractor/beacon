@@ -9,8 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/locator.dart';
-import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 
 import 'package:beacon/utilities/constants.dart';
@@ -72,9 +70,10 @@ class _HikeScreenState extends State<HikeScreen> {
                                 width: 65,
                                 height: 5,
                                 decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(12.0))),
+                                  color: Colors.grey[300],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12.0)),
+                                ),
                               ),
                             ],
                           ),
@@ -88,28 +87,28 @@ class _HikeScreenState extends State<HikeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 15),
                               child: RichText(
                                 text: TextSpan(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    children: [
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? 'Beacon has been expired\n'
-                                              : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                          style: TextStyle(fontSize: 18)),
-                                      TextSpan(
-                                          text:
-                                              'Beacon holder at: ${model.address}\n',
-                                          style: TextStyle(fontSize: 14)),
-                                      TextSpan(
-                                          text:
-                                              'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
-                                          style: TextStyle(fontSize: 12)),
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? ''
-                                              : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
-                                          style: TextStyle(fontSize: 12)),
-                                    ]),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  children: [
+                                    TextSpan(
+                                        text: model.isBeaconExpired
+                                            ? 'Beacon has been expired\n'
+                                            : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
+                                        style: TextStyle(fontSize: 18)),
+                                    TextSpan(
+                                        text:
+                                            'Beacon holder at: ${model.address}\n',
+                                        style: TextStyle(fontSize: 14)),
+                                    TextSpan(
+                                        text:
+                                            'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
+                                        style: TextStyle(fontSize: 12)),
+                                    TextSpan(
+                                        text: model.isBeaconExpired
+                                            ? ''
+                                            : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                        style: TextStyle(fontSize: 12)),
+                                  ],
+                                ),
                               ),
                             ),
                             height: 15.h,
