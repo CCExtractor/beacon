@@ -110,7 +110,8 @@ class HikeScreenWidget {
       onPressed: () async {
         final mapController = await googleMapControllerCompleter.future;
         // sanity check.
-        if (mapController == null) return;
+        if (mapController == null ||
+            googleMapControllerCompleter.isCompleted == false) return;
         //show marker description so that image will be more usefull.
         await mapController.showMarkerInfoWindow(MarkerId("1"));
         //getting the image (ss) of map.

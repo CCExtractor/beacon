@@ -135,7 +135,9 @@ class _HikeScreenState extends State<HikeScreen> {
                               tilt: CAMERA_TILT,
                               bearing: CAMERA_BEARING),
                           onMapCreated: (GoogleMapController controller) {
-                            model.mapController.complete(controller);
+                            setState(() {
+                              model.mapController.complete(controller);
+                            });
                             // setPolyline();
                           },
                           onTap: (loc) async {
