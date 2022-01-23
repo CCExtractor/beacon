@@ -28,7 +28,6 @@ class HikeScreen extends StatefulWidget {
 
 class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
-
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -79,25 +78,6 @@ class _HikeScreenState extends State<HikeScreen> {
                               ),
                             ],
                           ),
-
-                          Align(
-                              alignment: Alignment(0.9, -0.98),
-                              child: model.isBeaconExpired
-                                  ? Container()
-                                  : HikeScreenWidget.shareButton(
-                                      context, widget.beacon.shortcode)),
-                          Align(
-                            alignment: Alignment(-0.93, -0.98),
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                onWillPop(context);
-                              },
-                              backgroundColor: kBlue,
-                              child: Icon(
-                                Icons.arrow_back,
-                                size: 35,
-                                color: Colors.white,
-                              ))),
                           SizedBox(
                             height: 1.5.h,
                           ),
@@ -130,7 +110,6 @@ class _HikeScreenState extends State<HikeScreen> {
                                               : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
                                           style: TextStyle(fontSize: 12)),
                                     ]),
-
                               ),
                             ),
                             height: 15.h,
@@ -173,26 +152,27 @@ class _HikeScreenState extends State<HikeScreen> {
                           },
                         ),
                         Align(
-                              alignment: Alignment(0.9, -0.98),
-                              child: model.isBeaconExpired
-                                  ? Container()
-                                  : HikeScreenWidget.shareButton(
-                                      context, widget.beacon.shortcode)),
-                          Align(
+                            alignment: Alignment(0.9, -0.98),
+                            child: model.isBeaconExpired
+                                ? Container()
+                                : HikeScreenWidget.shareButton(
+                                    context, widget.beacon.shortcode)),
+                        Align(
                             alignment: Alignment(-0.93, -0.98),
                             child: FloatingActionButton(
-                              onPressed: () {
-                                onWillPop(context);
-                              },
-                              backgroundColor: kBlue,
-                              child: Icon(
-                                Icons.arrow_back,
-                                size: 35,
-                                color: Colors.white,));
+                                onPressed: () {
+                                  model.onWillPop(context);
+                                },
+                                backgroundColor: kBlue,
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  size: 35,
+                                  color: Colors.white,
+                                ))),
                         if (!model.isBeaconExpired)
                           //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                           Align(
-                            alignment: Alignment(0.5, -0.85),
+                            alignment: Alignment(0.9, -0.8),
                             child: AnimatedOpacity(
                               duration: Duration(milliseconds: 500),
                               opacity:
@@ -204,19 +184,6 @@ class _HikeScreenState extends State<HikeScreen> {
                                   model.route),
                             ),
                           ),
-                        Align(
-                          alignment: Alignment(-0.8, -0.9),
-                          child: GestureDetector(
-                            onTap: () {
-                              model.onWillPop(context);
-                            },
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   )
