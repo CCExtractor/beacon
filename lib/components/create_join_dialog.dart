@@ -258,10 +258,12 @@ class CreateJoinBeaconDialog {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.characters,
                         style: TextStyle(fontSize: 22.0),
                         validator: (value) => Validator.validatePasskey(value),
                         onChanged: (key) {
-                          model.enteredPasskey = key;
+                          model.enteredPasskey = key.toUpperCase();
                         },
                         decoration: InputDecoration(
                           alignLabelWithHint: true,
