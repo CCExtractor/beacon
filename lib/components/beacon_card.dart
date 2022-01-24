@@ -107,6 +107,21 @@ class BeaconCustomWidgets {
                           ],
                         ),
                       ),
+                      SizedBox(height: 4.0),
+                      Text('Passkey: ${beacon?.shortcode}',
+                          style: Style.commonTextStyle),
+                      SizedBox(height: 4.0),
+                      (beacon.startsAt != null)
+                          ? Text(
+                              'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                              style: Style.commonTextStyle)
+                          : Container(),
+                      SizedBox(height: 4.0),
+                      (beacon.expiresAt != null)
+                          ? Text(
+                              'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                              style: Style.commonTextStyle)
+                          : Container(),
                     ],
                   )
                 : (willStart)
@@ -130,33 +145,60 @@ class BeaconCustomWidgets {
                                   color: kYellow,
                                   size: 10,
                                 ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.0),
+                          Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Hike ',
+                                  style: Style.commonTextStyle,
+                                  children: const <TextSpan>[
+                                    TextSpan(
+                                      text: 'Starts ',
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.0),
+                                    ),
+                                    TextSpan(
+                                      text: 'in ',
+                                      style: TextStyle(
+                                          color: const Color(0xffb6b2df),
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 3.0,
+                              ),
+                              CountdownTimerPage(
+                                dateTime: DateTime.fromMillisecondsSinceEpoch(
+                                    beacon.startsAt),
+                                name: beacon?.title,
                               )
                             ],
                           ),
                           SizedBox(height: 4.0),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Hike is ',
-                              style: Style.commonTextStyle,
-                              children: const <TextSpan>[
-                                TextSpan(
-                                  text: 'Upcoming',
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.0),
-                                ),
-                                TextSpan(
-                                  text: '. Get Ready!',
-                                  style: TextStyle(
-                                      color: const Color(0xffb6b2df),
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w400),
-                                )
-                              ],
-                            ),
-                          ),
+                          Text('Passkey: ${beacon?.shortcode}',
+                              style: Style.commonTextStyle),
+                          SizedBox(height: 4.0),
+                          (beacon.startsAt != null)
+                              ? Text(
+                                  'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                          SizedBox(height: 4.0),
+                          (beacon.expiresAt != null)
+                              ? Text(
+                                  'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
                         ],
                       )
                     : Column(
@@ -186,30 +228,23 @@ class BeaconCustomWidgets {
                               ],
                             ),
                           ),
+                          SizedBox(height: 4.0),
+                          Text('Passkey: ${beacon?.shortcode}',
+                              style: Style.commonTextStyle),
+                          SizedBox(height: 4.0),
+                          (beacon.startsAt != null)
+                              ? Text(
+                                  'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                          SizedBox(height: 4.0),
+                          (beacon.expiresAt != null)
+                              ? Text(
+                                  'Expired At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
                         ],
                       ),
-            SizedBox(height: 4.0),
-            Text('Passkey: ${beacon?.shortcode}', style: Style.commonTextStyle),
-            SizedBox(height: 4.0),
-            (beacon.startsAt != null)
-                ? Text(
-                    'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
-                    style: Style.commonTextStyle)
-                : Container(),
-            SizedBox(height: 4.0),
-            (beacon.expiresAt != null)
-                ? Text(
-                    'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
-                    style: Style.commonTextStyle)
-                : Container(),
-            SizedBox(height: 4.0),
-            willStart
-                ? CountdownTimerPage(
-                    dateTime:
-                        DateTime.fromMillisecondsSinceEpoch(beacon.startsAt),
-                    name: beacon?.title,
-                  )
-                : Container(),
           ],
         ),
         decoration: BoxDecoration(

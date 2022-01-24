@@ -19,7 +19,6 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
   void initState() {
     super.initState();
     setState(() {});
-    print("endTime: $widget.dateTime");
     int timeDiff = widget.dateTime.difference(DateTime.now()).inSeconds;
     setState(() {
       endTime = DateTime.now().millisecondsSinceEpoch + 1000 * timeDiff;
@@ -30,7 +29,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
 
   void onEnd() {
     navigationService
-        .showSnackBar('$widget.name is now active! You can join the hike');
+        .showSnackBar('${widget.name} is now active! You can join the hike');
   }
 
   @override
@@ -39,7 +38,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
       controller: controller,
       widgetBuilder: (_, CurrentRemainingTime time) {
         return Text(
-          'Time until hike starts: ${time?.days ?? 0} : ${time?.hours ?? 0} : ${time?.min ?? 0} : ${time?.sec ?? 0}',
+          '${time?.days ?? 0} : ${time?.hours ?? 0} : ${time?.min ?? 0} : ${time?.sec ?? 0}',
           style: TextStyle(
               color: const Color(0xffb6b2df),
               fontSize: 14.0,
