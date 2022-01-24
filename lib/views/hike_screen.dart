@@ -132,76 +132,71 @@ class _HikeScreenState extends State<HikeScreen> {
                     alignment: Alignment.topCenter,
                     children: <Widget>[
                       GoogleMap(
-                        compassEnabled: true,
-                        mapType: MapType.terrain,
-                        markers: model.markers.toSet(),
-                        polylines: model.polylines,
-                        initialCameraPosition: CameraPosition(
-                            target: LatLng(
-                              double.parse(widget.beacon.location.lat),
-                              double.parse(widget.beacon.location.lon),
-                            ),
-                            zoom: CAMERA_ZOOM,
-                            tilt: CAMERA_TILT,
-                            bearing: CAMERA_BEARING),
-                        onMapCreated: (GoogleMapController controller) {
-                          setState(() {
-                            model.mapController.complete(controller);
-                          });
-                          // setPolyline();
-                        },
-                        onTap: (loc) async {
-                          if (model.panelController.isPanelOpen)
-                            model.panelController.close();
-                          else {
-                            String title;
-                            HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                              context,
-                              model.landmarkFormKey,
-                              title,
-                              loc,
-                              model.createLandmark,
-                            );
+                          compassEnabled: true,
+                          mapType: MapType.terrain,
+                          markers: model.markers.toSet(),
+                          polylines: model.polylines,
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                double.parse(widget.beacon.location.lat),
+                                double.parse(widget.beacon.location.lon),
+                              ),
+                              zoom: CAMERA_ZOOM,
+                              tilt: CAMERA_TILT,
+                              bearing: CAMERA_BEARING),
+                          onMapCreated: (GoogleMapController controller) {
+                            setState(() {
+                              model.mapController.complete(controller);
+                            });
+                            // setPolyline();
                           },
-                        ),
-                        Align(
-                            alignment: Alignment(0.9, -0.98),
-                            child: model.isBeaconExpired
-                                ? Container()
-                                : HikeScreenWidget.shareButton(
-                                    context, widget.beacon.shortcode)),
-                        Align(
-                            alignment: Alignment(-0.93, -0.98),
-                            child: FloatingActionButton(
-                                onPressed: () {
-                                  model.onWillPop(context);
-                                },
-                                backgroundColor: kBlue,
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  size: 35,
-                                  color: Colors.white,
-                                ))),
-                        if (!model.isBeaconExpired)
-                          //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
-                          Align(
-                            alignment: Alignment(0.9, -0.8),
-                            child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 500),
-                              opacity:
-                                  model.mapController.isCompleted ? 1.0 : 0.0,
-                              child: HikeScreenWidget.shareRouteButton(
-                                  context,
-                                  model.beacon,
-                                  model.mapController,
-                                  model.route),
-                            ),
+                          onTap: (loc) async {
+                            if (model.panelController.isPanelOpen)
+                              model.panelController.close();
+                            else {
+                              String title;
+                              HikeScreenWidget.showCreateLandMarkDialogueDialog(
+                                context,
+                                model.landmarkFormKey,
+                                title,
+                                loc,
+                                model.createLandmark,
+                              );
+                            }
+                          }),
+                      Align(
+                          alignment: Alignment(0.9, -0.98),
+                          child: model.isBeaconExpired
+                              ? Container()
+                              : HikeScreenWidget.shareButton(
+                                  context, widget.beacon.shortcode)),
+                      Align(
+                        alignment: Alignment(-0.93, -0.98),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            model.onWillPop(context);
+                          },
+                          backgroundColor: kBlue,
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 35,
+                            color: Colors.white,
                           ),
-                      ],
-                    ),
-                  )
-                  // }),
-
+                        ),
+                      ),
+                      if (!model.isBeaconExpired)
+                        //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
+                        Align(
+                          alignment: Alignment(0.9, -0.8),
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 500),
+                            opacity:
+                                model.mapController.isCompleted ? 1.0 : 0.0,
+                            child: HikeScreenWidget.shareRouteButton(context,
+                                model.beacon, model.mapController, model.route),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
