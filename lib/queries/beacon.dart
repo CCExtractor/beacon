@@ -1,11 +1,13 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class BeaconQueries {
-  String createBeacon(String title, int expiresAt, String lat, String lon) {
+  String createBeacon(
+      String title, int startsAt, int expiresAt, String lat, String lon) {
     return '''
         mutation{
           createBeacon(beacon: {
-            title: "$title", 
+            title: "$title",
+            startsAt: $startsAt,
             expiresAt: $expiresAt,
             startLocation: {
               lat: "$lat", lon: "$lon"
@@ -59,9 +61,9 @@ class BeaconQueries {
         mutation{
           createLandmark(
             landmark: {
-              title: "$title", 
+              title: "$title",
               location: {
-                lat:"$lat", 
+                lat:"$lat",
                 lon:"$lon"
               }
             }
@@ -204,9 +206,9 @@ class BeaconQueries {
       mutation{
         createLandmark(
           landmark:{
-            location:{lat:"$lat", lon:"$lon"}, 
+            location:{lat:"$lat", lon:"$lon"},
             title:"$title"
-          }, 
+          },
           beaconID:"$id")
         {
           title
