@@ -176,7 +176,7 @@ class BeaconCustomWidgets {
                               style: Style.commonTextStyle,
                               children: const <TextSpan>[
                                 TextSpan(
-                                  text: 'Expired',
+                                  text: 'Ended',
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.white,
