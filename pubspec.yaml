@@ -28,7 +28,7 @@ dependencies:
   provider: ^5.0.0
   uni_links: ^0.5.1
   geocoder: ^0.2.1
-  share: ^2.0.4
+  share_plus: ^3.0.4
   location: ^4.3.0
   rxdart: ^0.26.0
   flutter_polyline_points: ^1.0.0

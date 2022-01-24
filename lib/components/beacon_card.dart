@@ -23,7 +23,7 @@ class BeaconCustomWidgets {
         }
         if (!hasStarted) {
           navigationService.showSnackBar(
-            'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+            'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );
           return;
         }
@@ -40,7 +40,7 @@ class BeaconCustomWidgets {
               await databaseFunctions.joinBeacon(beacon.shortcode);
           if (!hasStarted) {
             navigationService.showSnackBar(
-              'Beacon has not yet started! Please come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+              'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
             );
             return;
           }
