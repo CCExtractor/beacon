@@ -39,6 +39,7 @@ dependencies:
   flutter_config: ^2.0.0
   sizer: ^2.0.15
   duration_picker: ^1.1.0+1
+  flutter_countdown_timer: ^4.1.0
 
 dev_dependencies:
   flutter_test:
