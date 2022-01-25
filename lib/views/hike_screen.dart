@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 
 import 'package:beacon/utilities/constants.dart';
@@ -27,7 +26,6 @@ class HikeScreen extends StatefulWidget {
 
 class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
-
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -134,54 +132,62 @@ class _HikeScreenState extends State<HikeScreen> {
                     alignment: Alignment.topCenter,
                     children: <Widget>[
                       GoogleMap(
-                        compassEnabled: true,
-                        mapType: MapType.terrain,
-                        markers: model.markers.toSet(),
-                        polylines: model.polylines,
-                        initialCameraPosition: CameraPosition(
-                            target: LatLng(
-                              double.parse(widget.beacon.location.lat),
-                              double.parse(widget.beacon.location.lon),
-                            ),
-                            zoom: CAMERA_ZOOM,
-                            tilt: CAMERA_TILT,
-                            bearing: CAMERA_BEARING),
-                        onMapCreated: (GoogleMapController controller) {
-                          setState(() {
-                            model.mapController.complete(controller);
-                          });
-                          // setPolyline();
-                        },
-                        onTap: (loc) async {
-                          if (model.panelController.isPanelOpen)
-                            model.panelController.close();
-                          else {
-                            String title;
-                            HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                              context,
-                              model.landmarkFormKey,
-                              title,
-                              loc,
-                              model.createLandmark,
-                            );
-                          }
-                        },
-                      ),
-                      CustomPaint(
-                        size: Size(screenWidth, screenHeight - 200),
-                        foregroundPainter: ShapePainter(),
-                      ),
+                          compassEnabled: true,
+                          mapType: MapType.terrain,
+                          markers: model.markers.toSet(),
+                          polylines: model.polylines,
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                double.parse(widget.beacon.location.lat),
+                                double.parse(widget.beacon.location.lon),
+                              ),
+                              zoom: CAMERA_ZOOM,
+                              tilt: CAMERA_TILT,
+                              bearing: CAMERA_BEARING),
+                          onMapCreated: (GoogleMapController controller) {
+                            setState(() {
+                              model.mapController.complete(controller);
+                            });
+                            // setPolyline();
+                          },
+                          onTap: (loc) async {
+                            if (model.panelController.isPanelOpen)
+                              model.panelController.close();
+                            else {
+                              String title;
+                              HikeScreenWidget.showCreateLandMarkDialogueDialog(
+                                context,
+                                model.landmarkFormKey,
+                                title,
+                                loc,
+                                model.createLandmark,
+                              );
+                            }
+                          }),
                       Align(
-                        alignment: Alignment(0.9, -0.85),
-                        child: model.isBeaconExpired
-                            ? Container()
-                            : HikeScreenWidget.shareButton(
-                                context, widget.beacon.shortcode),
+                          alignment: Alignment(0.9, -0.98),
+                          child: model.isBeaconExpired
+                              ? Container()
+                              : HikeScreenWidget.shareButton(
+                                  context, widget.beacon.shortcode)),
+                      Align(
+                        alignment: Alignment(-0.9, -0.98),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            model.onWillPop(context);
+                          },
+                          backgroundColor: kYellow,
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       if (!model.isBeaconExpired)
                         //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                         Align(
-                          alignment: Alignment(0.5, -0.85),
+                          alignment: Alignment(0.9, -0.8),
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 500),
                             opacity:
@@ -190,19 +196,6 @@ class _HikeScreenState extends State<HikeScreen> {
                                 model.beacon, model.mapController, model.route),
                           ),
                         ),
-                      Align(
-                        alignment: Alignment(-0.8, -0.9),
-                        child: GestureDetector(
-                          onTap: () {
-                            model.onWillPop(context);
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 30,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
