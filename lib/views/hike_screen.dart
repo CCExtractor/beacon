@@ -49,98 +49,113 @@ class _HikeScreenState extends State<HikeScreen> {
           child: Scaffold(
             body: SafeArea(
               child: ModalProgressHUD(
-                  inAsyncCall: model.isGeneratingLink || model.isBusy,
-                  child: SlidingUpPanel(
-                    maxHeight: 60.h,
-                    minHeight: 20.h,
-                    controller: model.panelController,
-                    collapsed: Container(
-                      decoration: BoxDecoration(
-                          color: kBlue,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10),
-                              topLeft: Radius.circular(10))),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: 65,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(12.0))),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: RichText(
-                                text: TextSpan(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    children: [
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? 'Beacon has been expired\n'
-                                              : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                          style: TextStyle(fontSize: 18)),
-                                      TextSpan(
-                                          text:
-                                              'Beacon holder at: ${model.address}\n',
-                                          style: TextStyle(fontSize: 14)),
-                                      TextSpan(
-                                          text:
-                                              'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
-                                          style: TextStyle(fontSize: 12)),
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? ''
-                                              : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
-                                          style: TextStyle(fontSize: 12)),
-                                    ]),
-                              ),
-                            ),
-                            height: 15.h,
-                          ),
-                        ],
+                inAsyncCall: model.isGeneratingLink || model.isBusy,
+                child: SlidingUpPanel(
+                  maxHeight: 60.h,
+                  minHeight: 20.h,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                  ),
+                  controller: model.panelController,
+                  collapsed: Container(
+                    decoration: BoxDecoration(
+                      color: kBlue,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
                       ),
                     ),
-                    panel: HikeScreenWidget.panel(model.scrollController, model,
-                        context, widget.isLeader),
-                    body: Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[
-                        GoogleMap(
-                          compassEnabled: true,
-                          mapType: MapType.terrain,
-                          markers: model.markers.toSet(),
-                          polylines: model.polylines,
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                  double.parse(widget.beacon.location.lat),
-                                  double.parse(widget.beacon.location.lon)),
-                              zoom: CAMERA_ZOOM,
-                              tilt: CAMERA_TILT,
-                              bearing: CAMERA_BEARING),
-                          onMapCreated: (GoogleMapController controller) {
-                            setState(() {
-                              model.mapController.complete(controller);
-                            });
-                            // setPolyline();
-                          },
-                          onTap: (loc) async {
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 1.5.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: 65,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.5.h,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                children: [
+                                  TextSpan(
+                                    text: model.isBeaconExpired
+                                        ? 'Beacon has been expired\n'
+                                        : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        'Beacon holder at: ${model.address}\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  TextSpan(
+                                    text: model.isBeaconExpired
+                                        ? ''
+                                        : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          height: 15.h,
+                        ),
+                      ],
+                    ),
+                  ),
+                  panel: HikeScreenWidget.panel(
+                      model.scrollController, model, context, widget.isLeader),
+                  body: Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      GoogleMap(
+                        compassEnabled: true,
+                        mapType: MapType.terrain,
+                        markers: model.markers.toSet(),
+                        polylines: model.polylines,
+                        initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                              double.parse(widget.beacon.location.lat),
+                              double.parse(widget.beacon.location.lon),
+                            ),
+                            zoom: CAMERA_ZOOM,
+                            tilt: CAMERA_TILT,
+                            bearing: CAMERA_BEARING),
+                        onMapCreated: (GoogleMapController controller) {
+                          setState(() {
+                            model.mapController.complete(controller);
+                          });
+                          // setPolyline();
+                        },
+                        onTap: (loc) async {
+                          if (model.panelController.isPanelOpen)
+                            model.panelController.close();
+                          else {
                             String title;
                             HikeScreenWidget.showCreateLandMarkDialogueDialog(
                               context,
@@ -149,52 +164,49 @@ class _HikeScreenState extends State<HikeScreen> {
                               loc,
                               model.createLandmark,
                             );
+                          }
+                        },
+                      ),
+                      CustomPaint(
+                        size: Size(screenWidth, screenHeight - 200),
+                        foregroundPainter: ShapePainter(),
+                      ),
+                      Align(
+                        alignment: Alignment(0.9, -0.85),
+                        child: model.isBeaconExpired
+                            ? Container()
+                            : HikeScreenWidget.shareButton(
+                                context, widget.beacon.shortcode),
+                      ),
+                      if (!model.isBeaconExpired)
+                        //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
+                        Align(
+                          alignment: Alignment(0.5, -0.85),
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 500),
+                            opacity:
+                                model.mapController.isCompleted ? 1.0 : 0.0,
+                            child: HikeScreenWidget.shareRouteButton(context,
+                                model.beacon, model.mapController, model.route),
+                          ),
+                        ),
+                      Align(
+                        alignment: Alignment(-0.8, -0.9),
+                        child: GestureDetector(
+                          onTap: () {
+                            model.onWillPop(context);
                           },
-                        ),
-                        CustomPaint(
-                          size: Size(screenWidth, screenHeight - 200),
-                          foregroundPainter: ShapePainter(),
-                        ),
-                        Align(
-                          alignment: Alignment(0.9, -0.85),
-                          child: model.isBeaconExpired
-                              ? Container()
-                              : HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode),
-                        ),
-                        if (!model.isBeaconExpired)
-                          //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
-                          Align(
-                            alignment: Alignment(0.5, -0.85),
-                            child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 500),
-                              opacity:
-                                  model.mapController.isCompleted ? 1.0 : 0.0,
-                              child: HikeScreenWidget.shareRouteButton(
-                                  context,
-                                  model.beacon,
-                                  model.mapController,
-                                  model.route),
-                            ),
-                          ),
-                        Align(
-                          alignment: Alignment(-0.8, -0.9),
-                          child: GestureDetector(
-                            onTap: () {
-                              model.onWillPop(context);
-                            },
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 30,
-                              color: Colors.white,
-                            ),
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 30,
+                            color: Colors.white,
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                  // }),
+                      ),
+                    ],
                   ),
+                ),
+              ),
             ),
           ),
         );

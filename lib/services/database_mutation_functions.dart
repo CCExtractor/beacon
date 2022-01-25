@@ -206,10 +206,14 @@ class DataBaseMutationFunctions {
         if (!beaconIds.contains(i.id)) {
           beaconIds.add(i.id);
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
-              .isBefore(DateTime.now()))
-            expiredBeacons.add(i);
-          else
+              .isBefore(DateTime.now())) {
+            expiredBeacons.insert(0, i);
+            expiredBeacons.sort((a, b) => a.expiresAt.compareTo(b.expiresAt));
+            expiredBeacons = expiredBeacons.reversed.toList();
+          } else {
             beacons.add(i);
+            beacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
+          }
         }
       }
     }
