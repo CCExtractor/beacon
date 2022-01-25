@@ -126,6 +126,7 @@ class CreateJoinBeaconDialog {
                               builder: (context, child) {
                                 return Theme(
                                   data: ThemeData(
+                                    textTheme: Theme.of(context).textTheme,
                                     timePickerTheme: TimePickerThemeData(
                                       dialHandColor: kBlue,
                                       dayPeriodTextColor: kBlue,
