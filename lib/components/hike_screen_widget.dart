@@ -280,7 +280,7 @@ class HikeScreenWidget {
       context: context,
       builder: (context) => Dialog(
         child: Container(
-          height: 30.h,
+          height: MediaQuery.of(context).size.height < 800 ? 30.h : 25.h,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             child: Form(
@@ -288,7 +288,8 @@ class HikeScreenWidget {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: 12.h,
+                    height:
+                        MediaQuery.of(context).size.height < 800 ? 14.h : 12.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
@@ -323,10 +324,8 @@ class HikeScreenWidget {
                   ),
                   Flexible(
                     child: HikeButton(
-                      buttonWidth: optbwidth,
-                      buttonHeight: optbheight,
                       text: 'Create Landmark',
-                      textSize: 18.0,
+                      textSize: 17.0,
                       textColor: Colors.white,
                       buttonColor: kYellow,
                       onTap: () => createLandmark(title, loc),
