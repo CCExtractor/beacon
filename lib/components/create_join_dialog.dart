@@ -192,14 +192,15 @@ class CreateJoinBeaconDialog {
                         child: InkWell(
                           onTap: () async {
                             model.resultingDuration = await showDurationPicker(
-                                context: context,
-                                initialTime: model.resultingDuration != null
-                                    ? model.resultingDuration
-                                    : Duration(minutes: 30),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ));
+                              context: context,
+                              initialTime: model.resultingDuration != null
+                                  ? model.resultingDuration
+                                  : Duration(minutes: 30),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            );
                             model.durationController.text = model
                                 .resultingDuration
                                 .toString()
@@ -240,35 +241,36 @@ class CreateJoinBeaconDialog {
                     Flexible(
                       flex: 2,
                       child: HikeButton(
-                          buttonWidth: optbwidth,
-                          buttonHeight: optbheight,
-                          textSize: 18.0,
-                          text: 'Create',
-                          textColor: Colors.white,
-                          buttonColor: kYellow,
-                          onTap: () {
-                            // navigationService.pop();
-                            if (model.startingdate == null ||
-                                model.startingTime == null) {
-                              navigationService
-                                  .showSnackBar("Enter date and time");
-                              return;
-                            }
-                            model.startsAt = DateTime(
-                              model.startingdate.year,
-                              model.startingdate.month,
-                              model.startingdate.day,
-                              model.startingTime.hour,
-                              model.startingTime.minute,
-                            );
-                            // localNotif.scheduleNotification();
-                            if (model.startsAt.isBefore(DateTime.now())) {
-                              navigationService.showSnackBar(
-                                  "Enter a valid date and time!!");
-                              return;
-                            }
-                            model.createHikeRoom();
-                          }),
+                        buttonWidth: optbwidth,
+                        buttonHeight: optbheight,
+                        textSize: 18.0,
+                        text: 'Create',
+                        textColor: Colors.white,
+                        buttonColor: kYellow,
+                        onTap: () {
+                          // navigationService.pop();
+                          if (model.startingdate == null ||
+                              model.startingTime == null) {
+                            navigationService
+                                .showSnackBar("Enter date and time");
+                            return;
+                          }
+                          model.startsAt = DateTime(
+                            model.startingdate.year,
+                            model.startingdate.month,
+                            model.startingdate.day,
+                            model.startingTime.hour,
+                            model.startingTime.minute,
+                          );
+                          // localNotif.scheduleNotification();
+                          if (model.startsAt.isBefore(DateTime.now())) {
+                            navigationService
+                                .showSnackBar("Enter a valid date and time!!");
+                            return;
+                          }
+                          model.createHikeRoom();
+                        },
+                      ),
                     ),
                   ],
                 ),
