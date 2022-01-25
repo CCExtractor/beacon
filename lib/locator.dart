@@ -1,6 +1,7 @@
 import 'package:beacon/main.dart';
 import 'package:beacon/services/database_mutation_functions.dart';
 import 'package:beacon/services/graphql_config.dart';
+import 'package:beacon/services/hive_localdb.dart';
 import 'package:beacon/services/local_notification.dart';
 import 'package:beacon/services/navigation_service.dart';
 import 'package:beacon/services/user_config.dart';
@@ -15,6 +16,7 @@ final navigationService = locator<NavigationService>();
 final databaseFunctions = locator<DataBaseMutationFunctions>();
 final graphqlConfig = locator<GraphQLConfig>();
 final localNotif = locator<LocalNotification>();
+final hiveDb = locator<HiveLocalDb>();
 
 void setupLocator() {
   //services
@@ -26,6 +28,9 @@ void setupLocator() {
 
   //databaseMutationFunction
   locator.registerSingleton(DataBaseMutationFunctions());
+
+  //Hive localdb
+  locator.registerSingleton(HiveLocalDb());
 
   locator.registerFactory(() => DemoViewModel());
   locator.registerFactory(() => AuthViewModel());

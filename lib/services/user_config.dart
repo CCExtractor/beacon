@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import '../locator.dart';
 
 class UserConfig {
@@ -9,7 +8,7 @@ class UserConfig {
   User get currentUser => _currentUser;
 
   Future<bool> userLoggedIn() async {
-    final boxUser = Hive.box<User>('currentUser');
+    final boxUser = hiveDb.currentUserBox;
     _currentUser = boxUser.get('user');
     if (_currentUser == null) {
       _currentUser = User(id: 'null', authToken: 'null');
@@ -21,7 +20,7 @@ class UserConfig {
       await databaseFunctions.init();
       await databaseFunctions.fetchCurrentUserInfo().then((value) {
         if (value) {
-          saveUserInHive();
+          hiveDb.saveUserInHive(_currentUser);
           userUpdated = true;
         } else {
           navigationService.showSnackBar("Couldn't update User details");
@@ -37,20 +36,11 @@ class UserConfig {
     try {
       _currentUser = updatedUserDetails;
       print("User is guest or not: ${updatedUserDetails.isGuest}");
-      saveUserInHive();
+      hiveDb.saveUserInHive(_currentUser);
       return true;
     } on Exception catch (e) {
       debugPrint(e.toString());
       return false;
-    }
-  }
-
-  saveUserInHive() {
-    final box = Hive.box<User>('currentUser');
-    if (box.get('user') == null) {
-      box.put('user', _currentUser);
-    } else {
-      box.put('user', _currentUser);
     }
   }
 }

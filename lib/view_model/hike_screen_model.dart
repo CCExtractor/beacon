@@ -5,6 +5,7 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -139,64 +140,71 @@ class HikeScreenViewModel extends BaseModel {
     ));
   }
 
-  Future<void> fetchData() async {
+  Future<void> updateModel(Beacon value) async {
     Coordinates coordinates = Coordinates(
         double.parse(beacon.location.lat), double.parse(beacon.location.lon));
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    await databaseFunctions.fetchBeaconInfo(beacon.id).then((value) {
-      beacon = value;
-      isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-          .isBefore(DateTime.now());
-      hikers.add(value.leader);
-      for (var i in value.followers) {
-        if (!followerId.contains(i.id)) {
-          hikers.add(i);
-          followerId.add(i.id);
-        }
+    isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+        .isBefore(DateTime.now());
+    hikers.add(value.leader);
+    for (var i in value.followers) {
+      if (!followerId.contains(i.id)) {
+        hikers.add(i);
+        followerId.add(i.id);
       }
-      var lat = double.parse(value.location.lat);
-      var lon = double.parse(value.location.lon);
-      route.add(LatLng(lat, lon));
-      address = addresses.first.addressLine;
+    }
+    var lat = double.parse(value.location.lat);
+    var lon = double.parse(value.location.lon);
+    route.add(LatLng(lat, lon));
+    address = addresses.first.addressLine;
+    markers.add(Marker(
+      markerId: MarkerId("0"),
+      position: route.first,
+      infoWindow: InfoWindow(
+        title: 'Initial Location',
+      ),
+    ));
+    markers.add(Marker(
+      markerId: MarkerId("1"),
+      position: route.last,
+      infoWindow: InfoWindow(
+        title: 'Current Location',
+      ),
+    ));
+    for (var i in value.landmarks) {
       markers.add(Marker(
-        markerId: MarkerId("0"),
-        position: route.first,
+        markerId: MarkerId((markers.length + 1).toString()),
+        position:
+            LatLng(double.parse(i.location.lat), double.parse(i.location.lon)),
         infoWindow: InfoWindow(
-          title: 'Initial Location',
+          title: '${i.title}',
         ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
       ));
-      markers.add(Marker(
-        markerId: MarkerId("1"),
-        position: route.last,
-        infoWindow: InfoWindow(
-          title: 'Current Location',
-        ),
-      ));
-      for (var i in value.landmarks) {
-        markers.add(Marker(
-          markerId: MarkerId((markers.length + 1).toString()),
-          position: LatLng(
-              double.parse(i.location.lat), double.parse(i.location.lon)),
-          infoWindow: InfoWindow(
-            title: '${i.title}',
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        ));
-      }
-      // for (var i in value.followers) {
-      //   markers.add(Marker(
-      //     markerId: MarkerId((markers.length + 1).toString()),
-      //     position: LatLng(
-      //         double.parse(i.location.lat), double.parse(i.location.lon)),
-      //     infoWindow: InfoWindow(
-      //       title: '${i.name}',
-      //     ),
-      //     icon: BitmapDescriptor.defaultMarkerWithHue(
-      //         BitmapDescriptor.hueYellow),
-      //   ));
-      // }
-      //notifyListeners();
+    }
+    // for (var i in value.followers) {
+    //   markers.add(Marker(
+    //     markerId: MarkerId((markers.length + 1).toString()),
+    //     position: LatLng(
+    //         double.parse(i.location.lat), double.parse(i.location.lon)),
+    //     infoWindow: InfoWindow(
+    //       title: '${i.name}',
+    //     ),
+    //     icon: BitmapDescriptor.defaultMarkerWithHue(
+    //         BitmapDescriptor.hueYellow),
+    //   ));
+    // }
+    //notifyListeners();
+  }
+
+  Future<void> fetchData() async {
+    await databaseFunctions.fetchBeaconInfo(beacon.id).then((value) async {
+      if (value != null)
+        beacon = value;
+      else
+        value = beacon;
+      await updateModel(value);
     });
   }
 
@@ -330,11 +338,16 @@ class HikeScreenViewModel extends BaseModel {
   Future<void> initialise(Beacon beaconParsed, bool widgetIsLeader) async {
     beacon = beaconParsed;
     isLeader = widgetIsLeader;
-    await fetchData();
-    graphQlClient = GraphQLConfig().graphQlClient();
-    await setupSubscriptions(
-        DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-            .isBefore(DateTime.now()));
+    final connectivity = await DataConnectionChecker().hasConnection;
+    if (connectivity) {
+      await fetchData();
+      graphQlClient = GraphQLConfig().graphQlClient();
+      await setupSubscriptions(
+          DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+              .isBefore(DateTime.now()));
+    } else {
+      await updateModel(beacon);
+    }
     modelIsReady = true;
     notifyListeners();
     // print("REBUITL" + modelIsReady.toString());
