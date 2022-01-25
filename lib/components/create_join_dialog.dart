@@ -72,6 +72,7 @@ class CreateJoinBeaconDialog {
                               lastDate: DateTime(2100),
                               builder: (context, child) => Theme(
                                   data: ThemeData().copyWith(
+                                    textTheme: Theme.of(context).textTheme,
                                     colorScheme: ColorScheme.light(
                                       primary: kBlue,
                                       onPrimary: Colors.white,
@@ -191,11 +192,14 @@ class CreateJoinBeaconDialog {
                         child: InkWell(
                           onTap: () async {
                             model.resultingDuration = await showDurationPicker(
-                              context: context,
-                              initialTime: model.resultingDuration != null
-                                  ? model.resultingDuration
-                                  : Duration(minutes: 30),
-                            );
+                                context: context,
+                                initialTime: model.resultingDuration != null
+                                    ? model.resultingDuration
+                                    : Duration(minutes: 30),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ));
                             model.durationController.text = model
                                 .resultingDuration
                                 .toString()
