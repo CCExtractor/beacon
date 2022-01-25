@@ -63,7 +63,7 @@ class _AuthScreenState extends State<AuthScreen>
         builder: (context, model, child) {
           return (model.isBusy)
               ? Scaffold(body: Center(child: CircularProgressIndicator()))
-              : new Scaffold(
+              : Scaffold(
                   key: model.scaffoldKey,
                   resizeToAvoidBottomInset: true,
                   body: Container(
@@ -115,12 +115,12 @@ class _AuthScreenState extends State<AuthScreen>
                                     }
                                   },
                                   children: <Widget>[
-                                    new ConstrainedBox(
+                                    ConstrainedBox(
                                       constraints:
                                           const BoxConstraints.expand(),
                                       child: _buildSignIn(context, model),
                                     ),
-                                    new ConstrainedBox(
+                                    ConstrainedBox(
                                       constraints:
                                           const BoxConstraints.expand(),
                                       child: _buildSignUp(context, model),
@@ -439,7 +439,7 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             Container(
               // margin: EdgeInsets.only(top: 300.0),
-              decoration: new BoxDecoration(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
               ),
               child: HikeButton(

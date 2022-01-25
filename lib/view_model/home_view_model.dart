@@ -19,9 +19,9 @@ class HomeViewModel extends BaseModel {
   bool hasStarted;
   //commenting out since its value isnt used anywhere.
   //TextEditingController _titleController = new TextEditingController();
-  TextEditingController durationController = new TextEditingController();
-  TextEditingController startsAtDate = new TextEditingController();
-  TextEditingController startsAtTime = new TextEditingController();
+  TextEditingController durationController = TextEditingController();
+  TextEditingController startsAtDate = TextEditingController();
+  TextEditingController startsAtTime = TextEditingController();
   String enteredPasskey;
 
   createHikeRoom() async {

@@ -42,7 +42,7 @@ class HikeScreenViewModel extends BaseModel {
   PolylinePoints polylinePoints = PolylinePoints();
   final GlobalKey<FormState> landmarkFormKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
-  Location loc = new Location();
+  Location loc = Location();
   GraphQLClient graphQlClient;
   PanelController panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
@@ -369,6 +369,11 @@ class HikeScreenViewModel extends BaseModel {
     Uri url = Uri.parse('https://beacon.aadibajpai.com/?shortcode=$shortcode');
     Share.share('To join beacon follow this link: $url');
     setState(ViewState.idle);
+  }
+
+  void updateBeaconDuration(int newExpiresAt) {
+    beacon.expiresAt = newExpiresAt;
+    notifyListeners();
   }
 
   Future<void> createLandmark(

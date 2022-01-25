@@ -10,7 +10,7 @@ class AuthViewModel extends BaseModel {
 
   AutovalidateMode loginValidate = AutovalidateMode.disabled;
   AutovalidateMode signupValidate = AutovalidateMode.disabled;
-  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode emailLogin = FocusNode();
   final FocusNode passwordLogin = FocusNode();
@@ -19,15 +19,15 @@ class AuthViewModel extends BaseModel {
   final FocusNode email = FocusNode();
   final FocusNode name = FocusNode();
 
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
+  TextEditingController loginEmailController = TextEditingController();
+  TextEditingController loginPasswordController = TextEditingController();
 
   bool obscureTextLogin = true;
   bool obscureTextSignup = true;
 
-  TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupNameController = new TextEditingController();
-  TextEditingController signupPasswordController = new TextEditingController();
+  TextEditingController signupEmailController = TextEditingController();
+  TextEditingController signupNameController = TextEditingController();
+  TextEditingController signupPasswordController = TextEditingController();
 
   PageController pageController = PageController();
 

@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       key: const Key('SplashScreenScaffold'),
       body: Center(
-        child: new Image(image: new AssetImage('images/hikers_group.png')),
+        child: Image(image: AssetImage('images/hikers_group.png')),
       ),
     );
   }

@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onPopHome,
       child: BaseView<HomeViewModel>(builder: (context, model, child) {
-        TabController tabController = new TabController(length: 2, vsync: this);
+        TabController tabController = TabController(length: 2, vsync: this);
         return model.isBusy
             ? Scaffold(body: Center(child: CircularProgressIndicator()))
             : Scaffold(

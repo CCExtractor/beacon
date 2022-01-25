@@ -43,6 +43,40 @@ class BeaconQueries {
     ''';
   }
 
+  String changeBeaconDuration(String id, int newExpiresAt) {
+    return '''
+        mutation{
+          changeBeaconDuration(newExpiresAt: $newExpiresAt, beaconID: "$id")
+          {
+            _id
+            title
+            shortcode
+            leader {
+              _id
+              name
+            }
+            location{
+              lat
+              lon
+            }
+            followers {
+              _id
+              name
+            }
+            startsAt
+            expiresAt
+            landmarks {
+              title
+              location {
+                lat
+                lon
+              }
+            }
+          }
+        }
+    ''';
+  }
+
   String updateLeaderLoc(String id, String lat, String lon) {
     return '''
         mutation {

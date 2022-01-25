@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -244,14 +245,14 @@ class HikeScreenWidget {
                       trailing: model.hikers[index].id == model.beacon.leader.id
                           ? GestureDetector(
                               onDoubleTap: () {
-                                isLeader
+                                !isLeader
                                     ? Fluttertoast.showToast(
                                         msg:
                                             'Only beacon holder has access to change the duration')
-                                    //TODO: enable this once backend has updated.
-                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                                    // : DialogBoxes.changeDurationDialog(context);
-                                    : Container();
+                                    : DialogBoxes.changeDurationDialog(
+                                        context,
+                                        model,
+                                      );
                               },
                               child: Icon(
                                 Icons.room,
