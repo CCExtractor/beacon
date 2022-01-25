@@ -171,12 +171,12 @@ class _HikeScreenState extends State<HikeScreen> {
                               : HikeScreenWidget.shareButton(
                                   context, widget.beacon.shortcode)),
                       Align(
-                        alignment: Alignment(-0.93, -0.98),
+                        alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
                           onPressed: () {
                             model.onWillPop(context);
                           },
-                          backgroundColor: kBlue,
+                          backgroundColor: kYellow,
                           child: Icon(
                             Icons.arrow_back,
                             size: 35,
