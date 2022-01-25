@@ -9,7 +9,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  connectivity_plus: ^1.0.2
   cupertino_icons: ^1.0.2
   date_time_picker: ^2.0.0
   duration_picker: ^1.1.0+1
@@ -47,8 +46,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^1.1.0
-  build_runner: ^2.0.4
-  flutter_launcher_icons: "^0.9.1"
 
 flutter_icons:
   android: "launcher_icon"
