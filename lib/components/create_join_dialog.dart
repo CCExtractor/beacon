@@ -65,6 +65,7 @@ class CreateJoinBeaconDialog {
                         padding: const EdgeInsets.all(4.0),
                         child: InkWell(
                           onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             model.startingdate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
@@ -110,6 +111,7 @@ class CreateJoinBeaconDialog {
                         padding: const EdgeInsets.all(4.0),
                         child: InkWell(
                           onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             model.startingTime = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
@@ -153,6 +155,7 @@ class CreateJoinBeaconDialog {
                         padding: const EdgeInsets.all(4.0),
                         child: InkWell(
                           onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             model.resultingDuration = await showDurationPicker(
                               context: context,
                               initialTime: model.resultingDuration != null
