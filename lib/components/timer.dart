@@ -52,34 +52,12 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
           textColor: kYellow,
           label: 'Click to Join',
           onPressed: () async {
-            bool isJoinee = false;
-            for (var i in widget.beacon.followers) {
-              if (i.id == userConfig.currentUser.id) {
-                isJoinee = true;
-              }
-            }
-            if ((widget.beacon.leader.id == userConfig.currentUser.id ||
-                isJoinee)) {
-              navigationService.pushScreen(
-                '/hikeScreen',
-                arguments: HikeScreen(
-                  widget.beacon,
-                  isLeader:
-                      (widget.beacon.leader.id == userConfig.currentUser.id),
-                ),
-              );
-            } else {
-              await databaseFunctions.init();
-              final Beacon _beacon =
-                  await databaseFunctions.joinBeacon(widget.beacon.shortcode);
-
-              if (_beacon != null) {
-                navigationService.pushScreen(
-                  '/hikeScreen',
-                  arguments: HikeScreen(widget.beacon, isLeader: false),
-                );
-              }
-            }
+            bool isLeader =
+                widget.beacon.leader.id == userConfig.currentUser.id;
+            navigationService.pushScreen(
+              '/hikeScreen',
+              arguments: HikeScreen(widget.beacon, isLeader: isLeader),
+            );
           },
         ),
       ),
