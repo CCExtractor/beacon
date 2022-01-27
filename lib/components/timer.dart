@@ -38,7 +38,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
   void onEnd() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 5),
         content: Text('${widget.name} is now active! You can join the hike'),
         backgroundColor: Colors.teal,
         shape: RoundedRectangleBorder(
