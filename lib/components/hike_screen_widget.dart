@@ -18,7 +18,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:sizer/sizer.dart';
 
-class HikeScreenWidget {
+class HikeScreenWidget extends ChangeNotifier {
   static copyPasskey(String passkey) {
     Clipboard.setData(ClipboardData(text: passkey));
     Fluttertoast.showToast(msg: 'PASSKEY: $passkey  COPIED');
@@ -217,7 +217,7 @@ class HikeScreenWidget {
                   itemCount: model.hikers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      onTap: () {
+                      onLongPress: () {
                         model.hikers[index].id == userConfig.currentUser.id
                             ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
                             : model.beacon.leader.id ==
@@ -225,17 +225,20 @@ class HikeScreenWidget {
                                 ? model.relayBeacon(model.hikers[index])
                                 : Fluttertoast.showToast(
                                     msg: 'You dont have beacon to relay');
+                        print(model.hikers[index].id);
+                        print(model.beacon.id);
                       },
                       leading: CircleAvatar(
                         backgroundColor:
                             model.isBeaconExpired ? Colors.grey : kYellow,
                         radius: 18,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Icon(
-                              Icons.person_outline,
-                              color: Colors.white,
-                            )),
+                          borderRadius: BorderRadius.circular(50),
+                          child: Icon(
+                            Icons.person_outline,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       title: Text(
                         model.hikers[index].name,
@@ -253,13 +256,20 @@ class HikeScreenWidget {
                                     // : DialogBoxes.changeDurationDialog(context);
                                     : Container();
                               },
-                              child: Icon(
-                                Icons.room,
-                                color: model.isBeaconExpired
-                                    ? Colors.grey
-                                    : kYellow,
-                                size: 40,
-                              ),
+                              child: model.hikers[index].id ==
+                                      model.beacon.leader.id
+                                  ? Icon(
+                                      Icons.room,
+                                      color: model.isBeaconExpired
+                                          ? Colors.grey
+                                          : kYellow,
+                                      size: 40,
+                                    )
+                                  : Icon(
+                                      Icons.room,
+                                      color: Colors.grey,
+                                      size: 40,
+                                    ),
                             )
                           : Container(width: 10),
                     );
@@ -341,5 +351,15 @@ class HikeScreenWidget {
         ),
       ),
     );
+  }
+
+  void relayBeacon(String beaconID, String newLeaderID) async {
+    await databaseFunctions.init();
+    if (databaseFunctions.updateLocation(newLeaderID) == null) {
+      Fluttertoast.showToast(msg: 'User is inactive. Try someone else!');
+    } else if (databaseFunctions.changingLeader(beaconID, newLeaderID) !=
+        null) {
+      Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderID');
+    }
   }
 }

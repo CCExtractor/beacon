@@ -1,6 +1,31 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class BeaconQueries {
+  String changeLeader(String beaconID, String newLeaderID) {
+    return '''
+        mutation{
+           changeLeader (beaconID:"$beaconID" ,newLeaderID: "$newLeaderID")
+          {
+            leader{
+              name
+           }
+          }
+        }
+    ''';
+  }
+
+  String updateUserLocation(String userID) {
+    return '''
+        mutation{
+          updateUserLocation(id:"$userID")
+          location{
+              lat
+              lon
+            }
+        }
+    ''';
+  }
+
   String createBeacon(
       String title, int startsAt, int expiresAt, String lat, String lon) {
     return '''
