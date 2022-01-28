@@ -61,152 +61,151 @@ class DialogBoxes {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Container(
-          height: 500,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Flexible(
-                  child: Container(
-                    color: kLightBlue,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Choose a date and time for the beacon to expire at.',
-                          style: TextStyle(color: kYellow, fontSize: 14.0),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Container(
+                  child: Text(
+                    'Choose End Date-Time',
+                    style: TextStyle(color: kYellow, fontSize: 15.0),
+                  ),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Container(
+                  color: kLightBlue,
+                  height: 10.h,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: InkWell(
+                      onTap: () async {
+                        dateTime = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2100),
+                        );
+                        startsAtDate.text =
+                            dateTime.toString().substring(0, 10);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        controller: startsAtDate,
+                        onChanged: (value) {
+                          startsAtDate.text =
+                              dateTime.toString().substring(0, 10);
+                        },
+                        decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          errorStyle: TextStyle(color: Colors.red[800]),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'End Date',
+                          labelStyle:
+                              TextStyle(fontSize: labelsize, color: kYellow),
+                          hintStyle:
+                              TextStyle(fontSize: hintsize, color: hintColor),
+                          hintText: 'Choose end date',
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
                         ),
-                        Container(
-                          height: 10.h,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: InkWell(
-                              onTap: () async {
-                                dateTime = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(2100),
-                                );
-                                startsAtDate.text =
-                                    dateTime.toString().substring(0, 10);
-                              },
-                              child: TextFormField(
-                                enabled: false,
-                                controller: startsAtDate,
-                                onChanged: (value) {
-                                  startsAtDate.text =
-                                      dateTime.toString().substring(0, 10);
-                                },
-                                decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  errorStyle: TextStyle(color: Colors.red[800]),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  labelText: 'End Date',
-                                  labelStyle: TextStyle(
-                                      fontSize: labelsize, color: kYellow),
-                                  hintStyle: TextStyle(
-                                      fontSize: hintsize, color: hintColor),
-                                  hintText: 'Choose end date',
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          color: kLightBlue,
-                        ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
-                        Container(
-                          height: 10.h,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: InkWell(
-                              onTap: () async {
-                                timeOfDay = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                );
-                                startsAtTime.text =
-                                    timeOfDay.toString().substring(10, 15);
-                              },
-                              child: TextFormField(
-                                enabled: false,
-                                controller: startsAtTime,
-                                onChanged: (value) {
-                                  startsAtTime.text =
-                                      timeOfDay.toString().substring(10, 15);
-                                },
-                                decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  errorStyle: TextStyle(color: Colors.red[800]),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  labelText: 'End Time',
-                                  labelStyle: TextStyle(
-                                      fontSize: labelsize, color: kYellow),
-                                  hintStyle: TextStyle(
-                                      fontSize: hintsize, color: hintColor),
-                                  hintText: 'Choose End time',
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          color: kLightBlue,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: 3.h,
+                  height: 2.h,
                 ),
-                Flexible(
-                  child: HikeButton(
-                      buttonWidth: optbwidth,
-                      text: 'Done',
-                      textSize: 18.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
+                Container(
+                  height: 10.h,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: InkWell(
                       onTap: () async {
-                        if (dateTime == null || timeOfDay == null) {
-                          navigationService.showSnackBar("Enter date and time");
-                          return;
-                        }
-                        dateTime = DateTime(
-                          dateTime.year,
-                          dateTime.month,
-                          dateTime.day,
-                          timeOfDay.hour,
-                          timeOfDay.minute,
+                        timeOfDay = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
                         );
-                        // localNotif.scheduleNotification();
-                        if (DateTime.fromMillisecondsSinceEpoch(
-                                model.beacon.startsAt)
-                            .isAfter(dateTime)) {
-                          navigationService
-                              .showSnackBar("Enter a valid date and time!!");
-                          return;
-                        }
-                        // DateTime newTime =
-                        // DateTime.now().add(newDuration);
-                        // update time
-                        await databaseFunctions.init();
-                        final updatedBeacon =
-                            await databaseFunctions.changeBeaconDuration(
-                          model.beacon.id,
-                          dateTime.millisecondsSinceEpoch,
-                        );
-                        if (updatedBeacon != null) {
-                          model.updateBeaconDuration(
-                              dateTime.millisecondsSinceEpoch);
-                        }
-                        Navigator.pop(context, dateTime);
-                      }),
+                        startsAtTime.text =
+                            timeOfDay.toString().substring(10, 15);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        controller: startsAtTime,
+                        onChanged: (value) {
+                          startsAtTime.text =
+                              timeOfDay.toString().substring(10, 15);
+                        },
+                        decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          errorStyle: TextStyle(color: Colors.red[800]),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'End Time',
+                          labelStyle:
+                              TextStyle(fontSize: labelsize, color: kYellow),
+                          hintStyle:
+                              TextStyle(fontSize: hintsize, color: hintColor),
+                          hintText: 'Choose End time',
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  color: kLightBlue,
+                ),
+                SizedBox(
+                  height: 4.h,
+                ),
+                HikeButton(
+                  buttonWidth: optbwidth,
+                  text: 'Done',
+                  textSize: 18.0,
+                  textColor: Colors.white,
+                  buttonColor: kYellow,
+                  onTap: () async {
+                    if (dateTime == null || timeOfDay == null) {
+                      navigationService.showSnackBar("Enter date and time");
+                      return;
+                    }
+                    dateTime = DateTime(
+                      dateTime.year,
+                      dateTime.month,
+                      dateTime.day,
+                      timeOfDay.hour,
+                      timeOfDay.minute,
+                    );
+                    // localNotif.scheduleNotification();
+                    if (DateTime.fromMillisecondsSinceEpoch(
+                            model.beacon.startsAt)
+                        .isAfter(dateTime)) {
+                      navigationService
+                          .showSnackBar("Enter a valid date and time!!");
+                      return;
+                    }
+                    // DateTime newTime =
+                    // DateTime.now().add(newDuration);
+                    // update time
+                    await databaseFunctions.init();
+                    final updatedBeacon =
+                        await databaseFunctions.changeBeaconDuration(
+                      model.beacon.id,
+                      dateTime.millisecondsSinceEpoch,
+                    );
+                    if (updatedBeacon != null) {
+                      model.updateBeaconDuration(
+                          dateTime.millisecondsSinceEpoch);
+                    }
+                    Navigator.pop(context, dateTime);
+                  },
+                ),
+                SizedBox(
+                  height: 2.h,
                 ),
               ],
             ),
