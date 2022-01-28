@@ -187,7 +187,9 @@ class _HikeScreenState extends State<HikeScreen> {
                       if (!model.isBeaconExpired)
                         //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                         Align(
-                          alignment: Alignment(0.9, -0.8),
+                          alignment: screenHeight > 800
+                              ? Alignment(0.9, -0.8)
+                              : Alignment(0.9, -0.77),
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 500),
                             opacity:
