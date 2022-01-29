@@ -1,8 +1,11 @@
+import 'package:beacon/components/active_beacon.dart';
+import 'package:beacon/components/timer.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:intl/intl.dart';
 
@@ -10,11 +13,17 @@ class BeaconCustomWidgets {
   static final Color textColor = Color(0xFFAFAFAF);
 
   static Widget getBeaconCard(BuildContext context, Beacon beacon) {
+    bool hasStarted;
+    bool hasEnded;
+    bool willStart;
+    hasStarted = DateTime.now()
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
+    hasEnded = DateTime.now()
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt));
+    willStart = DateTime.now()
+        .isBefore(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
     return GestureDetector(
       onTap: () async {
-        bool hasStarted;
-        hasStarted = DateTime.now()
-            .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
         bool isJoinee = false;
         for (var i in beacon.followers) {
           if (i.id == userConfig.currentUser.id) {
@@ -61,26 +70,189 @@ class BeaconCustomWidgets {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('${beacon?.title} by ${beacon.leader.name}',
-                style: Style.titleTextStyle),
-            SizedBox(height: 4.0),
-            Text('Passkey: ${beacon?.shortcode}', style: Style.commonTextStyle),
-            SizedBox(height: 4.0),
-            (beacon.startsAt != null)
-                ? Text(
-                    'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
-                    style: Style.commonTextStyle)
-                : Container(),
-            SizedBox(height: 4.0),
-            (beacon.expiresAt != null)
-                ? Text(
-                    'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
-                    style: Style.commonTextStyle)
-                : Container(),
+            (hasStarted && !hasEnded)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 70.w,
+                            child: Text(
+                              '${beacon?.title} by ${beacon.leader.name} ',
+                              style: Style.titleTextStyle,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: BlinkIcon(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4.0),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Hike is ',
+                          style: Style.commonTextStyle,
+                          children: const <TextSpan>[
+                            TextSpan(
+                              text: 'Active',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 4.0),
+                      Text('Passkey: ${beacon?.shortcode}',
+                          style: Style.commonTextStyle),
+                      SizedBox(height: 4.0),
+                      (beacon.startsAt != null)
+                          ? Text(
+                              'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                              style: Style.commonTextStyle)
+                          : Container(),
+                      SizedBox(height: 4.0),
+                      (beacon.expiresAt != null)
+                          ? Text(
+                              'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                              style: Style.commonTextStyle)
+                          : Container(),
+                    ],
+                  )
+                : (willStart)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 70.w,
+                                child: Text(
+                                  '${beacon?.title} by ${beacon.leader.name} ',
+                                  style: Style.titleTextStyle,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Icon(
+                                  Icons.circle,
+                                  color: kYellow,
+                                  size: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.0),
+                          Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Hike ',
+                                  style: Style.commonTextStyle,
+                                  children: const <TextSpan>[
+                                    TextSpan(
+                                      text: 'Starts ',
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.0),
+                                    ),
+                                    TextSpan(
+                                      text: 'in ',
+                                      style: TextStyle(
+                                          color: const Color(0xffb6b2df),
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 3.0,
+                              ),
+                              CountdownTimerPage(
+                                dateTime: DateTime.fromMillisecondsSinceEpoch(
+                                    beacon.startsAt),
+                                name: beacon?.title,
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 4.0),
+                          Text('Passkey: ${beacon?.shortcode}',
+                              style: Style.commonTextStyle),
+                          SizedBox(height: 4.0),
+                          (beacon.startsAt != null)
+                              ? Text(
+                                  'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                          SizedBox(height: 4.0),
+                          (beacon.expiresAt != null)
+                              ? Text(
+                                  'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 70.w,
+                            child: Text(
+                              '${beacon?.title} by ${beacon.leader.name} ',
+                              style: Style.titleTextStyle,
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Hike has ',
+                              style: Style.commonTextStyle,
+                              children: const <TextSpan>[
+                                TextSpan(
+                                  text: 'Ended',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text('Passkey: ${beacon?.shortcode}',
+                              style: Style.commonTextStyle),
+                          SizedBox(height: 4.0),
+                          (beacon.startsAt != null)
+                              ? Text(
+                                  'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                          SizedBox(height: 4.0),
+                          (beacon.expiresAt != null)
+                              ? Text(
+                                  'Expired At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  style: Style.commonTextStyle)
+                              : Container(),
+                        ],
+                      ),
           ],
         ),
         decoration: BoxDecoration(
-          color: kBlue,
+          color: willStart
+              ? Color(0xFF141546)
+              : hasEnded
+                  ? lightkBlue
+                  : kBlue,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: <BoxShadow>[
