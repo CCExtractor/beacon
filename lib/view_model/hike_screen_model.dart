@@ -56,7 +56,6 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   void beaconExpired() {
-    // TODO
     Fluttertoast.showToast(msg: 'Beacon Expired');
   }
 
