@@ -15,12 +15,12 @@ const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 
 // Button Sizings
-final double labelsize = 20;
-final double hintsize = 18;
-final double homebheight = 4.45.h;
-final double homebwidth = 3.w;
-final double optbheight = 3.h;
-final double optbwidth = 6.w;
+const double labelsize = 24;
+const double hintsize = 16;
+final double homebheight = 4.5.h;
+final double homebwidth = 3.5.w;
+const double optbheight = 18.0;
+const double optbwidth = 30.0;
 
 // GraphQL Registering Errors
 const String exceptionError = "Exception Errors";

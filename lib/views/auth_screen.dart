@@ -145,7 +145,7 @@ class _AuthScreenState extends State<AuthScreen>
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13.5.w),
       width: screensize.width,
-      height: 6.75.h,
+      height: 6.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
@@ -288,8 +288,6 @@ class _AuthScreenState extends State<AuthScreen>
             HikeButton(
               onTap: model.nextLogin,
               text: 'LOGIN',
-              buttonWidth: optbwidth,
-              buttonHeight: 15,
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -305,8 +303,6 @@ class _AuthScreenState extends State<AuthScreen>
             HikeButton(
               onTap: () => model.loginAsGuest(),
               text: 'LOGIN AS GUEST',
-              buttonHeight: 15,
-              buttonWidth: optbwidth,
             ),
           ],
         ),
@@ -445,8 +441,6 @@ class _AuthScreenState extends State<AuthScreen>
               child: HikeButton(
                 onTap: () => model.nextSignup(),
                 text: 'SIGN UP',
-                buttonHeight: 15,
-                buttonWidth: optbwidth,
               ),
             ),
           ],
