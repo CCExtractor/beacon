@@ -245,34 +245,33 @@ class CreateJoinBeaconDialog {
                     Flexible(
                       flex: 2,
                       child: HikeButton(
-                        textSize: 18.0,
-                        text: 'Create',
-                        textColor: Colors.white,
-                        buttonColor: kYellow,
-                        onTap: () {
-                          // navigationService.pop();
-                          if (model.startingdate == null ||
-                              model.startingTime == null) {
-                            navigationService
-                                .showSnackBar("Enter date and time");
-                            return;
-                          }
-                          model.startsAt = DateTime(
-                            model.startingdate.year,
-                            model.startingdate.month,
-                            model.startingdate.day,
-                            model.startingTime.hour,
-                            model.startingTime.minute,
-                          );
-                          // localNotif.scheduleNotification();
-                          if (model.startsAt.isBefore(DateTime.now())) {
-                            navigationService
-                                .showSnackBar("Enter a valid date and time!!");
-                            return;
-                          }
-                          model.createHikeRoom();
-                        },
-                      ),
+                          text: 'Create',
+                          textSize: 18.0,
+                          textColor: Colors.white,
+                          buttonColor: kYellow,
+                          onTap: () {
+                            // navigationService.pop();
+                            if (model.startingdate == null ||
+                                model.startingTime == null) {
+                              navigationService
+                                  .showSnackBar("Enter date and time");
+                              return;
+                            }
+                            model.startsAt = DateTime(
+                              model.startingdate.year,
+                              model.startingdate.month,
+                              model.startingdate.day,
+                              model.startingTime.hour,
+                              model.startingTime.minute,
+                            );
+                            // localNotif.scheduleNotification();
+                            if (model.startsAt.isBefore(DateTime.now())) {
+                              navigationService.showSnackBar(
+                                  "Enter a valid date and time!!");
+                              return;
+                            }
+                            model.createHikeRoom();
+                          }),
                     ),
                   ],
                 ),
