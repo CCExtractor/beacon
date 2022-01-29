@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 
 import 'package:beacon/utilities/constants.dart';
@@ -27,7 +26,6 @@ class HikeScreen extends StatefulWidget {
 
 class _HikeScreenState extends State<HikeScreen> {
   double screenHeight, screenWidth;
-
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -49,88 +47,100 @@ class _HikeScreenState extends State<HikeScreen> {
           child: Scaffold(
             body: SafeArea(
               child: ModalProgressHUD(
-                  inAsyncCall: model.isGeneratingLink || model.isBusy,
-                  child: SlidingUpPanel(
-                    maxHeight: 60.h,
-                    minHeight: 20.h,
-                    controller: model.panelController,
-                    collapsed: Container(
-                      decoration: BoxDecoration(
-                          color: kBlue,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10),
-                              topLeft: Radius.circular(10))),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: 65,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(12.0))),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: RichText(
-                                text: TextSpan(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    children: [
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? 'Beacon has been expired\n'
-                                              : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
-                                          style: TextStyle(fontSize: 18)),
-                                      TextSpan(
-                                          text:
-                                              'Beacon holder at: ${model.address}\n',
-                                          style: TextStyle(fontSize: 14)),
-                                      TextSpan(
-                                          text:
-                                              'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
-                                          style: TextStyle(fontSize: 12)),
-                                      TextSpan(
-                                          text: model.isBeaconExpired
-                                              ? ''
-                                              : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
-                                          style: TextStyle(fontSize: 12)),
-                                    ]),
-                              ),
-                            ),
-                            height: 15.h,
-                          ),
-                        ],
+                inAsyncCall: model.isGeneratingLink || model.isBusy,
+                child: SlidingUpPanel(
+                  maxHeight: 60.h,
+                  minHeight: 20.h,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                  ),
+                  controller: model.panelController,
+                  collapsed: Container(
+                    decoration: BoxDecoration(
+                      color: kBlue,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
                       ),
                     ),
-                    panel: HikeScreenWidget.panel(model.scrollController, model,
-                        context, widget.isLeader),
-                    body: Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[
-                        GoogleMap(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 1.5.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: 65,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.5.h,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                children: [
+                                  TextSpan(
+                                    text: model.isBeaconExpired
+                                        ? 'Beacon has been expired\n'
+                                        : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        'Beacon holder at: ${model.address}\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        'Total Followers: ${model.hikers.length - 1} (Swipe up to view the list of followers)\n',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  TextSpan(
+                                    text: model.isBeaconExpired
+                                        ? ''
+                                        : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          height: 15.h,
+                        ),
+                      ],
+                    ),
+                  ),
+                  panel: HikeScreenWidget.panel(
+                      model.scrollController, model, context, widget.isLeader),
+                  body: Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      GoogleMap(
                           compassEnabled: true,
                           mapType: MapType.terrain,
                           markers: model.markers.toSet(),
                           polylines: model.polylines,
                           initialCameraPosition: CameraPosition(
                               target: LatLng(
-                                  double.parse(widget.beacon.location.lat),
-                                  double.parse(widget.beacon.location.lon)),
+                                double.parse(widget.beacon.location.lat),
+                                double.parse(widget.beacon.location.lon),
+                              ),
                               zoom: CAMERA_ZOOM,
                               tilt: CAMERA_TILT,
                               bearing: CAMERA_BEARING),
@@ -141,60 +151,55 @@ class _HikeScreenState extends State<HikeScreen> {
                             // setPolyline();
                           },
                           onTap: (loc) async {
-                            String title;
-                            HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                              context,
-                              model.landmarkFormKey,
-                              title,
-                              loc,
-                              model.createLandmark,
-                            );
-                          },
-                        ),
-                        CustomPaint(
-                          size: Size(screenWidth, screenHeight - 200),
-                          foregroundPainter: ShapePainter(),
-                        ),
-                        Align(
-                          alignment: Alignment(0.9, -0.85),
+                            if (model.panelController.isPanelOpen)
+                              model.panelController.close();
+                            else {
+                              String title;
+                              HikeScreenWidget.showCreateLandMarkDialogueDialog(
+                                context,
+                                model.landmarkFormKey,
+                                title,
+                                loc,
+                                model.createLandmark,
+                              );
+                            }
+                          }),
+                      Align(
+                          alignment: Alignment(0.9, -0.98),
                           child: model.isBeaconExpired
                               ? Container()
                               : HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode),
-                        ),
-                        if (!model.isBeaconExpired)
-                          //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
-                          Align(
-                            alignment: Alignment(0.5, -0.85),
-                            child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 500),
-                              opacity:
-                                  model.mapController.isCompleted ? 1.0 : 0.0,
-                              child: HikeScreenWidget.shareRouteButton(
-                                  context,
-                                  model.beacon,
-                                  model.mapController,
-                                  model.route),
-                            ),
+                                  context, widget.beacon.shortcode)),
+                      Align(
+                        alignment: Alignment(-0.9, -0.98),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            model.onWillPop(context);
+                          },
+                          backgroundColor: kYellow,
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 35,
+                            color: Colors.white,
                           ),
+                        ),
+                      ),
+                      if (!model.isBeaconExpired)
+                        //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                         Align(
-                          alignment: Alignment(-0.8, -0.9),
-                          child: GestureDetector(
-                            onTap: () {
-                              model.onWillPop(context);
-                            },
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 30,
-                              color: Colors.white,
-                            ),
+                          alignment: Alignment(0.9, -0.8),
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 500),
+                            opacity:
+                                model.mapController.isCompleted ? 1.0 : 0.0,
+                            child: HikeScreenWidget.shareRouteButton(context,
+                                model.beacon, model.mapController, model.route),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                  // }),
+                    ],
                   ),
+                ),
+              ),
             ),
           ),
         );

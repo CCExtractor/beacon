@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 width: 45.w,
                                 child: HikeButton(
                                   buttonWidth: homebwidth,
-                                  buttonHeight: homebheight,
+                                  buttonHeight: homebheight - 2,
                                   text: 'Create Hike',
                                   textColor: Colors.white,
                                   borderColor: Colors.white,
@@ -154,13 +154,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               SizedBox(
-                                width: 2.w,
+                                width: 1.w,
                               ),
                               Container(
                                 width: 45.w,
                                 child: HikeButton(
                                   buttonWidth: homebwidth,
-                                  buttonHeight: homebheight,
+                                  buttonHeight: homebheight - 2,
                                   text: 'Join a Hike',
                                   textColor: kYellow,
                                   borderColor: kYellow,
@@ -179,7 +179,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              height: MediaQuery.of(context).size.height / 1.75,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.565,
                               margin: EdgeInsets.only(top: 20),
                               decoration: BoxDecoration(
                                   color: kLightBlue,
@@ -223,81 +224,81 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                 final List<Beacon> posts =
                                                     snapshot.data;
                                                 return Container(
-                                                  alignment: Alignment.center,
-                                                  child: posts.length == 0
-                                                      ? SingleChildScrollView(
-                                                          physics:
-                                                              AlwaysScrollableScrollPhysics(),
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                'You haven\'t joined or created any beacon yet',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        kBlack,
-                                                                    fontSize:
-                                                                        20),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 2.h,
-                                                              ),
-                                                              RichText(
-                                                                text: TextSpan(
-                                                                  // textAlign:
-                                                                  //   TextAlign
-                                                                  //       .center,
+                                                    alignment: Alignment.center,
+                                                    child: posts.length == 0
+                                                        ? SingleChildScrollView(
+                                                            physics:
+                                                                AlwaysScrollableScrollPhysics(),
+                                                            child: Column(
+                                                              children: [
+                                                                Text(
+                                                                  'You haven\'t joined or created any beacon yet',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                   style: TextStyle(
                                                                       color:
                                                                           kBlack,
                                                                       fontSize:
                                                                           20),
-                                                                  children: [
-                                                                    TextSpan(
-                                                                        text:
-                                                                            'Join',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                kYellow)),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            ' a Hike or '),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            'Create',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                kYellow)),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            '  a new one! '),
-                                                                  ],
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : ListView.builder(
-                                                          physics:
-                                                              AlwaysScrollableScrollPhysics(),
-                                                          scrollDirection:
-                                                              Axis.vertical,
-                                                          itemCount:
-                                                              posts?.length,
-                                                          padding:
-                                                              EdgeInsets.all(8),
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return BeaconCustomWidgets
-                                                                .getBeaconCard(
-                                                                    context,
-                                                                    posts[
-                                                                        index]);
-                                                          },
-                                                        ),
-                                                );
+                                                                SizedBox(
+                                                                  height: 2.h,
+                                                                ),
+                                                                RichText(
+                                                                  text:
+                                                                      TextSpan(
+                                                                    // textAlign:
+                                                                    //   TextAlign
+                                                                    //       .center,
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            kBlack,
+                                                                        fontSize:
+                                                                            20),
+                                                                    children: [
+                                                                      TextSpan(
+                                                                          text:
+                                                                              'Join',
+                                                                          style:
+                                                                              TextStyle(color: kYellow)),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              ' a Hike or '),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              'Create',
+                                                                          style:
+                                                                              TextStyle(color: kYellow)),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              '  a new one! '),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : ListView.builder(
+                                                            physics:
+                                                                AlwaysScrollableScrollPhysics(),
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            itemCount:
+                                                                posts?.length,
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return BeaconCustomWidgets
+                                                                  .getBeaconCard(
+                                                                      context,
+                                                                      posts[
+                                                                          index]);
+                                                            },
+                                                          ));
                                               } else {
                                                 return Center(
                                                   child: BeaconCustomWidgets
@@ -307,68 +308,73 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                             },
                                           ),
                                         ),
-                                        Container(
-                                          alignment: Alignment.center,
-                                          child: FutureBuilder(
-                                            future: databaseFunctions
-                                                .fetchNearbyBeacon(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.done) {
-                                                if (snapshot.hasError) {
-                                                  return Center(
-                                                    child: Text(
-                                                      snapshot.error.toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      textScaleFactor: 1.3,
-                                                    ),
-                                                  );
-                                                }
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            child: FutureBuilder(
+                                              future: databaseFunctions
+                                                  .fetchNearbyBeacon(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  if (snapshot.hasError) {
+                                                    return Center(
+                                                      child: Text(
+                                                        snapshot.error
+                                                            .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        textScaleFactor: 1.3,
+                                                      ),
+                                                    );
+                                                  }
 
-                                                final posts = snapshot.data;
-                                                if (posts == null ||
-                                                    posts.length == 0) {
+                                                  final posts = snapshot.data;
+                                                  if (posts == null ||
+                                                      posts.length == 0) {
+                                                    return SingleChildScrollView(
+                                                      physics:
+                                                          AlwaysScrollableScrollPhysics(),
+                                                      child: Center(
+                                                        child: Text(
+                                                          'No nearby beacons found :(',
+                                                          style: TextStyle(
+                                                              color: kBlack,
+                                                              fontSize: 20),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return ListView.builder(
+                                                    physics:
+                                                        AlwaysScrollableScrollPhysics(),
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    itemCount: posts.length,
+                                                    padding: EdgeInsets.all(8),
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return BeaconCustomWidgets
+                                                          .getBeaconCard(
+                                                              context,
+                                                              posts[index]);
+                                                    },
+                                                  );
+                                                } else {
                                                   return SingleChildScrollView(
                                                     physics:
                                                         AlwaysScrollableScrollPhysics(),
                                                     child: Center(
-                                                      child: Text(
-                                                        'No nearby beacons found :(',
-                                                        style: TextStyle(
-                                                            color: kBlack,
-                                                            fontSize: 20),
-                                                      ),
-                                                    ),
+                                                        child: Text(
+                                                            'No nearby beacons found :(',
+                                                            style: TextStyle(
+                                                                color: kBlack,
+                                                                fontSize: 18))),
                                                   );
                                                 }
-                                                return ListView.builder(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: posts.length,
-                                                  padding: EdgeInsets.all(8),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return BeaconCustomWidgets
-                                                        .getBeaconCard(context,
-                                                            posts[index]);
-                                                  },
-                                                );
-                                              } else {
-                                                return SingleChildScrollView(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  child: Center(
-                                                      child: Text(
-                                                          'No nearby beacons found :(',
-                                                          style: TextStyle(
-                                                              color: kBlack,
-                                                              fontSize: 18))),
-                                                );
-                                              }
-                                            },
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ],
