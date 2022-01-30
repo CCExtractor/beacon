@@ -75,6 +75,16 @@ class CreateJoinBeaconDialog {
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
                                 lastDate: DateTime(2100),
+                                builder: (context, child) => Theme(
+                                    data: ThemeData().copyWith(
+                                      textTheme: Theme.of(context).textTheme,
+                                      colorScheme: ColorScheme.light(
+                                        primary: kBlue,
+                                        onPrimary: Colors.white,
+                                        surface: kBlue,
+                                      ),
+                                    ),
+                                    child: child),
                               );
                               model.startsAtDate.text = model.startingdate
                                   .toString()
@@ -119,6 +129,35 @@ class CreateJoinBeaconDialog {
                               model.startingTime = await showTimePicker(
                                 context: context,
                                 initialTime: TimeOfDay.now(),
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: ThemeData(
+                                      textTheme: Theme.of(context).textTheme,
+                                      timePickerTheme: TimePickerThemeData(
+                                        dialHandColor: kBlue,
+                                        dayPeriodTextColor: kBlue,
+                                        hourMinuteTextColor: kBlue,
+                                        helpTextStyle: TextStyle(
+                                          fontFamily: 'FuturaBold',
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        hourMinuteTextStyle: TextStyle(
+                                          fontFamily: 'FuturaBold',
+                                          fontSize: 40.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        dayPeriodTextStyle: TextStyle(
+                                          fontFamily: 'FuturaBold',
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    // This will change to light theme.
+                                    child: child,
+                                  );
+                                },
                               );
                               model.startsAtTime.text = model.startingTime
                                   .toString()
@@ -168,6 +207,10 @@ class CreateJoinBeaconDialog {
                                 initialTime: model.resultingDuration != null
                                     ? model.resultingDuration
                                     : Duration(minutes: 30),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
                               );
                               model.durationController.text = model
                                   .resultingDuration
@@ -215,8 +258,8 @@ class CreateJoinBeaconDialog {
                             textColor: Colors.white,
                             buttonColor: kYellow,
                             onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               // navigationService.pop();
-                              print(MediaQuery.of(context).size.height);
                               if (model.startingdate == null ||
                                   model.startingTime == null) {
                                 navigationService
