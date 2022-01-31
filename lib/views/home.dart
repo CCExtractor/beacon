@@ -210,6 +210,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                 .fetchUserBeacons(),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
+                                                  ConnectionState.waiting)
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              if (snapshot.connectionState ==
                                                   ConnectionState.done) {
                                                 if (snapshot.hasError) {
                                                   return Center(
@@ -316,6 +322,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                               future: databaseFunctions
                                                   .fetchNearbyBeacon(),
                                               builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting)
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
                                                 if (snapshot.connectionState ==
                                                     ConnectionState.done) {
                                                   if (snapshot.hasError) {
