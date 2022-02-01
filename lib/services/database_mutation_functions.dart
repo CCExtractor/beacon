@@ -169,8 +169,11 @@ class DataBaseMutationFunctions {
   }
 
   Future<Beacon> fetchBeaconInfo(String id) async {
-    final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_beaconQuery.fetchBeaconDetail(id))));
+    final QueryResult result = await clientAuth.query(
+      QueryOptions(
+        document: gql(_beaconQuery.fetchBeaconDetail(id)),
+      ),
+    );
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -296,19 +299,21 @@ class DataBaseMutationFunctions {
         .mutate(MutationOptions(
             document: gql(_beaconQuery.createLandmark(
                 id, loc.latitude.toString(), loc.longitude.toString(), title))))
-        .then((value) {
-      if (value.hasException) {
-        navigationService.showSnackBar(
-            "Something went wrong: ${value.exception.graphqlErrors.first.message}");
-        print("Something went wrong: ${value.exception}");
-      } else if (value.data != null && value.isConcrete) {
-        final Landmark landmark = Landmark.fromJson(
-          value.data['createLandmark'] as Map<String, dynamic>,
-        );
-        return landmark;
-      }
-      return null;
-    });
+        .then(
+      (value) {
+        if (value.hasException) {
+          navigationService.showSnackBar(
+              "Something went wrong: ${value.exception.graphqlErrors.first.message}");
+          print("Something went wrong: ${value.exception}");
+        } else if (value.data != null && value.isConcrete) {
+          final Landmark landmark = Landmark.fromJson(
+            value.data['createLandmark'] as Map<String, dynamic>,
+          );
+          return landmark;
+        }
+        return null;
+      },
+    );
     return null;
   }
 
@@ -335,7 +340,7 @@ class DataBaseMutationFunctions {
       _nearbyBeacons = (result.data['nearbyBeacons'] as List<dynamic>)
           .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
           .toList();
-      return _nearbyBeacons;
+      _nearbyBeacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
     }
     return _nearbyBeacons;
   }
