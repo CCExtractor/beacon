@@ -1,10 +1,21 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
+import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:geocoder/geocoder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'package:sizer/sizer.dart';
 
 class HikeScreenWidget {
@@ -85,7 +96,6 @@ class HikeScreenWidget {
       child: Icon(Icons.person_add),
     );
   }
-
 
   static Widget shareRouteButton(
     BuildContext context,
@@ -334,5 +344,4 @@ class HikeScreenWidget {
       ),
     );
   }
-
 }

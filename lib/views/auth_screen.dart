@@ -145,7 +145,7 @@ class _AuthScreenState extends State<AuthScreen>
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13.5.w),
       width: screensize.width,
-      height: 6.h,
+      height: screensize.height < 800 ? 7.5.h : 6.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),

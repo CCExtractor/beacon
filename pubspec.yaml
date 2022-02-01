@@ -42,6 +42,7 @@ dependencies:
    git: 
     url: https://github.com/nguyenxdat/flutter_geocoder.git 
     ref: 443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028
+  flutter_countdown_timer: ^4.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
