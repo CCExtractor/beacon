@@ -32,7 +32,7 @@ void main() async {
   await Hive.openBox<User>('currentUser');
   await Hive.openBox<Beacon>('beacons');
   setupLocator();
-  localNotif.initialize();
+  localNotif.init();
   runApp(
     OverlaySupport(
       child: Sizer(
