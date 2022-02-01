@@ -91,10 +91,16 @@ class DataBaseMutationFunctions {
 
   Future<String> signup({String name, String email, String password}) async {
     final QueryResult result = email != null
-        ? await clientNonAuth.mutate(MutationOptions(
-            document: gql(_authQuery.registerUser(name, email, password))))
+        ? await clientNonAuth.mutate(
+            MutationOptions(
+              document: gql(_authQuery.registerUser(name, email, password)),
+            ),
+          )
         : await clientNonAuth.mutate(
-            MutationOptions(document: gql(_authQuery.loginAsGuest(name))));
+            MutationOptions(
+              document: gql(_authQuery.loginAsGuest(name)),
+            ),
+          );
     if (result.hasException) {
       navigationService
           .showSnackBar("${result.exception.graphqlErrors.first.message}");
@@ -117,9 +123,15 @@ class DataBaseMutationFunctions {
   Future<String> login({String email, String password, User user}) async {
     final QueryResult result = (email == null)
         ? await clientNonAuth.mutate(
-            MutationOptions(document: gql(_authQuery.loginUsingID(user.id))))
-        : await clientNonAuth.mutate(MutationOptions(
-            document: gql(_authQuery.loginUser(email, password))));
+            MutationOptions(
+              document: gql(_authQuery.loginUsingID(user.id)),
+            ),
+          )
+        : await clientNonAuth.mutate(
+            MutationOptions(
+              document: gql(_authQuery.loginUser(email, password)),
+            ),
+          );
     if (result.hasException) {
       navigationService
           .showSnackBar("${result.exception.graphqlErrors.first.message}");
@@ -147,8 +159,11 @@ class DataBaseMutationFunctions {
 
   Future<bool> fetchCurrentUserInfo() async {
     await databaseFunctions.init();
-    final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+    final QueryResult result = await clientAuth.query(
+      QueryOptions(
+        document: gql(_authQuery.fetchUserInfo()),
+      ),
+    );
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -193,8 +208,11 @@ class DataBaseMutationFunctions {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
     List<Beacon> expiredBeacons = [];
-    final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+    final QueryResult result = await clientAuth.query(
+      QueryOptions(
+        document: gql(_authQuery.fetchUserInfo()),
+      ),
+    );
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -233,9 +251,14 @@ class DataBaseMutationFunctions {
           .showSnackBar("$onErr : Allow location access to start beacon");
       return null;
     }
-    final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
-            loc.latitude.toString(), loc.longitude.toString()))));
+    final QueryResult result = await clientAuth.mutate(
+      MutationOptions(
+        document: gql(
+          _beaconQuery.createBeacon(title, startsAt, expiresAt,
+              loc.latitude.toString(), loc.longitude.toString()),
+        ),
+      ),
+    );
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -250,9 +273,14 @@ class DataBaseMutationFunctions {
   }
 
   Future<Location> updateLeaderLoc(String id, LatLng latLng) async {
-    final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.updateLeaderLoc(
-            id, latLng.latitude.toString(), latLng.longitude.toString()))));
+    final QueryResult result = await clientAuth.mutate(
+      MutationOptions(
+        document: gql(
+          _beaconQuery.updateLeaderLoc(
+              id, latLng.latitude.toString(), latLng.longitude.toString()),
+        ),
+      ),
+    );
     if (result.hasException) {
       print("Something went wrong: ${result.exception}");
       navigationService.showSnackBar(
@@ -269,7 +297,10 @@ class DataBaseMutationFunctions {
 
   Future<Beacon> joinBeacon(String shortcode) async {
     final QueryResult result = await clientAuth.mutate(
-        MutationOptions(document: gql(_beaconQuery.joinBeacon(shortcode))));
+      MutationOptions(
+        document: gql(_beaconQuery.joinBeacon(shortcode)),
+      ),
+    );
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -296,9 +327,20 @@ class DataBaseMutationFunctions {
 
   Future<Landmark> createLandmark(String title, LatLng loc, String id) async {
     await clientAuth
+<<<<<<< HEAD
         .mutate(MutationOptions(
             document: gql(_beaconQuery.createLandmark(
                 id, loc.latitude.toString(), loc.longitude.toString(), title))))
+=======
+        .mutate(
+      MutationOptions(
+        document: gql(
+          _beaconQuery.createLandmark(
+              id, loc.latitude.toString(), loc.longitude.toString(), title),
+        ),
+      ),
+    )
+>>>>>>> a618ee18f9161f57ca3214fa477cc377b8fdcb97
         .then(
       (value) {
         if (value.hasException) {
@@ -326,9 +368,14 @@ class DataBaseMutationFunctions {
     } catch (onErr) {
       return null;
     }
-    final QueryResult result = await clientAuth.query(QueryOptions(
-        document: gql(_beaconQuery.fetchNearbyBeacons(
-            loc.latitude.toString(), loc.longitude.toString()))));
+    final QueryResult result = await clientAuth.query(
+      QueryOptions(
+        document: gql(
+          _beaconQuery.fetchNearbyBeacons(
+              loc.latitude.toString(), loc.longitude.toString()),
+        ),
+      ),
+    );
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
