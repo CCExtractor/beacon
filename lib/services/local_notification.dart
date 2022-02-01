@@ -72,7 +72,7 @@ class LocalNotification {
     );
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,
-      beacon.title + ' will start in an hour',
+      'Reminder: ' + beacon.title + ' will start in an hour',
       'Get Ready!',
       tz.TZDateTime.from(
               DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local)
