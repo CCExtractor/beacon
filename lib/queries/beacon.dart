@@ -6,8 +6,30 @@ class BeaconQueries {
         mutation{
            changeLeader (beaconID:"$beaconID" ,newLeaderID: "$newLeaderID")
           {
-            leader{
-              name
+            _id
+             title
+             shortcode
+             leader {
+               _id
+               name
+             }
+             location{
+               lat
+               lon
+             }
+             followers {
+               _id
+               name
+             }
+             startsAt
+             expiresAt
+             landmarks {
+               title
+               location {
+                 lat
+                 lon
+               }
+             }
            }
           }
         }
