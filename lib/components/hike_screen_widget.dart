@@ -195,12 +195,6 @@ class HikeScreenWidget extends ChangeNotifier {
                                   text:
                                       'Long Press on any hiker to hand over the beacon\n',
                                   style: TextStyle(fontSize: 16)),
-                              //TODO: enable this once backend has updated.
-                              //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                              // TextSpan(
-                              //     text:
-                              //         'Double tap on beacon to change the duration\n',
-                              //     style: TextStyle(fontSize: 14)),
                             ]),
                       ),
                     )
@@ -218,15 +212,15 @@ class HikeScreenWidget extends ChangeNotifier {
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
                       onLongPress: () {
+                        print(model.hikers[index].id);
                         model.hikers[index].id == userConfig.currentUser.id
                             ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
                             : model.beacon.leader.id ==
                                     userConfig.currentUser.id
-                                ? model.relayBeacon(model.hikers[index])
+                                ? model.relayBeacon(
+                                    model.beacon.id, model.hikers[index].id)
                                 : Fluttertoast.showToast(
                                     msg: 'You dont have beacon to relay');
-                        print(model.hikers[index].id);
-                        print(model.beacon.id);
                       },
                       leading: CircleAvatar(
                         backgroundColor:
@@ -351,15 +345,5 @@ class HikeScreenWidget extends ChangeNotifier {
         ),
       ),
     );
-  }
-
-  void relayBeacon(String beaconID, String newLeaderID) async {
-    await databaseFunctions.init();
-    if (databaseFunctions.updateLocation(newLeaderID) == null) {
-      Fluttertoast.showToast(msg: 'User is inactive. Try someone else!');
-    } else if (databaseFunctions.changingLeader(beaconID, newLeaderID) !=
-        null) {
-      Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderID');
-    }
   }
 }

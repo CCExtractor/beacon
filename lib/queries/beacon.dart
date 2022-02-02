@@ -14,18 +14,6 @@ class BeaconQueries {
     ''';
   }
 
-  String updateUserLocation(String userID) {
-    return '''
-        mutation{
-          updateUserLocation(id:"$userID")
-          location{
-              lat
-              lon
-            }
-        }
-    ''';
-  }
-
   String createBeacon(
       String title, int startsAt, int expiresAt, String lat, String lon) {
     return '''
@@ -213,7 +201,7 @@ class BeaconQueries {
     }
   ''');
 
-  // Gql for oreder updated subscription.
+  // Gql for order updated subscription.
   final beaconJoinedSubGql = gql(r'''
     subscription StreamNewlyJoinedBeacons($id: ID!){
       beaconJoined(id: $id){
