@@ -46,7 +46,7 @@ class LocalNotification {
   Future<void> scheduleNotification(Beacon beacon) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      beacon.title + ' has started',
+      'Hike ' + beacon.title + ' has started',
       'Click here to join!',
       tz.TZDateTime.from(
           DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
