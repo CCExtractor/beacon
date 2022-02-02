@@ -1,3 +1,4 @@
+import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -42,8 +43,11 @@ class NavigationService {
     ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
       SnackBar(
         duration: duration,
-        content: Text(message),
-        backgroundColor: Colors.teal,
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: kLightBlue.withOpacity(0.8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),

@@ -39,8 +39,11 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: Duration(seconds: 5),
-        content: Text('${widget.name} is now active! You can join the hike'),
-        backgroundColor: Colors.teal,
+        content: Text(
+          '${widget.name} is now active! \nYou can join the hike',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: kLightBlue.withOpacity(0.8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -49,7 +52,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
         behavior: SnackBarBehavior.floating,
         elevation: 5,
         action: SnackBarAction(
-          textColor: kYellow,
+          textColor: kBlue,
           label: 'Click to Join',
           onPressed: () async {
             bool isLeader =
