@@ -83,6 +83,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             onPressed: () => showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
+                                  key: Key('createJoinDialog'),
                                       contentPadding: EdgeInsets.all(25.0),
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
