@@ -21,7 +21,7 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   fluttertoast: ^8.0.8
   geocoder: ^0.2.1
-  geolocator: ^8.1.1
+  geolocator: ^7.0.1
   get_it: ^7.2.0
   google_maps_flutter: ^2.1.1
   graphql_flutter: ^5.0.0
