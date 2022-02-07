@@ -31,13 +31,15 @@ class HiveLocalDb {
     return await box.put('user', currentUser);
   }
 
-  Future<void> putBeaconInBeaconBox(String id, Beacon beacon) async {
+  Future<void> putBeaconInBeaconBox(String id, Beacon beacon,
+      {bool fetchFromNetwork = false}) async {
     if (beaconsBox.containsKey(id)) {
       await beaconsBox.delete(id);
     }
-    //since not all data is fetched on homescreen(for eg landmarks are skipped on homescreen fetchBeaconQuery) this network call is important.
-    databaseFunctions.init();
-    beacon = await databaseFunctions.fetchBeaconInfo(id);
+    if (fetchFromNetwork) {
+      databaseFunctions.init();
+      beacon = await databaseFunctions.fetchBeaconInfo(id);
+    }
     await beaconsBox.put(id, beacon);
   }
 

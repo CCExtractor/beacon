@@ -15,6 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/location/location.dart' deferred as locModel;
 import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/view_model/base_view_model.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -200,10 +201,13 @@ class HikeScreenViewModel extends BaseModel {
 
   Future<void> fetchData() async {
     await databaseFunctions.fetchBeaconInfo(beacon.id).then((value) async {
-      if (value != null)
+      if (value != null) {
         beacon = value;
-      else
-        value = beacon;
+        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+      } else {
+        value = hiveDb.beaconsBox.get(beacon.id);
+        beacon = value;
+      }
       await updateModel(value);
     });
   }
@@ -302,6 +306,8 @@ class HikeScreenViewModel extends BaseModel {
           if (!followerId.contains(newJoinee.id)) {
             hikers.add(newJoinee);
             followerId.add(newJoinee.id);
+            beacon.followers.add(newJoinee);
+            await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
           }
           // markers.add(Marker(
           //   markerId: MarkerId((markers.length + 1).toString()),
@@ -321,7 +327,13 @@ class HikeScreenViewModel extends BaseModel {
               double.parse(event.data['beaconLocation']['lon']));
           var addresses = await Geocoder.local.findAddressesFromCoordinates(
               Coordinates(coord.latitude, coord.longitude));
-
+          beacon.route.add(
+            locModel.Location(
+              lat: coord.latitude.toString(),
+              lon: coord.longitude.toString(),
+            ),
+          );
+          await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
           String _address = addresses.first.addressLine;
           route.add(coord);
           updatePinOnMap(coord);
@@ -336,7 +348,7 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> initialise(Beacon beaconParsed, bool widgetIsLeader) async {
-    beacon = beaconParsed;
+    beacon = hiveDb.beaconsBox.get(beaconParsed.id);
     isLeader = widgetIsLeader;
     final connectivity = await DataConnectionChecker().hasConnection;
     if (connectivity) {
@@ -374,6 +386,14 @@ class HikeScreenViewModel extends BaseModel {
       for (var streamSub in mergedStreamSubscriptions) {
         if (streamSub != null) streamSub.cancel();
       }
+    DataConnectionChecker().hasConnection.then(
+      (value) async {
+        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon,
+            fetchFromNetwork: value);
+        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
+            'asdasd');
+      },
+    );
     super.dispose();
   }
 
@@ -393,7 +413,7 @@ class HikeScreenViewModel extends BaseModel {
       await databaseFunctions.init();
       await databaseFunctions
           .createLandmark(title, loc, beacon.id)
-          .then((value) {
+          .then((value) async {
         markers.add(Marker(
           markerId: MarkerId((markers.length + 1).toString()),
           position: loc,
@@ -402,6 +422,10 @@ class HikeScreenViewModel extends BaseModel {
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ));
+        beacon.landmarks.add(value);
+        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
+            'asdasdasd');
         notifyListeners();
       });
     }

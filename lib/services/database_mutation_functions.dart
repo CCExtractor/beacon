@@ -225,10 +225,12 @@ class DataBaseMutationFunctions {
       );
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
+          if (!hiveDb.beaconsBox.containsKey(i.id)) {
+            print(
+                '-----------------------------------------------------------------------------------------------------------------');
+            hiveDb.putBeaconInBeaconBox(i.id, i);
+          }
           beaconIds.add(i.id);
-          //save in local db for future ref/use.
-          await hiveDb.putBeaconInBeaconBox(i.id, i);
-          i = hiveDb.beaconsBox.get(i.id);
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
               .isBefore(DateTime.now())) {
             expiredBeacons.insert(0, i);
