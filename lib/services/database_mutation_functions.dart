@@ -335,6 +335,7 @@ class DataBaseMutationFunctions {
       _nearbyBeacons = (result.data['nearbyBeacons'] as List<dynamic>)
           .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
           .toList();
+      _nearbyBeacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
       return _nearbyBeacons;
     }
     return _nearbyBeacons;
