@@ -48,9 +48,9 @@ class HikeScreenViewModel extends BaseModel {
   final List<StreamSubscription> mergedStreamSubscriptions = [];
   bool isLeader = false;
 
-  void relayBeacon(String newLeaderID) async {
+  void relayBeacon(String newLeaderName, String newLeaderID) async {
     beacon.leader.id = newLeaderID;
-    Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderID');
+    Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
     notifyListeners();
   }
 

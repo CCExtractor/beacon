@@ -224,7 +224,8 @@ class HikeScreenWidget extends ChangeNotifier {
                                 databaseFunctions.changeLeader(
                                     model.beacon.id, model.hikers[index].id);
                             if (changedLeader != null)
-                              model.relayBeacon(model.hikers[index].id);
+                              model.relayBeacon(model.hikers[index].toString(),
+                                  model.hikers[index].id);
                           } else {
                             Fluttertoast.showToast(
                                 msg: 'You dont have beacon to relay');
