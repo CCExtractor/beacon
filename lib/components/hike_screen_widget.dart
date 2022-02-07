@@ -188,14 +188,14 @@ class HikeScreenWidget extends ChangeNotifier {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: RichText(
                         text: TextSpan(
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: kBlack),
-                            children: [
-                              TextSpan(
-                                  text:
-                                      'Long Press on any hiker to hand over the beacon\n',
-                                  style: TextStyle(fontSize: 16)),
-                            ],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: kBlack),
+                          children: [
+                            TextSpan(
+                                text:
+                                    'Long Press on any hiker to hand over the beacon\n',
+                                style: TextStyle(fontSize: 16)),
+                          ],
                         ),
                       ),
                     )
@@ -259,20 +259,13 @@ class HikeScreenWidget extends ChangeNotifier {
                                     // : DialogBoxes.changeDurationDialog(context);
                                     : Container();
                               },
-                              child: model.hikers[index].id ==
-                                      model.beacon.leader.id
-                                  ? Icon(
-                                      Icons.room,
-                                      color: model.isBeaconExpired
-                                          ? Colors.grey
-                                          : kYellow,
-                                      size: 40,
-                                    )
-                                  : Icon(
-                                      Icons.room,
-                                      color: Colors.grey,
-                                      size: 40,
-                                    ),
+                              child: Icon(
+                                Icons.room,
+                                color: model.isBeaconExpired
+                                    ? Colors.grey
+                                    : kYellow,
+                                size: 40,
+                              ),
                             )
                           : Container(width: 10),
                     );
