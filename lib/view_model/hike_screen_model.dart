@@ -48,14 +48,9 @@ class HikeScreenViewModel extends BaseModel {
   final List<StreamSubscription> mergedStreamSubscriptions = [];
   bool isLeader = false;
 
-  void relayBeacon(String beaconID, String newLeaderID) async {
-    await databaseFunctions.init();
-    // if (databaseFunctions.updateLocation(newLeaderID) == null) {
-    //   Fluttertoast.showToast(msg: 'User is inactive. Try someone else!');
-    // }
-    databaseFunctions.changingLeader(beaconID, newLeaderID);
-    if (databaseFunctions.changingLeader(beaconID, newLeaderID) != null)
-      Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderID');
+  void relayBeacon(String newLeaderID) async {
+    beacon.leader.id = newLeaderID;
+    Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderID');
     notifyListeners();
   }
 

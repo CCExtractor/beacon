@@ -211,16 +211,24 @@ class HikeScreenWidget extends ChangeNotifier {
                   itemCount: model.hikers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      onLongPress: () {
+                      onLongPress: () async {
                         print(model.hikers[index].id);
-                        model.hikers[index].id == userConfig.currentUser.id
-                            ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
-                            : model.beacon.leader.id ==
-                                    userConfig.currentUser.id
-                                ? model.relayBeacon(
-                                    model.beacon.id, model.hikers[index].id)
-                                : Fluttertoast.showToast(
-                                    msg: 'You dont have beacon to relay');
+                        if (model.hikers[index].id == userConfig.currentUser.id)
+                          Fluttertoast.showToast(msg: 'Yeah, that\'s you');
+                        else {
+                          if (model.beacon.leader.id ==
+                              userConfig.currentUser.id) {
+                            await databaseFunctions.init();
+                            final changedLeader =
+                                databaseFunctions.changeLeader(
+                                    model.beacon.id, model.hikers[index].id);
+                            if (changedLeader != null)
+                              model.relayBeacon(model.hikers[index].id);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: 'You dont have beacon to relay');
+                          }
+                        }
                       },
                       leading: CircleAvatar(
                         backgroundColor:

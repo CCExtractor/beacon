@@ -340,7 +340,7 @@ class DataBaseMutationFunctions {
     return _nearbyBeacons;
   }
 
-  Future<Beacon> changingLeader(String beaconID, String newLeaderID) async {
+  Future<Beacon> changeLeader(String beaconID, String newLeaderID) async {
     await clientAuth
         .mutate(MutationOptions(
             document: gql(_beaconQuery.changeLeader(beaconID, newLeaderID))))
