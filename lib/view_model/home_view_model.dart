@@ -99,6 +99,7 @@ class HomeViewModel extends BaseModel {
   logout() async {
     setState(ViewState.busy);
     await userConfig.currentUser.delete();
+    await hiveDb.beaconsBox.clear();
     // setState(ViewState.idle);
     await localNotif.deleteNotification();
     navigationService.removeAllAndPush('/auth', '/');
