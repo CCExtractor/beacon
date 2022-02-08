@@ -46,13 +46,40 @@ class LocalNotification {
   Future<void> scheduleNotification(Beacon beacon) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
-      beacon.title + ' has started',
+      'Hike ' + beacon.title + ' has started',
       'Click here to join!',
       tz.TZDateTime.from(
           DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(
-          'channel ID',
+          'channel id',
+          'channel name',
+          playSound: true,
+          priority: Priority.high,
+          importance: Importance.high,
+        ),
+        iOS: IOSNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          badgeNumber: 1,
+        ),
+      ),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidAllowWhileIdle: true,
+      payload: beacon.id,
+    );
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      beacon.id.hashCode,
+      'Reminder: ' + beacon.title + ' will start in an hour',
+      'Get Ready!',
+      tz.TZDateTime.from(
+              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local)
+          .subtract(Duration(hours: 1)),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel id',
           'channel name',
           playSound: true,
           priority: Priority.high,
