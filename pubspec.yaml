@@ -20,7 +20,10 @@ dependencies:
   flutter_local_notifications: ^9.2.0
   flutter_polyline_points: ^1.0.0
   fluttertoast: ^8.0.3
-  geocoder: ^0.2.1
+  geocoder:
+   git: 
+    url: https://github.com/nguyenxdat/flutter_geocoder.git 
+    ref: 443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028
   geolocator: ^7.0.1
   get_it: ^7.2.0
   google_maps_flutter: ^2.0.6
