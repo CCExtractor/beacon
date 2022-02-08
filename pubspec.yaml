@@ -9,7 +9,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  connectivity_plus: ^1.0.2
   cupertino_icons: ^1.0.2
   date_time_picker: ^2.0.0
   duration_picker: ^1.1.0+1
@@ -20,6 +19,7 @@ dependencies:
   flutter_local_notifications: ^9.2.0
   flutter_polyline_points: ^1.0.0
   fluttertoast: ^8.0.3
+  data_connection_checker: ^0.3.4
   geocoder:
    git: 
     url: https://github.com/nguyenxdat/flutter_geocoder.git 

@@ -5,6 +5,7 @@ import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -190,6 +191,24 @@ class DataBaseMutationFunctions {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
     List<Beacon> expiredBeacons = [];
+    if (!await connectionChecker.checkForInternetConnection()) {
+      final userBeacons = hiveDb.getAllUserBeacons();
+      if (userBeacons == null) {
+        //snackbar has already been shown in getAllUserBeacons;
+        return beacons;
+      }
+      for (Beacon i in userBeacons) {
+        if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+            .isBefore(DateTime.now()))
+          expiredBeacons.add(i);
+        else
+          beacons.add(i);
+      }
+      beacons.addAll(expiredBeacons);
+      return beacons;
+    }
+
+    //if connected to internet take from internet.
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
     if (result.hasException) {
@@ -204,6 +223,11 @@ class DataBaseMutationFunctions {
       );
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
+          if (!hiveDb.beaconsBox.containsKey(i.id)) {
+            //This only happens if a someone else adds user to their beacon (which currently is not possible).
+            //beacons are put in box when creating or joining.
+            await hiveDb.putBeaconInBeaconBox(i.id, i);
+          }
           beaconIds.add(i.id);
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
               .isBefore(DateTime.now())) {
@@ -241,6 +265,7 @@ class DataBaseMutationFunctions {
       final Beacon beacon = Beacon.fromJson(
         result.data['createBeacon'] as Map<String, dynamic>,
       );
+      hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
       return beacon;
     }
     return null;
@@ -251,7 +276,9 @@ class DataBaseMutationFunctions {
         document: gql(_beaconQuery.updateLeaderLoc(
             id, latLng.latitude.toString(), latLng.longitude.toString()))));
     if (result.hasException) {
-      print("Something went wrong: ${result.exception}");
+      print(
+        "Something went wrong: ${result.exception}",
+      );
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
     } else if (result.data != null && result.isConcrete) {
@@ -279,14 +306,17 @@ class DataBaseMutationFunctions {
       if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
           .isBefore(DateTime.now())) {
         navigationService.showSnackBar(
-            "Looks like the beacon you are trying join has expired");
+          "Looks like the beacon you are trying join has expired",
+        );
         return null;
       }
       beacon.route.add(beacon.leader.location);
+      hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
       return beacon;
     } else {
-      navigationService
-          .showSnackBar("Something went wrong while trying to join Beacon");
+      navigationService.showSnackBar(
+        "Something went wrong while trying to join Beacon",
+      );
     }
     return null;
   }
