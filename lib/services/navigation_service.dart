@@ -1,3 +1,4 @@
+import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -39,8 +40,23 @@ class NavigationService {
 
   void showSnackBar(String message,
       {Duration duration = const Duration(seconds: 2)}) {
-    ScaffoldMessenger.of(navigatorKey.currentContext)
-        .showSnackBar(SnackBar(duration: duration, content: Text(message)));
+    ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
+      SnackBar(
+        duration: duration,
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: kLightBlue.withOpacity(0.8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        behavior: SnackBarBehavior.floating,
+        elevation: 5,
+      ),
+    );
   }
 
   void pop() {

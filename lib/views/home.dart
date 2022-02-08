@@ -317,6 +317,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   .fetchNearbyBeacon(),
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState ==
+                                                    ConnectionState.waiting)
+                                                  return Center(
+                                                    child: BeaconCustomWidgets
+                                                        .getPlaceholder(),
+                                                  );
+                                                if (snapshot.connectionState ==
                                                     ConnectionState.done) {
                                                   if (snapshot.hasError) {
                                                     return Center(
