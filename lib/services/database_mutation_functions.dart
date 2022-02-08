@@ -5,7 +5,7 @@ import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -191,9 +191,7 @@ class DataBaseMutationFunctions {
     List<Beacon> beacons = [];
     Set<String> beaconIds = {};
     List<Beacon> expiredBeacons = [];
-    final connectivity = await DataConnectionChecker().hasConnection;
-    //take from local db since network isnt available.
-    if (!connectivity) {
+    if (!await connectionChecker.checkForInternetConnection()) {
       final userBeacons = hiveDb.getAllUserBeacons();
       if (userBeacons == null) {
         //snackbar has already been shown in getAllUserBeacons;
@@ -226,9 +224,9 @@ class DataBaseMutationFunctions {
       for (var i in userInfo.beacon) {
         if (!beaconIds.contains(i.id)) {
           if (!hiveDb.beaconsBox.containsKey(i.id)) {
-            print(
-                '-----------------------------------------------------------------------------------------------------------------');
-            hiveDb.putBeaconInBeaconBox(i.id, i);
+            //This only happens if a someone else adds user to their beacon (which currently is not possible).
+            //beacons are put in box when creating or joining.
+            await hiveDb.putBeaconInBeaconBox(i.id, i);
           }
           beaconIds.add(i.id);
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)

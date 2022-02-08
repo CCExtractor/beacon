@@ -5,7 +5,7 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -350,8 +350,8 @@ class HikeScreenViewModel extends BaseModel {
   Future<void> initialise(Beacon beaconParsed, bool widgetIsLeader) async {
     beacon = hiveDb.beaconsBox.get(beaconParsed.id);
     isLeader = widgetIsLeader;
-    final connectivity = await DataConnectionChecker().hasConnection;
-    if (connectivity) {
+
+    if (await connectionChecker.checkForInternetConnection()) {
       await fetchData();
       graphQlClient = GraphQLConfig().graphQlClient();
       await setupSubscriptions(
@@ -386,12 +386,10 @@ class HikeScreenViewModel extends BaseModel {
       for (var streamSub in mergedStreamSubscriptions) {
         if (streamSub != null) streamSub.cancel();
       }
-    DataConnectionChecker().hasConnection.then(
+    connectionChecker.checkForInternetConnection().then(
       (value) async {
         await hiveDb.putBeaconInBeaconBox(beacon.id, beacon,
             fetchFromNetwork: value);
-        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
-            'asdasd');
       },
     );
     super.dispose();
