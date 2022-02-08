@@ -11,6 +11,7 @@ environment:
 dependencies:
   connectivity_plus: ^2.2.0
   cupertino_icons: ^1.0.2
+  data_connection_checker: ^0.3.4
   date_time_picker: ^2.1.0
   duration_picker: ^1.1.0+1
   flutter:
