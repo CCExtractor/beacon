@@ -7,6 +7,7 @@ import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -132,7 +133,8 @@ class HikeScreenViewModel extends BaseModel {
 
     var pinPosition = loc;
     markers.removeWhere((m) => m.markerId.value == "1");
-    markers.add(Marker(
+    markers.add(RippleMarker(
+      ripple: true,
       markerId: MarkerId("1"),
       position: pinPosition, // updated position
       infoWindow: InfoWindow(
@@ -166,7 +168,8 @@ class HikeScreenViewModel extends BaseModel {
         title: 'Initial Location',
       ),
     ));
-    markers.add(Marker(
+    markers.add(RippleMarker(
+      ripple: true,
       markerId: MarkerId("1"),
       position: route.last,
       infoWindow: InfoWindow(
