@@ -1,16 +1,16 @@
+import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/router.dart' as router;
 import 'package:beacon/view_model/base_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:sizer/sizer.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterConfig.loadEnvVariables();
+  EnvironmentConfig.loadEnvVariables();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
