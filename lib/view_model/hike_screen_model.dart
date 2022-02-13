@@ -49,9 +49,21 @@ class HikeScreenViewModel extends BaseModel {
   bool isLeader = false;
 
   void relayBeacon(String newLeaderName, String newLeaderID) async {
-    beacon.leader.id = newLeaderID;
-    Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
-    notifyListeners();
+    print(newLeaderID);
+    if (newLeaderID == userConfig.currentUser.id)
+      Fluttertoast.showToast(msg: 'Yeah, that\'s you');
+    else {
+      if (beacon.leader.id == userConfig.currentUser.id) {
+        await databaseFunctions.init();
+        final changedLeader =
+            databaseFunctions.changeLeader(beacon.id, newLeaderID);
+        if (changedLeader != null) beacon.leader.id = newLeaderID;
+        Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
+        notifyListeners();
+      } else {
+        Fluttertoast.showToast(msg: 'You dont have beacon to relay');
+      }
+    }
   }
 
   Future<bool> onWillPop(context) async {
