@@ -111,6 +111,11 @@ class HikeScreenWidget {
         // sanity check.
         if (mapController == null ||
             googleMapControllerCompleter.isCompleted == false) return;
+        if (!await connectionChecker.checkForInternetConnection()) {
+          navigationService.showSnackBar(
+              'Cannot share the route, please check your internet connection.');
+          return;
+        }
         //show marker description so that image will be more usefull.
         await mapController.showMarkerInfoWindow(MarkerId("1"));
         //getting the image (ss) of map.

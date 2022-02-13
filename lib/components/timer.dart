@@ -1,11 +1,19 @@
 import 'package:beacon/locator.dart';
+import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/utilities/constants.dart';
+import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
 class CountdownTimerPage extends StatefulWidget {
   final String name;
   final DateTime dateTime;
-  CountdownTimerPage({Key key, @required this.dateTime, @required this.name})
+  final Beacon beacon;
+  CountdownTimerPage(
+      {Key key,
+      @required this.dateTime,
+      @required this.name,
+      @required this.beacon})
       : super(key: key);
   @override
   _CountdownTimerPageState createState() => _CountdownTimerPageState();
@@ -28,8 +36,35 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
   }
 
   void onEnd() {
-    navigationService
-        .showSnackBar('${widget.name} is now active! You can join the hike');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text(
+          '${widget.name} is now active! \nYou can join the hike',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: kLightBlue.withOpacity(0.8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        behavior: SnackBarBehavior.floating,
+        elevation: 5,
+        action: SnackBarAction(
+          textColor: kBlue,
+          label: 'Click to Join',
+          onPressed: () async {
+            bool isLeader =
+                widget.beacon.leader.id == userConfig.currentUser.id;
+            navigationService.pushScreen(
+              '/hikeScreen',
+              arguments: HikeScreen(widget.beacon, isLeader: isLeader),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
