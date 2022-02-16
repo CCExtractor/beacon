@@ -5,18 +5,18 @@ void main() {
   //structered according to fetchBeaconDetail Query.
   Map<String, dynamic> dummyJson = {
     "_id": "61fd51b4f0c4c3219ce356f5",
-    "title": "new",
-    "leader": {"name": "asdasd"},
+    "title": "new_beacon",
+    "leader": {"name": "test_leader"},
     "followers": [
       {
         "_id": "61fd509bf0c4c3219ce356ed",
-        "name": "asdasd",
+        "name": "test_leader",
         "location": {"lat": "10", "lon": "20"}
       }
     ],
     "landmarks": [
       {
-        "title": "land",
+        "title": "landmark",
         "location": {"lat": "1", "lon": "2"}
       }
     ],
@@ -31,19 +31,19 @@ void main() {
     //beacon id
     expect("61fd51b4f0c4c3219ce356f5", beacon.id);
     //title
-    expect("new", beacon.title);
+    expect("new_beacon", beacon.title);
     //leader name
-    expect("asdasd", beacon.leader.name);
+    expect("test_leader", beacon.leader.name);
     //follower id
     expect("61fd509bf0c4c3219ce356ed", beacon.followers.first.id);
     //follower name
-    expect("asdasd", beacon.followers.first.name);
+    expect("test_leader", beacon.followers.first.name);
     //follower location
     expect("10", beacon.followers.first.location.lat);
     //longitude
     expect("20", beacon.followers.first.location.lon);
     //landmark
-    expect("land", beacon.landmarks.first.title);
+    expect("landmark", beacon.landmarks.first.title);
     expect("1", beacon.landmarks.first.location.lat);
     expect("2", beacon.landmarks.first.location.lon);
     //beacon location

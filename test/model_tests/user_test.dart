@@ -6,24 +6,24 @@ void main() {
   //structered according to fetchBeaconDetail Query.
   Map<String, dynamic> dummyJson = {
     "_id": "61fd509bf0c4c3219ce356ed",
-    "name": "asdasd",
-    "email": "asdf@g.com",
+    "name": "test_user",
+    "email": "test_user@gmail.com",
     "location": {"lat": "10", "lon": "20"},
     "beacons": [
       {
         "_id": "61fd51b4f0c4c3219ce356f5",
-        "title": "new",
-        "leader": {"name": "asdasd"},
+        "title": "new_beacon",
+        "leader": {"name": "test_user"},
         "followers": [
           {
             "_id": "61fd509bf0c4c3219ce356ed",
-            "name": "asdasd",
+            "name": "test_user",
             "location": {"lat": "10", "lon": "20"}
           }
         ],
         "landmarks": [
           {
-            "title": "land",
+            "title": "landmark_one",
             "location": {"lat": "1", "lon": "2"}
           }
         ],
@@ -36,18 +36,18 @@ void main() {
   };
   Map<String, dynamic> dummyJson2 = {
     "_id": "61fd509bf0c4c3219ce356de",
-    "name": "asd",
-    "email": "as@g.com",
+    "name": "test_user_two",
+    "email": "test_user_two@gmail.com",
     "location": {"lat": "20", "lon": "10"},
     "beacons": [
       {
         "_id": "61fd51b4f0c4c3219ce3565f",
-        "title": "newer",
-        "leader": {"name": "asd"},
+        "title": "beacon_two",
+        "leader": {"name": "test_user_two"},
         "followers": [
           {
             "_id": "61fd509bf0c4c3219ce356de",
-            "name": "asd",
+            "name": "test_user_two",
             "location": {"lat": "20", "lon": "10"}
           }
         ],
@@ -72,9 +72,9 @@ void main() {
       //user id;
       expect("61fd509bf0c4c3219ce356ed", user.id);
       //name
-      expect("asdasd", user.name);
+      expect("test_user", user.name);
       //email
-      expect("asdf@g.com", user.email);
+      expect("test_user@gmail.com", user.email);
       //isGuest
       expect(false, user.isGuest);
       //location
@@ -83,19 +83,19 @@ void main() {
       //beacon id
       expect("61fd51b4f0c4c3219ce356f5", beacon.id);
       //title
-      expect("new", beacon.title);
+      expect("new_beacon", beacon.title);
       //leader name
-      expect("asdasd", beacon.leader.name);
+      expect("test_user", beacon.leader.name);
       //follower id
       expect("61fd509bf0c4c3219ce356ed", beacon.followers.first.id);
       //follower name
-      expect("asdasd", beacon.followers.first.name);
+      expect("test_user", beacon.followers.first.name);
       //follower location
       expect("10", beacon.followers.first.location.lat);
       //longitude
       expect("20", beacon.followers.first.location.lon);
       //landmark
-      expect("land", beacon.landmarks.first.title);
+      expect("landmark_one", beacon.landmarks.first.title);
       expect("1", beacon.landmarks.first.location.lat);
       expect("2", beacon.landmarks.first.location.lon);
       //beacon location
@@ -122,9 +122,9 @@ void main() {
       //userID
       expect("61fd509bf0c4c3219ce356ed", user.id);
       //name
-      expect("asd", user.name);
+      expect("test_user_two", user.name);
       //email
-      expect("as@g.com", user.email);
+      expect("test_user_two@gmail.com", user.email);
       //isGuest
       expect(true, user.isGuest);
       //location
@@ -133,13 +133,13 @@ void main() {
       //beacon id
       expect("61fd51b4f0c4c3219ce3565f", beacon.id);
       //title
-      expect("newer", beacon.title);
+      expect("beacon_two", beacon.title);
       //leader name
-      expect("asd", beacon.leader.name);
+      expect("test_user_two", beacon.leader.name);
       //follower id
       expect("61fd509bf0c4c3219ce356de", beacon.followers.first.id);
       //follower name
-      expect("asd", beacon.followers.first.name);
+      expect("test_user_two", beacon.followers.first.name);
       //follower location
       expect("20", beacon.followers.first.location.lat);
       //longitude
