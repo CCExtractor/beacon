@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await databaseFunctions.init();
     await userConfig.userLoggedIn().then((value) async {
       if (_latestUri == null && _initialUri == null) {
-        if (value) {
+        if (value || hiveDb.currentUserBox.containsKey('user')) {
           navigationService.pushReplacementScreen('/main');
         } else {
           navigationService.pushReplacementScreen('/auth');

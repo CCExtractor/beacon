@@ -34,65 +34,64 @@ class HikeScreenWidget {
     return FloatingActionButton(
       onPressed: () {
         showDialog(
-            context: context,
-            builder: (context) => Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Container(
-                    height: 35.h,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                'Invite Friends',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 3.h,
-                          ),
-                          Flexible(
-                            child: HikeButton(
-                                buttonHeight: optbheight,
-                                buttonWidth: optbwidth,
-                                textSize: 18,
-                                text: 'Generate URL',
-                                textColor: Colors.white,
-                                buttonColor: kYellow,
-                                onTap: () async {
-                                  generateUrl(passkey);
-                                  navigationService.pop();
-                                }),
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          Flexible(
-                            child: HikeButton(
-                              buttonHeight: optbheight * 1,
-                              buttonWidth: optbwidth,
-                              textSize: 18,
-                              text: 'Copy Passkey',
-                              textColor: Colors.white,
-                              buttonColor: kYellow,
-                              onTap: () {
-                                copyPasskey(passkey);
-                                navigationService.pop();
-                              },
-                            ),
-                          )
-                        ],
+          context: context,
+          builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Container(
+              height: 30.h,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          'Invite Friends',
+                          style: TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
-                  ),
-                ));
+                    SizedBox(
+                      height: 3.5.h,
+                    ),
+                    Flexible(
+                      child: HikeButton(
+                          buttonHeight: optbheight - 4,
+                          textSize: 16,
+                          text: 'Generate URL',
+                          textColor: Colors.white,
+                          buttonColor: kYellow,
+                          onTap: () async {
+                            generateUrl(passkey);
+                            navigationService.pop();
+                          }),
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Flexible(
+                      child: HikeButton(
+                        buttonHeight: optbheight - 4,
+                        textSize: 16,
+                        text: 'Copy Passkey',
+                        textColor: Colors.white,
+                        buttonColor: kYellow,
+                        onTap: () {
+                          copyPasskey(passkey);
+                          navigationService.pop();
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
       },
       backgroundColor: kYellow,
       child: Icon(Icons.person_add),
@@ -113,6 +112,11 @@ class HikeScreenWidget {
         // sanity check.
         if (mapController == null ||
             googleMapControllerCompleter.isCompleted == false) return;
+        if (!await connectionChecker.checkForInternetConnection()) {
+          navigationService.showSnackBar(
+              'Cannot share the route, please check your internet connection.');
+          return;
+        }
         //show marker description so that image will be more usefull.
         await mapController.showMarkerInfoWindow(MarkerId("1"));
         //getting the image (ss) of map.
@@ -159,28 +163,29 @@ class HikeScreenWidget {
 
   static Column panel(ScrollController sc, HikeScreenViewModel model,
       BuildContext context, bool isLeader) {
-    return Column(children: [
-      SizedBox(
-        height: 15.0,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 60,
-            height: 5,
-            decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
-          ),
-        ],
-      ),
-      SizedBox(
-        height: 12,
-      ),
-      Container(
-        height: MediaQuery.of(context).size.height * 0.6 - 32,
-        child: ListView(
+    return Column(
+      children: [
+        SizedBox(
+          height: 15.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 60,
+              height: 5,
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 12,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.6 - 32,
+          child: ListView(
             controller: sc,
             physics: AlwaysScrollableScrollPhysics(),
             children: [
@@ -189,20 +194,21 @@ class HikeScreenWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: RichText(
                         text: TextSpan(
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: kBlack),
-                            children: [
-                              TextSpan(
-                                  text:
-                                      'Long Press on any hiker to hand over the beacon\n',
-                                  style: TextStyle(fontSize: 16)),
-                              //TODO: enable this once backend has updated.
-                              //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                              // TextSpan(
-                              //     text:
-                              //         'Double tap on beacon to change the duration\n',
-                              //     style: TextStyle(fontSize: 14)),
-                            ]),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: kBlack),
+                          children: [
+                            TextSpan(
+                                text:
+                                    'Long Press on any hiker to hand over the beacon\n',
+                                style: TextStyle(fontSize: 16)),
+                            //TODO: enable this once backend has updated.
+                            //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                            // TextSpan(
+                            //     text:
+                            //         'Double tap on beacon to change the duration\n',
+                            //     style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                       ),
                     )
                   : Container(),
@@ -267,9 +273,11 @@ class HikeScreenWidget {
                   },
                 ),
               ),
-            ]),
-      ),
-    ]);
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   static void showCreateLandMarkDialogueDialog(
@@ -283,7 +291,7 @@ class HikeScreenWidget {
       context: context,
       builder: (context) => Dialog(
         child: Container(
-          height: 30.h,
+          height: MediaQuery.of(context).size.height < 800 ? 30.h : 25.h,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             child: Form(
@@ -291,7 +299,8 @@ class HikeScreenWidget {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: 12.h,
+                    height:
+                        MediaQuery.of(context).size.height < 800 ? 14.h : 12.h,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
@@ -326,10 +335,8 @@ class HikeScreenWidget {
                   ),
                   Flexible(
                     child: HikeButton(
-                      buttonWidth: optbwidth,
-                      buttonHeight: optbheight,
                       text: 'Create Landmark',
-                      textSize: 18.0,
+                      textSize: 17.0,
                       textColor: Colors.white,
                       buttonColor: kYellow,
                       onTap: () => createLandmark(title, loc),

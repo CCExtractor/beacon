@@ -181,6 +181,7 @@ class BeaconCustomWidgets {
                                 dateTime: DateTime.fromMillisecondsSinceEpoch(
                                     beacon.startsAt),
                                 name: beacon?.title,
+                                beacon: beacon,
                               )
                             ],
                           ),
