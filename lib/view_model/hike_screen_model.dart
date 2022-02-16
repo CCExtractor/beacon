@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:beacon/components/dialog_boxes.dart';
+import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/location/location.dart' deferred as locModel;
@@ -95,7 +94,7 @@ class HikeScreenViewModel extends BaseModel {
 
   Future<void> setPolyline() async {
     PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-      '${FlutterConfig.get('MAPS_API_KEY')}', // Google Maps API Key
+      EnvironmentConfig.googleMapApi, // Google Maps API Key
       PointLatLng(route.first.latitude, route.first.longitude),
       PointLatLng(route.last.latitude, route.last.longitude),
     );
@@ -132,7 +131,8 @@ class HikeScreenViewModel extends BaseModel {
 
     var pinPosition = loc;
     markers.removeWhere((m) => m.markerId.value == "1");
-    markers.add(Marker(
+    markers.add(RippleMarker(
+      ripple: true,
       markerId: MarkerId("1"),
       position: pinPosition, // updated position
       infoWindow: InfoWindow(
@@ -166,7 +166,8 @@ class HikeScreenViewModel extends BaseModel {
         title: 'Initial Location',
       ),
     ));
-    markers.add(Marker(
+    markers.add(RippleMarker(
+      ripple: true,
       markerId: MarkerId("1"),
       position: route.last,
       infoWindow: InfoWindow(

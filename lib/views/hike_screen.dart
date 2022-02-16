@@ -1,6 +1,7 @@
 import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animarker/flutter_map_marker_animation.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -131,39 +132,48 @@ class _HikeScreenState extends State<HikeScreen> {
                   body: Stack(
                     alignment: Alignment.topCenter,
                     children: <Widget>[
-                      GoogleMap(
-                          compassEnabled: true,
-                          mapType: MapType.terrain,
-                          markers: model.markers.toSet(),
-                          polylines: model.polylines,
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(widget.beacon.location.lat),
-                                double.parse(widget.beacon.location.lon),
-                              ),
-                              zoom: CAMERA_ZOOM,
-                              tilt: CAMERA_TILT,
-                              bearing: CAMERA_BEARING),
-                          onMapCreated: (GoogleMapController controller) {
-                            setState(() {
-                              model.mapController.complete(controller);
-                            });
-                            // setPolyline();
-                          },
-                          onTap: (loc) async {
-                            if (model.panelController.isPanelOpen)
-                              model.panelController.close();
-                            else {
-                              String title;
-                              HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                                context,
-                                model.landmarkFormKey,
-                                title,
-                                loc,
-                                model.createLandmark,
-                              );
-                            }
-                          }),
+                      Animarker(
+                        rippleColor: Colors.redAccent,
+                        rippleRadius: 0.01,
+                        useRotation: true,
+                        mapId: model.mapController.future.then<int>(
+                          (value) => value.mapId,
+                        ),
+                        markers: model.markers.toSet(),
+                        child: GoogleMap(
+                            compassEnabled: true,
+                            mapType: MapType.terrain,
+                            polylines: model.polylines,
+                            initialCameraPosition: CameraPosition(
+                                target: LatLng(
+                                  double.parse(widget.beacon.location.lat),
+                                  double.parse(widget.beacon.location.lon),
+                                ),
+                                zoom: CAMERA_ZOOM,
+                                tilt: CAMERA_TILT,
+                                bearing: CAMERA_BEARING),
+                            onMapCreated: (GoogleMapController controller) {
+                              setState(() {
+                                model.mapController.complete(controller);
+                              });
+                              // setPolyline();
+                            },
+                            onTap: (loc) async {
+                              if (model.panelController.isPanelOpen)
+                                model.panelController.close();
+                              else {
+                                String title;
+                                HikeScreenWidget
+                                    .showCreateLandMarkDialogueDialog(
+                                  context,
+                                  model.landmarkFormKey,
+                                  title,
+                                  loc,
+                                  model.createLandmark,
+                                );
+                              }
+                            }),
+                      ),
                       Align(
                           alignment: Alignment(0.9, -0.98),
                           child: model.isBeaconExpired
