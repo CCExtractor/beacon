@@ -32,6 +32,7 @@ class HikeScreenWidget {
 
   static Widget shareButton(BuildContext context, String passkey) {
     return FloatingActionButton(
+      tooltip: 'Add people to the beacon!',
       onPressed: () {
         showDialog(
           context: context,
@@ -105,6 +106,7 @@ class HikeScreenWidget {
     List<LatLng> beaconRoute,
   ) {
     return FloatingActionButton(
+      tooltip: 'Share image of the map!',
       heroTag:
           'shareRouteTag', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
       onPressed: () async {
@@ -277,6 +279,25 @@ class HikeScreenWidget {
           ),
         ),
       ],
+    );
+  }
+
+  static Widget changeDurationFAB(
+      BuildContext context, HikeScreenViewModel model) {
+    return FloatingActionButton(
+      tooltip: 'Change beacon\'s duration!',
+      heroTag:
+          'changeDurationTag', //had to pass this tag else we would get error since there will be many FAB in the same subtree with the same tag.
+      onPressed: () async {
+        await DialogBoxes.changeDurationDialog(
+          context,
+          model,
+        );
+      },
+      backgroundColor: kYellow,
+      child: Icon(
+        Icons.alarm_outlined,
+      ),
     );
   }
 

@@ -71,7 +71,7 @@ class DialogBoxes {
                 ),
                 Container(
                   child: Text(
-                    'Choose End Date-Time',
+                    'Change End Date-Time',
                     style: TextStyle(color: kYellow, fontSize: 15.0),
                   ),
                 ),
@@ -160,7 +160,38 @@ class DialogBoxes {
                   color: kLightBlue,
                 ),
                 SizedBox(
-                  height: 4.h,
+                  height: 2.h,
+                ),
+                HikeButton(
+                  buttonWidth: optbwidth,
+                  text: 'Disable',
+                  textSize: 16.0,
+                  textColor: Colors.white,
+                  buttonColor: kYellow,
+                  onTap: () async {
+                    await databaseFunctions.init();
+                    var timeNow = DateTime.now()
+                        .add(
+                          Duration(
+                            seconds: 1,
+                          ),
+                        )
+                        .millisecondsSinceEpoch;
+                    final updatedBeacon =
+                        await databaseFunctions.changeBeaconDuration(
+                      model.beacon.id,
+                      timeNow,
+                    );
+                    if (updatedBeacon != null) {
+                      model.updateBeaconDuration(
+                        timeNow,
+                      );
+                    }
+                    Navigator.pop(context, timeNow);
+                  },
+                ),
+                SizedBox(
+                  height: 2.h,
                 ),
                 HikeButton(
                   buttonWidth: optbwidth,

@@ -403,9 +403,12 @@ class HikeScreenViewModel extends BaseModel {
     setState(ViewState.idle);
   }
 
-  void updateBeaconDuration(int newExpiresAt) {
+  void updateBeaconDuration(int newExpiresAt) async {
     beacon.expiresAt = newExpiresAt;
+    navigationService
+        .showSnackBar('Yay! Duration has been changed successfully.');
     notifyListeners();
+    await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
   }
 
   Future<void> createLandmark(
@@ -428,8 +431,6 @@ class HikeScreenViewModel extends BaseModel {
         ));
         beacon.landmarks.add(value);
         await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
-            'asdasdasd');
         notifyListeners();
       });
     }
