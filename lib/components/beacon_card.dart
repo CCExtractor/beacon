@@ -1,4 +1,5 @@
 import 'package:beacon/components/active_beacon.dart';
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/timer.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -122,6 +123,17 @@ class BeaconCustomWidgets {
                               'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
                               style: Style.commonTextStyle)
                           : Container(),
+                      SizedBox(height: 4.0),
+                      TextButton.icon(
+                        onPressed: () async {
+                          return await DialogBoxes.setReminderDialogueBox(
+                            context,
+                            beacon,
+                          );
+                        },
+                        icon: Icon(Icons.alarm),
+                        label: Text('Set Reminders!'),
+                      ),
                     ],
                   )
                 : (willStart)
@@ -200,6 +212,17 @@ class BeaconCustomWidgets {
                                   'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
+                          SizedBox(height: 4.0),
+                          TextButton.icon(
+                            onPressed: () async {
+                              return await DialogBoxes.setReminderDialogueBox(
+                                context,
+                                beacon,
+                              );
+                            },
+                            icon: Icon(Icons.alarm),
+                            label: Text('Set Reminders!'),
+                          ),
                         ],
                       )
                     : Column(
@@ -244,6 +267,7 @@ class BeaconCustomWidgets {
                                   'Expired At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
+                          SizedBox(height: 4.0),
                         ],
                       ),
           ],
@@ -271,90 +295,91 @@ class BeaconCustomWidgets {
   static ListView getPlaceholder() {
     final BorderRadius borderRadius = BorderRadius.circular(10.0);
     return ListView.builder(
-        scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
-        itemCount: 3,
-        padding: const EdgeInsets.all(8.0),
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 10.0,
-            ),
-            height: 110,
-            decoration: BoxDecoration(
-              color: kBlue,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 10.0),
-                ),
-              ],
-            ),
-            padding:
-                EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10, top: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, bottom: 10.0, right: 15.0),
-                  child: ClipRRect(
-                    borderRadius: borderRadius,
-                    child: SkeletonAnimation(
-                      child: Container(
-                        height: 15.0,
-                        decoration: BoxDecoration(color: shimmerSkeletonColor),
-                      ),
+      scrollDirection: Axis.vertical,
+      physics: BouncingScrollPhysics(),
+      itemCount: 3,
+      padding: const EdgeInsets.all(8.0),
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 10.0,
+          ),
+          height: 110,
+          decoration: BoxDecoration(
+            color: kBlue,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          padding:
+              EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10, top: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, bottom: 10.0, right: 15.0),
+                child: ClipRRect(
+                  borderRadius: borderRadius,
+                  child: SkeletonAnimation(
+                    child: Container(
+                      height: 15.0,
+                      decoration: BoxDecoration(color: shimmerSkeletonColor),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 30.0, bottom: 10.0),
-                  child: ClipRRect(
-                    borderRadius: borderRadius,
-                    child: SkeletonAnimation(
-                      child: Container(
-                        height: 10.0,
-                        decoration: BoxDecoration(color: shimmerSkeletonColor),
-                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 30.0, bottom: 10.0),
+                child: ClipRRect(
+                  borderRadius: borderRadius,
+                  child: SkeletonAnimation(
+                    child: Container(
+                      height: 10.0,
+                      decoration: BoxDecoration(color: shimmerSkeletonColor),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 45.0, bottom: 10.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: SkeletonAnimation(
-                      child: Container(
-                        height: 10.0,
-                        decoration: BoxDecoration(color: shimmerSkeletonColor),
-                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 45.0, bottom: 10.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: SkeletonAnimation(
+                    child: Container(
+                      height: 10.0,
+                      decoration: BoxDecoration(color: shimmerSkeletonColor),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 60.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: SkeletonAnimation(
-                      child: Container(
-                        height: 10.0,
-                        decoration: BoxDecoration(color: shimmerSkeletonColor),
-                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 60.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: SkeletonAnimation(
+                    child: Container(
+                      height: 10.0,
+                      decoration: BoxDecoration(color: shimmerSkeletonColor),
                     ),
                   ),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -48,11 +49,37 @@ class HomeViewModel extends BaseModel {
                 isLeader: true,
               ));
         } else {
-          localNotif.scheduleNotification(beacon);
+          //schedule has started notif.
+          localNotif.scheduleNotificationForBeacon(
+              beacon,
+              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt),
+              'Hike ' + beacon.title + ' has started',
+              'Click here to join!');
           setState(ViewState.idle);
           navigationService.showSnackBar(
             'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );
+          //show dialogue to ask if you want to be reminded.
+          DialogBoxes.setReminderDialogueBox(
+                  navigationService.navigatorKey.currentContext, beacon)
+              .then((value) {
+            //if no reminder was scheduled then default to one hour before start time.
+            if (value == null &&
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)
+                    .subtract(Duration(hours: 1))
+                    .isAfter(
+                      DateTime.now(),
+                    )) {
+              localNotif.scheduleNotificationForBeacon(
+                beacon,
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt).subtract(
+                  Duration(hours: 1),
+                ),
+                'Reminder: ' + beacon.title + ' will start in an hour',
+                'Get Ready!',
+              );
+            }
+          });
           return;
         }
       } else {
@@ -79,11 +106,38 @@ class HomeViewModel extends BaseModel {
           navigationService.pushScreen('/hikeScreen',
               arguments: HikeScreen(beacon, isLeader: false));
         } else {
-          localNotif.scheduleNotification(beacon);
+          //schedule has started notif.
+          localNotif.scheduleNotificationForBeacon(
+            beacon,
+            DateTime.fromMillisecondsSinceEpoch(beacon.startsAt),
+            'Hike ' + beacon.title + ' has started',
+            'Click here to join!',
+          );
           setState(ViewState.idle);
           navigationService.showSnackBar(
             'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );
+          //show dialogue to ask if you want to be reminded.
+          DialogBoxes.setReminderDialogueBox(
+                  navigationService.navigatorKey.currentContext, beacon)
+              .then((value) {
+            //if no reminder was scheduled then default to one hour before start time.
+            if (value == null &&
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)
+                    .subtract(Duration(hours: 1))
+                    .isAfter(
+                      DateTime.now(),
+                    )) {
+              localNotif.scheduleNotificationForBeacon(
+                beacon,
+                DateTime.fromMillisecondsSinceEpoch(beacon.startsAt).subtract(
+                  Duration(hours: 1),
+                ),
+                'Reminder: ' + beacon.title + ' will start in an hour',
+                'Get Ready!',
+              );
+            }
+          });
           return;
         }
       } else {
