@@ -35,7 +35,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
         CountdownTimerController(endTime: endTime, onEnd: onEnd, vsync: this);
   }
 
-  void onEnd() {
+  void onEnd() async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: Duration(seconds: 5),
