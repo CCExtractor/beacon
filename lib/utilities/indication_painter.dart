@@ -13,10 +13,10 @@ class TabIndicationPainter extends CustomPainter {
   final PageController pageController;
 
   TabIndicationPainter(
-      {this.dxTarget = 125.0,
-      this.dxEntry = 25.0,
+      {this.dxTarget = 121.0,
+      this.dxEntry = 15.0,
       this.radius = 21.0,
-      this.dy = 25.0,
+      this.dy = 29.0,
       this.pageController})
       : super(repaint: pageController) {
     painter = new Paint()

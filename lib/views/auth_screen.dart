@@ -159,13 +159,15 @@ class _AuthScreenState extends State<AuthScreen>
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                 ),
-                //highlightColor: Colors.white,
                 onPressed: model.onSignInButtonPress,
-                child: Text(
-                  "Existing",
-                  style: TextStyle(
-                    color: model.left,
-                    fontSize: 18.0,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    "Existing",
+                    style: TextStyle(
+                      color: model.left,
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
               ),
