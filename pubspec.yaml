@@ -23,19 +23,19 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   fluttertoast: ^8.0.8
   geocoder:
-   git: 
-    url: https://github.com/nguyenxdat/flutter_geocoder.git 
-    ref: 443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028
+    git:
+      url: https://github.com/nguyenxdat/flutter_geocoder.git
+      ref: 443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028
   geolocator: ^8.0.0
   get_it: ^7.2.0
-  google_maps_flutter: ^2.1.1
+  google_maps_flutter: ^2.1.2
   graphql_flutter: ^5.0.0
   hive: ^2.0.4
   intl: ^0.17.0
   location: ^4.3.0
   modal_progress_hud: ^0.1.3
   overlay_support: ^1.2.1
-  path_provider: ^2.0.8
+  path_provider: ^2.0.9
   provider: ^6.0.2
   rxdart: ^0.27.3
   share_plus: ^3.0.4
