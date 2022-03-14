@@ -25,7 +25,7 @@ dependencies:
     git:
       url: https://github.com/nguyenxdat/flutter_geocoder.git
       ref: 443b875d8ec80ce525cc6e8f17dfbbbbe7fa3028
-  geolocator: ^7.0.1
+  geolocator: ^8.2.0
   get_it: ^7.2.0
   google_maps_flutter: ^2.0.6
   graphql_flutter: ^5.0.0
@@ -36,11 +36,11 @@ dependencies:
   overlay_support: ^1.2.1
   path_provider: ^2.0.8
   provider: ^6.0.2
-  rxdart: ^0.26.0
+  rxdart: ^0.27.3
   share_plus: ^3.0.4
   shared_preferences: ^2.0.6
   sizer: ^2.0.15
-  skeleton_text: ^1.0.0
+  skeleton_text: ^3.0.0
   sliding_up_panel: ^2.0.0+1
   uni_links: ^0.5.1
 
