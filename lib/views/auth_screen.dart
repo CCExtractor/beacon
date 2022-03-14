@@ -327,9 +327,10 @@ class _AuthScreenState extends State<AuthScreen>
                 key: model.formKeySignup,
                 autovalidateMode: model.signupValidate,
                 child: Container(
-                    width: screensize.width - 70,
-                    // height: 280.0,
-                    child: Column(children: <Widget>[
+                  width: screensize.width - 70,
+                  // height: 280.0,
+                  child: Column(
+                    children: <Widget>[
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -398,7 +399,7 @@ class _AuthScreenState extends State<AuthScreen>
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
                           focusNode: model.password,
-                          textInputAction: TextInputAction.done,
+                          textInputAction: TextInputAction.next,
                           validator: (value) =>
                               Validator.validatePassword(value),
                           controller: model.signupPasswordController,
@@ -427,7 +428,46 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                    ])),
+                      Container(
+                        height: 13.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
+                        child: TextFormField(
+                          autovalidateMode: model.signupValidate,
+                          focusNode: model.confirmPassword,
+                          textInputAction: TextInputAction.done,
+                          validator: (value) => Validator.confirmPassword(
+                              value, model.signupPasswordController.text),
+                          controller: model.signupConfirmPasswordController,
+                          obscureText: model.obscureTextSignupConfirmPassword,
+                          style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.lock,
+                              color: Colors.black,
+                              size: 24,
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () =>
+                                  model.displayConfirmPasswordSignup(),
+                              icon: Icon(
+                                model.obscureTextSignupConfirmPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                size: 20.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                            hintText: "Confirm Password",
+                            hintStyle: TextStyle(
+                                fontSize: hintsize - 2, color: hintColor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             SizedBox(
