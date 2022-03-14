@@ -16,6 +16,7 @@ class AuthViewModel extends BaseModel {
   final FocusNode passwordLogin = FocusNode();
 
   final FocusNode password = FocusNode();
+  final FocusNode confirmPassword = FocusNode();
   final FocusNode email = FocusNode();
   final FocusNode name = FocusNode();
 
@@ -24,11 +25,13 @@ class AuthViewModel extends BaseModel {
 
   bool obscureTextLogin = true;
   bool obscureTextSignup = true;
+  bool obscureTextSignupConfirmPassword = true;
 
   TextEditingController signupEmailController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
   TextEditingController signupPasswordController = new TextEditingController();
-
+  TextEditingController signupConfirmPasswordController =
+      new TextEditingController();
   PageController pageController = PageController();
 
   Color left = Colors.white;
@@ -135,6 +138,12 @@ class AuthViewModel extends BaseModel {
   displayPasswordSignup() {
     setState(ViewState.busy);
     obscureTextSignup = !obscureTextSignup;
+    setState(ViewState.idle);
+  }
+
+displayConfirmPasswordSignup() {
+    setState(ViewState.busy);
+    obscureTextSignupConfirmPassword = !obscureTextSignupConfirmPassword;
     setState(ViewState.idle);
   }
 }

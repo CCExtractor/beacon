@@ -44,6 +44,13 @@ class Validator {
     return null;
   }
 
+  static String confirmPassword(String password, String confirmPassword) {
+    if (password != confirmPassword) {
+      return "Passwords do not match";
+    }
+    return null;
+  }
+
   static String validateBeaconTitle(String title) {
     if (title.isEmpty) {
       return "Title must not be left blank";
