@@ -21,6 +21,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
+  var fetchingUserBeacons;
+  var fetchingNearbyBeacons;
   Future<bool> _onPopHome() async {
     return showDialog(
       context: context,
@@ -55,6 +57,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
+    fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+    super.initState();
+  }
+
+  void reloadList() {
+    setState(() {
+      fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
+      fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+    });
   }
 
   @override
@@ -148,7 +164,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           'You need to login with credentials to start a hike');
                                     } else {
                                       CreateJoinBeaconDialog.createHikeDialog(
-                                          context, model);
+                                          context, model, reloadList);
                                     }
                                   },
                                 ),
@@ -167,7 +183,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                   buttonColor: Colors.white,
                                   onTap: () async {
                                     CreateJoinBeaconDialog.joinBeaconDialog(
-                                        context, model);
+                                        context, model, reloadList);
                                   },
                                 ),
                               ),
@@ -206,8 +222,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: FutureBuilder(
-                                            future: databaseFunctions
-                                                .fetchUserBeacons(),
+                                            future: fetchingUserBeacons,
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.done) {
@@ -313,8 +328,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           child: Container(
                                             alignment: Alignment.center,
                                             child: FutureBuilder(
-                                              future: databaseFunctions
-                                                  .fetchNearbyBeacon(),
+                                              future: fetchingNearbyBeacons,
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState ==
                                                     ConnectionState.waiting)
