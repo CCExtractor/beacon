@@ -1,6 +1,5 @@
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
-
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
@@ -261,7 +260,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                                           text:
                                                                               'Join',
                                                                           style:
-                                                                              TextStyle(color: kYellow)),
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
                                                                       TextSpan(
                                                                           text:
                                                                               ' a Hike or '),
@@ -269,7 +268,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                                           text:
                                                                               'Create',
                                                                           style:
-                                                                              TextStyle(color: kYellow)),
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
                                                                       TextSpan(
                                                                           text:
                                                                               '  a new one! '),
