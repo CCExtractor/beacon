@@ -26,7 +26,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '29.0.0'
 
     sourceSets {
