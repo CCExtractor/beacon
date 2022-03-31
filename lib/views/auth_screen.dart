@@ -237,11 +237,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -356,11 +352,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -386,11 +378,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -446,6 +434,14 @@ class _AuthScreenState extends State<AuthScreen>
           ],
         ),
       ),
+    );
+  }
+
+  Widget separator() {
+    return Container(
+      width: 62.w,
+      height: 0.2.h,
+      color: Colors.grey[400],
     );
   }
 }
