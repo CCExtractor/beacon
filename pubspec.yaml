@@ -21,6 +21,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   flutter_local_notifications: ^9.2.0
   flutter_polyline_points: ^1.0.0
+  flutter_spinkit: ^5.1.0
   fluttertoast: ^8.0.8
   geocoder:
     git:
