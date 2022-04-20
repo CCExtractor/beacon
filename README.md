@@ -7,7 +7,26 @@ This project is a flutter build native interface to ease the group travelling (o
 
 ## Getting Started
 
-For setting up the development environment, follow the steps given below.
+You can test Beacon in your own development environment. This section shows you how:
+
+### Prerequisites
+
+You'll need to set up the IDE and mobile device emulator, or any mobile testing device on your local system.
+
+**Flutter Environment**: You'll need to have the following installed:
+1. [Flutter SDK](https://flutter.dev/docs/get-started/install)
+2. [Android Studio](https://developer.android.com/studio)
+
+***Ensure you are testing the app using Flutter version [2.10](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
+
+For checking flutter version:
+- Run `flutter --version` in terminal
+
+If your version is not upto date, follow these steps to upgrade:
+- `flutter channel stable` to switch to the channel having stable version of flutter updates
+- `flutter upgrade` to get the latest flutter version
+
+**Development Environment**: For setting up the development environment, follow the steps given below.
 
 - Clone this repository after forking using `git clone https://github.com/<username>/beacon.git`
 - `cd` into `beacon`
