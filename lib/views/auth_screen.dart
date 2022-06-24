@@ -221,7 +221,8 @@ class _AuthScreenState extends State<AuthScreen>
                           autovalidateMode: model.loginValidate,
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
-                          validator: (value) => Validator.validateEmail(value),
+                          validator: (value) =>
+                              Validator.validateEmail(value.trimRight()),
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
