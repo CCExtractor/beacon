@@ -154,9 +154,11 @@ class _HikeScreenState extends State<HikeScreen> {
                                 tilt: CAMERA_TILT,
                                 bearing: CAMERA_BEARING),
                             onMapCreated: (GoogleMapController controller) {
-                              setState(() {
-                                model.mapController.complete(controller);
-                              });
+                              setState(
+                                () {
+                                  model.mapController.complete(controller);
+                                },
+                              );
                               // setPolyline();
                             },
                             onTap: (loc) async {
@@ -176,11 +178,12 @@ class _HikeScreenState extends State<HikeScreen> {
                             }),
                       ),
                       Align(
-                          alignment: Alignment(0.9, -0.98),
-                          child: model.isBeaconExpired
-                              ? Container()
-                              : HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode)),
+                        alignment: Alignment(0.9, -0.98),
+                        child: model.isBeaconExpired
+                            ? Container()
+                            : HikeScreenWidget.shareButton(
+                                context, widget.beacon.shortcode),
+                      ),
                       Align(
                         alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
@@ -199,14 +202,28 @@ class _HikeScreenState extends State<HikeScreen> {
                         //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                         Align(
                           alignment: screenHeight > 800
-                              ? Alignment(0.9, -0.8)
-                              : Alignment(0.9, -0.77),
+                              ? Alignment(0.9, -0.82)
+                              : Alignment(0.9, -0.79),
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 500),
                             opacity:
                                 model.mapController.isCompleted ? 1.0 : 0.0,
-                            child: HikeScreenWidget.shareRouteButton(context,
-                                model.beacon, model.mapController, model.route),
+                            child: HikeScreenWidget.shareRouteButton(
+                              context,
+                              model.beacon,
+                              model.mapController,
+                              model.route,
+                            ),
+                          ),
+                        ),
+                      if (model.isLeader && !model.isBeaconExpired)
+                        Align(
+                          alignment: screenHeight > 800
+                              ? Alignment(0.9, -0.65)
+                              : Alignment(0.9, -0.6),
+                          child: HikeScreenWidget.changeDurationFAB(
+                            context,
+                            model,
                           ),
                         ),
                     ],

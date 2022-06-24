@@ -43,7 +43,7 @@ class HikeScreenViewModel extends BaseModel {
   PolylinePoints polylinePoints = PolylinePoints();
   final GlobalKey<FormState> landmarkFormKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
-  Location loc = new Location();
+  Location loc = Location();
   GraphQLClient graphQlClient;
   PanelController panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
@@ -417,6 +417,14 @@ class HikeScreenViewModel extends BaseModel {
     setState(ViewState.idle);
   }
 
+  void updateBeaconDuration(int newExpiresAt) async {
+    beacon.expiresAt = newExpiresAt;
+    navigationService
+        .showSnackBar('Yay! Duration has been changed successfully.');
+    notifyListeners();
+    await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+  }
+
   Future<void> createLandmark(
     var title,
     var loc,
@@ -437,8 +445,6 @@ class HikeScreenViewModel extends BaseModel {
         ));
         beacon.landmarks.add(value);
         await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
-            'asdasdasd');
         notifyListeners();
       });
     }

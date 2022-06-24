@@ -12,9 +12,9 @@ class CreateJoinBeaconDialog {
       BuildContext context, HomeViewModel model, Function reloadList) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     model.resultingDuration = Duration(minutes: 30);
-    model.durationController = new TextEditingController();
-    model.startsAtDate = new TextEditingController();
-    model.startsAtTime = new TextEditingController();
+    model.durationController = TextEditingController();
+    model.startsAtDate = TextEditingController();
+    model.startsAtTime = TextEditingController();
     return showDialog(
       context: context,
       builder: (context) => GestureDetector(

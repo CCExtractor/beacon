@@ -31,6 +31,8 @@ class DataBaseMutationFunctions {
       const GraphQLError(message: 'Email address already exists');
   GraphQLError wrongCredentials =
       const GraphQLError(message: 'Invalid credentials');
+  GraphQLError beaconHasAlreadyExpired = const GraphQLError(
+      message: 'Beacon can not expire before it has started.');
 
   bool encounteredExceptionOrError(OperationException exception,
       {bool showSnackBar = true}) {
@@ -63,6 +65,12 @@ class DataBaseMutationFunctions {
           if (showSnackBar) {
             navigationService
                 .showSnackBar("Account with this email already registered");
+          }
+          return false;
+        } else if (exception.graphqlErrors[i].message ==
+            beaconHasAlreadyExpired.message) {
+          if (showSnackBar) {
+            navigationService.showSnackBar(beaconHasAlreadyExpired.message);
           }
           return false;
         }
@@ -266,6 +274,30 @@ class DataBaseMutationFunctions {
         result.data['createBeacon'] as Map<String, dynamic>,
       );
       hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+      return beacon;
+    }
+    return null;
+  }
+
+  Future<Beacon> changeBeaconDuration(String id, int newExpiresAt) async {
+    final QueryResult result = await clientAuth.mutate(
+      MutationOptions(
+        document: gql(
+          _beaconQuery.changeBeaconDuration(
+            id,
+            newExpiresAt,
+          ),
+        ),
+      ),
+    );
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+    } else if (result.data != null && result.isConcrete) {
+      final Beacon beacon = Beacon.fromJson(
+        result.data['changeBeaconDuration'] as Map<String, dynamic>,
+      );
       return beacon;
     }
     return null;

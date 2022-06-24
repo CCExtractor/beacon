@@ -167,7 +167,7 @@ class BeaconCustomWidgets {
                                     TextSpan(
                                       text: 'in ',
                                       style: TextStyle(
-                                          color: const Color(0xffb6b2df),
+                                          color: Color(0xffb6b2df),
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.w400),
                                     ),
