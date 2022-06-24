@@ -370,4 +370,23 @@ class DataBaseMutationFunctions {
     }
     return _nearbyBeacons;
   }
+
+  Future<Beacon> changeLeader(String beaconID, String newLeaderID) async {
+    await clientAuth
+        .mutate(MutationOptions(
+            document: gql(_beaconQuery.changeLeader(beaconID, newLeaderID))))
+        .then((value) {
+      if (value.hasException) {
+        navigationService.showSnackBar(
+            "Something went wrong: ${value.exception.graphqlErrors.first.message}");
+        print("Something went wrong: ${value.exception}");
+      } else if (value.data != null && value.isConcrete) {
+        final Beacon changedLeader =
+            Beacon.fromJson(value.data['changeLeader'] as Map<String, dynamic>);
+        return changedLeader;
+      }
+      return null;
+    });
+    return null;
+  }
 }

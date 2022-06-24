@@ -18,7 +18,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:sizer/sizer.dart';
 
-class HikeScreenWidget {
+class HikeScreenWidget extends ChangeNotifier {
   static copyPasskey(String passkey) {
     Clipboard.setData(ClipboardData(text: passkey));
     Fluttertoast.showToast(msg: 'PASSKEY: $passkey  COPIED');
@@ -200,12 +200,6 @@ class HikeScreenWidget {
                                 text:
                                     'Long Press on any hiker to hand over the beacon\n',
                                 style: TextStyle(fontSize: 16)),
-                            //TODO: enable this once backend has updated.
-                            //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                            // TextSpan(
-                            //     text:
-                            //         'Double tap on beacon to change the duration\n',
-                            //     style: TextStyle(fontSize: 14)),
                           ],
                         ),
                       ),
@@ -223,25 +217,21 @@ class HikeScreenWidget {
                   itemCount: model.hikers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      onTap: () {
-                        model.hikers[index].id == userConfig.currentUser.id
-                            ? Fluttertoast.showToast(msg: 'Yeah, that\'s you')
-                            : model.beacon.leader.id ==
-                                    userConfig.currentUser.id
-                                ? model.relayBeacon(model.hikers[index])
-                                : Fluttertoast.showToast(
-                                    msg: 'You dont have beacon to relay');
+                      onLongPress: () async {
+                        model.relayBeacon(
+                            model.hikers[index].name, model.hikers[index].id);
                       },
                       leading: CircleAvatar(
                         backgroundColor:
                             model.isBeaconExpired ? Colors.grey : kYellow,
                         radius: 18,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Icon(
-                              Icons.person_outline,
-                              color: Colors.white,
-                            )),
+                          borderRadius: BorderRadius.circular(50),
+                          child: Icon(
+                            Icons.person_outline,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       title: Text(
                         model.hikers[index].name,
