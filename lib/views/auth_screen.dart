@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
+import '../components/loading_screen.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key key}) : super(key: key);
 
@@ -62,7 +64,7 @@ class _AuthScreenState extends State<AuthScreen>
       child: BaseView<AuthViewModel>(
         builder: (context, model, child) {
           return (model.isBusy)
-              ? Scaffold(body: Center(child: CircularProgressIndicator()))
+              ? LoadingScreen()
               : new Scaffold(
                   key: model.scaffoldKey,
                   resizeToAvoidBottomInset: true,

@@ -1,6 +1,7 @@
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/components/hike_button.dart';
+import 'package:beacon/components/loading_screen.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -79,7 +80,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       child: BaseView<HomeViewModel>(builder: (context, model, child) {
         TabController tabController = new TabController(length: 2, vsync: this);
         return model.isBusy
-            ? Scaffold(body: Center(child: CircularProgressIndicator()))
+            ? LoadingScreen()
             : Scaffold(
                 resizeToAvoidBottomInset: false,
                 body: SafeArea(
@@ -98,6 +99,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             onPressed: () => showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
+                                  shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0),),
                                       actionsAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       title: Text(
