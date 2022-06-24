@@ -1,6 +1,41 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class BeaconQueries {
+  String changeLeader(String beaconID, String newLeaderID) {
+    return '''
+        mutation{
+           changeLeader (beaconID:"$beaconID" ,newLeaderID: "$newLeaderID")
+          {
+            _id
+             title
+             shortcode
+             leader {
+               _id
+               name
+             }
+             location{
+               lat
+               lon
+             }
+             followers {
+               _id
+               name
+             }
+             startsAt
+             expiresAt
+             landmarks {
+               title
+               location {
+                 lat
+                 lon
+               }
+             }
+           }
+          }
+        }
+    ''';
+  }
+
   String createBeacon(
       String title, int startsAt, int expiresAt, String lat, String lon) {
     return '''
@@ -222,7 +257,7 @@ class BeaconQueries {
     }
   ''');
 
-  // Gql for oreder updated subscription.
+  // Gql for order updated subscription.
   final beaconJoinedSubGql = gql(r'''
     subscription StreamNewlyJoinedBeacons($id: ID!){
       beaconJoined(id: $id){
