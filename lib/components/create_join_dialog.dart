@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class CreateJoinBeaconDialog {
-  static Future createHikeDialog(BuildContext context, HomeViewModel model) {
+  static Future createHikeDialog(
+      BuildContext context, HomeViewModel model, Function reloadList) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     model.resultingDuration = Duration(minutes: 30);
     model.durationController = new TextEditingController();
@@ -279,7 +280,7 @@ class CreateJoinBeaconDialog {
                                     "Enter a valid date and time!!");
                                 return;
                               }
-                              model.createHikeRoom();
+                              model.createHikeRoom(reloadList);
                             }),
                       ),
                     ],
@@ -293,7 +294,8 @@ class CreateJoinBeaconDialog {
     );
   }
 
-  static Future joinBeaconDialog(BuildContext context, HomeViewModel model) {
+  static Future joinBeaconDialog(
+      BuildContext context, HomeViewModel model, Function reloadList) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     return showDialog(
       context: context,
@@ -347,7 +349,7 @@ class CreateJoinBeaconDialog {
                       buttonColor: kYellow,
                       onTap: () {
                         // navigationService.pop();
-                        model.joinHikeRoom();
+                        model.joinHikeRoom(reloadList);
                       },
                     ),
                   ),
