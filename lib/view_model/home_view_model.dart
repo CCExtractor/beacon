@@ -24,7 +24,7 @@ class HomeViewModel extends BaseModel {
   TextEditingController startsAtTime = TextEditingController();
   String enteredPasskey;
 
-  createHikeRoom() async {
+  createHikeRoom(Function reloadList) async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyCreate.currentState.validate()) {
@@ -50,6 +50,7 @@ class HomeViewModel extends BaseModel {
         } else {
           localNotif.scheduleNotification(beacon);
           setState(ViewState.idle);
+          reloadList();
           navigationService.showSnackBar(
             'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );
@@ -62,7 +63,7 @@ class HomeViewModel extends BaseModel {
     }
   }
 
-  joinHikeRoom() async {
+  joinHikeRoom(Function reloadList) async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyJoin.currentState.validate()) {
@@ -81,6 +82,7 @@ class HomeViewModel extends BaseModel {
         } else {
           localNotif.scheduleNotification(beacon);
           setState(ViewState.idle);
+          reloadList();
           navigationService.showSnackBar(
             'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
           );

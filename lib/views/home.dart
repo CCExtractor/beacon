@@ -1,7 +1,7 @@
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
-
 import 'package:beacon/components/hike_button.dart';
+import 'package:beacon/components/loading_screen.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -21,6 +21,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
+  var fetchingUserBeacons;
+  var fetchingNearbyBeacons;
   Future<bool> _onPopHome() async {
     return showDialog(
       context: context,
@@ -58,13 +60,27 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
+    fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+    super.initState();
+  }
+
+  void reloadList() {
+    setState(() {
+      fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
+      fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onPopHome,
       child: BaseView<HomeViewModel>(builder: (context, model, child) {
         TabController tabController = TabController(length: 2, vsync: this);
         return model.isBusy
-            ? Scaffold(body: Center(child: CircularProgressIndicator()))
+            ? LoadingScreen()
             : Scaffold(
                 resizeToAvoidBottomInset: false,
                 body: SafeArea(
@@ -83,6 +99,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             onPressed: () => showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
+                                  shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0),),
                                       actionsAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       title: Text(
@@ -148,7 +165,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           'You need to login with credentials to start a hike');
                                     } else {
                                       CreateJoinBeaconDialog.createHikeDialog(
-                                          context, model);
+                                          context, model, reloadList);
                                     }
                                   },
                                 ),
@@ -167,7 +184,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                   buttonColor: Colors.white,
                                   onTap: () async {
                                     CreateJoinBeaconDialog.joinBeaconDialog(
-                                        context, model);
+                                        context, model, reloadList);
                                   },
                                 ),
                               ),
@@ -206,8 +223,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: FutureBuilder(
-                                            future: databaseFunctions
-                                                .fetchUserBeacons(),
+                                            future: fetchingUserBeacons,
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.done) {
@@ -261,7 +277,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                                           text:
                                                                               'Join',
                                                                           style:
-                                                                              TextStyle(color: kYellow)),
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
                                                                       TextSpan(
                                                                           text:
                                                                               ' a Hike or '),
@@ -269,7 +285,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                                           text:
                                                                               'Create',
                                                                           style:
-                                                                              TextStyle(color: kYellow)),
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
                                                                       TextSpan(
                                                                           text:
                                                                               '  a new one! '),
@@ -313,8 +329,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           child: Container(
                                             alignment: Alignment.center,
                                             child: FutureBuilder(
-                                              future: databaseFunctions
-                                                  .fetchNearbyBeacon(),
+                                              future: fetchingNearbyBeacons,
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState ==
                                                     ConnectionState.waiting)

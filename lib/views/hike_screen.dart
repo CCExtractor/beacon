@@ -1,3 +1,4 @@
+import 'package:beacon/components/loading_screen.dart';
 import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _HikeScreenState extends State<HikeScreen> {
         if (!model.modelIsReady) {
           return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: LoadingScreen(),
             ),
           );
         }

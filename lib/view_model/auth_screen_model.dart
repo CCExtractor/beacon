@@ -86,7 +86,7 @@ class AuthViewModel extends BaseModel {
       loginValidate = AutovalidateMode.disabled;
       await databaseFunctions.init();
       final String loginSuccess = await databaseFunctions.login(
-          email: loginEmailController.text,
+          email: loginEmailController.text.trimRight(),
           password: loginPasswordController.text);
       if (loginSuccess == logSuccess) {
         userConfig.currentUser.print();

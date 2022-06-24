@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
+import '../components/loading_screen.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key key}) : super(key: key);
 
@@ -62,8 +64,8 @@ class _AuthScreenState extends State<AuthScreen>
       child: BaseView<AuthViewModel>(
         builder: (context, model, child) {
           return (model.isBusy)
-              ? Scaffold(body: Center(child: CircularProgressIndicator()))
-              : Scaffold(
+              ? LoadingScreen()
+              : new Scaffold(
                   key: model.scaffoldKey,
                   resizeToAvoidBottomInset: true,
                   body: Container(
@@ -221,7 +223,8 @@ class _AuthScreenState extends State<AuthScreen>
                           autovalidateMode: model.loginValidate,
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
-                          validator: (value) => Validator.validateEmail(value),
+                          validator: (value) =>
+                              Validator.validateEmail(value.trimRight()),
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -237,11 +240,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -356,11 +355,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -386,11 +381,7 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 62.w,
-                        height: 0.2.h,
-                        color: Colors.grey[400],
-                      ),
+                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
@@ -446,6 +437,14 @@ class _AuthScreenState extends State<AuthScreen>
           ],
         ),
       ),
+    );
+  }
+
+  Widget separator() {
+    return Container(
+      width: 62.w,
+      height: 0.2.h,
+      color: Colors.grey[400],
     );
   }
 }

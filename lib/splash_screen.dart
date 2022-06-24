@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:beacon/locator.dart';
 import 'package:uni_links/uni_links.dart';
 
+import 'components/loading_screen.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({@required Key key}) : super(key: key);
 
@@ -96,9 +98,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: const Key('SplashScreenScaffold'),
-      body: Center(
-        child: Image(image: AssetImage('images/hikers_group.png')),
-      ),
+      body: LoadingScreen(),
     );
   }
 }
