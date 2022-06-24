@@ -19,20 +19,18 @@ class LoadingScreen extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Expanded(
-                    flex: 3,
-                    child: SizedBox()
-                ),
+                Expanded(flex: 3, child: SizedBox()),
                 Expanded(
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SpinKitThreeBounce(color: kYellow,size: 40,),
-                    )
-                ),
+                      child: SpinKitThreeBounce(
+                        color: kYellow,
+                        size: 40,
+                      ),
+                    )),
               ],
-            )
-        ),
+            )),
       ),
     );
   }
