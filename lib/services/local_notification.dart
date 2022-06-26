@@ -43,59 +43,40 @@ class LocalNotification {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  Future<void> scheduleNotification(Beacon beacon) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      beacon.id.hashCode,
-      'Hike ' + beacon.title + ' has started',
-      'Click here to join!',
-      tz.TZDateTime.from(
-          DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'channel id',
-          'channel name',
-          playSound: true,
-          priority: Priority.high,
-          importance: Importance.high,
+  Future<void> scheduleNotificationForBeacon(
+    Beacon beacon,
+    DateTime scheduleAtDateTime,
+    String title,
+    String body,
+  ) async {
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        (beacon.id + scheduleAtDateTime.toIso8601String()).hashCode,
+        title,
+        body,
+        tz.TZDateTime.from(scheduleAtDateTime, tz.local),
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'channel id',
+            'channel name',
+            playSound: true,
+            priority: Priority.high,
+            importance: Importance.high,
+          ),
+          iOS: IOSNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+            badgeNumber: 1,
+          ),
         ),
-        iOS: IOSNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          badgeNumber: 1,
-        ),
-      ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
-      payload: beacon.id,
-    );
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      beacon.id.hashCode,
-      'Reminder: ' + beacon.title + ' will start in an hour',
-      'Get Ready!',
-      tz.TZDateTime.from(
-              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local)
-          .subtract(Duration(hours: 1)),
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'channel id',
-          'channel name',
-          playSound: true,
-          priority: Priority.high,
-          importance: Importance.high,
-        ),
-        iOS: IOSNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          badgeNumber: 1,
-        ),
-      ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
-      payload: beacon.id,
-    );
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true,
+        payload: beacon.id,
+      );
+    } catch (e) {
+      throw (e);
+    }
   }
 }
