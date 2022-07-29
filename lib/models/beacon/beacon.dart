@@ -3,6 +3,8 @@ import 'package:beacon/models/location/location.dart';
 import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+
+import '../group/group.dart';
 part 'beacon.g.dart';
 
 @HiveType(typeId: 3)
@@ -17,7 +19,8 @@ class Beacon extends HiveObject {
       this.followers,
       this.route,
       this.landmarks,
-      this.location});
+      this.location,
+      this.grouptitle});
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
@@ -47,6 +50,8 @@ class Beacon extends HiveObject {
               .map((e) => Landmark.fromJson(e as Map<String, dynamic>))
               .toList()
           : [],
+      grouptitle: json['group'] != null ? json['group']['title'] : null,
+      //title lena hai bas
     );
   }
 
@@ -70,6 +75,8 @@ class Beacon extends HiveObject {
   List<Landmark> landmarks = [];
   @HiveField(9)
   Location location;
+  @HiveField(10)
+  Group grouptitle;
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');
