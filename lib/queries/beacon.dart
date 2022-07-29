@@ -13,6 +13,10 @@ class BeaconQueries {
                _id
                name
              }
+             group{
+              _id
+              title
+             }
              location{
                lat
                lon
@@ -55,6 +59,10 @@ class BeaconQueries {
             leader {
               _id
               name
+            }
+            group {
+              _id
+              title
             }
             location{
               lat
@@ -120,6 +128,10 @@ class BeaconQueries {
               _id
               title
               shortcode
+              group{
+                _id
+                title
+              }
               leader {
                 _id
                 name
@@ -147,6 +159,11 @@ class BeaconQueries {
             title
             leader{
               name
+            }
+            group {
+              _id
+              title
+              shortcode
             }
             followers {
               _id
@@ -185,6 +202,11 @@ class BeaconQueries {
               _id
               title
               shortcode
+              group {
+                _id
+                title
+                shortcode
+              }
               leader {
                 name
                 location {
