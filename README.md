@@ -48,7 +48,7 @@ beacon/lib/
 ├── components/                             # Shared Components such as dialog boxes, button, and other shared widgets
 ├── enums/                                  # enum files
 |   └── view_state.dart                     # defines view states i.e Idle, Busy, Error
-├── models/                                 # model classes: beacon, location, landmark, user
+├── models/                                 # model classes: group, beacon, location, landmark, user
 ├── queries/                                # includes all graphql query strings
 ├── services/                               # services
 |   ├── database_mutation_function.dart/    # Graphql Queries implementations
