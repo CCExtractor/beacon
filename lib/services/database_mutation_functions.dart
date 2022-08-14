@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/group/group.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
@@ -11,12 +12,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:beacon/models/user/user_info.dart';
 import '../locator.dart';
+import '../queries/group.dart';
 
 class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
   AuthQueries _authQuery;
   BeaconQueries _beaconQuery;
+  GroupQueries _groupQuery;
   init() async {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = await graphqlConfig.authClient();
@@ -90,6 +93,7 @@ class DataBaseMutationFunctions {
     return result.data;
   }
 
+  //Auth
   Future<String> signup({String name, String email, String password}) async {
     final QueryResult result = email != null
         ? await clientNonAuth.mutate(MutationOptions(
@@ -146,6 +150,7 @@ class DataBaseMutationFunctions {
     return otherError;
   }
 
+  // User Info
   Future<bool> fetchCurrentUserInfo() async {
     await databaseFunctions.init();
     final QueryResult result = await clientAuth
@@ -169,6 +174,7 @@ class DataBaseMutationFunctions {
     return false;
   }
 
+  // Beacon Info
   Future<Beacon> fetchBeaconInfo(String id) async {
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_beaconQuery.fetchBeaconDetail(id))));
@@ -387,6 +393,46 @@ class DataBaseMutationFunctions {
       }
       return null;
     });
+    return null;
+  }
+
+  // Group Info
+  Future<Group> createGroup(String title) async {
+    final QueryResult result = await clientAuth
+        .mutate(MutationOptions(document: gql(_groupQuery.createGroup(title))));
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+    } else if (result.data != null && result.isConcrete) {
+      final Group group = Group.fromJson(
+        result.data['createGroup'] as Map<String, dynamic>,
+      );
+      // hiveDb.putBeaconInBeaconBox(group.id, group);
+      return group;
+    }
+    return null;
+  }
+
+  Future<Group> joinGroup(String shortcode) async {
+    final QueryResult result = await clientAuth.mutate(
+        MutationOptions(document: gql(_groupQuery.joinGroup(shortcode))));
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+      navigationService.removeAllAndPush('/main', '/');
+    } else if (result.data != null && result.isConcrete) {
+      final Group group = Group.fromJson(
+        result.data['joinBeacon'] as Map<String, dynamic>,
+      );
+      // hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+      return group;
+    } else {
+      navigationService.showSnackBar(
+        "Something went wrong while trying to join Group",
+      );
+    }
     return null;
   }
 }
