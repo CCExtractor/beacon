@@ -51,7 +51,6 @@ class Beacon extends HiveObject {
               .toList()
           : [],
       grouptitle: json['group'] != null ? json['group']['title'] : null,
-      //title lena hai bas
     );
   }
 

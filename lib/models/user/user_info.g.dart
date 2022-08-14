@@ -22,7 +22,7 @@ class UserAdapter extends TypeAdapter<User> {
       name: fields[2] as String,
       location: fields[6] as Location,
       beacon: (fields[4] as List)?.cast<Beacon>(),
-      groups: (fields[5] as List)?.cast<Beacon>(),
+      groups: (fields[5] as List)?.cast<Group>(),
       id: fields[0] as String,
       isGuest: fields[7] as bool,
     );

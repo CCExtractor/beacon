@@ -50,7 +50,7 @@ class User extends HiveObject {
   @HiveField(4)
   List<Beacon> beacon = [];
   @HiveField(5)
-  List<Beacon> groups = [];
+  List<Group> groups = [];
   @HiveField(6)
   Location location;
   @HiveField(7)
@@ -63,6 +63,7 @@ class User extends HiveObject {
     debugPrint('email: ${this.email}');
     debugPrint('location: ${this.location}');
     debugPrint('beacons: ${this.beacon}');
+    debugPrint('groups: ${this.groups}');
   }
 
   // updateBeacon(List<String> beaconList) {
@@ -76,5 +77,6 @@ class User extends HiveObject {
     this.location = details.location;
     this.beacon = details.beacon;
     this.isGuest = details.isGuest;
+    this.groups = details.groups;
   }
 }
