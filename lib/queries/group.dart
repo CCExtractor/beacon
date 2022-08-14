@@ -7,7 +7,7 @@ class GroupQueries {
           createGroup(group: {
             title: "$title"
             }
-          })
+           )
           {
             _id
             title
@@ -42,6 +42,90 @@ class GroupQueries {
             }
           }
         }
+    ''';
+  }
+
+  String joinGroup(String shortcode) {
+    return '''
+      mutation{
+          joinGroup(
+            shortcode: "$shortcode"
+           )
+          {
+            _id
+            title
+            shortcode
+            leader {
+              _id
+              name
+            }
+            members {
+              _id
+              name
+            }
+            beacons
+            {
+              _id
+              title
+              shortcode
+              leader {
+                _id
+                name
+              }
+              location{
+                lat
+                lon
+              }
+              followers {
+                _id
+                name
+              }
+              startsAt
+              expiresAt
+            }
+          }
+        }
+    ''';
+  }
+
+  String groupDetail(String id) {
+    return '''
+      query{
+        group(id:"$id")
+          {
+            _id
+            title
+            shortcode
+            leader {
+              _id
+              name
+            }
+            members {
+              _id
+              name
+            }
+            beacons
+            {
+              _id
+              title
+              shortcode
+              leader {
+                _id
+                name
+              }
+              location{
+                lat
+                lon
+              }
+              followers {
+                _id
+                name
+              }
+              startsAt
+              expiresAt
+            }
+          }
+      }
     ''';
   }
 

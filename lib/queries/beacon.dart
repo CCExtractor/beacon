@@ -13,7 +13,7 @@ class BeaconQueries {
                _id
                name
              }
-             group{
+             groups{
               _id
               title
              }
@@ -163,7 +163,6 @@ class BeaconQueries {
             group {
               _id
               title
-              shortcode
             }
             followers {
               _id
@@ -202,10 +201,9 @@ class BeaconQueries {
               _id
               title
               shortcode
-              group {
+              groups {
                 _id
                 title
-                shortcode
               }
               leader {
                 name

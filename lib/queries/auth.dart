@@ -47,7 +47,7 @@ class AuthQueries {
           _id
           email
           name
-          group{
+          groups{
             _id
             title
             shortcode
