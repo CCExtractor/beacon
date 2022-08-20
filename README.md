@@ -59,6 +59,7 @@ beacon/lib/
 |  ├── auth_screen.dart
 |  ├── base_view.dart
 |  ├── hike_screen.dart
+|  ├── group_screen.dart
 |  ├── home.dart
 ├── viewmodels/                             # Viewmodels layer
 ├── splash_screen.dart                      # Very first screen displayed whilst data is loading
