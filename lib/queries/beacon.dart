@@ -13,7 +13,7 @@ class BeaconQueries {
                _id
                name
              }
-             groups{
+             group{
               _id
               title
              }
@@ -40,8 +40,8 @@ class BeaconQueries {
     ''';
   }
 
-  String createBeacon(
-      String title, int startsAt, int expiresAt, String lat, String lon) {
+  String createBeacon(String title, int startsAt, int expiresAt, String lat,
+      String lon, String groupID) {
     return '''
         mutation{
           createBeacon(beacon: {
@@ -51,7 +51,8 @@ class BeaconQueries {
             startLocation: {
               lat: "$lat", lon: "$lon"
             }
-          })
+          },
+          groupID:"$groupID")
           {
             _id
             title
@@ -201,7 +202,7 @@ class BeaconQueries {
               _id
               title
               shortcode
-              groups {
+              group {
                 _id
                 title
               }

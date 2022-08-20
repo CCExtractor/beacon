@@ -59,6 +59,9 @@ class AuthQueries {
               _id
               name
             }
+            beacons{
+            _id
+            }
           }
           beacons{
             _id
