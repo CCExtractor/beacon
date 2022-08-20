@@ -20,7 +20,7 @@ class Beacon extends HiveObject {
       this.route,
       this.landmarks,
       this.location,
-      this.grouptitle});
+      this.group});
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
@@ -50,7 +50,10 @@ class Beacon extends HiveObject {
               .map((e) => Landmark.fromJson(e as Map<String, dynamic>))
               .toList()
           : [],
-      grouptitle: json['group'] != null ? json['group']['title'] : null,
+      // group: json['group'] != null
+      //     ? Group.fromJson(json['group'] as Map<String, dynamic>)
+      //     : null,
+      group: json['group'] != null ? json['group']['_id'] : null,
     );
   }
 
@@ -75,7 +78,7 @@ class Beacon extends HiveObject {
   @HiveField(9)
   Location location;
   @HiveField(10)
-  Group grouptitle;
+  String group;
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');

@@ -27,7 +27,7 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       route: (fields[6] as List)?.cast<Location>(),
       landmarks: (fields[8] as List)?.cast<Landmark>(),
       location: fields[9] as Location,
-      grouptitle: fields[10] as Group,
+      group: fields[10] as String,
     );
   }
 
@@ -56,7 +56,7 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       ..writeByte(9)
       ..write(obj.location)
       ..writeByte(10)
-      ..write(obj.grouptitle);
+      ..write(obj.group);
   }
 
   @override

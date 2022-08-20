@@ -22,7 +22,7 @@ class GroupAdapter extends TypeAdapter<Group> {
       title: fields[1] as String,
       leader: fields[3] as User,
       members: (fields[4] as List)?.cast<User>(),
-      beacons: (fields[5] as List)?.cast<User>(),
+      beacons: (fields[5] as List)?.cast<Beacon>(),
     );
   }
 

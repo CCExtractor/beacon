@@ -49,7 +49,7 @@ class Group extends HiveObject {
   @HiveField(4)
   List<User> members = [];
   @HiveField(5)
-  List<User> beacons = [];
+  List<Beacon> beacons = [];
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');
