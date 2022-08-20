@@ -4,7 +4,6 @@ import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-import '../group/group.dart';
 part 'beacon.g.dart';
 
 @HiveType(typeId: 3)

@@ -1,14 +1,10 @@
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/view_model/base_view_model.dart';
-import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/group/group.dart';
 import '../views/group_screen.dart';
-import '../views/home_screen.dart';
 
 class HomeViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();

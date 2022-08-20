@@ -9,7 +9,6 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sizer/sizer.dart';
 
@@ -27,41 +26,6 @@ class _GroupScreenState extends State<GroupScreen>
     with TickerProviderStateMixin {
   var fetchingUserBeacons;
   var fetchingNearbyBeacons;
-  Future<bool> _onPopHome() async {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
-        contentPadding: EdgeInsets.all(25.0),
-        title: Text(
-          'Confirm Exit',
-          style: TextStyle(fontSize: 25, color: kYellow),
-        ),
-        content: Text(
-          'Do you really want to exit?',
-          style: TextStyle(fontSize: 18, color: kBlack),
-        ),
-        actions: <Widget>[
-          HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
-            onTap: () => Navigator.of(context).pop(false),
-            text: 'No',
-          ),
-          HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
-            onTap: () =>
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
-            text: 'Yes',
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
