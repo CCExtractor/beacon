@@ -1,11 +1,7 @@
 import 'package:beacon/components/hike_button.dart';
-import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
-import '../models/group/group.dart';
-import '../views/group_screen.dart';
 
 class DialogBoxes {
   static AlertDialog showExitDialog(
