@@ -32,12 +32,11 @@ class DialogBoxes {
           text: 'No',
           textSize: 18.0,
         ),
+        //TODO: back to group screen
         HikeButton(
           buttonHeight: 2.5.h,
           buttonWidth: 8.w,
-          onTap: () {
-            navigationService.removeAllAndPush('/main', '/');
-          },
+          onTap: () => Navigator.of(context).pop(true),
           text: 'Yes',
           textSize: 18.0,
         ),
