@@ -4,6 +4,9 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../models/group/group.dart';
+import '../views/group_screen.dart';
+
 class DialogBoxes {
   static AlertDialog showExitDialog(
       BuildContext context, bool isLeader, int X, bool isBeaconExpired) {
@@ -32,11 +35,16 @@ class DialogBoxes {
           text: 'No',
           textSize: 18.0,
         ),
-        //TODO: back to group screen
         HikeButton(
           buttonHeight: 2.5.h,
           buttonWidth: 8.w,
           onTap: () => Navigator.of(context).pop(true),
+          //TODO:
+          // onTap: () {
+          //   navigationService.removeAllAndPush('/groupScreen', '/',
+          //       arguments: GroupScreen(
+          //         group,
+          //       ));
           text: 'Yes',
           textSize: 18.0,
         ),
