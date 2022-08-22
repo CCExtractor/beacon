@@ -196,6 +196,7 @@ class DataBaseMutationFunctions {
 
   Future<List<Beacon>> fetchUserBeacons(String groupid) async {
     List<Beacon> beacons = [];
+    List<Beacon> _userBeacons = [];
     Set<String> beaconIds = {};
     List<Beacon> expiredBeacons = [];
     if (!await connectionChecker.checkForInternetConnection()) {
@@ -219,7 +220,7 @@ class DataBaseMutationFunctions {
 
     //if connected to internet take from internet.
     final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+        .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupid))));
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -227,28 +228,28 @@ class DataBaseMutationFunctions {
         print('$exception');
       }
     } else if (result.data != null && result.isConcrete) {
-      final User userInfo = User.fromJson(
-        result.data['me'] as Map<String, dynamic>,
-      );
-      userInfo.print();
-      for (var i in userInfo.beacon) {
-        if (i.group == groupid) {
-          if (!beaconIds.contains(i.id)) {
-            if (!hiveDb.beaconsBox.containsKey(i.id)) {
-              //This only happens if a someone else adds user to their beacon (which currently is not possible).
-              //beacons are put in box when creating or joining.
-              await hiveDb.putBeaconInBeaconBox(i.id, i);
-            }
-            beaconIds.add(i.id);
-            if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
-                .isBefore(DateTime.now())) {
-              expiredBeacons.insert(0, i);
-              expiredBeacons.sort((a, b) => a.expiresAt.compareTo(b.expiresAt));
-              expiredBeacons = expiredBeacons.reversed.toList();
-            } else {
-              beacons.add(i);
-              beacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
-            }
+      // print(result.toString() + 'aadeeshmc');
+      _userBeacons = (result.data['group']['beacons'] as List<dynamic>)
+          .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      // userInfo.print();
+      for (var i in _userBeacons) {
+        if (!beaconIds.contains(i.id)) {
+          if (!hiveDb.beaconsBox.containsKey(i.id)) {
+            //This only happens if a someone else adds user to their beacon (which currently is not possible).
+            //beacons are put in box when creating or joining.
+            await hiveDb.putBeaconInBeaconBox(i.id, i);
+          }
+          beaconIds.add(i.id);
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+              .isBefore(DateTime.now())) {
+            expiredBeacons.insert(0, i);
+            expiredBeacons.sort((a, b) => a.expiresAt.compareTo(b.expiresAt));
+            expiredBeacons = expiredBeacons.reversed.toList();
+          } else {
+            beacons.add(i);
+            beacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
           }
         }
       }
@@ -482,9 +483,9 @@ class DataBaseMutationFunctions {
       final User userInfo = User.fromJson(
         result.data['me'] as Map<String, dynamic>,
       );
-      userInfo.print();
+      // userInfo.print();
       for (var i in userInfo.groups) {
-        print(i.beacons.length.toString() + "hello");
+        // print(i.beacons.length.toString() + "hello");
         if (!groupIds.contains(i.id)) {
           // if (!hiveDb.beaconsBox.containsKey(i.id)) {
           //   //This only happens if a someone else adds user to their beacon (which currently is not possible).
