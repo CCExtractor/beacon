@@ -17,7 +17,7 @@ You'll need to set up the IDE and mobile device emulator, or any mobile testing 
 1. [Flutter SDK](https://flutter.dev/docs/get-started/install)
 2. [Android Studio](https://developer.android.com/studio)
 
-***Ensure you are testing the app using Flutter version [2.10](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
+***Ensure you are testing the app using Flutter version [3.0.1](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
 
 For checking flutter version:
 - Run `flutter --version` in terminal
