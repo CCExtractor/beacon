@@ -220,6 +220,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
+                          cursorColor: hintColor,
                           autovalidateMode: model.loginValidate,
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
@@ -228,7 +229,17 @@ class _AuthScreenState extends State<AuthScreen>
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
-                            border: InputBorder.none,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusColor: hintColor,
                             icon: Icon(
                               Icons.mail_outline,
                               color: Colors.black,
@@ -240,12 +251,12 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
+                          cursorColor: hintColor,
                           autovalidateMode: model.loginValidate,
                           focusNode: model.passwordLogin,
                           controller: model.loginPasswordController,
@@ -254,7 +265,16 @@ class _AuthScreenState extends State<AuthScreen>
                               Validator.validatePassword(value),
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
-                            border: InputBorder.none,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
                             icon: Icon(
                               Icons.lock,
                               size: 24.0,
@@ -334,6 +354,7 @@ class _AuthScreenState extends State<AuthScreen>
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
+                          cursorColor: hintColor,
                           autovalidateMode: model.signupValidate,
                           validator: (value) => Validator.validateName(value),
                           focusNode: model.name,
@@ -343,6 +364,16 @@ class _AuthScreenState extends State<AuthScreen>
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(fontSize: 18.0, color: Colors.black),
                           decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.account_box,
@@ -355,12 +386,12 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
+                          cursorColor: hintColor,
                           autovalidateMode: model.signupValidate,
                           validator: (value) => Validator.validateEmail(value),
                           focusNode: model.email,
@@ -369,6 +400,16 @@ class _AuthScreenState extends State<AuthScreen>
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.mail,
@@ -381,12 +422,12 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      separator(),
                       Container(
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
+                          cursorColor: hintColor,
                           autovalidateMode: model.signupValidate,
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
@@ -396,6 +437,16 @@ class _AuthScreenState extends State<AuthScreen>
                           obscureText: model.obscureTextSignup,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: hintColor,
+                              ),
+                            ),
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.lock,
