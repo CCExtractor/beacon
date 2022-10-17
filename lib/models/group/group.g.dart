@@ -1,53 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_info.dart';
+part of 'group.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class GroupAdapter extends TypeAdapter<Group> {
   @override
-  final int typeId = 1;
+  final int typeId = 5;
 
   @override
-  User read(BinaryReader reader) {
+  Group read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
-      authToken: fields[1] as String,
-      email: fields[3] as String,
-      name: fields[2] as String,
-      location: fields[6] as Location,
-      beacon: (fields[4] as List)?.cast<Beacon>(),
-      groups: (fields[5] as List)?.cast<Group>(),
+    return Group(
       id: fields[0] as String,
-      isGuest: fields[7] as bool,
+      shortcode: fields[2] as String,
+      title: fields[1] as String,
+      leader: fields[3] as User,
+      members: (fields[4] as List)?.cast<User>(),
+      beacons: (fields[5] as List)?.cast<Beacon>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, Group obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.authToken)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.name)
+      ..write(obj.shortcode)
       ..writeByte(3)
-      ..write(obj.email)
+      ..write(obj.leader)
       ..writeByte(4)
-      ..write(obj.beacon)
+      ..write(obj.members)
       ..writeByte(5)
-      ..write(obj.groups)
-      ..writeByte(6)
-      ..write(obj.location)
-      ..writeByte(7)
-      ..write(obj.isGuest);
+      ..write(obj.beacons);
   }
 
   @override
@@ -56,7 +50,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is GroupAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

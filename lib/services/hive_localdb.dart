@@ -6,9 +6,12 @@ import 'package:beacon/models/user/user_info.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
+import '../models/group/group.dart';
+
 class HiveLocalDb {
   Box<User> currentUserBox;
   Box<Beacon> beaconsBox;
+  Box<Group> groupsBox;
 
   Future<void> init() async {
     final appDocumentDirectory =
@@ -18,9 +21,11 @@ class HiveLocalDb {
       ..registerAdapter(UserAdapter())
       ..registerAdapter(BeaconAdapter())
       ..registerAdapter(LocationAdapter())
-      ..registerAdapter(LandmarkAdapter());
+      ..registerAdapter(LandmarkAdapter())
+      ..registerAdapter(GroupAdapter());
     currentUserBox = await Hive.openBox<User>('currentUser');
     beaconsBox = await Hive.openBox<Beacon>('beacons');
+    groupsBox = await Hive.openBox<Group>('groups');
   }
 
   Future<void> saveUserInHive(User currentUser) async {

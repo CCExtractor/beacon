@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/group/group.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
@@ -11,17 +12,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:beacon/models/user/user_info.dart';
 import '../locator.dart';
+import '../queries/group.dart';
 
 class DataBaseMutationFunctions {
   GraphQLClient clientNonAuth;
   GraphQLClient clientAuth;
   AuthQueries _authQuery;
   BeaconQueries _beaconQuery;
+  GroupQueries _groupQuery;
   init() async {
     clientNonAuth = graphqlConfig.clientToQuery();
     clientAuth = await graphqlConfig.authClient();
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
+    _groupQuery = GroupQueries();
   }
 
   GraphQLError userNotFound = const GraphQLError(message: 'User not found');
@@ -90,6 +94,7 @@ class DataBaseMutationFunctions {
     return result.data;
   }
 
+  //Auth
   Future<String> signup({String name, String email, String password}) async {
     final QueryResult result = email != null
         ? await clientNonAuth.mutate(MutationOptions(
@@ -146,6 +151,7 @@ class DataBaseMutationFunctions {
     return otherError;
   }
 
+  // User Info
   Future<bool> fetchCurrentUserInfo() async {
     await databaseFunctions.init();
     final QueryResult result = await clientAuth
@@ -169,6 +175,7 @@ class DataBaseMutationFunctions {
     return false;
   }
 
+  // Beacon Info
   Future<Beacon> fetchBeaconInfo(String id) async {
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_beaconQuery.fetchBeaconDetail(id))));
@@ -187,8 +194,9 @@ class DataBaseMutationFunctions {
     return null;
   }
 
-  Future<List<Beacon>> fetchUserBeacons() async {
+  Future<List<Beacon>> fetchUserBeacons(String groupid) async {
     List<Beacon> beacons = [];
+    List<Beacon> _userBeacons = [];
     Set<String> beaconIds = {};
     List<Beacon> expiredBeacons = [];
     if (!await connectionChecker.checkForInternetConnection()) {
@@ -198,11 +206,13 @@ class DataBaseMutationFunctions {
         return beacons;
       }
       for (Beacon i in userBeacons) {
-        if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
-            .isBefore(DateTime.now()))
-          expiredBeacons.add(i);
-        else
-          beacons.add(i);
+        if (i.group == groupid) {
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
+        }
       }
       beacons.addAll(expiredBeacons);
       return beacons;
@@ -210,7 +220,7 @@ class DataBaseMutationFunctions {
 
     //if connected to internet take from internet.
     final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+        .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupid))));
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception, showSnackBar: false);
@@ -218,10 +228,13 @@ class DataBaseMutationFunctions {
         print('$exception');
       }
     } else if (result.data != null && result.isConcrete) {
-      final User userInfo = User.fromJson(
-        result.data['me'] as Map<String, dynamic>,
-      );
-      for (var i in userInfo.beacon) {
+      // print(result.toString() + 'aadeeshmc');
+      _userBeacons = (result.data['group']['beacons'] as List<dynamic>)
+          .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      // userInfo.print();
+      for (var i in _userBeacons) {
         if (!beaconIds.contains(i.id)) {
           if (!hiveDb.beaconsBox.containsKey(i.id)) {
             //This only happens if a someone else adds user to their beacon (which currently is not possible).
@@ -245,7 +258,8 @@ class DataBaseMutationFunctions {
     return beacons;
   }
 
-  Future<Beacon> createBeacon(String title, int startsAt, int expiresAt) async {
+  Future<Beacon> createBeacon(
+      String title, int startsAt, int expiresAt, String groupID) async {
     LatLng loc;
     try {
       loc = await AppConstants.getLocation();
@@ -256,7 +270,7 @@ class DataBaseMutationFunctions {
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
         document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
-            loc.latitude.toString(), loc.longitude.toString()))));
+            loc.latitude.toString(), loc.longitude.toString(), groupID))));
     if (result.hasException) {
       navigationService.showSnackBar(
           "Something went wrong: ${result.exception.graphqlErrors.first.message}");
@@ -342,9 +356,10 @@ class DataBaseMutationFunctions {
     return null;
   }
 
-  Future<List<Beacon>> fetchNearbyBeacon() async {
+  Future<List<Beacon>> fetchNearbyBeacon(String groupID) async {
     await databaseFunctions.init();
     List<Beacon> _nearbyBeacons = [];
+    List<Beacon> _nearbyBeaconsinGroup = [];
     LatLng loc;
     try {
       loc = await AppConstants.getLocation();
@@ -365,8 +380,10 @@ class DataBaseMutationFunctions {
       _nearbyBeacons = (result.data['nearbyBeacons'] as List<dynamic>)
           .map((e) => Beacon.fromJson(e as Map<String, dynamic>))
           .toList();
-      _nearbyBeacons.sort((a, b) => a.startsAt.compareTo(b.startsAt));
-      return _nearbyBeacons;
+      for (Beacon i in _nearbyBeacons)
+        if (i.group == groupID) _nearbyBeaconsinGroup.add(i);
+      _nearbyBeaconsinGroup.sort((a, b) => a.startsAt.compareTo(b.startsAt));
+      return _nearbyBeaconsinGroup;
     }
     return _nearbyBeacons;
   }
@@ -388,5 +405,98 @@ class DataBaseMutationFunctions {
       return null;
     });
     return null;
+  }
+
+  // Group Info
+  Future<Group> createGroup(String title) async {
+    final QueryResult result = await clientAuth
+        .mutate(MutationOptions(document: gql(_groupQuery.createGroup(title))));
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+    } else if (result.data != null && result.isConcrete) {
+      final Group group = Group.fromJson(
+        result.data['createGroup'] as Map<String, dynamic>,
+      );
+      // hiveDb.putBeaconInBeaconBox(group.id, group);
+      return group;
+    }
+    return null;
+  }
+
+  Future<Group> joinGroup(String shortcode) async {
+    final QueryResult result = await clientAuth.mutate(
+        MutationOptions(document: gql(_groupQuery.joinGroup(shortcode))));
+    if (result.hasException) {
+      navigationService.showSnackBar(
+          "Something went wrong: ${result.exception.graphqlErrors.first.message}");
+      print("Something went wrong: ${result.exception}");
+      navigationService.removeAllAndPush('/main', '/');
+    } else if (result.data != null && result.isConcrete) {
+      final Group group = Group.fromJson(
+        result.data['joinBeacon'] as Map<String, dynamic>,
+      );
+      // hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+      return group;
+    } else {
+      navigationService.showSnackBar(
+        "Something went wrong while trying to join Group",
+      );
+    }
+    return null;
+  }
+
+  Future<List<Group>> fetchUserGroups() async {
+    List<Group> groups = [];
+    Set<String> groupIds = {};
+
+    // if (!await connectionChecker.checkForInternetConnection()) {
+    //   final userBeacons = hiveDb.getAllUserBeacons();
+    //   if (userBeacons == null) {
+    //     //snackbar has already been shown in getAllUserBeacons;
+    //     return beacons;
+    //   }
+    //   for (Beacon i in userBeacons) {
+    //     if (i.id == groupid) {
+    //       if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt)
+    //           .isBefore(DateTime.now()))
+    //         expiredBeacons.add(i);
+    //       else
+    //         beacons.add(i);
+    //     }
+    //   }
+    //   beacons.addAll(expiredBeacons);
+    //   return beacons;
+    // }
+
+    //if connected to internet take from internet.
+    final QueryResult result = await clientAuth
+        .query(QueryOptions(document: gql(_authQuery.fetchUserInfo())));
+    if (result.hasException) {
+      final bool exception =
+          encounteredExceptionOrError(result.exception, showSnackBar: false);
+      if (exception) {
+        print('$exception');
+      }
+    } else if (result.data != null && result.isConcrete) {
+      final User userInfo = User.fromJson(
+        result.data['me'] as Map<String, dynamic>,
+      );
+      // userInfo.print();
+      for (var i in userInfo.groups) {
+        // print(i.beacons.length.toString() + "hello");
+        if (!groupIds.contains(i.id)) {
+          // if (!hiveDb.beaconsBox.containsKey(i.id)) {
+          //   //This only happens if a someone else adds user to their beacon (which currently is not possible).
+          //   //beacons are put in box when creating or joining.
+          //   await hiveDb.putBeaconInBeaconBox(i.id, i);
+          // }
+          groupIds.add(i.id);
+          groups.add(i);
+        }
+      }
+    }
+    return groups;
   }
 }

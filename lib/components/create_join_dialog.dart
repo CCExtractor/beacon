@@ -2,14 +2,160 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/services/validators.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/view_model/home_view_model.dart';
+import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../view_model/home_screen_view_model.dart';
+
+class CreateJoinGroupDialog {
+  static Future createGroupDialog(BuildContext context, HomeViewModel model) {
+    bool isSmallSized = MediaQuery.of(context).size.height < 800;
+    return showDialog(
+      context: context,
+      builder: (context) => GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: SingleChildScrollView(
+            child: Form(
+              key: model.formKeyCreate,
+              child: Container(
+                height: isSmallSized ? 35.h : 25.h,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: isSmallSized ? 12.h : 10.h,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: TextFormField(
+                            style: TextStyle(fontSize: 22.0),
+                            validator: (value) =>
+                                Validator.validateBeaconTitle(value),
+                            onChanged: (name) {
+                              model.title = name;
+                            },
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter Title Here',
+                                labelStyle: TextStyle(
+                                    fontSize: labelsize, color: kYellow),
+                                hintStyle: TextStyle(
+                                    fontSize: hintsize, color: hintColor),
+                                labelText: 'Title',
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none),
+                          ),
+                        ),
+                        color: kLightBlue,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Flexible(
+                        flex: 2,
+                        child: HikeButton(
+                            text: 'Create Group',
+                            textSize: 18.0,
+                            textColor: Colors.white,
+                            buttonColor: kYellow,
+                            onTap: () {
+                              // FocusManager.instance.primaryFocus?.unfocus();
+                              // navigationService.pop();
+                              model.createGroupRoom();
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Future joinGroupDialog(BuildContext context, HomeViewModel model) {
+    bool isSmallSized = MediaQuery.of(context).size.height < 800;
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Form(
+          key: model.formKeyJoin,
+          child: Container(
+            height: isSmallSized ? 35.h : 25.h,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: isSmallSized ? 12.h : 10.h,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.characters,
+                        style: TextStyle(fontSize: 22.0),
+                        validator: (value) => Validator.validatePasskey(value),
+                        onChanged: (key) {
+                          model.enteredGroupCode = key.toUpperCase();
+                        },
+                        decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          hintText: 'Enter Group Code Here',
+                          hintStyle:
+                              TextStyle(fontSize: hintsize, color: hintColor),
+                          labelText: 'Code',
+                          labelStyle:
+                              TextStyle(fontSize: labelsize, color: kYellow),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    color: kLightBlue,
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Flexible(
+                    child: HikeButton(
+                      text: 'Join Group',
+                      textSize: 18.0,
+                      textColor: Colors.white,
+                      buttonColor: kYellow,
+                      onTap: () {
+                        // navigationService.pop();
+                        model.joinGroupRoom();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CreateJoinBeaconDialog {
-  static Future createHikeDialog(
-      BuildContext context, HomeViewModel model, Function reloadList) {
+  static Future createHikeDialog(BuildContext context, GroupViewModel model,
+      Function reloadList, String groupID) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     model.resultingDuration = Duration(minutes: 30);
     model.durationController = new TextEditingController();
@@ -280,7 +426,7 @@ class CreateJoinBeaconDialog {
                                     "Enter a valid date and time!!");
                                 return;
                               }
-                              model.createHikeRoom(reloadList);
+                              model.createHikeRoom(groupID, reloadList);
                             }),
                       ),
                     ],
@@ -295,7 +441,7 @@ class CreateJoinBeaconDialog {
   }
 
   static Future joinBeaconDialog(
-      BuildContext context, HomeViewModel model, Function reloadList) {
+      BuildContext context, GroupViewModel model, Function reloadList) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     return showDialog(
       context: context,

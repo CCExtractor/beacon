@@ -47,6 +47,22 @@ class AuthQueries {
           _id
           email
           name
+          groups{
+            _id
+            title
+            shortcode
+            leader {
+              _id
+              name
+            }
+            members {
+              _id
+              name
+            }
+            beacons{
+            _id
+            }
+          }
           beacons{
             _id
             title

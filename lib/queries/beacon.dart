@@ -13,6 +13,10 @@ class BeaconQueries {
                _id
                name
              }
+             group{
+              _id
+              title
+             }
              location{
                lat
                lon
@@ -36,8 +40,8 @@ class BeaconQueries {
     ''';
   }
 
-  String createBeacon(
-      String title, int startsAt, int expiresAt, String lat, String lon) {
+  String createBeacon(String title, int startsAt, int expiresAt, String lat,
+      String lon, String groupID) {
     return '''
         mutation{
           createBeacon(beacon: {
@@ -47,7 +51,8 @@ class BeaconQueries {
             startLocation: {
               lat: "$lat", lon: "$lon"
             }
-          })
+          },
+          groupID:"$groupID")
           {
             _id
             title
@@ -55,6 +60,10 @@ class BeaconQueries {
             leader {
               _id
               name
+            }
+            group {
+              _id
+              title
             }
             location{
               lat
@@ -120,6 +129,10 @@ class BeaconQueries {
               _id
               title
               shortcode
+              group{
+                _id
+                title
+              }
               leader {
                 _id
                 name
@@ -147,6 +160,10 @@ class BeaconQueries {
             title
             leader{
               name
+            }
+            group {
+              _id
+              title
             }
             followers {
               _id
@@ -185,6 +202,10 @@ class BeaconQueries {
               _id
               title
               shortcode
+              group {
+                _id
+                title
+              }
               leader {
                 name
                 location {

@@ -6,7 +6,7 @@ import 'package:beacon/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class HomeViewModel extends BaseModel {
+class GroupViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();
   final formKeyJoin = GlobalKey<FormState>();
   Duration resultingDuration = Duration(minutes: 30);
@@ -17,6 +17,7 @@ class HomeViewModel extends BaseModel {
   bool isCreatingHike = false;
   String title;
   bool hasStarted;
+  String groupID;
   //commenting out since its value isnt used anywhere.
   //TextEditingController _titleController = new TextEditingController();
   TextEditingController durationController = new TextEditingController();
@@ -24,7 +25,7 @@ class HomeViewModel extends BaseModel {
   TextEditingController startsAtTime = new TextEditingController();
   String enteredPasskey;
 
-  createHikeRoom(Function reloadList) async {
+  createHikeRoom(String groupID, Function reloadList) async {
     FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyCreate.currentState.validate()) {
@@ -33,10 +34,10 @@ class HomeViewModel extends BaseModel {
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final Beacon beacon = await databaseFunctions.createBeacon(
-        title,
-        startsAt.millisecondsSinceEpoch.toInt(),
-        startsAt.add(resultingDuration).millisecondsSinceEpoch.toInt(),
-      );
+          title,
+          startsAt.millisecondsSinceEpoch.toInt(),
+          startsAt.add(resultingDuration).millisecondsSinceEpoch.toInt(),
+          groupID);
       // setState(ViewState.idle);
       if (beacon != null) {
         hasStarted = DateTime.now()

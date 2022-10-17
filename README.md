@@ -17,7 +17,7 @@ You'll need to set up the IDE and mobile device emulator, or any mobile testing 
 1. [Flutter SDK](https://flutter.dev/docs/get-started/install)
 2. [Android Studio](https://developer.android.com/studio)
 
-***Ensure you are testing the app using Flutter version [2.10](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
+***Ensure you are testing the app using Flutter version [3.0.1](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
 
 For checking flutter version:
 - Run `flutter --version` in terminal
@@ -48,7 +48,7 @@ beacon/lib/
 ├── components/                             # Shared Components such as dialog boxes, button, and other shared widgets
 ├── enums/                                  # enum files
 |   └── view_state.dart                     # defines view states i.e Idle, Busy, Error
-├── models/                                 # model classes: beacon, location, landmark, user
+├── models/                                 # model classes: group, beacon, location, landmark, user
 ├── queries/                                # includes all graphql query strings
 ├── services/                               # services
 |   ├── database_mutation_function.dart/    # Graphql Queries implementations
@@ -59,6 +59,7 @@ beacon/lib/
 |  ├── auth_screen.dart
 |  ├── base_view.dart
 |  ├── hike_screen.dart
+|  ├── group_screen.dart
 |  ├── home.dart
 ├── viewmodels/                             # Viewmodels layer
 ├── splash_screen.dart                      # Very first screen displayed whilst data is loading
