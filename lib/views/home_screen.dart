@@ -4,25 +4,25 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/loading_screen.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/group/group.dart';
 import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/view_model/home_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sizer/sizer.dart';
 
+import '../components/group_card.dart';
+import '../view_model/home_screen_view_model.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  var fetchingUserBeacons;
-  var fetchingNearbyBeacons;
+  var fetchingUserGroups;
   Future<bool> _onPopHome() async {
     return showDialog(
       context: context,
@@ -61,15 +61,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
-    fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+    fetchingUserGroups = databaseFunctions.fetchUserGroups();
     super.initState();
   }
 
   void reloadList() {
     setState(() {
-      fetchingUserBeacons = databaseFunctions.fetchUserBeacons();
-      fetchingNearbyBeacons = databaseFunctions.fetchNearbyBeacon();
+      fetchingUserGroups = databaseFunctions.fetchUserGroups();
     });
   }
 
@@ -78,14 +76,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onPopHome,
       child: BaseView<HomeViewModel>(builder: (context, model, child) {
-        TabController tabController = new TabController(length: 2, vsync: this);
+        TabController tabController = new TabController(length: 1, vsync: this);
         return model.isBusy
             ? LoadingScreen()
             : Scaffold(
                 resizeToAvoidBottomInset: false,
                 body: SafeArea(
                   child: ModalProgressHUD(
-                    inAsyncCall: model.isCreatingHike,
+                    inAsyncCall: model.isCreatingGroup,
                     child: Stack(
                       children: <Widget>[
                         CustomPaint(
@@ -156,19 +154,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               Container(
                                 width: 45.w,
                                 child: HikeButton(
-                                  buttonWidth: homebwidth,
+                                  buttonWidth: homebwidth - 10,
                                   buttonHeight: homebheight - 2,
-                                  text: 'Create Hike',
+                                  text: 'Create Group',
                                   textColor: Colors.white,
                                   borderColor: Colors.white,
                                   buttonColor: kYellow,
                                   onTap: () {
                                     if (userConfig.currentUser.isGuest) {
                                       navigationService.showSnackBar(
-                                          'You need to login with credentials to start a hike');
+                                          'You need to login with credentials to be able to create a group');
                                     } else {
-                                      CreateJoinBeaconDialog.createHikeDialog(
-                                          context, model, reloadList);
+                                      CreateJoinGroupDialog.createGroupDialog(
+                                          context, model);
                                     }
                                   },
                                 ),
@@ -181,13 +179,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 child: HikeButton(
                                   buttonWidth: homebwidth,
                                   buttonHeight: homebheight - 2,
-                                  text: 'Join a Hike',
+                                  text: 'Join a Group',
                                   textColor: kYellow,
                                   borderColor: kYellow,
                                   buttonColor: Colors.white,
                                   onTap: () async {
-                                    CreateJoinBeaconDialog.joinBeaconDialog(
-                                        context, model, reloadList);
+                                    CreateJoinGroupDialog.joinGroupDialog(
+                                        context, model);
                                   },
                                 ),
                               ),
@@ -214,8 +212,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     indicatorColor: kBlue,
                                     labelColor: kBlack,
                                     tabs: [
-                                      Tab(text: 'Your Beacons'),
-                                      Tab(text: 'Nearby Beacons'),
+                                      Tab(text: 'Your Groups'),
                                     ],
                                     controller: tabController,
                                   ),
@@ -226,7 +223,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: FutureBuilder(
-                                            future: fetchingUserBeacons,
+                                            future: fetchingUserGroups,
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.done) {
@@ -240,7 +237,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                     ),
                                                   );
                                                 }
-                                                final List<Beacon> posts =
+                                                final List<Group> posts =
                                                     snapshot.data;
                                                 return Container(
                                                     alignment: Alignment.center,
@@ -251,7 +248,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                             child: Column(
                                                               children: [
                                                                 Text(
-                                                                  'You haven\'t joined or created any beacon yet',
+                                                                  'You haven\'t joined or created any group yet',
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
@@ -283,7 +280,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                                               TextStyle(fontWeight: FontWeight.bold)),
                                                                       TextSpan(
                                                                           text:
-                                                                              ' a Hike or '),
+                                                                              ' a Group or '),
                                                                       TextSpan(
                                                                           text:
                                                                               'Create',
@@ -311,8 +308,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                             itemBuilder:
                                                                 (context,
                                                                     index) {
-                                                              return BeaconCustomWidgets
-                                                                  .getBeaconCard(
+                                                              return GroupCustomWidgets
+                                                                  .getGroupCard(
                                                                       context,
                                                                       posts[
                                                                           index]);
@@ -325,80 +322,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                 );
                                               }
                                             },
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: FutureBuilder(
-                                              future: fetchingNearbyBeacons,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState ==
-                                                    ConnectionState.waiting)
-                                                  return Center(
-                                                    child: BeaconCustomWidgets
-                                                        .getPlaceholder(),
-                                                  );
-                                                if (snapshot.connectionState ==
-                                                    ConnectionState.done) {
-                                                  if (snapshot.hasError) {
-                                                    return Center(
-                                                      child: Text(
-                                                        snapshot.error
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        textScaleFactor: 1.3,
-                                                      ),
-                                                    );
-                                                  }
-
-                                                  final posts = snapshot.data;
-                                                  if (posts == null ||
-                                                      posts.length == 0) {
-                                                    return SingleChildScrollView(
-                                                      physics:
-                                                          AlwaysScrollableScrollPhysics(),
-                                                      child: Center(
-                                                        child: Text(
-                                                          'No nearby beacons found :(',
-                                                          style: TextStyle(
-                                                              color: kBlack,
-                                                              fontSize: 20),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                  return ListView.builder(
-                                                    physics:
-                                                        AlwaysScrollableScrollPhysics(),
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    itemCount: posts.length,
-                                                    padding: EdgeInsets.all(8),
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return BeaconCustomWidgets
-                                                          .getBeaconCard(
-                                                              context,
-                                                              posts[index]);
-                                                    },
-                                                  );
-                                                } else {
-                                                  return SingleChildScrollView(
-                                                    physics:
-                                                        AlwaysScrollableScrollPhysics(),
-                                                    child: Center(
-                                                        child: Text(
-                                                            'No nearby beacons found :(',
-                                                            style: TextStyle(
-                                                                color: kBlack,
-                                                                fontSize: 18))),
-                                                  );
-                                                }
-                                              },
-                                            ),
                                           ),
                                         ),
                                       ],

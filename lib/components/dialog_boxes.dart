@@ -1,5 +1,4 @@
 import 'package:beacon/components/hike_button.dart';
-import 'package:beacon/locator.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -35,9 +34,13 @@ class DialogBoxes {
         HikeButton(
           buttonHeight: 2.5.h,
           buttonWidth: 8.w,
-          onTap: () {
-            navigationService.removeAllAndPush('/main', '/');
-          },
+          onTap: () => Navigator.of(context).pop(true),
+          //TODO:
+          // onTap: () {
+          //   navigationService.removeAllAndPush('/groupScreen', '/',
+          //       arguments: GroupScreen(
+          //         group,
+          //       ));
           text: 'Yes',
           textSize: 18.0,
         ),

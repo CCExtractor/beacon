@@ -1,8 +1,9 @@
 import 'package:beacon/splash_screen.dart';
+import 'package:beacon/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/views/auth_screen.dart';
-import 'package:beacon/views/home.dart';
+import 'package:beacon/views/group_screen.dart';
 import 'package:beacon/views/hike_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,6 +20,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => HikeScreen(
                 arguments.beacon,
                 isLeader: arguments.isLeader,
+              ));
+    case Routes.groupScreen:
+      GroupScreen arguments = settings.arguments;
+      return MaterialPageRoute(
+          builder: (context) => GroupScreen(
+                arguments.group,
               ));
     default:
       return MaterialPageRoute(

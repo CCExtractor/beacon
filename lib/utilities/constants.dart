@@ -63,6 +63,7 @@ class Routes {
   static const String authScreen = "/auth";
   static const String mainScreen = "/main";
   static const String hikeScreen = "/hikeScreen";
+  static const String groupScreen = "/groupScreen";
 }
 
 class Style {

@@ -1,4 +1,5 @@
 import 'package:beacon/components/loading_screen.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
@@ -185,7 +186,8 @@ class _HikeScreenState extends State<HikeScreen> {
                         alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
                           onPressed: () {
-                            model.onWillPop(context);
+                            //TODO: back to group screen
+                            navigationService.pop();
                           },
                           backgroundColor: kYellow,
                           child: Icon(
