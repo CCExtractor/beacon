@@ -211,6 +211,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  custom_refresh_indicator:
+    dependency: "direct main"
+    description:
+      name: custom_refresh_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   dart_style:
     dependency: transitive
     description:

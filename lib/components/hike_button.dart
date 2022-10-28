@@ -22,12 +22,16 @@ class HikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size screensize = MediaQuery.of(context).size;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: buttonColor,
         shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(50.0),
-            side: BorderSide(color: borderColor)),
+          borderRadius: new BorderRadius.circular(screensize.width / 20),
+          side: BorderSide(
+            color: borderColor,
+          ),
+        ),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(

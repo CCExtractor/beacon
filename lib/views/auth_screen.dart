@@ -202,83 +202,88 @@ class _AuthScreenState extends State<AuthScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Card(
-              elevation: 2.0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Form(
-                key: model.formKeyLogin,
-                autovalidateMode: model.loginValidate,
-                child: Container(
-                  width: screensize.width - 70,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.emailLogin,
-                          controller: model.loginEmailController,
-                          validator: (value) =>
-                              Validator.validateEmail(value.trimRight()),
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail_outline,
-                              color: Colors.black,
-                              size: 24.0,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
+            Form(
+              key: model.formKeyLogin,
+              autovalidateMode: model.loginValidate,
+              child: Wrap(
+                children: [
+                  Card(
+                    elevation: 5.0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(screensize.width / 20),
+                    ),
+                    child: Container(
+                      // height: 13.h,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
+                      child: TextFormField(
+                        autovalidateMode: model.loginValidate,
+                        focusNode: model.emailLogin,
+                        controller: model.loginEmailController,
+                        validator: (value) =>
+                            Validator.validateEmail(value.trimRight()),
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.mail_outline,
+                            color: Colors.black,
+                            size: 24.0,
                           ),
+                          hintText: "Email Address",
+                          hintStyle: TextStyle(
+                              fontSize: hintsize - 2, color: hintColor),
                         ),
                       ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.passwordLogin,
-                          controller: model.loginPasswordController,
-                          obscureText: model.obscureTextLogin,
-                          validator: (value) =>
-                              Validator.validatePassword(value),
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              size: 24.0,
-                              color: Colors.black,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                            suffixIcon: IconButton(
-                              onPressed: () => model.displayPasswordLogin(),
-                              icon: Icon(
-                                model.obscureTextLogin
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                size: 20.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Card(
+                    elevation: 5.0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(screensize.width / 20),
+                    ),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                      child: TextFormField(
+                        autovalidateMode: model.loginValidate,
+                        focusNode: model.passwordLogin,
+                        controller: model.loginPasswordController,
+                        obscureText: model.obscureTextLogin,
+                        validator: (value) => Validator.validatePassword(value),
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.lock,
+                            size: 24.0,
+                            color: Colors.black,
+                          ),
+                          hintText: "Password",
+                          hintStyle: TextStyle(
+                              fontSize: hintsize - 2, color: hintColor),
+                          suffixIcon: IconButton(
+                            onPressed: () => model.displayPasswordLogin(),
+                            icon: Icon(
+                              model.obscureTextLogin
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 20.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
@@ -292,7 +297,7 @@ class _AuthScreenState extends State<AuthScreen>
               padding: EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15.0, bottom: 15.0),
               child: Text(
-                "Or",
+                "OR",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16.0,
@@ -316,21 +321,21 @@ class _AuthScreenState extends State<AuthScreen>
         padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
         child: Column(
           children: <Widget>[
-            Card(
-              elevation: 2.0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Form(
-                key: model.formKeySignup,
-                autovalidateMode: model.signupValidate,
-                child: Container(
-                    width: screensize.width - 70,
-                    // height: 280.0,
-                    child: Column(children: <Widget>[
-                      Container(
-                        height: 13.h,
+            Form(
+              key: model.formKeySignup,
+              autovalidateMode: model.signupValidate,
+              child: Container(
+                  width: screensize.width - 70,
+                  // height: 280.0,
+                  child: Column(children: <Widget>[
+                    Card(
+                      elevation: 5,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screensize.width / 20),
+                      ),
+                      child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
@@ -355,9 +360,15 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      separator(),
-                      Container(
-                        height: 13.h,
+                    ),
+                    Card(
+                      elevation: 5,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screensize.width / 20),
+                      ),
+                      child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
@@ -381,9 +392,15 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                      separator(),
-                      Container(
-                        height: 13.h,
+                    ),
+                    Card(
+                      elevation: 5,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screensize.width / 20),
+                      ),
+                      child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
@@ -418,8 +435,8 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                       ),
-                    ])),
-              ),
+                    ),
+                  ])),
             ),
             SizedBox(
               height: 3.5.h,

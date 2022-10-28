@@ -8,6 +8,7 @@ import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sizer/sizer.dart';
@@ -26,6 +27,7 @@ class _GroupScreenState extends State<GroupScreen>
     with TickerProviderStateMixin {
   var fetchingUserBeacons;
   var fetchingNearbyBeacons;
+  TabControllerStorage tabControllerStorage = TabControllerStorage();
 
   @override
   void initState() {
@@ -33,6 +35,19 @@ class _GroupScreenState extends State<GroupScreen>
     fetchingNearbyBeacons =
         databaseFunctions.fetchNearbyBeacon(widget.group.id);
     super.initState();
+  }
+
+  void reloadNearByBeacons() {
+    setState(() {
+      fetchingNearbyBeacons =
+          databaseFunctions.fetchNearbyBeacon(widget.group.id);
+    });
+  }
+
+  void reloadUserBeacons() {
+    setState(() {
+      fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
+    });
   }
 
   void reloadList() {
@@ -46,7 +61,11 @@ class _GroupScreenState extends State<GroupScreen>
   @override
   Widget build(BuildContext context) {
     return BaseView<GroupViewModel>(builder: (context, model, child) {
-      TabController tabController = new TabController(length: 2, vsync: this);
+      TabController tabController = new TabController(
+        length: 2,
+        vsync: this,
+        initialIndex: tabControllerStorage.tabIndex,
+      );
       return model.isBusy
           ? LoadingScreen()
           : Scaffold(
@@ -212,6 +231,11 @@ class _GroupScreenState extends State<GroupScreen>
                                     Tab(text: 'Nearby Beacons'),
                                   ],
                                   controller: tabController,
+                                  onTap: (index) {
+                                    setState(() {
+                                      tabControllerStorage.tabIndex = index;
+                                    });
+                                  },
                                 ),
                                 Expanded(
                                   child: TabBarView(
@@ -238,77 +262,116 @@ class _GroupScreenState extends State<GroupScreen>
                                               return Container(
                                                   alignment: Alignment.center,
                                                   child: posts.length == 0
-                                                      ? SingleChildScrollView(
-                                                          physics:
-                                                              AlwaysScrollableScrollPhysics(),
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                'You haven\'t joined or created any beacon yet',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        kBlack,
-                                                                    fontSize:
-                                                                        20),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 2.h,
-                                                              ),
-                                                              RichText(
-                                                                text: TextSpan(
-                                                                  // textAlign:
-                                                                  //   TextAlign
-                                                                  //       .center,
+                                                      ? CustomRefreshIndicator(
+                                                          onRefresh: () async {
+                                                            reloadUserBeacons();
+                                                          },
+                                                          builder:
+                                                              MaterialIndicatorDelegate(
+                                                            builder: (context,
+                                                                controller) {
+                                                              return Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 30,
+                                                              );
+                                                            },
+                                                          ),
+                                                          child:
+                                                              SingleChildScrollView(
+                                                            physics:
+                                                                AlwaysScrollableScrollPhysics(),
+                                                            child: Column(
+                                                              children: [
+                                                                Text(
+                                                                  'You haven\'t joined or created any beacon yet',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                   style: TextStyle(
                                                                       color:
                                                                           kBlack,
                                                                       fontSize:
                                                                           20),
-                                                                  children: [
-                                                                    TextSpan(
-                                                                        text:
-                                                                            'Join',
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold)),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            ' a Hike or '),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            'Create',
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold)),
-                                                                    TextSpan(
-                                                                        text:
-                                                                            '  a new one! '),
-                                                                  ],
                                                                 ),
-                                                              ),
-                                                            ],
+                                                                SizedBox(
+                                                                  height: 2.h,
+                                                                ),
+                                                                RichText(
+                                                                  text:
+                                                                      TextSpan(
+                                                                    // textAlign:
+                                                                    //   TextAlign
+                                                                    //       .center,
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            kBlack,
+                                                                        fontSize:
+                                                                            20),
+                                                                    children: [
+                                                                      TextSpan(
+                                                                          text:
+                                                                              'Join',
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              ' a Hike or '),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              'Create',
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.bold)),
+                                                                      TextSpan(
+                                                                          text:
+                                                                              '  a new one! '),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
                                                         )
-                                                      : ListView.builder(
-                                                          physics:
-                                                              AlwaysScrollableScrollPhysics(),
-                                                          scrollDirection:
-                                                              Axis.vertical,
-                                                          itemCount:
-                                                              posts?.length,
-                                                          padding:
-                                                              EdgeInsets.all(8),
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return BeaconCustomWidgets
-                                                                .getBeaconCard(
-                                                                    context,
-                                                                    posts[
-                                                                        index]);
+                                                      : CustomRefreshIndicator(
+                                                          onRefresh: () async {
+                                                            reloadUserBeacons();
                                                           },
+                                                          builder:
+                                                              MaterialIndicatorDelegate(
+                                                            builder: (context,
+                                                                controller) {
+                                                              return Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 30,
+                                                              );
+                                                            },
+                                                          ),
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                AlwaysScrollableScrollPhysics(),
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            itemCount:
+                                                                posts?.length,
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return BeaconCustomWidgets
+                                                                  .getBeaconCard(
+                                                                      context,
+                                                                      posts[
+                                                                          index]);
+                                                            },
+                                                          ),
                                                         ));
                                             } else {
                                               return Center(
@@ -346,34 +409,69 @@ class _GroupScreenState extends State<GroupScreen>
                                                 }
 
                                                 final posts = snapshot.data;
+
                                                 if (posts == null ||
                                                     posts.length == 0) {
-                                                  return SingleChildScrollView(
-                                                    physics:
-                                                        AlwaysScrollableScrollPhysics(),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'No nearby beacons found :(',
-                                                        style: TextStyle(
-                                                            color: kBlack,
-                                                            fontSize: 20),
+                                                  return CustomRefreshIndicator(
+                                                    onRefresh: () async {
+                                                      reloadNearByBeacons();
+                                                    },
+                                                    builder:
+                                                        MaterialIndicatorDelegate(
+                                                      builder: (context,
+                                                          controller) {
+                                                        return Icon(
+                                                          Icons.location_on,
+                                                          color: Colors.blue,
+                                                          size: 30,
+                                                        );
+                                                      },
+                                                    ),
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      physics:
+                                                          AlwaysScrollableScrollPhysics(),
+                                                      child: Center(
+                                                        child: Text(
+                                                          'No nearby beacons found :(',
+                                                          style: TextStyle(
+                                                              color: kBlack,
+                                                              fontSize: 20),
+                                                        ),
                                                       ),
                                                     ),
                                                   );
                                                 }
-                                                return ListView.builder(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: posts.length,
-                                                  padding: EdgeInsets.all(8),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return BeaconCustomWidgets
-                                                        .getBeaconCard(context,
-                                                            posts[index]);
+                                                return CustomRefreshIndicator(
+                                                  onRefresh: () async {
+                                                    reloadNearByBeacons();
                                                   },
+                                                  builder:
+                                                      MaterialIndicatorDelegate(
+                                                    builder:
+                                                        (context, controller) {
+                                                      return Icon(
+                                                        Icons.location_on,
+                                                        color: Colors.blue,
+                                                        size: 30,
+                                                      );
+                                                    },
+                                                  ),
+                                                  child: ListView.builder(
+                                                    physics:
+                                                        AlwaysScrollableScrollPhysics(),
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    itemCount: posts.length,
+                                                    padding: EdgeInsets.all(8),
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return BeaconCustomWidgets
+                                                          .getBeaconCard(
+                                                              context,
+                                                              posts[index]);
+                                                    },
+                                                  ),
                                                 );
                                               } else {
                                                 return SingleChildScrollView(
@@ -406,4 +504,19 @@ class _GroupScreenState extends State<GroupScreen>
             );
     });
   }
+}
+
+class TabControllerStorage {
+  static final TabControllerStorage _storage = TabControllerStorage._internal();
+
+  factory TabControllerStorage() => _storage;
+
+  static int _tabIndex = 0;
+
+  int get tabIndex => _tabIndex;
+  set tabIndex(int index) {
+    _tabIndex = index;
+  }
+
+  TabControllerStorage._internal();
 }
