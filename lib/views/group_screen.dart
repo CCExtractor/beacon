@@ -233,7 +233,7 @@ class _GroupScreenState extends State<GroupScreen>
                                   controller: tabController,
                                   onTap: (index) {
                                     setState(() {
-                                      tabControllerStorage.tabIndex = index;
+                                      tabControllerStorage.setIndex = index;
                                     });
                                   },
                                 ),
@@ -514,7 +514,7 @@ class TabControllerStorage {
   static int _tabIndex = 0;
 
   int get tabIndex => _tabIndex;
-  set tabIndex(int index) {
+  set setIndex(int index) {
     _tabIndex = index;
   }
 
