@@ -208,7 +208,7 @@ class _AuthScreenState extends State<AuthScreen>
               child: Wrap(
                 children: [
                   Card(
-                    elevation: 5.0,
+                    elevation: 2.0,
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -243,7 +243,7 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
                   Card(
-                    elevation: 5.0,
+                    elevation: 2.0,
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -329,7 +329,7 @@ class _AuthScreenState extends State<AuthScreen>
                   // height: 280.0,
                   child: Column(children: <Widget>[
                     Card(
-                      elevation: 5,
+                      elevation: 2,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -362,7 +362,7 @@ class _AuthScreenState extends State<AuthScreen>
                       ),
                     ),
                     Card(
-                      elevation: 5,
+                      elevation: 2,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -394,7 +394,7 @@ class _AuthScreenState extends State<AuthScreen>
                       ),
                     ),
                     Card(
-                      elevation: 5,
+                      elevation: 2,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius:
