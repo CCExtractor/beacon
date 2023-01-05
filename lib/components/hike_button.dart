@@ -27,7 +27,7 @@ class HikeButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         primary: buttonColor,
         shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(screensize.width),
+          borderRadius: new BorderRadius.circular(50),
           side: BorderSide(
             color: borderColor,
           ),
