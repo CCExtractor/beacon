@@ -22,7 +22,6 @@ class HikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size screensize = MediaQuery.of(context).size;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: buttonColor,
