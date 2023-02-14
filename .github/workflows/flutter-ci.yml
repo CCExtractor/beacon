@@ -21,6 +21,7 @@ jobs:
         with:
           # Temporary fix to failing CI
           flutter-version: '3.3.9'
+          architecture: arm64
           # channel: "stable"
       - run: flutter pub get
       - run: flutter format --set-exit-if-changed .
@@ -41,6 +42,7 @@ jobs:
         with:
           # Temporary fix to failing CI
           flutter-version: '3.3.9'
+          architecture: arm64
           # channel: "stable"
       - run: flutter pub get
       - run: flutter format --set-exit-if-changed .
