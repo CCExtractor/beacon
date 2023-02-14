@@ -17,11 +17,11 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: "12.x"
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           # Temporary fix to failing CI
           flutter-version: '3.3.9'
-          architecture: arm64
+          architecture: x64
           # channel: "stable"
       - run: flutter pub get
       - run: flutter format --set-exit-if-changed .
@@ -38,11 +38,11 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: "12.x"
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           # Temporary fix to failing CI
           flutter-version: '3.3.9'
-          architecture: arm64
+          architecture: x64
           # channel: "stable"
       - run: flutter pub get
       - run: flutter format --set-exit-if-changed .
