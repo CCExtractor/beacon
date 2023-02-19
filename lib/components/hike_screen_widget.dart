@@ -147,7 +147,7 @@ class HikeScreenWidget extends ChangeNotifier {
             "${beacon.title} Beacon started at: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()} from: ${initialAddress.first.addressLine}.\n\nIt will end on: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}.\n\nBeacon's current location is: ${currentAddress.first.addressLine}.\n\nBeacon's current leader is: ${beacon.leader.name}.\n\nTo join this beacon, enter this code in the app: ${beacon.shortcode}.\nYou can also join the beacon by clicking the following link: https://beacon.aadibajpai.com/?shortcode=${beacon.shortcode}";
         //Will be used as subject if shared via email, else isnt used.
         String subjectToShare = "${beacon.title} beacons's route";
-        await Share.shareFiles([imageFile.path],
+        await Share.shareXFiles([XFile(imageFile.path)],
             text: textToShare, subject: subjectToShare);
         //hide after sharing.
         await mapController.hideMarkerInfoWindow(MarkerId("1"));

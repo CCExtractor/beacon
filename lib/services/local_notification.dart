@@ -13,8 +13,8 @@ class LocalNotification {
   Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
             onDidReceiveLocalNotification: (_, __, ___, ____) {});
     final InitializationSettings initializationSettings =
         InitializationSettings(
@@ -25,13 +25,15 @@ class LocalNotification {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (payload) => onSelectNotification(payload),
+      onDidReceiveNotificationResponse: (notificationResponse) =>
+          onSelectNotification(notificationResponse),
     );
   }
 
-  Future<void> onSelectNotification(String payload) async {
-    if (payload != null) {
-      Beacon beacon = await databaseFunctions.fetchBeaconInfo(payload);
+  Future<void> onSelectNotification(notificationResponse) async {
+    if (notificationResponse != null) {
+      Beacon beacon =
+          await databaseFunctions.fetchBeaconInfo(notificationResponse.payload);
       bool isLeader = beacon.leader.id == userConfig.currentUser.id;
       navigationService.pushScreen('/hikeScreen',
           arguments: HikeScreen(beacon, isLeader: isLeader));
@@ -58,7 +60,7 @@ class LocalNotification {
           priority: Priority.high,
           importance: Importance.high,
         ),
-        iOS: IOSNotificationDetails(
+        iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
@@ -85,7 +87,7 @@ class LocalNotification {
           priority: Priority.high,
           importance: Importance.high,
         ),
-        iOS: IOSNotificationDetails(
+        iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
