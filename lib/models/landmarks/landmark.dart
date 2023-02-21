@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
 import 'package:beacon/models/location/location.dart';
-import 'package:beacon/models/user/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+
 part 'landmark.g.dart';
 
 @HiveType(typeId: 4)

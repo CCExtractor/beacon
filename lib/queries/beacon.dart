@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class BeaconQueries {
   String createBeacon(String title, int expiresAt, String lat, String lon) {
     return '''

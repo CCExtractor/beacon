@@ -1,18 +1,15 @@
 import 'dart:async';
 
+import 'package:beacon/enums/view_state.dart';
+import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/location/location.dart';
+import 'package:beacon/models/user/user_info.dart';
+import 'package:beacon/view_model/base_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:beacon/components/dialog_boxes.dart';
-import 'package:beacon/enums/view_state.dart';
 import 'package:share/share.dart';
-import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/models/user/user_info.dart';
-import 'package:beacon/view_model/base_view_model.dart';
 
 class HikeScreenViewModel extends BaseModel {
   double screenHeight, screenWidth, lat, long;

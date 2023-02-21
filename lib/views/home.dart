@@ -1,6 +1,5 @@
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
-import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
