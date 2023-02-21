@@ -1,12 +1,11 @@
+import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
 import 'package:beacon/services/validators.dart';
-import 'package:date_time_picker/date_time_picker.dart';
-import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/home_view_model.dart';
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateJoinBeaconDialog {
