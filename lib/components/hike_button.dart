@@ -1,3 +1,4 @@
+
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -24,13 +25,10 @@ class HikeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(50),
-          side: BorderSide(
-            color: borderColor,
-          ),
-        ),
+            borderRadius: new BorderRadius.circular(50.0),
+            side: BorderSide(color: borderColor)),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
