@@ -177,7 +177,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               Container(
                                 width: 45.w,
                                 child: HikeButton(
-                                  buttonWidth: homebwidth,
+                                  buttonWidth: homebwidth - 10,
                                   buttonHeight: homebheight - 2,
                                   text: 'Join a Group',
                                   textColor: kYellow,
