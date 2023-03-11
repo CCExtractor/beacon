@@ -1,8 +1,6 @@
 import 'package:beacon/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/io.dart';
 
 class GraphQLConfig {
   static String token;

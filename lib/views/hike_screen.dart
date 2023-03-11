@@ -1,12 +1,17 @@
 import 'dart:async';
+
+import 'package:beacon/components/dialog_boxes.dart';
 import 'package:beacon/components/hike_button.dart';
-import 'package:flutter/rendering.dart';
-import 'package:beacon/components/create_join_dialog.dart';
-import 'package:beacon/models/landmarks/landmark.dart';
+import 'package:beacon/components/hike_screen_widget.dart';
+import 'package:beacon/components/shape_painter.dart';
+import 'package:beacon/locator.dart';
+import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/queries/beacon.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'package:beacon/services/graphql_config.dart';
+import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,15 +19,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:beacon/components/dialog_boxes.dart';
-import 'package:beacon/components/hike_screen_widget.dart';
-import 'package:beacon/components/shape_painter.dart';
-import 'package:beacon/locator.dart';
-import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/models/user/user_info.dart';
-import 'package:beacon/services/graphql_config.dart';
-import 'package:beacon/utilities/constants.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 

@@ -5,7 +5,6 @@ import 'package:beacon/utilities/indication_painter.dart';
 import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key key}) : super(key: key);
@@ -100,9 +99,9 @@ class _AuthScreenState extends State<AuthScreen>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.white,
-                highlightColor: Colors.white,
+              child: TextButton(
+                // splashColor: Colors.white,
+                // highlightColor: Colors.white,
                 onPressed: model.onSignInButtonPress,
                 child: Text(
                   "Existing",
@@ -115,9 +114,9 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             //Container(height: 33.0, width: 1.0, color: Colors.white),
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
+                // splashColor: Colors.transparent,
+                // highlightColor: Colors.transparent,
                 onPressed: model.onSignUpButtonPress,
                 child: Text(
                   "New",
