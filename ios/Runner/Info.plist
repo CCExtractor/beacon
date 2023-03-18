@@ -42,7 +42,9 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App needs access to your location to start the hike</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App needs access to your location to start the hike</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>
