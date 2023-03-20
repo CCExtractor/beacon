@@ -16,7 +16,6 @@ class UserAdapter extends TypeAdapter<User> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    print("fields of 6 bool or not: ${fields[6]}");
     return User(
       authToken: fields[1] as String,
       email: fields[3] as String,
