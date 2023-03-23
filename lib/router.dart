@@ -10,25 +10,36 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.authScreen:
       return MaterialPageRoute(
-          builder: (context) => const AuthScreen(key: Key('auth')));
+        builder: (context) => const AuthScreen(
+          key: Key('auth'),
+        ),
+      );
     case Routes.mainScreen:
       return MaterialPageRoute(
-          builder: (context) => const MainScreen(key: Key('MainScreen')));
+        builder: (context) => const MainScreen(
+          key: Key('MainScreen'),
+        ),
+      );
     case Routes.hikeScreen:
       HikeScreen arguments = settings.arguments;
       return MaterialPageRoute(
-          builder: (context) => HikeScreen(
-                arguments.beacon,
-                isLeader: arguments.isLeader,
-              ));
+        builder: (context) => HikeScreen(
+          arguments.beacon,
+          isLeader: arguments.isLeader,
+        ),
+      );
     case Routes.groupScreen:
       GroupScreen arguments = settings.arguments;
       return MaterialPageRoute(
-          builder: (context) => GroupScreen(
-                arguments.group,
-              ));
+        builder: (context) => GroupScreen(
+          arguments.group,
+        ),
+      );
     default:
       return MaterialPageRoute(
-          builder: (context) => const SplashScreen(key: Key('SplashScreen')));
+        builder: (context) => const SplashScreen(
+          key: Key('SplashScreen'),
+        ),
+      );
   }
 }
