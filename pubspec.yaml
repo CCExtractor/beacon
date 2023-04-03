@@ -70,3 +70,6 @@ flutter:
     - family: FuturaBold
       fonts:
         - asset: fonts/futura_bold.otf
+
+dependency_overrides:
+  web_socket_channel: 2.2.0
