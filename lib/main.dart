@@ -16,7 +16,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   setupLocator();
-  localNotif.initialize();
+  await localNotif.initialize();
   await hiveDb.init();
   runApp(
     OverlaySupport(
