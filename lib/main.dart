@@ -52,7 +52,7 @@ class DemoPageView extends StatelessWidget {
   }
 }
 
-class DemoViewModel extends BaseModel {
+class DemoViewModel extends BaseModel{
   final String _title = "Title from the viewMode GSoC branch";
   String get title => _title;
 }
