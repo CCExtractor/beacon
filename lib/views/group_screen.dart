@@ -2,12 +2,14 @@ import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/loading_screen.dart';
+import 'package:beacon/components/reloading_icon.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sizer/sizer.dart';
@@ -26,6 +28,7 @@ class _GroupScreenState extends State<GroupScreen>
     with TickerProviderStateMixin {
   var fetchingUserBeacons;
   var fetchingNearbyBeacons;
+  TabControllerStorage tabControllerStorage = TabControllerStorage();
 
   @override
   void initState() {
@@ -33,6 +36,19 @@ class _GroupScreenState extends State<GroupScreen>
     fetchingNearbyBeacons =
         databaseFunctions.fetchNearbyBeacon(widget.group.id);
     super.initState();
+  }
+
+  void reloadNearByBeacons() {
+    setState(() {
+      fetchingNearbyBeacons =
+          databaseFunctions.fetchNearbyBeacon(widget.group.id);
+    });
+  }
+
+  void reloadUserBeacons() {
+    setState(() {
+      fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
+    });
   }
 
   void reloadList() {
@@ -46,7 +62,11 @@ class _GroupScreenState extends State<GroupScreen>
   @override
   Widget build(BuildContext context) {
     return BaseView<GroupViewModel>(builder: (context, model, child) {
-      TabController tabController = new TabController(length: 2, vsync: this);
+      TabController tabController = new TabController(
+        length: 2,
+        vsync: this,
+        initialIndex: tabControllerStorage.tabIndex,
+      );
       return model.isBusy
           ? LoadingScreen()
           : Scaffold(
@@ -212,6 +232,11 @@ class _GroupScreenState extends State<GroupScreen>
                                     Tab(text: 'Nearby Beacons'),
                                   ],
                                   controller: tabController,
+                                  onTap: (index) {
+                                    setState(() {
+                                      tabControllerStorage.setIndex = index;
+                                    });
+                                  },
                                 ),
                                 Expanded(
                                   child: TabBarView(
@@ -236,8 +261,20 @@ class _GroupScreenState extends State<GroupScreen>
                                               final List<Beacon> posts =
                                                   snapshot.data;
                                               return Container(
-                                                  alignment: Alignment.center,
-                                                  child: posts.length == 0
+                                                alignment: Alignment.center,
+                                                child: CustomRefreshIndicator(
+                                                  onRefresh: () async {
+                                                    reloadUserBeacons();
+                                                  },
+                                                  builder:
+                                                      MaterialIndicatorDelegate(
+                                                    builder:
+                                                        (context, controller) {
+                                                      return ReloadIcon();
+                                                    },
+                                                  ),
+                                                  child: posts == null ||
+                                                          posts.length == 0
                                                       ? SingleChildScrollView(
                                                           physics:
                                                               AlwaysScrollableScrollPhysics(),
@@ -309,7 +346,9 @@ class _GroupScreenState extends State<GroupScreen>
                                                                     posts[
                                                                         index]);
                                                           },
-                                                        ));
+                                                        ),
+                                                ),
+                                              );
                                             } else {
                                               return Center(
                                                 child: BeaconCustomWidgets
@@ -346,34 +385,50 @@ class _GroupScreenState extends State<GroupScreen>
                                                 }
 
                                                 final posts = snapshot.data;
-                                                if (posts == null ||
-                                                    posts.length == 0) {
-                                                  return SingleChildScrollView(
-                                                    physics:
-                                                        AlwaysScrollableScrollPhysics(),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'No nearby beacons found :(',
-                                                        style: TextStyle(
-                                                            color: kBlack,
-                                                            fontSize: 20),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                return ListView.builder(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: posts.length,
-                                                  padding: EdgeInsets.all(8),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return BeaconCustomWidgets
-                                                        .getBeaconCard(context,
-                                                            posts[index]);
+
+                                                return CustomRefreshIndicator(
+                                                  onRefresh: () async {
+                                                    reloadNearByBeacons();
                                                   },
+                                                  builder:
+                                                      MaterialIndicatorDelegate(
+                                                    builder:
+                                                        (context, controller) {
+                                                      return ReloadIcon();
+                                                    },
+                                                  ),
+                                                  child: posts == null ||
+                                                          posts.length == 0
+                                                      ? SingleChildScrollView(
+                                                          physics:
+                                                              AlwaysScrollableScrollPhysics(),
+                                                          child: Center(
+                                                            child: Text(
+                                                              'No nearby beacons found :(',
+                                                              style: TextStyle(
+                                                                  color: kBlack,
+                                                                  fontSize: 20),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : ListView.builder(
+                                                          physics:
+                                                              AlwaysScrollableScrollPhysics(),
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          itemCount:
+                                                              posts.length,
+                                                          padding:
+                                                              EdgeInsets.all(8),
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return BeaconCustomWidgets
+                                                                .getBeaconCard(
+                                                                    context,
+                                                                    posts[
+                                                                        index]);
+                                                          },
+                                                        ),
                                                 );
                                               } else {
                                                 return SingleChildScrollView(
@@ -406,4 +461,19 @@ class _GroupScreenState extends State<GroupScreen>
             );
     });
   }
+}
+
+class TabControllerStorage {
+  static final TabControllerStorage _storage = TabControllerStorage._internal();
+
+  factory TabControllerStorage() => _storage;
+
+  static int _tabIndex = 0;
+
+  int get tabIndex => _tabIndex;
+  set setIndex(int index) {
+    _tabIndex = index;
+  }
+
+  TabControllerStorage._internal();
 }
