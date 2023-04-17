@@ -22,64 +22,87 @@ class _SplashScreenState extends State<SplashScreen> {
   bool isCheckingUrl = false;
 
   Future<void> _handleInitialUri() async {
-    _sub = uriLinkStream.listen((Uri uri) {
-      if (!mounted) return;
-      setState(() {
-        _latestUri = uri;
-      });
-    }, onError: (Object err) {
-      if (!mounted) return;
-      setState(() {
-        _latestUri = null;
-      });
-    });
+    _sub = uriLinkStream.listen(
+      (Uri uri) {
+        if (!mounted) return;
+        setState(
+          () {
+            _latestUri = uri;
+          },
+        );
+      },
+      onError: (Object err) {
+        if (!mounted) return;
+        setState(
+          () {
+            _latestUri = null;
+          },
+        );
+      },
+    );
     try {
       final uri = await getInitialUri();
       if (!mounted) return;
       setState(() => _initialUri = uri);
     } on PlatformException {
       if (!mounted) return;
-      setState(() => _initialUri = null);
+      setState(
+        () => _initialUri = null,
+      );
     } on FormatException catch (err) {
-      debugPrint(err.toString());
+      debugPrint(
+        err.toString(),
+      );
       if (!mounted) return;
-      setState(() => _initialUri = null);
+      setState(
+        () => _initialUri = null,
+      );
     }
     await databaseFunctions.init();
-    await userConfig.userLoggedIn().then((value) async {
-      if (_latestUri == null && _initialUri == null) {
-        if (value || hiveDb.currentUserBox.containsKey('user')) {
-          navigationService.pushReplacementScreen('/main');
-        } else {
-          navigationService.pushReplacementScreen('/auth');
-        }
-      } else {
-        if (_initialUri != null) {
-          var shortcode = _initialUri.queryParameters['shortcode'];
-          if (value) {
-            await databaseFunctions.joinBeacon(shortcode).then((val) {
-              if (val != null) {
-                navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(val, isLeader: false));
-              } else {
-                navigationService.pushReplacementScreen('/main');
-              }
-            });
+    await userConfig.userLoggedIn().then(
+      (value) async {
+        if (_latestUri == null && _initialUri == null) {
+          if (value || hiveDb.currentUserBox.containsKey('user')) {
+            navigationService.pushReplacementScreen('/main');
           } else {
-            // login in anonymously and join hike
-            await databaseFunctions.signup(name: "Anonymous");
-            await databaseFunctions.joinBeacon(shortcode).then((val) async {
-              if (value != null) {
-                navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(val, isLeader: false));
-              } else {
-                navigationService.pushReplacementScreen('/main');
-              }
-            });
+            navigationService.pushReplacementScreen('/auth');
+          }
+        } else {
+          if (_initialUri != null) {
+            var shortcode = _initialUri.queryParameters['shortcode'];
+            if (value) {
+              await databaseFunctions.joinBeacon(shortcode).then(
+                (val) {
+                  if (val != null) {
+                    navigationService.pushScreen(
+                      '/hikeScreen',
+                      arguments: HikeScreen(val, isLeader: false),
+                    );
+                  } else {
+                    navigationService.pushReplacementScreen('/main');
+                  }
+                },
+              );
+            } else {
+              // login in anonymously and join hike
+              await databaseFunctions.signup(name: "Anonymous");
+              await databaseFunctions.joinBeacon(shortcode).then(
+                (val) async {
+                  if (value != null) {
+                    navigationService.pushScreen(
+                      '/hikeScreen',
+                      arguments: HikeScreen(val, isLeader: false),
+                    );
+                  } else {
+                    navigationService.pushReplacementScreen('/main');
+                  }
+                },
+              );
+            }
           }
         }
-      }
-    });
+      },
+    );
   }
 
   @override

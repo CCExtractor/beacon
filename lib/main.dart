@@ -11,10 +11,12 @@ import 'package:overlay_support/overlay_support.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   EnvironmentConfig.loadEnvVariables();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  );
   setupLocator();
   await localNotif.initialize();
   await hiveDb.init();
