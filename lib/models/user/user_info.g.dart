@@ -20,11 +20,10 @@ class UserAdapter extends TypeAdapter<User> {
       authToken: fields[1] as String,
       email: fields[3] as String,
       name: fields[2] as String,
-      location: fields[6] as Location,
+      isGuest: fields[6] as bool ?? false,
       beacon: (fields[4] as List)?.cast<Beacon>(),
       groups: (fields[5] as List)?.cast<Group>(),
       id: fields[0] as String,
-      isGuest: fields[7] as bool,
     );
   }
 
