@@ -213,70 +213,117 @@ class _AuthScreenState extends State<AuthScreen>
                 autovalidateMode: model.loginValidate,
                 child: Container(
                   width: screensize.width - 70,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.emailLogin,
-                          controller: model.loginEmailController,
-                          validator: (value) =>
-                              Validator.validateEmail(value.trimRight()),
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail_outline,
-                              color: Colors.black,
-                              size: 24.0,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.passwordLogin,
-                          controller: model.loginPasswordController,
-                          obscureText: model.obscureTextLogin,
-                          validator: (value) =>
-                              Validator.validatePassword(value),
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              size: 24.0,
-                              color: Colors.black,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                            suffixIcon: IconButton(
-                              onPressed: () => model.displayPasswordLogin(),
-                              icon: Icon(
-                                model.obscureTextLogin
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                size: 20.0,
-                                color: Colors.black,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 30),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            child: Container(
+                              height: 13.h,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10.0),
+                              child: TextFormField(
+                                cursorColor: hintColor,
+                                autovalidateMode: model.loginValidate,
+                                focusNode: model.emailLogin,
+                                controller: model.loginEmailController,
+                                validator: (value) =>
+                                    Validator.validateEmail(value.trimRight()),
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.black),
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  focusColor: hintColor,
+                                  icon: Icon(
+                                    Icons.mail_outline,
+                                    color: Colors.black,
+                                    size: 24.0,
+                                  ),
+                                  hintText: "Email Address",
+                                  hintStyle: TextStyle(
+                                      fontSize: hintsize - 2, color: hintColor),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: Container(
+                                    height: 13.h,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10.0),
+                                    child: TextFormField(
+                                      cursorColor: hintColor,
+                                      autovalidateMode: model.loginValidate,
+                                      focusNode: model.passwordLogin,
+                                      controller: model.loginPasswordController,
+                                      obscureText: model.obscureTextLogin,
+                                      validator: (value) =>
+                                          Validator.validatePassword(value),
+                                      style: TextStyle(
+                                          fontSize: 16.0, color: Colors.black),
+                                      decoration: InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: hintColor,
+                                          ),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: hintColor,
+                                          ),
+                                        ),
+                                        icon: Icon(
+                                          Icons.lock,
+                                          size: 24.0,
+                                          color: Colors.black,
+                                        ),
+                                        hintText: "Password",
+                                        hintStyle: TextStyle(
+                                            fontSize: hintsize - 2,
+                                            color: hintColor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 33),
+                              child: IconButton(
+                                onPressed: () => model.displayPasswordLogin(),
+                                icon: Icon(
+                                  model.obscureTextLogin
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 20.0,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -328,97 +375,165 @@ class _AuthScreenState extends State<AuthScreen>
                 child: Container(
                     width: screensize.width - 70,
                     // height: 280.0,
-                    child: Column(children: <Widget>[
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateName(value),
-                          focusNode: model.name,
-                          textInputAction: TextInputAction.next,
-                          controller: model.signupNameController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(fontSize: 18.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.account_box,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            hintText: "Name",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateEmail(value),
-                          focusNode: model.email,
-                          textInputAction: TextInputAction.next,
-                          controller: model.signupEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          focusNode: model.password,
-                          textInputAction: TextInputAction.done,
-                          validator: (value) =>
-                              Validator.validatePassword(value),
-                          controller: model.signupPasswordController,
-                          obscureText: model.obscureTextSignup,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () => model.displayPasswordSignup(),
-                              icon: Icon(
-                                model.obscureTextSignup
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                size: 20.0,
-                                color: Colors.black,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30),
+                      child: Column(children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            child: Container(
+                              height: 13.h,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10.0),
+                              child: TextFormField(
+                                cursorColor: hintColor,
+                                autovalidateMode: model.signupValidate,
+                                validator: (value) =>
+                                    Validator.validateName(value),
+                                focusNode: model.name,
+                                textInputAction: TextInputAction.next,
+                                controller: model.signupNameController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
+                                style: TextStyle(
+                                    fontSize: 18.0, color: Colors.black),
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  border: InputBorder.none,
+                                  icon: Icon(
+                                    Icons.account_box,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  hintText: "Name",
+                                  hintStyle: TextStyle(
+                                      fontSize: hintsize - 2, color: hintColor),
+                                ),
                               ),
                             ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
                           ),
                         ),
-                      ),
-                    ])),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            child: Container(
+                              height: 13.h,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10.0),
+                              child: TextFormField(
+                                cursorColor: hintColor,
+                                autovalidateMode: model.signupValidate,
+                                validator: (value) =>
+                                    Validator.validateEmail(value),
+                                focusNode: model.email,
+                                textInputAction: TextInputAction.next,
+                                controller: model.signupEmailController,
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.black),
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: hintColor,
+                                    ),
+                                  ),
+                                  border: InputBorder.none,
+                                  icon: Icon(
+                                    Icons.mail,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  hintText: "Email Address",
+                                  hintStyle: TextStyle(
+                                      fontSize: hintsize - 2, color: hintColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: Container(
+                                    height: 13.h,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10.0),
+                                    child: TextFormField(
+                                      cursorColor: hintColor,
+                                      autovalidateMode: model.signupValidate,
+                                      focusNode: model.password,
+                                      textInputAction: TextInputAction.done,
+                                      validator: (value) =>
+                                          Validator.validatePassword(value),
+                                      controller:
+                                          model.signupPasswordController,
+                                      obscureText: model.obscureTextSignup,
+                                      style: TextStyle(
+                                          fontSize: 16.0, color: Colors.black),
+                                      decoration: InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: hintColor,
+                                          ),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: hintColor,
+                                          ),
+                                        ),
+                                        border: InputBorder.none,
+                                        icon: Icon(
+                                          Icons.lock,
+                                          color: Colors.black,
+                                          size: 24,
+                                        ),
+                                        hintText: "Password",
+                                        hintStyle: TextStyle(
+                                            fontSize: hintsize - 2,
+                                            color: hintColor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 33),
+                              child: IconButton(
+                                onPressed: () => model.displayPasswordSignup(),
+                                icon: Icon(
+                                  model.obscureTextSignup
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 20.0,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
+                    )),
               ),
             ),
             SizedBox(
@@ -437,14 +552,6 @@ class _AuthScreenState extends State<AuthScreen>
           ],
         ),
       ),
-    );
-  }
-
-  Widget separator() {
-    return Container(
-      width: 62.w,
-      height: 0.2.h,
-      color: Colors.grey[400],
     );
   }
 }
