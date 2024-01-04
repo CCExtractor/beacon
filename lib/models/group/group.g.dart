@@ -17,12 +17,12 @@ class GroupAdapter extends TypeAdapter<Group> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Group(
-      id: fields[0] as String,
-      shortcode: fields[2] as String,
-      title: fields[1] as String,
-      leader: fields[3] as User,
-      members: (fields[4] as List)?.cast<User>(),
-      beacons: (fields[5] as List)?.cast<Beacon>(),
+      id: fields[0] as String?,
+      shortcode: fields[2] as String?,
+      title: fields[1] as String?,
+      leader: fields[3] as User?,
+      members: (fields[4] as List?)?.cast<User>(),
+      beacons: (fields[5] as List?)?.cast<Beacon>(),
     );
   }
 

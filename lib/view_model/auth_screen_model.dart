@@ -38,73 +38,73 @@ class AuthViewModel extends BaseModel {
   Color rightBg = kBlue;
 
   nextSignup() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     signupValidate = AutovalidateMode.always;
-    if (formKeySignup.currentState.validate()) {
+    if (formKeySignup.currentState!.validate()) {
       setState(ViewState.busy);
       signupValidate = AutovalidateMode.disabled;
-      databaseFunctions.init();
-      final String signUpSuccess = await databaseFunctions.signup(
+      databaseFunctions!.init();
+      final String signUpSuccess = await databaseFunctions!.signup(
           name: signupNameController.text ?? "Anonymous",
           email: signupEmailController.text,
           password: signupPasswordController.text);
       if (signUpSuccess == logSuccess) {
-        userConfig.currentUser.print();
-        navigationService.removeAllAndPush('/main', '/');
+        userConfig!.currentUser!.print();
+        navigationService!.removeAllAndPush('/main', '/');
       } else if (signUpSuccess == exceptionError) {
-        navigationService.removeAllAndPush('/auth', '/');
+        navigationService!.removeAllAndPush('/auth', '/');
       } else {
-        navigationService.removeAllAndPush('/auth', '/');
-        navigationService.showSnackBar('Something went wrong');
+        navigationService!.removeAllAndPush('/auth', '/');
+        navigationService!.showSnackBar('Something went wrong');
       }
       setState(ViewState.idle);
     } else {
-      navigationService.showSnackBar('Enter valid entries');
+      navigationService!.showSnackBar('Enter valid entries');
     }
   }
 
   loginAsGuest() async {
     setState(ViewState.busy);
-    await databaseFunctions.init();
+    await databaseFunctions!.init();
     final String signUpSuccess =
-        await databaseFunctions.signup(name: "Anonymous");
+        await databaseFunctions!.signup(name: "Anonymous");
     if (signUpSuccess == logSuccess) {
-      userConfig.currentUser.print();
-      navigationService.removeAllAndPush('/main', '/');
+      userConfig!.currentUser!.print();
+      navigationService!.removeAllAndPush('/main', '/');
     } else {
-      navigationService.removeAllAndPush('/auth', '/');
-      navigationService.showSnackBar('Something went wrong');
+      navigationService!.removeAllAndPush('/auth', '/');
+      navigationService!.showSnackBar('Something went wrong');
     }
     setState(ViewState.idle);
   }
 
   nextLogin() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     loginValidate = AutovalidateMode.always;
-    if (formKeyLogin.currentState.validate()) {
+    if (formKeyLogin.currentState!.validate()) {
       setState(ViewState.busy);
       loginValidate = AutovalidateMode.disabled;
-      await databaseFunctions.init();
-      final String loginSuccess = await databaseFunctions.login(
+      await databaseFunctions!.init();
+      final String loginSuccess = await databaseFunctions!.login(
           email: loginEmailController.text.trimRight(),
           password: loginPasswordController.text);
       if (loginSuccess == logSuccess) {
-        userConfig.currentUser.print();
-        navigationService.removeAllAndPush('/main', '/');
+        userConfig!.currentUser!.print();
+        navigationService!.removeAllAndPush('/main', '/');
       } else if (loginSuccess == exceptionError) {
-        navigationService.removeAllAndPush('/auth', '/');
+        navigationService!.removeAllAndPush('/auth', '/');
       } else {
-        navigationService.removeAllAndPush('/auth', '/');
-        navigationService.showSnackBar('Something went wrong');
+        navigationService!.removeAllAndPush('/auth', '/');
+        navigationService!.showSnackBar('Something went wrong');
       }
       setState(ViewState.idle);
     } else {
-      navigationService.showSnackBar('Enter valid entries');
+      navigationService!.showSnackBar('Enter valid entries');
     }
   }
 
   void requestFocusForFocusNode(FocusNode focusNode) {
-    FocusScope.of(navigationService.navigatorKey.currentContext)
+    FocusScope.of(navigationService!.navigatorKey.currentContext!)
         .requestFocus(focusNode);
   }
 

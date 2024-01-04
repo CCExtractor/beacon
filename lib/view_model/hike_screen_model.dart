@@ -8,9 +8,9 @@ import 'package:beacon/services/graphql_config.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animarker/core/ripple_marker.dart';
+import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -26,39 +26,41 @@ import 'package:rxdart/rxdart.dart';
 
 class HikeScreenViewModel extends BaseModel {
   bool modelIsReady = false;
-  Beacon beacon;
-  Set<String> followerId = {};
-  bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
-  List<User> hikers = [];
+  Beacon? beacon;
+  Set<String?> followerId = {};
+  bool isGeneratingLink = false, isBeaconExpired = false;
+  List<User?> hikers = [];
   List<LatLng> route = [];
   Duration newDuration = Duration(seconds: 0);
   Completer<GoogleMapController> mapController = Completer();
-  String address, prevAddress;
+  String? address, prevAddress;
   bool isBusy = false;
   Set<Marker> markers = {};
   Set<Polyline> polylines = Set<Polyline>();
-  StreamSubscription _leaderLocation;
-  Stream beaconLocationStream, beaconJoinedStream, mergedStream;
+  StreamSubscription? _leaderLocation;
+  Stream? beaconLocationStream, beaconJoinedStream, mergedStream;
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   final GlobalKey<FormState> landmarkFormKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
   Location loc = new Location();
-  GraphQLClient graphQlClient;
+  late GraphQLClient graphQlClient;
   PanelController panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
-  bool isLeader = false;
+  bool? isLeader = false;
 
-  void relayBeacon(String newLeaderName, String newLeaderID) async {
+  Geocoder geocoder = Geocoder();
+
+  void relayBeacon(String? newLeaderName, String? newLeaderID) async {
     print(newLeaderID);
-    if (newLeaderID == userConfig.currentUser.id)
+    if (newLeaderID == userConfig!.currentUser!.id)
       Fluttertoast.showToast(msg: 'Yeah, that\'s you');
     else {
-      if (beacon.leader.id == userConfig.currentUser.id) {
-        await databaseFunctions.init();
+      if (beacon!.leader!.id == userConfig!.currentUser!.id) {
+        await databaseFunctions!.init();
         final changedLeader =
-            databaseFunctions.changeLeader(beacon.id, newLeaderID);
-        if (changedLeader != null) beacon.leader.id = newLeaderID;
+            databaseFunctions!.changeLeader(beacon!.id, newLeaderID);
+        if (changedLeader != null) beacon!.leader!.id = newLeaderID;
         Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
         notifyListeners();
       } else {
@@ -68,11 +70,11 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<bool> onWillPop(context) async {
-    return (await showDialog(
+    return (await (showDialog(
           context: context,
           builder: (context) => DialogBoxes.showExitDialog(
               context, isLeader, hikers.length, isBeaconExpired),
-        )) ??
+        ) as FutureOr<bool>?)) ??
         false;
   }
 
@@ -107,8 +109,8 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> setPolyline() async {
-    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-      EnvironmentConfig.googleMapApi, // Google Maps API Key
+    PolylineResult? result = await polylinePoints.getRouteBetweenCoordinates(
+      EnvironmentConfig.googleMapApi!, // Google Maps API Key
       PointLatLng(route.first.latitude, route.first.longitude),
       PointLatLng(route.last.latitude, route.last.longitude),
     );
@@ -156,23 +158,27 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> updateModel(Beacon value) async {
-    Coordinates coordinates = Coordinates(
-        double.parse(beacon.location.lat), double.parse(beacon.location.lon));
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+    // Coordinates coordinates = Coordinates(double.parse(beacon!.location!.lat!),
+    //     double.parse(beacon!.location!.lon!));
+    // var addresses =
+    //     await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    var addresses = await geocoder.getAddressFromLonLat(
+        double.parse(beacon!.location!.lat!),
+        double.parse(beacon!.location!.lon!));
+    isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
         .isBefore(DateTime.now());
     hikers.add(value.leader);
-    for (var i in value.followers) {
+    for (var i in value.followers!) {
       if (!followerId.contains(i.id)) {
         hikers.add(i);
         followerId.add(i.id);
       }
     }
-    var lat = double.parse(value.location.lat);
-    var lon = double.parse(value.location.lon);
+    var lat = double.parse(value.location!.lat!);
+    var lon = double.parse(value.location!.lon!);
     route.add(LatLng(lat, lon));
-    address = addresses.first.addressLine;
+    address = addresses;
     markers.add(Marker(
       markerId: MarkerId("0"),
       position: route.first,
@@ -188,11 +194,11 @@ class HikeScreenViewModel extends BaseModel {
         title: 'Current Location',
       ),
     ));
-    for (var i in value.landmarks) {
+    for (var i in value.landmarks!) {
       markers.add(Marker(
         markerId: MarkerId((markers.length + 1).toString()),
-        position:
-            LatLng(double.parse(i.location.lat), double.parse(i.location.lon)),
+        position: LatLng(
+            double.parse(i!.location!.lat!), double.parse(i.location!.lon!)),
         infoWindow: InfoWindow(
           title: '${i.title}',
         ),
@@ -215,42 +221,45 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> fetchData() async {
-    await databaseFunctions.fetchBeaconInfo(beacon.id).then((value) async {
+    await databaseFunctions!.fetchBeaconInfo(beacon!.id).then((value) async {
       if (value != null) {
         beacon = value;
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+        await hiveDb!.putBeaconInBeaconBox(beacon!.id, beacon);
       } else {
-        value = hiveDb.beaconsBox.get(beacon.id);
+        value = hiveDb!.beaconsBox.get(beacon!.id);
         beacon = value;
       }
-      await updateModel(value);
+      await updateModel(value!);
     });
   }
 
   Future<void> setupSubscriptions(bool isExpired) async {
     if (isBeaconExpired || isExpired) return;
-    if (isLeader) {
+    if (isLeader!) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation = loc.onLocationChanged.listen(
         (LocationData currentLocation) async {
-          if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-              .isBefore(DateTime.now())) _leaderLocation.cancel();
-          Coordinates coordinates =
-              Coordinates(currentLocation.latitude, currentLocation.longitude);
-          var addresses =
-              await Geocoder.local.findAddressesFromCoordinates(coordinates);
+          if (DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
+              .isBefore(DateTime.now())) _leaderLocation!.cancel();
+          // Coordinates coordinates = Coordinates(
+          //     currentLocation.latitude!, currentLocation.longitude!);
+          // var addresses =
+          //     await Geocoder.local.findAddressesFromCoordinates(coordinates);
 
-          String _address = addresses.first.addressLine;
+          var addresses = await geocoder.getAddressFromLonLat(
+              currentLocation.latitude!, currentLocation.longitude!);
+
+          String? _address = addresses;
           if (address != _address) {
-            databaseFunctions.init();
-            await databaseFunctions.updateLeaderLoc(beacon.id,
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+            databaseFunctions!.init();
+            await databaseFunctions!.updateLeaderLoc(beacon!.id,
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             address = _address;
             route.add(
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             updatePinOnMap(
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             setPolyline();
             notifyListeners();
           }
@@ -261,7 +270,7 @@ class HikeScreenViewModel extends BaseModel {
         SubscriptionOptions(
           document: BeaconQueries().beaconLocationSubGql,
           variables: <String, dynamic>{
-            'id': beacon.id,
+            'id': beacon!.id,
           },
         ),
       );
@@ -271,18 +280,18 @@ class HikeScreenViewModel extends BaseModel {
       SubscriptionOptions(
         document: BeaconQueries().beaconJoinedSubGql,
         variables: <String, dynamic>{
-          'id': beacon.id,
+          'id': beacon!.id,
         },
       ),
     );
-    if (!isLeader) {
-      mergedStream = MergeStream([beaconLocationStream, beaconJoinedStream]);
+    if (!isLeader!) {
+      mergedStream = MergeStream([beaconLocationStream!, beaconJoinedStream!]);
     } else {
       mergedStream = beaconJoinedStream;
     }
-    StreamSubscription<dynamic> mergeStreamSubscription;
-    mergeStreamSubscription = mergedStream.listen((event) async {
-      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+    late StreamSubscription<dynamic> mergeStreamSubscription;
+    mergeStreamSubscription = mergedStream!.listen((event) async {
+      if (DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
           .isBefore(DateTime.now())) {
         mergeStreamSubscription.cancel();
         isBeaconExpired = true;
@@ -311,7 +320,7 @@ class HikeScreenViewModel extends BaseModel {
                   trailing: IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
-                        OverlaySupportEntry.of(context).dismiss();
+                        OverlaySupportEntry.of(context)!.dismiss();
                       }),
                 ),
               ),
@@ -321,8 +330,8 @@ class HikeScreenViewModel extends BaseModel {
           if (!followerId.contains(newJoinee.id)) {
             hikers.add(newJoinee);
             followerId.add(newJoinee.id);
-            beacon.followers.add(newJoinee);
-            await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+            beacon!.followers!.add(newJoinee);
+            await hiveDb!.putBeaconInBeaconBox(beacon!.id, beacon);
           }
           // markers.add(Marker(
           //   markerId: MarkerId((markers.length + 1).toString()),
@@ -340,16 +349,19 @@ class HikeScreenViewModel extends BaseModel {
           LatLng coord = LatLng(
               double.parse(event.data['beaconLocation']['lat']),
               double.parse(event.data['beaconLocation']['lon']));
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(
-              Coordinates(coord.latitude, coord.longitude));
-          beacon.route.add(
+          // var addresses = await Geocoder.local.findAddressesFromCoordinates(
+          //     Coordinates(coord.latitude, coord.longitude));
+
+          var addresses = await geocoder.getAddressFromLonLat(
+              coord.latitude, coord.longitude);
+          beacon!.route!.add(
             locModel.Location(
               lat: coord.latitude.toString(),
               lon: coord.longitude.toString(),
             ),
           );
-          await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-          String _address = addresses.first.addressLine;
+          await hiveDb!.putBeaconInBeaconBox(beacon!.id, beacon);
+          String? _address = addresses;
           route.add(coord);
           updatePinOnMap(coord);
           address = _address;
@@ -362,18 +374,18 @@ class HikeScreenViewModel extends BaseModel {
     mergedStreamSubscriptions.add(mergeStreamSubscription);
   }
 
-  Future<void> initialise(Beacon beaconParsed, bool widgetIsLeader) async {
-    beacon = hiveDb.beaconsBox.get(beaconParsed.id);
+  Future<void> initialise(Beacon beaconParsed, bool? widgetIsLeader) async {
+    beacon = hiveDb!.beaconsBox.get(beaconParsed.id);
     isLeader = widgetIsLeader;
 
-    if (await connectionChecker.checkForInternetConnection()) {
+    if (await connectionChecker!.checkForInternetConnection()) {
       await fetchData();
       graphQlClient = GraphQLConfig().graphQlClient();
       await setupSubscriptions(
-          DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
               .isBefore(DateTime.now()));
     } else {
-      await updateModel(beacon);
+      await updateModel(beacon!);
     }
     modelIsReady = true;
     notifyListeners();
@@ -395,16 +407,16 @@ class HikeScreenViewModel extends BaseModel {
 
   void dispose() {
     if (_leaderLocation != null) {
-      _leaderLocation.cancel();
+      _leaderLocation!.cancel();
     }
     if (mergedStreamSubscriptions != null)
       for (var streamSub in mergedStreamSubscriptions) {
         if (streamSub != null) streamSub.cancel();
       }
-    connectionChecker.checkForInternetConnection().then(
+    connectionChecker!.checkForInternetConnection().then(
       (value) async {
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon,
-            fetchFromNetwork: value);
+        await hiveDb!
+            .putBeaconInBeaconBox(beacon!.id, beacon, fetchFromNetwork: value);
       },
     );
     super.dispose();
@@ -421,11 +433,11 @@ class HikeScreenViewModel extends BaseModel {
     var title,
     var loc,
   ) async {
-    if (landmarkFormKey.currentState.validate()) {
-      navigationService.pop();
-      await databaseFunctions.init();
-      await databaseFunctions
-          .createLandmark(title, loc, beacon.id)
+    if (landmarkFormKey.currentState!.validate()) {
+      navigationService!.pop();
+      await databaseFunctions!.init();
+      await databaseFunctions!
+          .createLandmark(title, loc, beacon!.id)
           .then((value) async {
         markers.add(Marker(
           markerId: MarkerId((markers.length + 1).toString()),
@@ -435,9 +447,9 @@ class HikeScreenViewModel extends BaseModel {
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ));
-        beacon.landmarks.add(value);
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
+        beacon!.landmarks!.add(value);
+        await hiveDb!.putBeaconInBeaconBox(beacon!.id, beacon);
+        print(hiveDb!.beaconsBox.get(beacon!.id)!.landmarks!.length.toString() +
             'asdasdasd');
         notifyListeners();
       });

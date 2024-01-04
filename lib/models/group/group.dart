@@ -19,9 +19,9 @@ class Group extends HiveObject {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['_id'] as String,
-      title: json['title'] != null ? json['title'] as String : null,
-      shortcode: json['shortcode'] as String,
+      id: json['_id'] as String?,
+      title: json['title'] != null ? json['title'] as String? : null,
+      shortcode: json['shortcode'] as String?,
       leader: json['leader'] != null
           ? User.fromJson(json['leader'] as Map<String, dynamic>)
           : null,
@@ -39,17 +39,17 @@ class Group extends HiveObject {
   }
 
   @HiveField(0)
-  String id;
+  String? id;
   @HiveField(1)
-  String title;
+  String? title;
   @HiveField(2)
-  String shortcode;
+  String? shortcode;
   @HiveField(3)
-  User leader;
+  User? leader;
   @HiveField(4)
-  List<User> members = [];
+  List<User>? members = [];
   @HiveField(5)
-  List<Beacon> beacons = [];
+  List<Beacon>? beacons = [];
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');

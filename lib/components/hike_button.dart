@@ -2,8 +2,8 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class HikeButton extends StatelessWidget {
-  final Function onTap;
-  final String text;
+  final Function? onTap;
+  final String? text;
   final double textSize;
   final Color textColor;
   final Color borderColor;
@@ -24,7 +24,7 @@ class HikeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: buttonColor,
+        // backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(50.0),
             side: BorderSide(color: borderColor)),
@@ -33,11 +33,11 @@ class HikeButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(
             horizontal: buttonWidth, vertical: buttonHeight),
         child: Text(
-          text,
+          text!,
           style: TextStyle(color: textColor, fontSize: textSize),
         ),
       ),
-      onPressed: onTap,
+      onPressed: onTap as void Function()?,
     );
   }
 }

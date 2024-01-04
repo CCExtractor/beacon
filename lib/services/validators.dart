@@ -1,12 +1,12 @@
 class Validator {
-  static String validateName(String name) {
+  static String? validateName(String name) {
     if (name.isEmpty) {
       return "Name must not be left blank";
     }
     return null;
   }
 
-  static String validateEmail(String email) {
+  static String? validateEmail(String email) {
     // If email is empty return.
     if (email.isEmpty) {
       return "Email must not be left blank";
@@ -20,7 +20,7 @@ class Validator {
     return null;
   }
 
-  static String validatePassword(String password) {
+  static String? validatePassword(String password) {
     // If password is empty return.
     if (password.isEmpty) {
       return "Password must not be left blank";
@@ -44,14 +44,14 @@ class Validator {
     return null;
   }
 
-  static String validateBeaconTitle(String title) {
+  static String? validateBeaconTitle(String title) {
     if (title.isEmpty) {
       return "Title must not be left blank";
     }
     return null;
   }
 
-  static String validatePasskey(String passkey) {
+  static String? validatePasskey(String passkey) {
     if (passkey.isEmpty) {
       return "Passkey must not be left blank";
     }
@@ -63,14 +63,14 @@ class Validator {
     return null;
   }
 
-  static String validateDuration(String duration) {
+  static String? validateDuration(String duration) {
     if (duration.startsWith("0:00:00.")) {
       return "Duration cannot be $duration";
     }
     return null;
   }
 
-  static String validateStartingTime(String startTime) {
+  static String? validateStartingTime(String startTime) {
     print(startTime);
     if (startTime == null) {
       return "Enter the valid Time";

@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceService {
-  SharedPreferences _prefs;
+  late SharedPreferences _prefs;
 
   Future<bool> getSharedPreferencesInstance() async {
     _prefs = await SharedPreferences.getInstance().catchError((e) {
@@ -19,7 +19,7 @@ class SharedPreferenceService {
     await _prefs.clear();
   }
 
-  Future<String> get token async => _prefs.getString('token');
+  Future<String?> get token async => _prefs.getString('token');
 }
 
 SharedPreferenceService sharedPreferenceService = SharedPreferenceService();

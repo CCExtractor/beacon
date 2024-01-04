@@ -9,28 +9,29 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/group_card.dart';
 import '../view_model/home_screen_view_model.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   var fetchingUserGroups;
-  Future<bool> _onPopHome() async {
+  Future<bool?> _onPopHome() async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        // actionsAlignment: MainAxisAlignment.spaceEvenly,
         contentPadding: EdgeInsets.all(25.0),
         title: Text(
           'Confirm Exit',
@@ -61,20 +62,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    fetchingUserGroups = databaseFunctions.fetchUserGroups();
+    fetchingUserGroups = databaseFunctions!.fetchUserGroups();
     super.initState();
   }
 
   void reloadList() {
     setState(() {
-      fetchingUserGroups = databaseFunctions.fetchUserGroups();
+      fetchingUserGroups = databaseFunctions!.fetchUserGroups();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onPopHome,
+      onWillPop: _onPopHome as Future<bool> Function()?,
       child: BaseView<HomeViewModel>(builder: (context, model, child) {
         TabController tabController = new TabController(length: 1, vsync: this);
         return model.isBusy
@@ -101,17 +102,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
-                                      actionsAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      // actionsAlignment:
+                                      //     MainAxisAlignment.spaceEvenly,
                                       title: Text(
-                                        (userConfig.currentUser.isGuest)
+                                        userConfig!.currentUser!.isGuest!
                                             ? 'Create Account'
                                             : 'Logout',
                                         style: TextStyle(
                                             fontSize: 25, color: kYellow),
                                       ),
                                       content: Text(
-                                        (userConfig.currentUser.isGuest)
+                                        userConfig!.currentUser!.isGuest!
                                             ? 'Would you like to create an account?'
                                             : 'Are you sure you wanna logout?',
                                         style: TextStyle(
@@ -130,7 +131,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                           buttonHeight: 2.5.h,
                                           buttonWidth: 8.w,
                                           onTap: () {
-                                            navigationService.pop();
+                                            navigationService!.pop();
                                             model.logout();
                                           },
                                           text: 'Yes',
@@ -139,7 +140,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                       ],
                                     )),
                             backgroundColor: kYellow,
-                            child: (userConfig.currentUser.isGuest)
+                            child: userConfig!.currentUser!.isGuest!
                                 ? Icon(Icons.person)
                                 : Icon(Icons.logout),
                           ),
@@ -161,8 +162,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                   borderColor: Colors.white,
                                   buttonColor: kYellow,
                                   onTap: () {
-                                    if (userConfig.currentUser.isGuest) {
-                                      navigationService.showSnackBar(
+                                    if (userConfig!.currentUser!.isGuest!) {
+                                      navigationService!.showSnackBar(
                                           'You need to login with credentials to be able to create a group');
                                     } else {
                                       CreateJoinGroupDialog.createGroupDialog(
@@ -238,7 +239,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   );
                                                 }
                                                 final List<Group> posts =
-                                                    snapshot.data;
+                                                    snapshot.data
+                                                        as List<Group>;
                                                 return Container(
                                                     alignment: Alignment.center,
                                                     child: posts.length == 0
@@ -301,7 +303,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                             scrollDirection:
                                                                 Axis.vertical,
                                                             itemCount:
-                                                                posts?.length,
+                                                                posts.length,
                                                             padding:
                                                                 EdgeInsets.all(
                                                                     8),

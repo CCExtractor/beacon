@@ -1,5 +1,5 @@
 class AuthQueries {
-  String registerUser(String name, String email, String password) {
+  String registerUser(String? name, String email, String? password) {
     return '''
         mutation{
           register(user: {name: "$name", credentials: {email: "$email", password: "$password"}})
@@ -12,7 +12,7 @@ class AuthQueries {
     ''';
   }
 
-  String loginAsGuest(String name) {
+  String loginAsGuest(String? name) {
     return '''
         mutation{
           register(user: {name: "$name"})
@@ -24,7 +24,7 @@ class AuthQueries {
     ''';
   }
 
-  String loginUser(String email, String password) {
+  String loginUser(String email, String? password) {
     return '''
         mutation{
           login(credentials: {email: "$email", password: "$password"})
@@ -32,7 +32,7 @@ class AuthQueries {
     ''';
   }
 
-  String loginUsingID(String id) {
+  String loginUsingID(String? id) {
     return '''
         mutation{
           login(id: "$id")
