@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class AuthViewModel extends BaseModel {
   Color rightBg = kBlue;
 
   nextSignup() async {
+    log('clicked');
     FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     signupValidate = AutovalidateMode.always;
     if (formKeySignup.currentState!.validate()) {

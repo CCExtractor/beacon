@@ -72,9 +72,6 @@ class Validator {
 
   static String? validateStartingTime(String startTime) {
     print(startTime);
-    if (startTime == null) {
-      return "Enter the valid Time";
-    }
     return null;
   }
 }

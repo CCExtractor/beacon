@@ -4,12 +4,8 @@ import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animarker/flutter_map_marker_animation.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:intl/intl.dart';
-
-// import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -143,6 +139,7 @@ class _HikeScreenState extends State<HikeScreen> {
                           (value) => value.mapId,
                         ),
                         markers: model.markers.toSet(),
+                        // child: Text('hello'),
                         child: GoogleMap(
                             compassEnabled: true,
                             mapType: MapType.terrain,

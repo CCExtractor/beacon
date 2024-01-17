@@ -409,10 +409,9 @@ class HikeScreenViewModel extends BaseModel {
     if (_leaderLocation != null) {
       _leaderLocation!.cancel();
     }
-    if (mergedStreamSubscriptions != null)
-      for (var streamSub in mergedStreamSubscriptions) {
-        if (streamSub != null) streamSub.cancel();
-      }
+    for (var streamSub in mergedStreamSubscriptions) {
+      streamSub.cancel();
+    }
     connectionChecker!.checkForInternetConnection().then(
       (value) async {
         await hiveDb!

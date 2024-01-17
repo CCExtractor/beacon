@@ -48,18 +48,10 @@ class HiveLocalDb {
     await beaconsBox.put(id, beacon);
   }
 
-  List<Beacon?>? getAllUserBeacons() {
+  List<Beacon?> getAllUserBeacons() {
     final user = currentUserBox.get('user')!;
     print("asd" + user.id!);
-    if (user == null) {
-      navigationService!
-          .showSnackBar('Please connect to internet to fetch your beacons');
-      return null;
-    }
     final userBeacons = beaconsBox.values.toList();
-    if (userBeacons == null) {
-      return user.beacon!;
-    }
     return userBeacons;
   }
 }

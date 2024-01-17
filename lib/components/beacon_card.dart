@@ -13,6 +13,7 @@ class BeaconCustomWidgets {
   static final Color textColor = Color(0xFFAFAFAF);
 
   static Widget getBeaconCard(BuildContext context, Beacon beacon) {
+    print(beacon.leader!.name);
     bool hasStarted;
     bool hasEnded;
     bool willStart;
@@ -80,7 +81,7 @@ class BeaconCustomWidgets {
                           Container(
                             width: 70.w,
                             child: Text(
-                              '${beacon?.title} by ${beacon.leader!.name} ',
+                              '${beacon.title} by ${beacon.leader!.name} ',
                               style: Style.titleTextStyle,
                             ),
                           ),

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:ffi';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/group/group.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
@@ -6,7 +8,6 @@ import 'package:beacon/models/location/location.dart';
 import 'package:beacon/queries/auth.dart';
 import 'package:beacon/queries/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,13 +16,14 @@ import '../locator.dart';
 import '../queries/group.dart';
 
 class DataBaseMutationFunctions {
-  late GraphQLClient clientNonAuth;
+  late ValueNotifier<GraphQLClient> clientNonAuth;
   late GraphQLClient clientAuth;
   late AuthQueries _authQuery;
   late BeaconQueries _beaconQuery;
   late GroupQueries _groupQuery;
   init() async {
-    clientNonAuth = graphqlConfig!.clientToQuery();
+    clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
+    ValueNotifier(clientNonAuth);
     clientAuth = await graphqlConfig!.authClient();
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
@@ -97,15 +99,41 @@ class DataBaseMutationFunctions {
   //Auth
   Future<String> signup({String? name, String? email, String? password}) async {
     final QueryResult result = email != null
-        ? await clientNonAuth.mutate(MutationOptions(
-            document: gql(_authQuery.registerUser(name, email, password))))
-        : await clientNonAuth.mutate(
-            MutationOptions(document: gql(_authQuery.loginAsGuest(name))));
+        ? await clientNonAuth.value.mutate(MutationOptions(
+            document: gql(_authQuery.registerUser(name, email, password)),
+            variables: {
+              'name': name,
+              'email': email,
+              'password': password,
+            },
+          ))
+        : await clientNonAuth.value.mutate(MutationOptions(
+            document: gql(_authQuery.loginAsGuest(name)),
+          ));
+    // final HttpLink httpLink = HttpLink('http://10.0.2.2:4000/graphql');
+    // final ValueNotifier<GraphQLClient> client = ValueNotifier(
+    //   GraphQLClient(
+    //     link: httpLink,
+    //     cache: GraphQLCache(),
+    //   ),
+    // );
+
+    // final QueryResult result = await client.value.mutate(
+    //   MutationOptions(
+    //     document: gql(_authQuery.registerUser(name, email!, password)),
+    //     variables: {
+    //       'name': name,
+    //       'email': email,
+    //       'password': password,
+    //     },
+    //   ),
+    // );
+    log(result.data.toString());
+    log(result.exception.toString());
+
     if (result.hasException) {
       navigationService!
           .showSnackBar("${result.exception!.graphqlErrors.first.message}");
-      //commenting this since value of exception wasnt used.
-      //final bool exception = encounteredExceptionOrError(result.exception);
       debugPrint('${result.exception!.graphqlErrors}');
       return exceptionError;
     } else if (result.data != null && result.isConcrete) {
@@ -122,10 +150,11 @@ class DataBaseMutationFunctions {
 
   Future<String> login({String? email, String? password, User? user}) async {
     final QueryResult result = (email == null)
-        ? await clientNonAuth.mutate(
+        ? await clientNonAuth.value.mutate(
             MutationOptions(document: gql(_authQuery.loginUsingID(user!.id))))
-        : await clientNonAuth.mutate(MutationOptions(
+        : await clientNonAuth.value.mutate(MutationOptions(
             document: gql(_authQuery.loginUser(email, password))));
+    log(result.exception.toString());
     if (result.hasException) {
       navigationService!
           .showSnackBar("${result.exception!.graphqlErrors.first.message}");
@@ -201,10 +230,6 @@ class DataBaseMutationFunctions {
     List<Beacon?> expiredBeacons = [];
     if (!await connectionChecker!.checkForInternetConnection()) {
       final userBeacons = hiveDb!.getAllUserBeacons();
-      if (userBeacons == null) {
-        //snackbar has already been shown in getAllUserBeacons;
-        return beacons;
-      }
       for (Beacon? i in userBeacons) {
         if (i!.group == groupid) {
           if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt!)
@@ -359,7 +384,7 @@ class DataBaseMutationFunctions {
     return null;
   }
 
-  Future<List<Beacon>?> fetchNearbyBeacon(String? groupID) async {
+  Future<List<Beacon?>?> fetchNearbyBeacon(String? groupID) async {
     await databaseFunctions!.init();
     List<Beacon> _nearbyBeacons = [];
     List<Beacon> _nearbyBeaconsinGroup = [];
@@ -369,6 +394,8 @@ class DataBaseMutationFunctions {
     } catch (onErr) {
       return null;
     }
+    print(loc.latitude.toString());
+    print(loc.longitude.toString());
     final QueryResult result = await clientAuth.query(QueryOptions(
         document: gql(_beaconQuery.fetchNearbyBeacons(
             loc.latitude.toString(), loc.longitude.toString()))));
