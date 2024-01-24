@@ -58,9 +58,7 @@ class HikeScreenViewModel extends BaseModel {
     else {
       if (beacon!.leader!.id == userConfig!.currentUser!.id) {
         await databaseFunctions!.init();
-        final changedLeader =
-            databaseFunctions!.changeLeader(beacon!.id, newLeaderID);
-        if (changedLeader != null) beacon!.leader!.id = newLeaderID;
+        beacon!.leader!.id = newLeaderID;
         Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
         notifyListeners();
       } else {
@@ -393,7 +391,6 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   void beaconExpired() {
-    // TODO
     Fluttertoast.showToast(msg: 'Beacon Expired');
   }
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/models/group/group.dart';
 import 'package:beacon/models/landmarks/landmark.dart';
@@ -281,11 +280,13 @@ class DataBaseMutationFunctions {
       }
     }
     beacons.addAll(expiredBeacons);
+
     return beacons;
   }
 
   Future<Beacon?> createBeacon(
       String? title, int startsAt, int expiresAt, String? groupID) async {
+    log(startsAt.toString());
     LatLng loc;
     try {
       loc = await AppConstants.getLocation();

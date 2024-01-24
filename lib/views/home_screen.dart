@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/components/beacon_card.dart';
 import 'package:beacon/components/create_join_dialog.dart';
 import 'package:beacon/components/hike_button.dart';
@@ -76,9 +74,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(onWillPop: () async {
+    return PopScope(onPopInvoked: (didPop) {
       _onPopHome();
-      return false;
     }, child: BaseView<HomeViewModel>(builder: (context, model, child) {
       TabController tabController = new TabController(length: 1, vsync: this);
       return model.isBusy
@@ -234,7 +231,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                                   child: Text(
                                                     snapshot.error.toString(),
                                                     textAlign: TextAlign.center,
-                                                    textScaleFactor: 1.3,
+                                                    textScaler:
+                                                        TextScaler.linear(1.3),
                                                   ),
                                                 );
                                               }

@@ -4,11 +4,13 @@ class SharedPreferenceService {
   late SharedPreferences _prefs;
 
   Future<bool> getSharedPreferencesInstance() async {
-    _prefs = await SharedPreferences.getInstance().catchError((e) {
-      print("shared preferences error : $e");
-      //return false;
-    });
-    return true;
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      return true;
+    } catch (e) {
+      print("SharedPreferences error: $e");
+      return false;
+    }
   }
 
   Future setToken(String token) async {

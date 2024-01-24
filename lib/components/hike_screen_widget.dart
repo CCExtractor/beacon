@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -109,8 +108,7 @@ class HikeScreenWidget extends ChangeNotifier {
       onPressed: () async {
         final mapController = await googleMapControllerCompleter.future;
         // sanity check.
-        if (mapController == null ||
-            googleMapControllerCompleter.isCompleted == false) return;
+        if (googleMapControllerCompleter.isCompleted == false) return;
         if (!await connectionChecker!.checkForInternetConnection()) {
           navigationService!.showSnackBar(
               'Cannot share the route, please check your internet connection.');
@@ -133,21 +131,14 @@ class HikeScreenWidget extends ChangeNotifier {
         // );
 
         // initial address
-        var initialAddress = await geocoder.getAddressFromLonLat(
-            beaconRoute.first.latitude, beaconRoute.first.longitude);
         //current coordinates
         // coordinates = Coordinates(
         //   beaconRoute.last.latitude,
         //   beaconRoute.last.longitude,
         // );
         //current address
-        var currentAddress = await geocoder.getAddressFromLonLat(
-            beaconRoute.last.latitude, beaconRoute.last.longitude);
         // All the neccessary info should be here.
-        String textToShare =
-            "${beacon!.title} Beacon started at: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()} from: ${initialAddress}.\n\nIt will end on: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}.\n\nBeacon's current location is: ${currentAddress}.\n\nBeacon's current leader is: ${beacon.leader!.name}.\n\nTo join this beacon, enter this code in the app: ${beacon.shortcode}.\nYou can also join the beacon by clicking the following link: https://beacon.aadibajpai.com/?shortcode=${beacon.shortcode}";
         //Will be used as subject if shared via email, else isnt used.
-        String subjectToShare = "${beacon.title} beacons's route";
         // await Share.shareXFiles([XFile(imageFile.path)],
         //     text: textToShare, subject: subjectToShare);
         //hide after sharing.

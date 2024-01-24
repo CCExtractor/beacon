@@ -233,7 +233,8 @@ class _GroupScreenState extends State<GroupScreen>
                                                   child: Text(
                                                     snapshot.error.toString(),
                                                     textAlign: TextAlign.center,
-                                                    textScaleFactor: 1.3,
+                                                    textScaler:
+                                                        TextScaler.linear(1.3),
                                                   ),
                                                 );
                                               }
@@ -345,7 +346,9 @@ class _GroupScreenState extends State<GroupScreen>
                                                       snapshot.error.toString(),
                                                       textAlign:
                                                           TextAlign.center,
-                                                      textScaleFactor: 1.3,
+                                                      textScaler:
+                                                          TextScaler.linear(
+                                                              1.3),
                                                     ),
                                                   );
                                                 }

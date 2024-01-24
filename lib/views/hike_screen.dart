@@ -42,6 +42,7 @@ class _HikeScreenState extends State<HikeScreen> {
             ),
           );
         }
+        // ignore: deprecated_member_use
         return WillPopScope(
           onWillPop: () => model.onWillPop(context),
           child: Scaffold(
@@ -184,7 +185,6 @@ class _HikeScreenState extends State<HikeScreen> {
                         alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
                           onPressed: () {
-                            //TODO: back to group screen
                             navigationService!.pop();
                           },
                           backgroundColor: kYellow,

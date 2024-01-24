@@ -20,7 +20,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
-  Future<bool?> _onPopHome() async {
+  Future<bool?> onPopHome() async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(

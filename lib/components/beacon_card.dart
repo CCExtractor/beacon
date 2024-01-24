@@ -109,7 +109,7 @@ class BeaconCustomWidgets {
                         ),
                       ),
                       SizedBox(height: 4.0),
-                      Text('Passkey: ${beacon?.shortcode}',
+                      Text('Passkey: ${beacon.shortcode}',
                           style: Style.commonTextStyle),
                       SizedBox(height: 4.0),
                       (beacon.startsAt != null)
@@ -135,7 +135,7 @@ class BeaconCustomWidgets {
                               Container(
                                 width: 70.w,
                                 child: Text(
-                                  '${beacon?.title} by ${beacon.leader!.name} ',
+                                  '${beacon.title} by ${beacon.leader!.name} ',
                                   style: Style.titleTextStyle,
                                 ),
                               ),
@@ -181,13 +181,13 @@ class BeaconCustomWidgets {
                               CountdownTimerPage(
                                 dateTime: DateTime.fromMillisecondsSinceEpoch(
                                     beacon.startsAt!),
-                                name: beacon?.title,
+                                name: beacon.title,
                                 beacon: beacon,
                               )
                             ],
                           ),
                           SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon?.shortcode}',
+                          Text('Passkey: ${beacon.shortcode}',
                               style: Style.commonTextStyle),
                           SizedBox(height: 4.0),
                           (beacon.startsAt != null)
@@ -209,7 +209,7 @@ class BeaconCustomWidgets {
                           Container(
                             width: 70.w,
                             child: Text(
-                              '${beacon?.title} by ${beacon.leader!.name} ',
+                              '${beacon.title} by ${beacon.leader!.name} ',
                               style: Style.titleTextStyle,
                             ),
                           ),
@@ -231,7 +231,7 @@ class BeaconCustomWidgets {
                             ),
                           ),
                           SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon?.shortcode}',
+                          Text('Passkey: ${beacon.shortcode}',
                               style: Style.commonTextStyle),
                           SizedBox(height: 4.0),
                           (beacon.startsAt != null)

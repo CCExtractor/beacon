@@ -53,7 +53,7 @@ class GroupCustomWidgets {
                 Container(
                   width: 70.w,
                   child: Text(
-                    '${group?.title} by ${group.leader!.name} ',
+                    '${group.title} by ${group.leader!.name} ',
                     style: Style.titleTextStyle,
                   ),
                 ),
@@ -68,7 +68,7 @@ class GroupCustomWidgets {
                   style: Style.commonTextStyle,
                 ),
                 SizedBox(height: 4.0),
-                Text('Passkey: ${group?.shortcode}',
+                Text('Passkey: ${group.shortcode}',
                     style: Style.commonTextStyle),
               ],
             ),
