@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/services/validators.dart';
@@ -7,6 +9,8 @@ import 'package:beacon/view_model/auth_screen_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/loading_screen.dart';
@@ -129,6 +133,36 @@ class _AuthScreenState extends State<AuthScreen>
                                 ],
                               ),
                             ),
+                            IconButton(
+                                onPressed: () async {
+                                  try {
+                                    final GoogleSignInAccount? googleUser =
+                                        await GoogleSignIn(
+                                      //     serverClientId: '289316832965-k9d28ajkk2l4spf9n9l82c65is9b8kfu.apps.googleusercontent.com',
+                                      clientId:
+                                          '289316832965-k9d28ajkk2l4spf9n9l82c65is9b8kfu.apps.googleusercontent.com',
+                                      scopes: [
+                                        'email',
+                                        'https://www.googleapis.com/auth/contacts.readonly',
+                                        "https://www.googleapis.com/auth/userinfo.profile"
+                                      ],
+                                    ).signIn();
+                                    final GoogleSignInAuthentication?
+                                        googleAuth =
+                                        await googleUser?.authentication;
+                                    log(googleAuth!.idToken.toString());
+
+                                    final user = decodeIdToken(
+                                        googleAuth.idToken.toString());
+                                    log(user.toString());
+                                  } catch (e) {
+                                    log(e.toString());
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.abc,
+                                  size: 30,
+                                ))
                           ],
                         ),
                       ),
@@ -139,6 +173,11 @@ class _AuthScreenState extends State<AuthScreen>
       },
       // ),
     );
+  }
+
+  Map<String, dynamic> decodeIdToken(String idToken) {
+    final decoded = Jwt.parseJwt(idToken);
+    return decoded;
   }
 
   Widget _buildMenuBar(BuildContext context, AuthViewModel model) {

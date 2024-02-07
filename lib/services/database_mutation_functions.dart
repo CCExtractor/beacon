@@ -23,7 +23,10 @@ class DataBaseMutationFunctions {
   init() async {
     clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
     ValueNotifier(clientNonAuth);
-    clientAuth = await graphqlConfig!.authClient();
+    if (1 == 1) {
+      log('this is started');
+      clientAuth = await graphqlConfig!.authClient();
+    }
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
     _groupQuery = GroupQueries();
@@ -192,6 +195,7 @@ class DataBaseMutationFunctions {
         navigationService!.pushReplacementScreen('/auth');
       }
     } else if (result.data != null && result.isConcrete) {
+      log('data fetched');
       User userInfo = User.fromJson(
         result.data!['me'] as Map<String, dynamic>,
       );
