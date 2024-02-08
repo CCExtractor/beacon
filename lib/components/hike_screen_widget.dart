@@ -109,8 +109,7 @@ class HikeScreenWidget extends ChangeNotifier {
       onPressed: () async {
         final mapController = await googleMapControllerCompleter.future;
         // sanity check.
-        if (mapController == null ||
-            googleMapControllerCompleter.isCompleted == false) return;
+        if (googleMapControllerCompleter.isCompleted == false) return;
         if (!await connectionChecker.checkForInternetConnection()) {
           navigationService.showSnackBar(
               'Cannot share the route, please check your internet connection.');
@@ -125,7 +124,7 @@ class HikeScreenWidget extends ChangeNotifier {
         // Creating a file for the image.
         File imageFile = await File('${appDir.path}/shareImage.png').create();
         //writing the image to the file we just created so that it can be shared.
-        imageFile.writeAsBytesSync(image);
+        imageFile.writeAsBytesSync(image!);
         // initial coordinates
         Coordinates coordinates = Coordinates(
           beaconRoute.first.latitude,
@@ -144,7 +143,7 @@ class HikeScreenWidget extends ChangeNotifier {
             await Geocoder.local.findAddressesFromCoordinates(coordinates);
         // All the neccessary info should be here.
         String textToShare =
-            "${beacon.title} Beacon started at: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()} from: ${initialAddress.first.addressLine}.\n\nIt will end on: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}.\n\nBeacon's current location is: ${currentAddress.first.addressLine}.\n\nBeacon's current leader is: ${beacon.leader.name}.\n\nTo join this beacon, enter this code in the app: ${beacon.shortcode}.\nYou can also join the beacon by clicking the following link: https://beacon.aadibajpai.com/?shortcode=${beacon.shortcode}";
+            "${beacon.title} Beacon started at: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()} from: ${initialAddress.first.addressLine}.\n\nIt will end on: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}.\n\nBeacon's current location is: ${currentAddress.first.addressLine}.\n\nBeacon's current leader is: ${beacon.leader!.name}.\n\nTo join this beacon, enter this code in the app: ${beacon.shortcode}.\nYou can also join the beacon by clicking the following link: https://beacon.aadibajpai.com/?shortcode=${beacon.shortcode}";
         //Will be used as subject if shared via email, else isnt used.
         String subjectToShare = "${beacon.title} beacons's route";
         await Share.shareXFiles([XFile(imageFile.path)],
@@ -219,11 +218,11 @@ class HikeScreenWidget extends ChangeNotifier {
                     return ListTile(
                       onLongPress: () async {
                         model.relayBeacon(
-                            model.hikers[index].name, model.hikers[index].id);
+                            model.hikers[index].name!, model.hikers[index].id!);
                       },
                       leading: CircleAvatar(
                         backgroundColor:
-                            model.isBeaconExpired ? Colors.grey : kYellow,
+                            model.isBeaconExpired! ? Colors.grey : kYellow,
                         radius: 18,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
@@ -234,30 +233,31 @@ class HikeScreenWidget extends ChangeNotifier {
                         ),
                       ),
                       title: Text(
-                        model.hikers[index].name,
+                        model.hikers[index].name!,
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
-                      trailing: model.hikers[index].id == model.beacon.leader.id
-                          ? GestureDetector(
-                              onDoubleTap: () {
-                                isLeader
-                                    ? Fluttertoast.showToast(
-                                        msg:
-                                            'Only beacon holder has access to change the duration')
-                                    //TODO: enable this once backend has updated.
-                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                                    // : DialogBoxes.changeDurationDialog(context);
-                                    : Container();
-                              },
-                              child: Icon(
-                                Icons.room,
-                                color: model.isBeaconExpired
-                                    ? Colors.grey
-                                    : kYellow,
-                                size: 40,
-                              ),
-                            )
-                          : Container(width: 10),
+                      trailing:
+                          model.hikers[index].id == model.beacon!.leader!.id
+                              ? GestureDetector(
+                                  onDoubleTap: () {
+                                    isLeader
+                                        ? Fluttertoast.showToast(
+                                            msg:
+                                                'Only beacon holder has access to change the duration')
+                                        //TODO: enable this once backend has updated.
+                                        //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                        // : DialogBoxes.changeDurationDialog(context);
+                                        : Container();
+                                  },
+                                  child: Icon(
+                                    Icons.room,
+                                    color: model.isBeaconExpired!
+                                        ? Colors.grey
+                                        : kYellow,
+                                    size: 40,
+                                  ),
+                                )
+                              : Container(width: 10),
                     );
                   },
                 ),

@@ -17,43 +17,43 @@ class BeaconCustomWidgets {
     bool hasEnded;
     bool willStart;
     hasStarted = DateTime.now()
-        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
     hasEnded = DateTime.now()
-        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt));
+        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!));
     willStart = DateTime.now()
-        .isBefore(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt));
+        .isBefore(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
     return GestureDetector(
       onTap: () async {
         bool isJoinee = false;
-        for (var i in beacon.followers) {
+        for (var i in beacon.followers!) {
           if (i.id == userConfig.currentUser.id) {
             isJoinee = true;
           }
         }
         if (!hasStarted) {
           navigationService.showSnackBar(
-            'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+            'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
           );
           return;
         }
         if (hasStarted &&
-            (beacon.leader.id == userConfig.currentUser.id || isJoinee)) {
+            (beacon.leader?.id == userConfig.currentUser.id || isJoinee)) {
           navigationService.pushScreen('/hikeScreen',
               arguments: HikeScreen(
                 beacon,
-                isLeader: (beacon.leader.id == userConfig.currentUser.id),
+                isLeader: (beacon.leader!.id == userConfig.currentUser.id),
               ));
         } else {
           await databaseFunctions.init();
-          final Beacon _beacon =
-              await databaseFunctions.joinBeacon(beacon.shortcode);
+          final Beacon? _beacon =
+              await databaseFunctions.joinBeacon(beacon.shortcode!);
           if (!hasStarted) {
             navigationService.showSnackBar(
-              'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+              'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
             );
             return;
           }
-          if (hasStarted && _beacon != null) {
+          if (hasStarted) {
             navigationService.pushScreen('/hikeScreen',
                 arguments: HikeScreen(beacon, isLeader: false));
           }
@@ -80,7 +80,7 @@ class BeaconCustomWidgets {
                           Container(
                             width: 70.w,
                             child: Text(
-                              '${beacon?.title} by ${beacon.leader.name} ',
+                              '${beacon.title} by ${beacon.leader!.name!} ',
                               style: Style.titleTextStyle,
                             ),
                           ),
@@ -108,18 +108,18 @@ class BeaconCustomWidgets {
                         ),
                       ),
                       SizedBox(height: 4.0),
-                      Text('Passkey: ${beacon?.shortcode}',
+                      Text('Passkey: ${beacon.shortcode}',
                           style: Style.commonTextStyle),
                       SizedBox(height: 4.0),
                       (beacon.startsAt != null)
                           ? Text(
-                              'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                              'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
                               style: Style.commonTextStyle)
                           : Container(),
                       SizedBox(height: 4.0),
                       (beacon.expiresAt != null)
                           ? Text(
-                              'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                              'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
                               style: Style.commonTextStyle)
                           : Container(),
                     ],
@@ -134,7 +134,7 @@ class BeaconCustomWidgets {
                               Container(
                                 width: 70.w,
                                 child: Text(
-                                  '${beacon?.title} by ${beacon.leader.name} ',
+                                  '${beacon.title} by ${beacon.leader!.name} ',
                                   style: Style.titleTextStyle,
                                 ),
                               ),
@@ -179,25 +179,25 @@ class BeaconCustomWidgets {
                               ),
                               CountdownTimerPage(
                                 dateTime: DateTime.fromMillisecondsSinceEpoch(
-                                    beacon.startsAt),
-                                name: beacon?.title,
+                                    beacon.startsAt!),
+                                name: beacon.title,
                                 beacon: beacon,
                               )
                             ],
                           ),
                           SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon?.shortcode}',
+                          Text('Passkey: ${beacon.shortcode}',
                               style: Style.commonTextStyle),
                           SizedBox(height: 4.0),
                           (beacon.startsAt != null)
                               ? Text(
-                                  'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
                           SizedBox(height: 4.0),
                           (beacon.expiresAt != null)
                               ? Text(
-                                  'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
                         ],
@@ -208,7 +208,7 @@ class BeaconCustomWidgets {
                           Container(
                             width: 70.w,
                             child: Text(
-                              '${beacon?.title} by ${beacon.leader.name} ',
+                              '${beacon.title} by ${beacon.leader!.name} ',
                               style: Style.titleTextStyle,
                             ),
                           ),
@@ -230,18 +230,18 @@ class BeaconCustomWidgets {
                             ),
                           ),
                           SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon?.shortcode}',
+                          Text('Passkey: ${beacon.shortcode}',
                               style: Style.commonTextStyle),
                           SizedBox(height: 4.0),
                           (beacon.startsAt != null)
                               ? Text(
-                                  'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}',
+                                  'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
                           SizedBox(height: 4.0),
                           (beacon.expiresAt != null)
                               ? Text(
-                                  'Expired At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)).toString()}',
+                                  'Expired At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
                                   style: Style.commonTextStyle)
                               : Container(),
                         ],

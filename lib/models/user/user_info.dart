@@ -40,21 +40,21 @@ class User extends HiveObject {
   }
 
   @HiveField(0)
-  String id;
+  String? id;
   @HiveField(1)
-  String authToken;
+  String? authToken;
   @HiveField(2)
-  String name;
+  String? name;
   @HiveField(3)
-  String email;
+  String? email;
   @HiveField(4)
-  List<Beacon> beacon = [];
+  List<Beacon>? beacon = [];
   @HiveField(5)
-  List<Group> groups = [];
+  List<Group>? groups = [];
   @HiveField(6)
-  Location location;
+  Location? location;
   @HiveField(7)
-  bool isGuest = false;
+  bool? isGuest = false;
 
   print() {
     debugPrint('authToken: ${this.authToken}');
@@ -65,10 +65,6 @@ class User extends HiveObject {
     debugPrint('beacons: ${this.beacon}');
     debugPrint('groups: ${this.groups}');
   }
-
-  // updateBeacon(List<String> beaconList) {
-  //   this.beacon = beaconList;
-  // }
 
   update(User details) {
     this.authToken = details.authToken;

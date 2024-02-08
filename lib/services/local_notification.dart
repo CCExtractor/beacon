@@ -32,9 +32,9 @@ class LocalNotification {
 
   Future<void> onSelectNotification(notificationResponse) async {
     if (notificationResponse != null) {
-      Beacon beacon =
+      Beacon? beacon =
           await databaseFunctions.fetchBeaconInfo(notificationResponse.payload);
-      bool isLeader = beacon.leader.id == userConfig.currentUser.id;
+      bool isLeader = beacon!.leader!.id == userConfig.currentUser.id;
       navigationService.pushScreen('/hikeScreen',
           arguments: HikeScreen(beacon, isLeader: isLeader));
     }
@@ -48,10 +48,10 @@ class LocalNotification {
   Future<void> scheduleNotification(Beacon beacon) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
-      'Hike ' + beacon.title + ' has started',
+      'Hike ' + beacon.title! + ' has started',
       'Click here to join!',
       tz.TZDateTime.from(
-          DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
+          DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!), tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
@@ -74,10 +74,10 @@ class LocalNotification {
     );
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
-      'Reminder: ' + beacon.title + ' will start in an hour',
+      'Reminder: ' + beacon.title! + ' will start in an hour',
       'Get Ready!',
       tz.TZDateTime.from(
-              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local)
+              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!), tz.local)
           .subtract(Duration(hours: 1)),
       NotificationDetails(
         android: AndroidNotificationDetails(

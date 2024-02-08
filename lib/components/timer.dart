@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
 class CountdownTimerPage extends StatefulWidget {
-  final String name;
-  final DateTime dateTime;
-  final Beacon beacon;
+  final String? name;
+  final DateTime? dateTime;
+  final Beacon? beacon;
   CountdownTimerPage(
-      {Key key,
+      {Key? key,
       @required this.dateTime,
       @required this.name,
       @required this.beacon})
@@ -21,13 +21,13 @@ class CountdownTimerPage extends StatefulWidget {
 
 class _CountdownTimerPageState extends State<CountdownTimerPage>
     with SingleTickerProviderStateMixin {
-  CountdownTimerController controller;
+  CountdownTimerController? controller;
   int endTime = 0;
   @override
   void initState() {
     super.initState();
     setState(() {});
-    int timeDiff = widget.dateTime.difference(DateTime.now()).inSeconds;
+    int timeDiff = widget.dateTime!.difference(DateTime.now()).inSeconds;
     setState(() {
       endTime = DateTime.now().millisecondsSinceEpoch + 1000 * timeDiff;
     });
@@ -56,7 +56,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
           label: 'Click to Join',
           onPressed: () async {
             bool isLeader =
-                widget.beacon.leader.id == userConfig.currentUser.id;
+                widget.beacon!.leader!.id == userConfig.currentUser.id;
             navigationService.pushScreen(
               '/hikeScreen',
               arguments: HikeScreen(widget.beacon, isLeader: isLeader),
@@ -71,9 +71,9 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
   Widget build(BuildContext context) {
     return CountdownTimer(
       controller: controller,
-      widgetBuilder: (_, CurrentRemainingTime time) {
+      widgetBuilder: (_, time) {
         return Text(
-          '${time?.days ?? 0} : ${time?.hours ?? 0} : ${time?.min ?? 0} : ${time?.sec ?? 0}',
+          '${time!.days ?? 0} : ${time.hours ?? 0} : ${time.min ?? 0} : ${time.sec ?? 0}',
           style: TextStyle(
               color: const Color(0xffb6b2df),
               fontSize: 14.0,
@@ -85,7 +85,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 }

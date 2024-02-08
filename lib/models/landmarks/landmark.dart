@@ -17,9 +17,9 @@ class Landmark extends HiveObject {
   }
 
   @HiveField(0)
-  String title;
+  String? title;
   @HiveField(1)
-  Location location;
+  Location? location;
 
   print() {
     debugPrint('title: ${this.title}');

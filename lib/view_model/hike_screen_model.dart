@@ -26,25 +26,25 @@ import 'package:rxdart/rxdart.dart';
 
 class HikeScreenViewModel extends BaseModel {
   bool modelIsReady = false;
-  Beacon beacon;
+  Beacon? beacon;
   Set<String> followerId = {};
-  bool isGeneratingLink = false, isReferred, isBeaconExpired = false;
+  bool? isGeneratingLink = false, isReferred, isBeaconExpired = false;
   List<User> hikers = [];
   List<LatLng> route = [];
   Duration newDuration = Duration(seconds: 0);
   Completer<GoogleMapController> mapController = Completer();
-  String address, prevAddress;
+  String? address, prevAddress;
   bool isBusy = false;
   Set<Marker> markers = {};
   Set<Polyline> polylines = Set<Polyline>();
-  StreamSubscription _leaderLocation;
-  Stream beaconLocationStream, beaconJoinedStream, mergedStream;
+  StreamSubscription? _leaderLocation;
+  Stream? beaconLocationStream, beaconJoinedStream, mergedStream;
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   final GlobalKey<FormState> landmarkFormKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
   Location loc = new Location();
-  GraphQLClient graphQlClient;
+  GraphQLClient? graphQlClient;
   PanelController panelController = PanelController();
   final List<StreamSubscription> mergedStreamSubscriptions = [];
   bool isLeader = false;
@@ -54,11 +54,11 @@ class HikeScreenViewModel extends BaseModel {
     if (newLeaderID == userConfig.currentUser.id)
       Fluttertoast.showToast(msg: 'Yeah, that\'s you');
     else {
-      if (beacon.leader.id == userConfig.currentUser.id) {
+      if (beacon!.leader!.id == userConfig.currentUser.id) {
         await databaseFunctions.init();
         final changedLeader =
-            databaseFunctions.changeLeader(beacon.id, newLeaderID);
-        if (changedLeader != null) beacon.leader.id = newLeaderID;
+            databaseFunctions.changeLeader(beacon!.id!, newLeaderID);
+        beacon!.leader!.id = newLeaderID;
         Fluttertoast.showToast(msg: 'Beacon handed over to $newLeaderName');
         notifyListeners();
       } else {
@@ -71,7 +71,7 @@ class HikeScreenViewModel extends BaseModel {
     return (await showDialog(
           context: context,
           builder: (context) => DialogBoxes.showExitDialog(
-              context, isLeader, hikers.length, isBeaconExpired),
+              context, isLeader, hikers.length, isBeaconExpired!),
         )) ??
         false;
   }
@@ -107,7 +107,7 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> setPolyline() async {
-    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       EnvironmentConfig.googleMapApi, // Google Maps API Key
       PointLatLng(route.first.latitude, route.first.longitude),
       PointLatLng(route.last.latitude, route.last.longitude),
@@ -156,21 +156,21 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> updateModel(Beacon value) async {
-    Coordinates coordinates = Coordinates(
-        double.parse(beacon.location.lat), double.parse(beacon.location.lon));
+    Coordinates coordinates = Coordinates(double.parse(beacon!.location!.lat!),
+        double.parse(beacon!.location!.lon!));
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+    isBeaconExpired = DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
         .isBefore(DateTime.now());
-    hikers.add(value.leader);
-    for (var i in value.followers) {
+    hikers.add(value.leader!);
+    for (var i in value.followers!) {
       if (!followerId.contains(i.id)) {
         hikers.add(i);
-        followerId.add(i.id);
+        followerId.add(i.id!);
       }
     }
-    var lat = double.parse(value.location.lat);
-    var lon = double.parse(value.location.lon);
+    var lat = double.parse(value.location!.lat!);
+    var lon = double.parse(value.location!.lon!);
     route.add(LatLng(lat, lon));
     address = addresses.first.addressLine;
     markers.add(Marker(
@@ -188,11 +188,11 @@ class HikeScreenViewModel extends BaseModel {
         title: 'Current Location',
       ),
     ));
-    for (var i in value.landmarks) {
+    for (var i in value.landmarks!) {
       markers.add(Marker(
         markerId: MarkerId((markers.length + 1).toString()),
-        position:
-            LatLng(double.parse(i.location.lat), double.parse(i.location.lon)),
+        position: LatLng(
+            double.parse(i.location!.lat!), double.parse(i.location!.lon!)),
         infoWindow: InfoWindow(
           title: '${i.title}',
         ),
@@ -203,7 +203,7 @@ class HikeScreenViewModel extends BaseModel {
     //   markers.add(Marker(
     //     markerId: MarkerId((markers.length + 1).toString()),
     //     position: LatLng(
-    //         double.parse(i.location.lat), double.parse(i.location.lon)),
+    //         double.parse(i.location!.lat), double.parse(i.location!.lon)),
     //     infoWindow: InfoWindow(
     //       title: '${i.name}',
     //     ),
@@ -215,76 +215,71 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> fetchData() async {
-    await databaseFunctions.fetchBeaconInfo(beacon.id).then((value) async {
-      if (value != null) {
-        beacon = value;
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-      } else {
-        value = hiveDb.beaconsBox.get(beacon.id);
-        beacon = value;
-      }
-      await updateModel(value);
+    await databaseFunctions.fetchBeaconInfo(beacon!.id!).then((value) async {
+      beacon = value;
+      await hiveDb.putBeaconInBeaconBox(beacon!.id!, beacon!);
+      await updateModel(value!);
     });
   }
 
   Future<void> setupSubscriptions(bool isExpired) async {
-    if (isBeaconExpired || isExpired) return;
+    if (isBeaconExpired! || isExpired) return;
     if (isLeader) {
       // distanceFilter (in m) can be changed to reduce the backend calls
       await loc.changeSettings(interval: 3000, distanceFilter: 0.0);
       _leaderLocation = loc.onLocationChanged.listen(
         (LocationData currentLocation) async {
-          if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
-              .isBefore(DateTime.now())) _leaderLocation.cancel();
-          Coordinates coordinates =
-              Coordinates(currentLocation.latitude, currentLocation.longitude);
+          if (DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
+              .isBefore(DateTime.now())) _leaderLocation!.cancel();
+          Coordinates coordinates = Coordinates(
+              currentLocation.latitude!, currentLocation.longitude!);
           var addresses =
               await Geocoder.local.findAddressesFromCoordinates(coordinates);
 
-          String _address = addresses.first.addressLine;
+          String _address = addresses.first.addressLine!;
           if (address != _address) {
             databaseFunctions.init();
-            await databaseFunctions.updateLeaderLoc(beacon.id,
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+            await databaseFunctions.updateLeaderLoc(beacon!.id!,
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             address = _address;
             route.add(
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             updatePinOnMap(
-                LatLng(currentLocation.latitude, currentLocation.longitude));
+                LatLng(currentLocation.latitude!, currentLocation.longitude!));
             setPolyline();
             notifyListeners();
           }
         },
       );
     } else {
-      beaconLocationStream = graphQlClient.subscribe(
+      beaconLocationStream = graphQlClient!.subscribe(
         SubscriptionOptions(
           document: BeaconQueries().beaconLocationSubGql,
           variables: <String, dynamic>{
-            'id': beacon.id,
+            'id': beacon!.id!,
           },
         ),
       );
     }
 
-    beaconJoinedStream = graphQlClient.subscribe(
+    beaconJoinedStream = graphQlClient!.subscribe(
       SubscriptionOptions(
         document: BeaconQueries().beaconJoinedSubGql,
         variables: <String, dynamic>{
-          'id': beacon.id,
+          'id': beacon!.id!,
         },
       ),
     );
     if (!isLeader) {
-      mergedStream = MergeStream([beaconLocationStream, beaconJoinedStream]);
+      mergedStream = MergeStream([beaconLocationStream!, beaconJoinedStream!]);
     } else {
       mergedStream = beaconJoinedStream;
     }
-    StreamSubscription<dynamic> mergeStreamSubscription;
-    mergeStreamSubscription = mergedStream.listen((event) async {
-      if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+    StreamSubscription<dynamic>? mergeStreamSubscription;
+    mergeStreamSubscription = mergedStream!.listen((event) async {
+      if (DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
           .isBefore(DateTime.now())) {
-        mergeStreamSubscription.cancel();
+        mergeStreamSubscription!.cancel();
         isBeaconExpired = true;
         notifyListeners();
         return;
@@ -311,7 +306,7 @@ class HikeScreenViewModel extends BaseModel {
                   trailing: IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
-                        OverlaySupportEntry.of(context).dismiss();
+                        OverlaySupportEntry.of(context)!.dismiss();
                       }),
                 ),
               ),
@@ -320,9 +315,9 @@ class HikeScreenViewModel extends BaseModel {
 
           if (!followerId.contains(newJoinee.id)) {
             hikers.add(newJoinee);
-            followerId.add(newJoinee.id);
-            beacon.followers.add(newJoinee);
-            await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
+            followerId.add(newJoinee.id!);
+            beacon!.followers!.add(newJoinee);
+            await hiveDb.putBeaconInBeaconBox(beacon!.id!, beacon!);
           }
           // markers.add(Marker(
           //   markerId: MarkerId((markers.length + 1).toString()),
@@ -342,14 +337,14 @@ class HikeScreenViewModel extends BaseModel {
               double.parse(event.data['beaconLocation']['lon']));
           var addresses = await Geocoder.local.findAddressesFromCoordinates(
               Coordinates(coord.latitude, coord.longitude));
-          beacon.route.add(
+          beacon!.route!.add(
             locModel.Location(
               lat: coord.latitude.toString(),
               lon: coord.longitude.toString(),
             ),
           );
-          await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-          String _address = addresses.first.addressLine;
+          await hiveDb.putBeaconInBeaconBox(beacon!.id!, beacon!);
+          String _address = addresses.first.addressLine!;
           route.add(coord);
           updatePinOnMap(coord);
           address = _address;
@@ -363,17 +358,17 @@ class HikeScreenViewModel extends BaseModel {
   }
 
   Future<void> initialise(Beacon beaconParsed, bool widgetIsLeader) async {
-    beacon = hiveDb.beaconsBox.get(beaconParsed.id);
+    beacon = hiveDb.beaconsBox!.get(beaconParsed.id);
     isLeader = widgetIsLeader;
 
     if (await connectionChecker.checkForInternetConnection()) {
       await fetchData();
       graphQlClient = GraphQLConfig().graphQlClient();
       await setupSubscriptions(
-          DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt)
+          DateTime.fromMillisecondsSinceEpoch(beacon!.expiresAt!)
               .isBefore(DateTime.now()));
     } else {
-      await updateModel(beacon);
+      await updateModel(beacon!);
     }
     modelIsReady = true;
     notifyListeners();
@@ -395,15 +390,14 @@ class HikeScreenViewModel extends BaseModel {
 
   void dispose() {
     if (_leaderLocation != null) {
-      _leaderLocation.cancel();
+      _leaderLocation!.cancel();
     }
-    if (mergedStreamSubscriptions != null)
-      for (var streamSub in mergedStreamSubscriptions) {
-        if (streamSub != null) streamSub.cancel();
-      }
+    for (var streamSub in mergedStreamSubscriptions) {
+      streamSub.cancel();
+    }
     connectionChecker.checkForInternetConnection().then(
       (value) async {
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon,
+        await hiveDb.putBeaconInBeaconBox(beacon!.id!, beacon!,
             fetchFromNetwork: value);
       },
     );
@@ -421,11 +415,11 @@ class HikeScreenViewModel extends BaseModel {
     var title,
     var loc,
   ) async {
-    if (landmarkFormKey.currentState.validate()) {
+    if (landmarkFormKey.currentState!.validate()) {
       navigationService.pop();
       await databaseFunctions.init();
       await databaseFunctions
-          .createLandmark(title, loc, beacon.id)
+          .createLandmark(title, loc, beacon!.id!)
           .then((value) async {
         markers.add(Marker(
           markerId: MarkerId((markers.length + 1).toString()),
@@ -435,10 +429,11 @@ class HikeScreenViewModel extends BaseModel {
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ));
-        beacon.landmarks.add(value);
-        await hiveDb.putBeaconInBeaconBox(beacon.id, beacon);
-        print(hiveDb.beaconsBox.get(beacon.id).landmarks.length.toString() +
-            'asdasdasd');
+        beacon!.landmarks!.add(value!);
+        await hiveDb.putBeaconInBeaconBox(beacon!.id!, beacon!);
+        print(
+            hiveDb.beaconsBox!.get(beacon!.id!)!.landmarks!.length.toString() +
+                'asdasdasd');
         notifyListeners();
       });
     }

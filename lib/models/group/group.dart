@@ -39,17 +39,17 @@ class Group extends HiveObject {
   }
 
   @HiveField(0)
-  String id;
+  String? id;
   @HiveField(1)
-  String title;
+  String? title;
   @HiveField(2)
-  String shortcode;
+  String? shortcode;
   @HiveField(3)
-  User leader;
+  User? leader;
   @HiveField(4)
-  List<User> members = [];
+  List<User>? members = [];
   @HiveField(5)
-  List<Beacon> beacons = [];
+  List<Beacon>? beacons = [];
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');

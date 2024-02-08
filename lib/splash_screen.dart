@@ -9,20 +9,20 @@ import 'package:uni_links/uni_links.dart';
 import 'components/loading_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({@required Key key}) : super(key: key);
+  const SplashScreen({@required Key? key}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Uri _initialUri;
-  Uri _latestUri;
-  StreamSubscription _sub;
+  Uri? _initialUri;
+  Uri? _latestUri;
+  StreamSubscription? _sub;
   bool isCheckingUrl = false;
 
   Future<void> _handleInitialUri() async {
-    _sub = uriLinkStream.listen((Uri uri) {
+    _sub = uriLinkStream.listen((Uri? uri) {
       if (!mounted) return;
       setState(() {
         _latestUri = uri;
@@ -48,35 +48,25 @@ class _SplashScreenState extends State<SplashScreen> {
     await databaseFunctions.init();
     await userConfig.userLoggedIn().then((value) async {
       if (_latestUri == null && _initialUri == null) {
-        if (value || hiveDb.currentUserBox.containsKey('user')) {
+        if (value || hiveDb.currentUserBox!.containsKey('user')) {
           navigationService.pushReplacementScreen('/main');
         } else {
           navigationService.pushReplacementScreen('/auth');
         }
       } else {
-        if (_initialUri != null) {
-          var shortcode = _initialUri.queryParameters['shortcode'];
-          if (value) {
-            await databaseFunctions.joinBeacon(shortcode).then((val) {
-              if (val != null) {
-                navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(val, isLeader: false));
-              } else {
-                navigationService.pushReplacementScreen('/main');
-              }
-            });
-          } else {
-            // login in anonymously and join hike
-            await databaseFunctions.signup(name: "Anonymous");
-            await databaseFunctions.joinBeacon(shortcode).then((val) async {
-              if (value != null) {
-                navigationService.pushScreen('/hikeScreen',
-                    arguments: HikeScreen(val, isLeader: false));
-              } else {
-                navigationService.pushReplacementScreen('/main');
-              }
-            });
-          }
+        var shortcode = _initialUri!.queryParameters['shortcode'];
+        if (value) {
+          await databaseFunctions.joinBeacon(shortcode!).then((val) {
+            navigationService.pushScreen('/hikeScreen',
+                arguments: HikeScreen(val, isLeader: false));
+          });
+        } else {
+          // login in anonymously and join hike
+          await databaseFunctions.signup(name: "Anonymous");
+          await databaseFunctions.joinBeacon(shortcode!).then((val) async {
+            navigationService.pushScreen('/hikeScreen',
+                arguments: HikeScreen(val, isLeader: false));
+          });
         }
       }
     });
@@ -90,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
-    _sub.cancel();
+    _sub!.cancel();
     super.dispose();
   }
 

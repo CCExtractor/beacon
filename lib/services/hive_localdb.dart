@@ -9,9 +9,9 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/group/group.dart';
 
 class HiveLocalDb {
-  Box<User> currentUserBox;
-  Box<Beacon> beaconsBox;
-  Box<Group> groupsBox;
+  Box<User>? currentUserBox;
+  Box<Beacon>? beaconsBox;
+  Box<Group>? groupsBox;
 
   Future<void> init() async {
     final appDocumentDirectory =
@@ -30,36 +30,28 @@ class HiveLocalDb {
 
   Future<void> saveUserInHive(User currentUser) async {
     final box = currentUserBox;
-    if (currentUserBox.containsKey('user')) {
-      currentUserBox.delete('user');
+    if (currentUserBox!.containsKey('user')) {
+      currentUserBox!.delete('user');
     }
-    return await box.put('user', currentUser);
+    return await box!.put('user', currentUser);
   }
 
-  Future<void> putBeaconInBeaconBox(String id, Beacon beacon,
+  Future<void> putBeaconInBeaconBox(String id, Beacon? beacon,
       {bool fetchFromNetwork = false}) async {
-    if (beaconsBox.containsKey(id)) {
-      await beaconsBox.delete(id);
+    if (beaconsBox!.containsKey(id)) {
+      await beaconsBox!.delete(id);
     }
     if (fetchFromNetwork) {
       databaseFunctions.init();
       beacon = await databaseFunctions.fetchBeaconInfo(id);
     }
-    await beaconsBox.put(id, beacon);
+    await beaconsBox!.put(id, beacon!);
   }
 
-  List<Beacon> getAllUserBeacons() {
-    final user = currentUserBox.get('user');
-    print("asd" + user.id);
-    if (user == null) {
-      navigationService
-          .showSnackBar('Please connect to internet to fetch your beacons');
-      return null;
-    }
-    final userBeacons = beaconsBox.values.toList();
-    if (userBeacons == null) {
-      return user.beacon;
-    }
+  List<Beacon>? getAllUserBeacons() {
+    final user = currentUserBox!.get('user');
+    print("asd" + user!.id!);
+    final userBeacons = beaconsBox!.values.toList();
     return userBeacons;
   }
 }

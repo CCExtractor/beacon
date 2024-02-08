@@ -37,7 +37,7 @@ class CreateJoinGroupDialog {
                           child: TextFormField(
                             style: TextStyle(fontSize: 22.0),
                             validator: (value) =>
-                                Validator.validateBeaconTitle(value),
+                                Validator.validateBeaconTitle(value!),
                             onChanged: (name) {
                               model.title = name;
                             },
@@ -109,7 +109,7 @@ class CreateJoinGroupDialog {
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.characters,
                         style: TextStyle(fontSize: 22.0),
-                        validator: (value) => Validator.validatePasskey(value),
+                        validator: (value) => Validator.validatePasskey(value!),
                         onChanged: (key) {
                           model.enteredGroupCode = key.toUpperCase();
                         },
@@ -186,7 +186,7 @@ class CreateJoinBeaconDialog {
                           child: TextFormField(
                             style: TextStyle(fontSize: 22.0),
                             validator: (value) =>
-                                Validator.validateBeaconTitle(value),
+                                Validator.validateBeaconTitle(value!),
                             onChanged: (name) {
                               model.title = name;
                             },
@@ -231,7 +231,7 @@ class CreateJoinBeaconDialog {
                                         surface: kBlue,
                                       ),
                                     ),
-                                    child: child),
+                                    child: child!),
                               );
                               model.startsAtDate.text = model.startingdate
                                   .toString()
@@ -302,7 +302,7 @@ class CreateJoinBeaconDialog {
                                       ),
                                     ),
                                     // This will change to light theme.
-                                    child: child,
+                                    child: child!,
                                   );
                                 },
                               );
@@ -352,7 +352,7 @@ class CreateJoinBeaconDialog {
                                   await showDurationPicker(
                                 context: context,
                                 initialTime: model.resultingDuration != null
-                                    ? model.resultingDuration
+                                    ? model.resultingDuration!
                                     : Duration(minutes: 30),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -414,14 +414,14 @@ class CreateJoinBeaconDialog {
                                 return;
                               }
                               model.startsAt = DateTime(
-                                model.startingdate.year,
-                                model.startingdate.month,
-                                model.startingdate.day,
-                                model.startingTime.hour,
-                                model.startingTime.minute,
+                                model.startingdate!.year,
+                                model.startingdate!.month,
+                                model.startingdate!.day,
+                                model.startingTime!.hour,
+                                model.startingTime!.minute,
                               );
                               // localNotif.scheduleNotification();
-                              if (model.startsAt.isBefore(DateTime.now())) {
+                              if (model.startsAt!.isBefore(DateTime.now())) {
                                 navigationService.showSnackBar(
                                     "Enter a valid date and time!!");
                                 return;
@@ -465,7 +465,7 @@ class CreateJoinBeaconDialog {
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.characters,
                         style: TextStyle(fontSize: 22.0),
-                        validator: (value) => Validator.validatePasskey(value),
+                        validator: (value) => Validator.validatePasskey(value!),
                         onChanged: (key) {
                           model.enteredPasskey = key.toUpperCase();
                         },

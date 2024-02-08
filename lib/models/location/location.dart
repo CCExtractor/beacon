@@ -14,9 +14,9 @@ class Location extends HiveObject {
   }
 
   @HiveField(0)
-  String lat;
+  String? lat;
   @HiveField(1)
-  String lon;
+  String? lon;
 
   print() {
     debugPrint('lat: ${this.lat}');

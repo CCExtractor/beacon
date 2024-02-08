@@ -3,7 +3,7 @@ import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GraphQLConfig {
-  static String token;
+  static String? token;
   static final HttpLink httpLink = HttpLink(
     EnvironmentConfig.httpEndpoint,
   );

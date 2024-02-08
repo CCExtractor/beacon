@@ -35,7 +35,7 @@ void main() async {
 }
 
 class DemoPageView extends StatelessWidget {
-  const DemoPageView({@required Key key}) : super(key: key);
+  const DemoPageView({@required Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class DemoPageView extends StatelessWidget {
           title: const Text('Demo Page'),
         ),
         body: Container(
-          child: Text(model.title),
+          child: Text(model!.title),
         ),
       ),
     );
