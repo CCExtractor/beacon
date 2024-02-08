@@ -87,49 +87,7 @@ class _GroupScreenState extends State<GroupScreen>
                       Align(
                         alignment: Alignment(0.9, -0.8),
                         child: FloatingActionButton(
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    actionsAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    title: Text(
-                                      (userConfig.currentUser.isGuest)
-                                          ? 'Create Account'
-                                          : 'Logout',
-                                      style: TextStyle(
-                                          fontSize: 25, color: kYellow),
-                                    ),
-                                    content: Text(
-                                      (userConfig.currentUser.isGuest)
-                                          ? 'Would you like to create an account?'
-                                          : 'Are you sure you wanna logout?',
-                                      style: TextStyle(
-                                          fontSize: 16, color: kBlack),
-                                    ),
-                                    actions: <Widget>[
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () =>
-                                            Navigator.of(context).pop(false),
-                                        text: 'No',
-                                        textSize: 18.0,
-                                      ),
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () {
-                                          navigationService.pop();
-                                          model.logout();
-                                        },
-                                        text: 'Yes',
-                                        textSize: 18.0,
-                                      ),
-                                    ],
-                                  )),
+                          onPressed: () => Navigator.of(context).pop(),
                           backgroundColor: kYellow,
                           child: (userConfig.currentUser.isGuest)
                               ? Icon(Icons.person)
