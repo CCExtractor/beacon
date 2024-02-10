@@ -46,13 +46,6 @@ class LocalNotification {
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
-    DateTime now = DateTime.now();
-    DateTime beaconStart = DateTime.fromMillisecondsSinceEpoch(beacon.startsAt);
-
-    if (beaconStart.difference(now).inHours < 1) {
-      print('Beacon start time must be at least an hour from now');
-      return;
-    }
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Hike ' + beacon.title + ' has started',
