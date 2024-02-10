@@ -60,6 +60,10 @@ flutter_icons:
   ios: true
   image_path: "images/icon.jpg"
 
+dependency_overrides:
+  web_socket_channel: 2.2.0
+
+
 flutter:
   uses-material-design: true
 
