@@ -9,11 +9,7 @@ class UserConfig {
 
   Future<bool> userLoggedIn() async {
     final boxUser = hiveDb.currentUserBox;
-    _currentUser = boxUser.get('user');
-    if (_currentUser == null) {
-      _currentUser = User(id: 'null', authToken: 'null');
-      return false;
-    }
+    _currentUser = boxUser!.get('user')!;
     bool userUpdated = true;
     await graphqlConfig.getToken().then((value) async {
       print('${userConfig._currentUser.authToken}');

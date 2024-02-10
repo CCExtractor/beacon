@@ -9,48 +9,50 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-
 import 'package:beacon/components/hike_screen_widget.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 
 import 'package:beacon/utilities/constants.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HikeScreen extends StatefulWidget {
-  final Beacon beacon;
-  final bool isLeader;
+  final Beacon? beacon;
+  final bool? isLeader;
   HikeScreen(this.beacon, {this.isLeader});
   @override
   _HikeScreenState createState() => _HikeScreenState();
 }
 
 class _HikeScreenState extends State<HikeScreen> {
-  double screenHeight, screenWidth;
+  double? screenHeight, screenWidth;
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return BaseView<HikeScreenViewModel>(
       onModelReady: (m) {
-        m.initialise(widget.beacon, widget.isLeader);
+        m.initialise(widget.beacon!, widget.isLeader!);
       },
       builder: (ctx, model, child) {
-        if (!model.modelIsReady) {
+        if (!model!.modelIsReady) {
           return Scaffold(
             body: Center(
               child: LoadingScreen(),
             ),
           );
         }
-        return WillPopScope(
-          onWillPop: () => model.onWillPop(context),
+        return PopScope(
+          canPop: true,
+          onPopInvoked: (value) {
+            model.onWillPop(context);
+          },
           child: Scaffold(
             body: SafeArea(
               child: ModalProgressHUD(
-                inAsyncCall: model.isGeneratingLink || model.isBusy,
+                inAsyncCall: model.isGeneratingLink! || model.isBusy,
                 child: SlidingUpPanel(
                   maxHeight: 60.h,
                   minHeight: 20.h,
@@ -99,9 +101,9 @@ class _HikeScreenState extends State<HikeScreen> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                                 children: [
                                   TextSpan(
-                                    text: model.isBeaconExpired
+                                    text: model.isBeaconExpired!
                                         ? 'Beacon has been expired\n'
-                                        : 'Beacon expiring at ${widget.beacon.expiresAt == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon.expiresAt)).toString()}\n',
+                                        : 'Beacon expiring at ${widget.beacon == null ? '<Fetching data>' : DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(widget.beacon!.expiresAt!)).toString()}\n',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   TextSpan(
@@ -115,9 +117,9 @@ class _HikeScreenState extends State<HikeScreen> {
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   TextSpan(
-                                    text: model.isBeaconExpired
+                                    text: model.isBeaconExpired!
                                         ? ''
-                                        : 'Share this passkey to add user: ${widget.beacon.shortcode}\n',
+                                        : 'Share this passkey to add user: ${widget.beacon!.shortcode}\n',
                                     style: TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -130,7 +132,7 @@ class _HikeScreenState extends State<HikeScreen> {
                     ),
                   ),
                   panel: HikeScreenWidget.panel(
-                      model.scrollController, model, context, widget.isLeader),
+                      model.scrollController, model, context, widget.isLeader!),
                   body: Stack(
                     alignment: Alignment.topCenter,
                     children: <Widget>[
@@ -148,8 +150,8 @@ class _HikeScreenState extends State<HikeScreen> {
                             polylines: model.polylines,
                             initialCameraPosition: CameraPosition(
                                 target: LatLng(
-                                  double.parse(widget.beacon.location.lat),
-                                  double.parse(widget.beacon.location.lon),
+                                  double.parse(widget.beacon!.location!.lat!),
+                                  double.parse(widget.beacon!.location!.lon!),
                                 ),
                                 zoom: CAMERA_ZOOM,
                                 tilt: CAMERA_TILT,
@@ -164,7 +166,7 @@ class _HikeScreenState extends State<HikeScreen> {
                               if (model.panelController.isPanelOpen)
                                 model.panelController.close();
                               else {
-                                String title;
+                                String? title;
                                 HikeScreenWidget
                                     .showCreateLandMarkDialogueDialog(
                                   context,
@@ -178,15 +180,14 @@ class _HikeScreenState extends State<HikeScreen> {
                       ),
                       Align(
                           alignment: Alignment(0.9, -0.98),
-                          child: model.isBeaconExpired
+                          child: model.isBeaconExpired!
                               ? Container()
                               : HikeScreenWidget.shareButton(
-                                  context, widget.beacon.shortcode)),
+                                  context, widget.beacon!.shortcode!)),
                       Align(
                         alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
                           onPressed: () {
-                            //TODO: back to group screen
                             navigationService.pop();
                           },
                           backgroundColor: kYellow,
@@ -197,18 +198,21 @@ class _HikeScreenState extends State<HikeScreen> {
                           ),
                         ),
                       ),
-                      if (!model.isBeaconExpired)
+                      if (!model.isBeaconExpired!)
                         //show the routeSharebutton only when beacon is active(?) and mapcontroller is ready.
                         Align(
-                          alignment: screenHeight > 800
+                          alignment: screenHeight! > 800
                               ? Alignment(0.9, -0.8)
                               : Alignment(0.9, -0.77),
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 500),
                             opacity:
                                 model.mapController.isCompleted ? 1.0 : 0.0,
-                            child: HikeScreenWidget.shareRouteButton(context,
-                                model.beacon, model.mapController, model.route),
+                            child: HikeScreenWidget.shareRouteButton(
+                                context,
+                                model.beacon!,
+                                model.mapController,
+                                model.route),
                           ),
                         ),
                     ],

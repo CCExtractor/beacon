@@ -4,13 +4,13 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class TabIndicationPainter extends CustomPainter {
-  Paint painter;
-  final double dxTarget;
-  final double dxEntry;
-  final double radius;
-  final double dy;
+  Paint? painter;
+  final double? dxTarget;
+  final double? dxEntry;
+  final double? radius;
+  final double? dy;
 
-  final PageController pageController;
+  final PageController? pageController;
 
   TabIndicationPainter(
       {this.dxTarget = 125.0,
@@ -26,27 +26,27 @@ class TabIndicationPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final pos = pageController.position;
+    final pos = pageController!.position;
     double fullExtent =
         (pos.maxScrollExtent - pos.minScrollExtent + pos.viewportDimension);
 
     double pageOffset = pos.extentBefore / fullExtent;
 
-    bool left2right = dxEntry < dxTarget;
-    Offset entry = new Offset(left2right ? dxEntry : dxTarget, dy);
-    Offset target = new Offset(left2right ? dxTarget : dxEntry, dy);
+    bool left2right = dxEntry! < dxTarget!;
+    Offset entry = new Offset(left2right ? dxEntry! : dxTarget!, dy!);
+    Offset target = new Offset(left2right ? dxTarget! : dxEntry!, dy!);
 
     Path path = new Path();
     path.addArc(
-        new Rect.fromCircle(center: entry, radius: radius), 0.5 * pi, 1 * pi);
+        new Rect.fromCircle(center: entry, radius: radius!), 0.5 * pi, 1 * pi);
     path.addRect(
-        new Rect.fromLTRB(entry.dx, dy - radius, target.dx, dy + radius));
+        new Rect.fromLTRB(entry.dx, dy! - radius!, target.dx, dy! + radius!));
     path.addArc(
-        new Rect.fromCircle(center: target, radius: radius), 1.5 * pi, 1 * pi);
+        new Rect.fromCircle(center: target, radius: radius!), 1.5 * pi, 1 * pi);
 
     canvas.translate(size.width * pageOffset, 0.0);
     canvas.drawShadow(path, kLightBlue, 3.0, true);
-    canvas.drawPath(path, painter);
+    canvas.drawPath(path, painter!);
   }
 
   @override

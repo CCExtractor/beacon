@@ -38,14 +38,16 @@ class AuthViewModel extends BaseModel {
   Color rightBg = kBlue;
 
   nextSignup() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService.navigatorKey.currentContext!).unfocus();
     signupValidate = AutovalidateMode.always;
-    if (formKeySignup.currentState.validate()) {
+    if (formKeySignup.currentState!.validate()) {
       setState(ViewState.busy);
       signupValidate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final String signUpSuccess = await databaseFunctions.signup(
-          name: signupNameController.text ?? "Anonymous",
+          name: signupNameController.text.isEmpty
+              ? "Anonymous"
+              : signupNameController.text,
           email: signupEmailController.text,
           password: signupPasswordController.text);
       if (signUpSuccess == logSuccess) {
@@ -79,9 +81,9 @@ class AuthViewModel extends BaseModel {
   }
 
   nextLogin() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService.navigatorKey.currentContext!).unfocus();
     loginValidate = AutovalidateMode.always;
-    if (formKeyLogin.currentState.validate()) {
+    if (formKeyLogin.currentState!.validate()) {
       setState(ViewState.busy);
       loginValidate = AutovalidateMode.disabled;
       await databaseFunctions.init();
@@ -104,7 +106,7 @@ class AuthViewModel extends BaseModel {
   }
 
   void requestFocusForFocusNode(FocusNode focusNode) {
-    FocusScope.of(navigationService.navigatorKey.currentContext)
+    FocusScope.of(navigationService.navigatorKey.currentContext!)
         .requestFocus(focusNode);
   }
 

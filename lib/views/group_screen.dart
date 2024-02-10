@@ -9,7 +9,7 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sizer/sizer.dart';
 
 import '../models/group/group.dart';
@@ -29,17 +29,18 @@ class _GroupScreenState extends State<GroupScreen>
 
   @override
   void initState() {
-    fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
+    fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id!);
     fetchingNearbyBeacons =
-        databaseFunctions.fetchNearbyBeacon(widget.group.id);
+        databaseFunctions.fetchNearbyBeacon(widget.group.id!);
     super.initState();
   }
 
   void reloadList() {
     setState(() {
-      fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
+      fetchingUserBeacons =
+          databaseFunctions.fetchUserBeacons(widget.group.id!);
       fetchingNearbyBeacons =
-          databaseFunctions.fetchNearbyBeacon(widget.group.id);
+          databaseFunctions.fetchNearbyBeacon(widget.group.id!);
     });
   }
 
@@ -47,7 +48,7 @@ class _GroupScreenState extends State<GroupScreen>
   Widget build(BuildContext context) {
     return BaseView<GroupViewModel>(builder: (context, model, child) {
       TabController tabController = new TabController(length: 2, vsync: this);
-      return model.isBusy
+      return model!.isBusy
           ? LoadingScreen()
           : Scaffold(
               resizeToAvoidBottomInset: false,
@@ -75,7 +76,7 @@ class _GroupScreenState extends State<GroupScreen>
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.6,
                           child: Text(
-                            'Welcome to Group ' + widget.group.title,
+                            'Welcome to Group ' + widget.group.title!,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 25,
@@ -96,14 +97,14 @@ class _GroupScreenState extends State<GroupScreen>
                                     actionsAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     title: Text(
-                                      (userConfig.currentUser.isGuest)
+                                      (userConfig.currentUser.isGuest!)
                                           ? 'Create Account'
                                           : 'Logout',
                                       style: TextStyle(
                                           fontSize: 25, color: kYellow),
                                     ),
                                     content: Text(
-                                      (userConfig.currentUser.isGuest)
+                                      (userConfig.currentUser.isGuest!)
                                           ? 'Would you like to create an account?'
                                           : 'Are you sure you wanna logout?',
                                       style: TextStyle(
@@ -131,7 +132,7 @@ class _GroupScreenState extends State<GroupScreen>
                                     ],
                                   )),
                           backgroundColor: kYellow,
-                          child: (userConfig.currentUser.isGuest)
+                          child: (userConfig.currentUser.isGuest!)
                               ? Icon(Icons.person)
                               : Icon(Icons.logout),
                         ),
@@ -153,7 +154,7 @@ class _GroupScreenState extends State<GroupScreen>
                                 borderColor: Colors.white,
                                 buttonColor: kYellow,
                                 onTap: () {
-                                  if (userConfig.currentUser.isGuest) {
+                                  if (userConfig.currentUser.isGuest!) {
                                     navigationService.showSnackBar(
                                         'You need to login with credentials to start a hike');
                                   } else {
@@ -161,7 +162,7 @@ class _GroupScreenState extends State<GroupScreen>
                                         context,
                                         model,
                                         reloadList,
-                                        widget.group.id);
+                                        widget.group.id!);
                                   }
                                 },
                               ),
@@ -227,14 +228,16 @@ class _GroupScreenState extends State<GroupScreen>
                                               if (snapshot.hasError) {
                                                 return Center(
                                                   child: Text(
-                                                    snapshot.error.toString(),
-                                                    textAlign: TextAlign.center,
-                                                    textScaleFactor: 1.3,
-                                                  ),
+                                                      snapshot.error.toString(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      textScaler:
+                                                          TextScaler.linear(
+                                                              1.3)),
                                                 );
                                               }
                                               final List<Beacon> posts =
-                                                  snapshot.data;
+                                                  snapshot.data as List<Beacon>;
                                               return Container(
                                                   alignment: Alignment.center,
                                                   child: posts.length == 0
@@ -298,7 +301,7 @@ class _GroupScreenState extends State<GroupScreen>
                                                           scrollDirection:
                                                               Axis.vertical,
                                                           itemCount:
-                                                              posts?.length,
+                                                              posts.length,
                                                           padding:
                                                               EdgeInsets.all(8),
                                                           itemBuilder:
@@ -345,9 +348,9 @@ class _GroupScreenState extends State<GroupScreen>
                                                   );
                                                 }
 
-                                                final posts = snapshot.data;
-                                                if (posts == null ||
-                                                    posts.length == 0) {
+                                                final posts = snapshot.data
+                                                    as List<Beacon>;
+                                                if (posts.length == 0) {
                                                   return SingleChildScrollView(
                                                     physics:
                                                         AlwaysScrollableScrollPhysics(),

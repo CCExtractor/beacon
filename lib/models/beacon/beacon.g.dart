@@ -23,9 +23,9 @@ class BeaconAdapter extends TypeAdapter<Beacon> {
       expiresAt: fields[3] as int,
       title: fields[7] as String,
       leader: fields[4] as User,
-      followers: (fields[5] as List)?.cast<User>(),
-      route: (fields[6] as List)?.cast<Location>(),
-      landmarks: (fields[8] as List)?.cast<Landmark>(),
+      followers: (fields[5] as List).cast<User>(),
+      route: (fields[6] as List).cast<Location>(),
+      landmarks: (fields[8] as List).cast<Landmark>(),
       location: fields[9] as Location,
       group: fields[10] as String,
     );

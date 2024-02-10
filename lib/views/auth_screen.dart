@@ -12,7 +12,7 @@ import 'package:sizer/sizer.dart';
 import '../components/loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key key}) : super(key: key);
+  const AuthScreen({Key? key}) : super(key: key);
 
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -21,49 +21,55 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
   Future<bool> _onPopHome() async {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
-        contentPadding: EdgeInsets.all(25.0),
-        title: Text(
-          'Confirm Exit',
-          style: TextStyle(fontSize: 25, color: kYellow),
-        ),
-        content: Text(
-          'Do you really want to exit?',
-          style: TextStyle(fontSize: 18, color: kBlack),
-        ),
-        actions: <Widget>[
-          HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
-            onTap: () => Navigator.of(context).pop(false),
-            text: 'No',
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            contentPadding: EdgeInsets.all(25.0),
+            title: Text(
+              'Confirm Exit',
+              style: TextStyle(fontSize: 25, color: kYellow),
+            ),
+            content: Text(
+              'Do you really want to exit?',
+              style: TextStyle(fontSize: 18, color: kBlack),
+            ),
+            actions: <Widget>[
+              HikeButton(
+                buttonHeight: 2.5.h,
+                buttonWidth: 8.w,
+                onTap: () => Navigator.of(context).pop(false),
+                text: 'No',
+              ),
+              HikeButton(
+                buttonHeight: 2.5.h,
+                buttonWidth: 8.w,
+                onTap: () =>
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+                text: 'Yes',
+              ),
+            ],
           ),
-          HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
-            onTap: () =>
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
-            text: 'Yes',
-          ),
-        ],
-      ),
-    );
+        ) ??
+        false;
   }
 
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: _onPopHome,
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (value) {
+        if (value) {
+          _onPopHome();
+        }
+      },
       child: BaseView<AuthViewModel>(
         builder: (context, model, child) {
-          return (model.isBusy)
+          return (model!.isBusy)
               ? LoadingScreen()
               : new Scaffold(
                   key: model.scaffoldKey,
@@ -224,7 +230,7 @@ class _AuthScreenState extends State<AuthScreen>
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
                           validator: (value) =>
-                              Validator.validateEmail(value.trimRight()),
+                              Validator.validateEmail(value!.trimRight()),
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -251,7 +257,7 @@ class _AuthScreenState extends State<AuthScreen>
                           controller: model.loginPasswordController,
                           obscureText: model.obscureTextLogin,
                           validator: (value) =>
-                              Validator.validatePassword(value),
+                              Validator.validatePassword(value!),
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -335,7 +341,7 @@ class _AuthScreenState extends State<AuthScreen>
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateName(value),
+                          validator: (value) => Validator.validateName(value!),
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
                           controller: model.signupNameController,
@@ -362,7 +368,7 @@ class _AuthScreenState extends State<AuthScreen>
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateEmail(value),
+                          validator: (value) => Validator.validateEmail(value!),
                           focusNode: model.email,
                           textInputAction: TextInputAction.next,
                           controller: model.signupEmailController,
@@ -391,7 +397,7 @@ class _AuthScreenState extends State<AuthScreen>
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
                           validator: (value) =>
-                              Validator.validatePassword(value),
+                              Validator.validatePassword(value!),
                           controller: model.signupPasswordController,
                           obscureText: model.obscureTextSignup,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),

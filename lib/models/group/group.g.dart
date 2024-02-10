@@ -21,8 +21,8 @@ class GroupAdapter extends TypeAdapter<Group> {
       shortcode: fields[2] as String,
       title: fields[1] as String,
       leader: fields[3] as User,
-      members: (fields[4] as List)?.cast<User>(),
-      beacons: (fields[5] as List)?.cast<Beacon>(),
+      members: (fields[4] as List).cast<User>(),
+      beacons: (fields[5] as List).cast<Beacon>(),
     );
   }
 

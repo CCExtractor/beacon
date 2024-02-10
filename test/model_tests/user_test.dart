@@ -68,7 +68,7 @@ void main() {
   group('Testing User Model', () {
     test('User.fromJson method works or not: ', () {
       User user = User.fromJson(dummyJson);
-      Beacon beacon = user.beacon.first;
+      Beacon beacon = user.beacon!.first;
       //user id;
       expect("61fd509bf0c4c3219ce356ed", user.id);
       //name
@@ -78,29 +78,29 @@ void main() {
       //isGuest
       expect(false, user.isGuest);
       //location
-      expect("10", user.location.lat);
-      expect("20", user.location.lon);
+      expect("10", user.location!.lat);
+      expect("20", user.location!.lon);
       //beacon id
       expect("61fd51b4f0c4c3219ce356f5", beacon.id);
       //title
       expect("new_beacon", beacon.title);
       //leader name
-      expect("test_user", beacon.leader.name);
+      expect("test_user", beacon.leader!.name);
       //follower id
-      expect("61fd509bf0c4c3219ce356ed", beacon.followers.first.id);
+      expect("61fd509bf0c4c3219ce356ed", beacon.followers!.first.id);
       //follower name
-      expect("test_user", beacon.followers.first.name);
+      expect("test_user", beacon.followers!.first.name);
       //follower location
-      expect("10", beacon.followers.first.location.lat);
+      expect("10", beacon.followers!.first.location!.lat);
       //longitude
-      expect("20", beacon.followers.first.location.lon);
+      expect("20", beacon.followers!.first.location!.lon);
       //landmark
-      expect("landmark_one", beacon.landmarks.first.title);
-      expect("1", beacon.landmarks.first.location.lat);
-      expect("2", beacon.landmarks.first.location.lon);
+      expect("landmark_one", beacon.landmarks!.first.title);
+      expect("1", beacon.landmarks!.first.location!.lat);
+      expect("2", beacon.landmarks!.first.location!.lon);
       //beacon location
-      expect("1", beacon.location.lat);
-      expect("2", beacon.location.lon);
+      expect("1", beacon.location!.lat);
+      expect("2", beacon.location!.lon);
       //starts at
       expect(1669746600000, beacon.startsAt);
       //expires at
@@ -116,7 +116,7 @@ void main() {
       updateToUser.authToken = 'FinalAuthToken';
       updateToUser.isGuest = true;
       user.update(updateToUser);
-      Beacon beacon = user.beacon.first;
+      Beacon beacon = user.beacon!.first;
       //auth token
       expect("FinalAuthToken", user.authToken);
       //userID
@@ -128,29 +128,29 @@ void main() {
       //isGuest
       expect(true, user.isGuest);
       //location
-      expect("20", user.location.lat);
-      expect("10", user.location.lon);
+      expect("20", user.location!.lat);
+      expect("10", user.location!.lon);
       //beacon id
       expect("61fd51b4f0c4c3219ce3565f", beacon.id);
       //title
       expect("beacon_two", beacon.title);
       //leader name
-      expect("test_user_two", beacon.leader.name);
+      expect("test_user_two", beacon.leader!.name);
       //follower id
-      expect("61fd509bf0c4c3219ce356de", beacon.followers.first.id);
+      expect("61fd509bf0c4c3219ce356de", beacon.followers!.first.id);
       //follower name
-      expect("test_user_two", beacon.followers.first.name);
+      expect("test_user_two", beacon.followers!.first.name);
       //follower location
-      expect("20", beacon.followers.first.location.lat);
+      expect("20", beacon.followers!.first.location!.lat);
       //longitude
-      expect("10", beacon.followers.first.location.lon);
+      expect("10", beacon.followers!.first.location!.lon);
       //landmark
-      expect("landmark", beacon.landmarks.first.title);
-      expect("2", beacon.landmarks.first.location.lat);
-      expect("1", beacon.landmarks.first.location.lon);
+      expect("landmark", beacon.landmarks!.first.title);
+      expect("2", beacon.landmarks!.first.location!.lat);
+      expect("1", beacon.landmarks!.first.location!.lon);
       //beacon location
-      expect("2", beacon.location.lat);
-      expect("1", beacon.location.lon);
+      expect("2", beacon.location!.lat);
+      expect("1", beacon.location!.lon);
       //starts at
       expect(1669746600001, beacon.startsAt);
       //expires at

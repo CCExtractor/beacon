@@ -10,27 +10,25 @@ class HomeViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();
   final formKeyJoin = GlobalKey<FormState>();
   AutovalidateMode validate = AutovalidateMode.onUserInteraction;
-  String title;
+  String? title;
   bool isCreatingGroup = false;
-  String enteredGroupCode;
+  String? enteredGroupCode;
 
   createGroupRoom() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService.navigatorKey.currentContext!).unfocus();
     validate = AutovalidateMode.always;
-    if (formKeyCreate.currentState.validate()) {
+    if (formKeyCreate.currentState!.validate()) {
       navigationService.pop();
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
-      final Group group = await databaseFunctions.createGroup(
-        title,
+      final Group? group = await databaseFunctions.createGroup(
+        title!,
       );
-      if (group != null) {
-        navigationService.pushScreen('/groupScreen',
-            arguments: GroupScreen(
-              group,
-            ));
-      }
+      navigationService.pushScreen('/groupScreen',
+          arguments: GroupScreen(
+            group!,
+          ));
     } else {
       navigationService.showSnackBar('Something went wrong');
       setState(ViewState.idle);
@@ -38,23 +36,18 @@ class HomeViewModel extends BaseModel {
   }
 
   joinGroupRoom() async {
-    FocusScope.of(navigationService.navigatorKey.currentContext).unfocus();
+    FocusScope.of(navigationService.navigatorKey.currentContext!).unfocus();
     validate = AutovalidateMode.always;
-    if (formKeyJoin.currentState.validate()) {
+    if (formKeyJoin.currentState!.validate()) {
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions.init();
-      final Group group = await databaseFunctions.joinGroup(enteredGroupCode);
+      final Group? group = await databaseFunctions.joinGroup(enteredGroupCode!);
       // setState(ViewState.idle);
-      if (group != null) {
-        navigationService.pushScreen('/groupScreen',
-            arguments: GroupScreen(
-              group,
-            ));
-      } else {
-        //there was some error, go back to homescreen.
-        setState(ViewState.idle);
-      }
+      navigationService.pushScreen('/groupScreen',
+          arguments: GroupScreen(
+            group!,
+          ));
       //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
     } else {
       navigationService.showSnackBar('Enter Valid Group Code');
@@ -64,7 +57,7 @@ class HomeViewModel extends BaseModel {
   logout() async {
     setState(ViewState.busy);
     await userConfig.currentUser.delete();
-    await hiveDb.beaconsBox.clear();
+    await hiveDb.beaconsBox!.clear();
     // setState(ViewState.idle);
     await localNotif.deleteNotification();
     navigationService.removeAllAndPush('/auth', '/');

@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../utilities/constants.dart';
 
 class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({Key key}) : super(key: key);
+  const LoadingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
