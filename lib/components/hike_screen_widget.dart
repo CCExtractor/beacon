@@ -31,6 +31,8 @@ class HikeScreenWidget extends ChangeNotifier {
 
   static Widget shareButton(BuildContext context, String passkey) {
     return FloatingActionButton(
+        heroTag:
+          'shareRouteTag1', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
       onPressed: () {
         showDialog(
           context: context,
@@ -105,7 +107,7 @@ class HikeScreenWidget extends ChangeNotifier {
   ) {
     return FloatingActionButton(
       heroTag:
-          'shareRouteTag', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
+          'shareRouteTag1', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
       onPressed: () async {
         final mapController = await googleMapControllerCompleter.future;
         // sanity check.
