@@ -28,8 +28,7 @@ class GroupCustomWidgets {
               ));
         } else {
           await databaseFunctions.init();
-          final Group? _group =
-              await databaseFunctions.joinGroup(group.shortcode!);
+          await databaseFunctions.joinGroup(group.shortcode!);
           navigationService.pushScreen('/groupScreen',
               arguments: GroupScreen(group));
           //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.

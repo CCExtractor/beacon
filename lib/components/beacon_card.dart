@@ -45,8 +45,7 @@ class BeaconCustomWidgets {
               ));
         } else {
           await databaseFunctions.init();
-          final Beacon? _beacon =
-              await databaseFunctions.joinBeacon(beacon.shortcode!);
+          await databaseFunctions.joinBeacon(beacon.shortcode!);
           if (!hasStarted) {
             navigationService.showSnackBar(
               'Beacon has not yet started! \nPlease come back at ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',

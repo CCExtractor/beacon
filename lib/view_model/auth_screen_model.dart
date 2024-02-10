@@ -45,7 +45,9 @@ class AuthViewModel extends BaseModel {
       signupValidate = AutovalidateMode.disabled;
       databaseFunctions.init();
       final String signUpSuccess = await databaseFunctions.signup(
-          name: signupNameController.text ?? "Anonymous",
+          name: signupNameController.text.isEmpty
+              ? "Anonymous"
+              : signupNameController.text,
           email: signupEmailController.text,
           password: signupPasswordController.text);
       if (signUpSuccess == logSuccess) {
