@@ -127,8 +127,6 @@ class DataBaseMutationFunctions {
     //     },
     //   ),
     // );
-    log(result.data.toString());
-    log(result.exception.toString());
 
     if (result.hasException) {
       navigationService!

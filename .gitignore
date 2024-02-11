@@ -50,5 +50,3 @@ app.*.map.json
 # Testing
 /coverage/
 
-# Macos related 
-macos/Podfile.lock
