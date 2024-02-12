@@ -9,7 +9,7 @@ class Landmark extends HiveObject {
 
   factory Landmark.fromJson(Map<String, dynamic> json) {
     return Landmark(
-      title: json['title'] != null ? json['title'] as String : null,
+      title: json['title'] != null ? json['title'] as String? : null,
       location: json['location'] != null
           ? Location.fromJson(json['location'] as Map<String, dynamic>)
           : null,
@@ -17,9 +17,9 @@ class Landmark extends HiveObject {
   }
 
   @HiveField(0)
-  String title;
+  String? title;
   @HiveField(1)
-  Location location;
+  Location? location;
 
   print() {
     debugPrint('title: ${this.title}');

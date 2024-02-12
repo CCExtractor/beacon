@@ -48,3 +48,7 @@ app.*.map.json
 
 # Testing
 /coverage/
+
+# FVM Version Cache
+.fvm/
+.gitignore

@@ -6,8 +6,8 @@ class BlinkIcon extends StatefulWidget {
 }
 
 class _BlinkIconState extends State<BlinkIcon> with TickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<Color> _colorAnimation;
+  late AnimationController _controller;
+  late Animation<Color?> _colorAnimation;
   @override
   void initState() {
     _controller =

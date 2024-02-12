@@ -1,33 +1,38 @@
+import 'dart:developer';
+
 import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GraphQLConfig {
-  static String token;
+  static String? token;
   static final HttpLink httpLink = HttpLink(
-    EnvironmentConfig.httpEndpoint,
+    EnvironmentConfig.httpEndpoint!,
   );
 
   static final AuthLink authLink = AuthLink(getToken: () async => token);
 
   static WebSocketLink websocketLink =
-      WebSocketLink(EnvironmentConfig.websocketEndpoint,
+      WebSocketLink(EnvironmentConfig.websocketEndpoint!,
           config: SocketClientConfig(
             autoReconnect: true,
             initialPayload: {
-              "Authorization": '${userConfig.currentUser.authToken}'
+              "Authorization": '${userConfig!.currentUser!.authToken}'
             },
           ));
 
   Future getToken() async {
-    final _token = userConfig.currentUser.authToken;
+    final _token = userConfig!.currentUser!.authToken;
     token = _token;
     return true;
   }
 
   GraphQLClient clientToQuery() {
+    log(httpLink.toString());
+    log(EnvironmentConfig.httpEndpoint!);
     return GraphQLClient(
-      cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
+      cache: GraphQLCache(),
+      //  cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
       link: httpLink,
     );
   }

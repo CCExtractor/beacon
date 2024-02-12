@@ -7,5 +7,7 @@
 			"path": "../../../../EnHike/images"
 		}
 	],
-  "settings": {}
+"settings": {
+	"java.configuration.updateBuildConfiguration": "interactive"
+}
 }

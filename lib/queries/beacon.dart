@@ -1,7 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class BeaconQueries {
-  String changeLeader(String beaconID, String newLeaderID) {
+  String changeLeader(String? beaconID, String? newLeaderID) {
     return '''
         mutation{
            changeLeader (beaconID:"$beaconID" ,newLeaderID: "$newLeaderID")
@@ -40,8 +40,8 @@ class BeaconQueries {
     ''';
   }
 
-  String createBeacon(String title, int startsAt, int expiresAt, String lat,
-      String lon, String groupID) {
+  String createBeacon(String? title, int startsAt, int expiresAt, String lat,
+      String lon, String? groupID) {
     return '''
         mutation{
           createBeacon(beacon: {
@@ -87,7 +87,7 @@ class BeaconQueries {
     ''';
   }
 
-  String updateLeaderLoc(String id, String lat, String lon) {
+  String updateLeaderLoc(String? id, String lat, String lon) {
     return '''
         mutation {
             updateBeaconLocation(id: "$id", location: {lat: "$lat", lon:"$lon"}){
@@ -122,7 +122,7 @@ class BeaconQueries {
     ''';
   }
 
-  String joinBeacon(String shortcode) {
+  String joinBeacon(String? shortcode) {
     return '''
         mutation {
             joinBeacon(shortcode: "$shortcode"){
@@ -152,7 +152,7 @@ class BeaconQueries {
     ''';
   }
 
-  String fetchBeaconDetail(String id) {
+  String fetchBeaconDetail(String? id) {
     return '''
         query{
           beacon(id:"$id"){
@@ -257,7 +257,7 @@ class BeaconQueries {
     }
   ''');
 
-  String createLandmark(String id, String lat, String lon, String title) {
+  String createLandmark(String? id, String lat, String lon, String? title) {
     return '''
       mutation{
         createLandmark(

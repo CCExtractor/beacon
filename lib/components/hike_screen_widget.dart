@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -8,28 +7,28 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/hike_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:sizer/sizer.dart';
 
 class HikeScreenWidget extends ChangeNotifier {
-  static copyPasskey(String passkey) {
-    Clipboard.setData(ClipboardData(text: passkey));
+  static copyPasskey(String? passkey) {
+    Clipboard.setData(ClipboardData(text: passkey!));
     Fluttertoast.showToast(msg: 'PASSKEY: $passkey  COPIED');
   }
 
-  static generateUrl(String shortcode) async {
+  static Geocoder geocoder = Geocoder();
+
+  static generateUrl(String? shortcode) async {
     Uri url = Uri.parse('https://beacon.aadibajpai.com/?shortcode=$shortcode');
     Share.share('To join beacon follow this link: $url');
   }
 
-  static Widget shareButton(BuildContext context, String passkey) {
+  static Widget shareButton(BuildContext context, String? passkey) {
     return FloatingActionButton(
       onPressed: () {
         showDialog(
@@ -66,7 +65,7 @@ class HikeScreenWidget extends ChangeNotifier {
                           buttonColor: kYellow,
                           onTap: () async {
                             generateUrl(passkey);
-                            navigationService.pop();
+                            navigationService!.pop();
                           }),
                     ),
                     SizedBox(
@@ -81,7 +80,7 @@ class HikeScreenWidget extends ChangeNotifier {
                         buttonColor: kYellow,
                         onTap: () {
                           copyPasskey(passkey);
-                          navigationService.pop();
+                          navigationService!.pop();
                         },
                       ),
                     )
@@ -99,7 +98,7 @@ class HikeScreenWidget extends ChangeNotifier {
 
   static Widget shareRouteButton(
     BuildContext context,
-    Beacon beacon,
+    Beacon? beacon,
     Completer<GoogleMapController> googleMapControllerCompleter,
     List<LatLng> beaconRoute,
   ) {
@@ -109,46 +108,39 @@ class HikeScreenWidget extends ChangeNotifier {
       onPressed: () async {
         final mapController = await googleMapControllerCompleter.future;
         // sanity check.
-        if (mapController == null ||
-            googleMapControllerCompleter.isCompleted == false) return;
-        if (!await connectionChecker.checkForInternetConnection()) {
-          navigationService.showSnackBar(
+        if (googleMapControllerCompleter.isCompleted == false) return;
+        if (!await connectionChecker!.checkForInternetConnection()) {
+          navigationService!.showSnackBar(
               'Cannot share the route, please check your internet connection.');
           return;
         }
         //show marker description so that image will be more usefull.
         await mapController.showMarkerInfoWindow(MarkerId("1"));
         //getting the image (ss) of map.
-        final image = await mapController.takeSnapshot();
+        final image = await (mapController.takeSnapshot());
         // getting the app directory
         final appDir = await getApplicationDocumentsDirectory();
         // Creating a file for the image.
         File imageFile = await File('${appDir.path}/shareImage.png').create();
         //writing the image to the file we just created so that it can be shared.
-        imageFile.writeAsBytesSync(image);
+        imageFile.writeAsBytesSync(image!);
         // initial coordinates
-        Coordinates coordinates = Coordinates(
-          beaconRoute.first.latitude,
-          beaconRoute.first.longitude,
-        );
+        // Coordinates coordinates = Coordinates(
+        //   beaconRoute.first.latitude,
+        //   beaconRoute.first.longitude,
+        // );
+
         // initial address
-        var initialAddress =
-            await Geocoder.local.findAddressesFromCoordinates(coordinates);
         //current coordinates
-        coordinates = Coordinates(
-          beaconRoute.last.latitude,
-          beaconRoute.last.longitude,
-        );
+        // coordinates = Coordinates(
+        //   beaconRoute.last.latitude,
+        //   beaconRoute.last.longitude,
+        // );
         //current address
-        var currentAddress =
-            await Geocoder.local.findAddressesFromCoordinates(coordinates);
         // All the neccessary info should be here.
-        String textToShare =
-            "${beacon.title} Beacon started at: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()} from: ${initialAddress.first.addressLine}.\n\nIt will end on: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt)).toString()}.\n\nBeacon's current location is: ${currentAddress.first.addressLine}.\n\nBeacon's current leader is: ${beacon.leader.name}.\n\nTo join this beacon, enter this code in the app: ${beacon.shortcode}.\nYou can also join the beacon by clicking the following link: https://beacon.aadibajpai.com/?shortcode=${beacon.shortcode}";
         //Will be used as subject if shared via email, else isnt used.
-        String subjectToShare = "${beacon.title} beacons's route";
-        await Share.shareXFiles([XFile(imageFile.path)],
-            text: textToShare, subject: subjectToShare);
+        // await Share.shareXFiles([XFile(imageFile.path)],
+        //     text: textToShare, subject: subjectToShare);
         //hide after sharing.
         await mapController.hideMarkerInfoWindow(MarkerId("1"));
         return;
@@ -219,7 +211,7 @@ class HikeScreenWidget extends ChangeNotifier {
                     return ListTile(
                       onLongPress: () async {
                         model.relayBeacon(
-                            model.hikers[index].name, model.hikers[index].id);
+                            model.hikers[index]!.name, model.hikers[index]!.id);
                       },
                       leading: CircleAvatar(
                         backgroundColor:
@@ -234,30 +226,31 @@ class HikeScreenWidget extends ChangeNotifier {
                         ),
                       ),
                       title: Text(
-                        model.hikers[index].name,
+                        model.hikers[index]!.name!,
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
-                      trailing: model.hikers[index].id == model.beacon.leader.id
-                          ? GestureDetector(
-                              onDoubleTap: () {
-                                isLeader
-                                    ? Fluttertoast.showToast(
-                                        msg:
-                                            'Only beacon holder has access to change the duration')
-                                    //TODO: enable this once backend has updated.
-                                    //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
-                                    // : DialogBoxes.changeDurationDialog(context);
-                                    : Container();
-                              },
-                              child: Icon(
-                                Icons.room,
-                                color: model.isBeaconExpired
-                                    ? Colors.grey
-                                    : kYellow,
-                                size: 40,
-                              ),
-                            )
-                          : Container(width: 10),
+                      trailing:
+                          model.hikers[index]!.id == model.beacon!.leader!.id
+                              ? GestureDetector(
+                                  onDoubleTap: () {
+                                    isLeader
+                                        ? Fluttertoast.showToast(
+                                            msg:
+                                                'Only beacon holder has access to change the duration')
+                                        //TODO: enable this once backend has updated.
+                                        //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                        // : DialogBoxes.changeDurationDialog(context);
+                                        : Container();
+                                  },
+                                  child: Icon(
+                                    Icons.room,
+                                    color: model.isBeaconExpired
+                                        ? Colors.grey
+                                        : kYellow,
+                                    size: 40,
+                                  ),
+                                )
+                              : Container(width: 10),
                     );
                   },
                 ),

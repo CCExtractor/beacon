@@ -15,7 +15,9 @@ class LocalNotification {
         AndroidInitializationSettings('app_icon');
     final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-            onDidReceiveLocalNotification: (_, __, ___, ____) {});
+            onDidReceiveLocalNotification: (_, __, ___, ____) {}
+            // as Future<dynamic> Function(int, String?, String?, String?)?
+            );
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
@@ -32,10 +34,10 @@ class LocalNotification {
 
   Future<void> onSelectNotification(notificationResponse) async {
     if (notificationResponse != null) {
-      Beacon beacon =
-          await databaseFunctions.fetchBeaconInfo(notificationResponse.payload);
-      bool isLeader = beacon.leader.id == userConfig.currentUser.id;
-      navigationService.pushScreen('/hikeScreen',
+      Beacon beacon = await (databaseFunctions!
+          .fetchBeaconInfo(notificationResponse.payload) as Future<Beacon>);
+      bool isLeader = beacon.leader!.id == userConfig!.currentUser!.id;
+      navigationService!.pushScreen('/hikeScreen',
           arguments: HikeScreen(beacon, isLeader: isLeader));
     }
     return;
@@ -46,23 +48,16 @@ class LocalNotification {
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
-    DateTime now = DateTime.now();
-    DateTime beaconStart = DateTime.fromMillisecondsSinceEpoch(beacon.startsAt);
-
-    if (beaconStart.difference(now).inHours < 1) {
-      print('Beacon start time must be at least an hour from now');
-      return;
-    }
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
-      'Hike ' + beacon.title + ' has started',
+      'Hike ' + beacon.title! + ' has started',
       'Click here to join!',
-      tz.TZDateTime.from(
-          DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
+      scheduledDate,
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
           'channel name',
+          // 'this is description',
           playSound: true,
           priority: Priority.high,
           importance: Importance.high,
@@ -76,20 +71,25 @@ class LocalNotification {
       ),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: beacon.id,
     );
+    // We have to check if the hike is after 1 hour or not
+
+    scheduledDate = await tz.TZDateTime.from(
+      DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),
+      tz.local,
+    ).subtract(Duration(hours: 1));
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
-      'Reminder: ' + beacon.title + ' will start in an hour',
+      'Reminder: ' + beacon.title! + ' will start in an hour',
       'Get Ready!',
-      tz.TZDateTime.from(
-              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local)
-          .subtract(Duration(hours: 1)),
+      scheduledDate,
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
           'channel name',
+          // 'this is description',
           playSound: true,
           priority: Priority.high,
           importance: Importance.high,
@@ -103,7 +103,7 @@ class LocalNotification {
       ),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: beacon.id,
     );
   }
