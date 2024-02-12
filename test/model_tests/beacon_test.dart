@@ -33,22 +33,22 @@ void main() {
     //title
     expect("new_beacon", beacon.title);
     //leader name
-    expect("test_leader", beacon.leader.name);
+    expect("test_leader", beacon.leader!.name);
     //follower id
-    expect("61fd509bf0c4c3219ce356ed", beacon.followers.first.id);
+    expect("61fd509bf0c4c3219ce356ed", beacon.followers!.first.id);
     //follower name
-    expect("test_leader", beacon.followers.first.name);
+    expect("test_leader", beacon.followers!.first.name);
     //follower location
-    expect("10", beacon.followers.first.location.lat);
+    expect("10", beacon.followers!.first.location!.lat);
     //longitude
-    expect("20", beacon.followers.first.location.lon);
+    expect("20", beacon.followers!.first.location!.lon);
     //landmark
-    expect("landmark", beacon.landmarks.first.title);
-    expect("1", beacon.landmarks.first.location.lat);
-    expect("2", beacon.landmarks.first.location.lon);
+    expect("landmark", beacon.landmarks!.first!.title);
+    expect("1", beacon.landmarks!.first!.location!.lat);
+    expect("2", beacon.landmarks!.first!.location!.lon);
     //beacon location
-    expect("1", beacon.location.lat);
-    expect("2", beacon.location.lon);
+    expect("1", beacon.location!.lat);
+    expect("2", beacon.location!.lon);
     //starts at
     expect(1669746600000, beacon.startsAt);
     //expires at

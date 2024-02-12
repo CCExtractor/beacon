@@ -23,11 +23,11 @@ class Beacon extends HiveObject {
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
-      id: json['_id'] as String,
-      shortcode: json['shortcode'] as String,
-      title: json['title'] != null ? json['title'] as String : null,
-      startsAt: json['startsAt'] as int,
-      expiresAt: json['expiresAt'] as int,
+      id: json['_id'] as String?,
+      shortcode: json['shortcode'] as String?,
+      title: json['title'] != null ? json['title'] as String? : null,
+      startsAt: json['startsAt'] as int?,
+      expiresAt: json['expiresAt'] as int?,
       leader: json['leader'] != null
           ? User.fromJson(json['leader'] as Map<String, dynamic>)
           : null,
@@ -57,27 +57,27 @@ class Beacon extends HiveObject {
   }
 
   @HiveField(0)
-  String id;
+  String? id;
   @HiveField(1)
-  String shortcode;
+  String? shortcode;
   @HiveField(2)
-  int startsAt;
+  int? startsAt;
   @HiveField(3)
-  int expiresAt;
+  int? expiresAt;
   @HiveField(4)
-  User leader;
+  User? leader;
   @HiveField(5)
-  List<User> followers = [];
+  List<User>? followers = [];
   @HiveField(6)
-  List<Location> route = [];
+  List<Location?>? route = [];
   @HiveField(7)
-  String title;
+  String? title;
   @HiveField(8)
-  List<Landmark> landmarks = [];
+  List<Landmark?>? landmarks = [];
   @HiveField(9)
-  Location location;
+  Location? location;
   @HiveField(10)
-  String group;
+  String? group;
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');

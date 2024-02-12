@@ -19,9 +19,9 @@ class User extends HiveObject {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['_id'] as String,
-      name: json['name'] != null ? json['name'] as String : 'Anonymous',
-      email: json['email'] != null ? json['email'] as String : '',
+      id: json['_id'] as String?,
+      name: json['name'] != null ? json['name'] as String? : 'Anonymous',
+      email: json['email'] != null ? json['email'] as String? : '',
       location: json['location'] != null
           ? Location.fromJson(json['location'] as Map<String, dynamic>)
           : null,
@@ -35,26 +35,26 @@ class User extends HiveObject {
               .map((e) => Group.fromJson(e as Map<String, dynamic>))
               .toList()
           : [],
-      isGuest: json['isGuest'] != null ? json['isGuest'] as bool : false,
+      isGuest: json['isGuest'] != null ? json['isGuest'] as bool? : false,
     );
   }
 
   @HiveField(0)
-  String id;
+  String? id;
   @HiveField(1)
-  String authToken;
+  String? authToken;
   @HiveField(2)
-  String name;
+  String? name;
   @HiveField(3)
-  String email;
+  String? email;
   @HiveField(4)
-  List<Beacon> beacon = [];
+  List<Beacon>? beacon = [];
   @HiveField(5)
-  List<Group> groups = [];
+  List<Group>? groups = [];
   @HiveField(6)
-  Location location;
+  Location? location;
   @HiveField(7)
-  bool isGuest = false;
+  bool? isGuest = false;
 
   print() {
     debugPrint('authToken: ${this.authToken}');

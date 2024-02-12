@@ -17,8 +17,8 @@ class LocationAdapter extends TypeAdapter<Location> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Location(
-      lat: fields[0] as String,
-      lon: fields[1] as String,
+      lat: fields[0] as String?,
+      lon: fields[1] as String?,
     );
   }
 

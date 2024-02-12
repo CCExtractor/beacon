@@ -13,13 +13,14 @@ import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
-final userConfig = locator<UserConfig>();
-final navigationService = locator<NavigationService>();
-final databaseFunctions = locator<DataBaseMutationFunctions>();
-final graphqlConfig = locator<GraphQLConfig>();
-final localNotif = locator<LocalNotification>();
-final hiveDb = locator<HiveLocalDb>();
-final connectionChecker = locator<ConnectionChecker>();
+final UserConfig? userConfig = locator<UserConfig>();
+final NavigationService? navigationService = locator<NavigationService>();
+final DataBaseMutationFunctions? databaseFunctions =
+    locator<DataBaseMutationFunctions>();
+final GraphQLConfig? graphqlConfig = locator<GraphQLConfig>();
+final LocalNotification? localNotif = locator<LocalNotification>();
+final HiveLocalDb? hiveDb = locator<HiveLocalDb>();
+final ConnectionChecker? connectionChecker = locator<ConnectionChecker>();
 
 void setupLocator() {
   //services
