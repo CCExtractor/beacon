@@ -15,7 +15,8 @@ import 'package:get_it/get_it.dart';
 GetIt locator = GetIt.instance;
 final UserConfig? userConfig = locator<UserConfig>();
 final NavigationService? navigationService = locator<NavigationService>();
-final DataBaseMutationFunctions? databaseFunctions = locator<DataBaseMutationFunctions>();
+final DataBaseMutationFunctions? databaseFunctions =
+    locator<DataBaseMutationFunctions>();
 final GraphQLConfig? graphqlConfig = locator<GraphQLConfig>();
 final LocalNotification? localNotif = locator<LocalNotification>();
 final HiveLocalDb? hiveDb = locator<HiveLocalDb>();

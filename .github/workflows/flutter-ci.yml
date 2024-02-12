@@ -24,7 +24,7 @@ jobs:
           architecture: x64
           # channel: "stable"
       - run: flutter pub get
-      - run: flutter format --set-exit-if-changed .
+      - run: dart format . --set-exit-if-changed
       - run: flutter analyze .
       - run: flutter test
 
@@ -41,11 +41,11 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           # Temporary fix to failing CI
-          flutter-version: '3.3.9'
+          flutter-version: '3.16.4'
           architecture: x64
           # channel: "stable"
       - run: flutter pub get
-      - run: flutter format --set-exit-if-changed .
+      - run: dart format . --set-exit-if-changed
       - run: flutter analyze .
       - run: flutter test
       # - run: flutter build apk

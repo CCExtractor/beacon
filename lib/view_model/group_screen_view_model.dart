@@ -71,7 +71,8 @@ class GroupViewModel extends BaseModel {
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions!.init();
-      final Beacon? beacon = await databaseFunctions!.joinBeacon(enteredPasskey);
+      final Beacon? beacon =
+          await databaseFunctions!.joinBeacon(enteredPasskey);
       // setState(ViewState.idle);
       if (beacon != null) {
         hasStarted = DateTime.now()
