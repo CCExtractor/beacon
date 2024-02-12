@@ -82,7 +82,7 @@ class _GroupScreenState extends State<GroupScreen>
                           backgroundColor: kYellow,
                           child: (userConfig.currentUser.isGuest)
                               ? Icon(Icons.person)
-                              : Icon(Icons.logout),
+                              : Icon(Icons.arrow_back),
                         ),
                       ),
                       Padding(
