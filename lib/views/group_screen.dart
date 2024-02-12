@@ -61,15 +61,6 @@ class _GroupScreenState extends State<GroupScreen>
                             MediaQuery.of(context).size.height - 200),
                         painter: ShapePainter(),
                       ),
-                      // Creating a back button
-                      // Align(
-                      //   alignment: Alignment(-0.9, -0.8),
-                      //   child: FloatingActionButton(
-                      //     onPressed: () => navigationService.pop(),
-                      //     backgroundColor: kYellow,
-                      //     child: Icon(Icons.arrow_back_rounded),
-                      //   ),
-                      // ),
                       Align(
                         alignment: Alignment(-0.7, -0.95),
                         child: Container(
