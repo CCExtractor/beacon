@@ -8,15 +8,15 @@ class Location extends HiveObject {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      lat: json['lat'] != null ? json['lat'] as String : null,
-      lon: json['lon'] != null ? json['lon'] as String : null,
+      lat: json['lat'] != null ? json['lat'] as String? : null,
+      lon: json['lon'] != null ? json['lon'] as String? : null,
     );
   }
 
   @HiveField(0)
-  String lat;
+  String? lat;
   @HiveField(1)
-  String lon;
+  String? lon;
 
   print() {
     debugPrint('lat: ${this.lat}');

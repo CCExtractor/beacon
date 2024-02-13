@@ -5,7 +5,7 @@ import 'package:sizer/sizer.dart';
 
 class DialogBoxes {
   static AlertDialog showExitDialog(
-      BuildContext context, bool isLeader, int X, bool isBeaconExpired) {
+      BuildContext context, bool? isLeader, int X, bool isBeaconExpired) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -17,12 +17,12 @@ class DialogBoxes {
       content: Text(
         isBeaconExpired
             ? 'Are you sure you want to exit?'
-            : isLeader && (X - 1 > 0)
+            : isLeader! && (X - 1 > 0)
                 ? 'There are ${X - 1} followers and you are carrying the beacon. Do you want to terminate the hike?'
                 : 'Are you sure you want to terminate the hike?',
         style: TextStyle(fontSize: 16, color: kBlack),
       ),
-      actionsAlignment: MainAxisAlignment.spaceEvenly,
+      // actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: <Widget>[
         HikeButton(
           buttonHeight: 2.5.h,
@@ -35,12 +35,12 @@ class DialogBoxes {
           buttonHeight: 2.5.h,
           buttonWidth: 8.w,
           onTap: () => Navigator.of(context).pop(true),
-          //TODO:
+          // TODO
           // onTap: () {
           //   navigationService.removeAllAndPush('/groupScreen', '/',
           //       arguments: GroupScreen(
           //         group,
-          //       ));
+          //       ));}
           text: 'Yes',
           textSize: 18.0,
         ),

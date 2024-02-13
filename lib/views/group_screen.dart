@@ -9,9 +9,8 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sizer/sizer.dart';
-
 import '../models/group/group.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -24,23 +23,28 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen>
     with TickerProviderStateMixin {
-  var fetchingUserBeacons;
-  var fetchingNearbyBeacons;
+  late List<Beacon?> fetchingUserBeacons;
+  late List<Beacon?> fetchingNearbyBeacons;
 
   @override
   void initState() {
-    fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
-    fetchingNearbyBeacons =
-        databaseFunctions.fetchNearbyBeacon(widget.group.id);
     super.initState();
   }
 
-  void reloadList() {
-    setState(() {
-      fetchingUserBeacons = databaseFunctions.fetchUserBeacons(widget.group.id);
-      fetchingNearbyBeacons =
-          databaseFunctions.fetchNearbyBeacon(widget.group.id);
-    });
+  fetchUserBeacons() async {
+    return await databaseFunctions!.fetchUserBeacons(widget.group.id);
+  }
+
+  fetchNearByBeacons() async {
+    return await databaseFunctions!.fetchNearbyBeacon(widget.group.id);
+  }
+
+  reloadList() async {
+    fetchingUserBeacons =
+        await databaseFunctions!.fetchUserBeacons(widget.group.id);
+    fetchingNearbyBeacons = await databaseFunctions!
+        .fetchNearbyBeacon(widget.group.id) as List<Beacon?>;
+    setState(() {});
   }
 
   @override
@@ -66,7 +70,7 @@ class _GroupScreenState extends State<GroupScreen>
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.6,
                           child: Text(
-                            'Welcome to Group ' + widget.group.title,
+                            'Welcome to Group ' + widget.group.title!,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 25,
@@ -102,8 +106,8 @@ class _GroupScreenState extends State<GroupScreen>
                                 borderColor: Colors.white,
                                 buttonColor: kYellow,
                                 onTap: () {
-                                  if (userConfig.currentUser.isGuest) {
-                                    navigationService.showSnackBar(
+                                  if (userConfig!.currentUser!.isGuest!) {
+                                    navigationService!.showSnackBar(
                                         'You need to login with credentials to start a hike');
                                   } else {
                                     CreateJoinBeaconDialog.createHikeDialog(
@@ -169,7 +173,7 @@ class _GroupScreenState extends State<GroupScreen>
                                       Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: FutureBuilder(
-                                          future: fetchingUserBeacons,
+                                          future: fetchUserBeacons(),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.done) {
@@ -178,12 +182,14 @@ class _GroupScreenState extends State<GroupScreen>
                                                   child: Text(
                                                     snapshot.error.toString(),
                                                     textAlign: TextAlign.center,
-                                                    textScaleFactor: 1.3,
+                                                    textScaler:
+                                                        TextScaler.linear(1.3),
                                                   ),
                                                 );
                                               }
-                                              final List<Beacon> posts =
-                                                  snapshot.data;
+                                              final List<Beacon?> posts =
+                                                  snapshot.data
+                                                      as List<Beacon?>;
                                               return Container(
                                                   alignment: Alignment.center,
                                                   child: posts.length == 0
@@ -247,7 +253,7 @@ class _GroupScreenState extends State<GroupScreen>
                                                           scrollDirection:
                                                               Axis.vertical,
                                                           itemCount:
-                                                              posts?.length,
+                                                              posts.length,
                                                           padding:
                                                               EdgeInsets.all(8),
                                                           itemBuilder:
@@ -256,7 +262,7 @@ class _GroupScreenState extends State<GroupScreen>
                                                                 .getBeaconCard(
                                                                     context,
                                                                     posts[
-                                                                        index]);
+                                                                        index]!);
                                                           },
                                                         ));
                                             } else {
@@ -273,7 +279,7 @@ class _GroupScreenState extends State<GroupScreen>
                                         child: Container(
                                           alignment: Alignment.center,
                                           child: FutureBuilder(
-                                            future: fetchingNearbyBeacons,
+                                            future: fetchNearByBeacons(),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting)
@@ -289,14 +295,16 @@ class _GroupScreenState extends State<GroupScreen>
                                                       snapshot.error.toString(),
                                                       textAlign:
                                                           TextAlign.center,
-                                                      textScaleFactor: 1.3,
+                                                      textScaler:
+                                                          TextScaler.linear(
+                                                              1.3),
                                                     ),
                                                   );
                                                 }
 
-                                                final posts = snapshot.data;
-                                                if (posts == null ||
-                                                    posts.length == 0) {
+                                                final posts = snapshot.data
+                                                    as List<Beacon>;
+                                                if (posts.length == 0) {
                                                   return SingleChildScrollView(
                                                     physics:
                                                         AlwaysScrollableScrollPhysics(),

@@ -15,17 +15,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => const MainScreen(key: Key('MainScreen')));
     case Routes.hikeScreen:
-      HikeScreen arguments = settings.arguments;
+      HikeScreen? arguments = settings.arguments as HikeScreen?;
       return MaterialPageRoute(
           builder: (context) => HikeScreen(
-                arguments.beacon,
+                arguments!.beacon,
                 isLeader: arguments.isLeader,
               ));
     case Routes.groupScreen:
-      GroupScreen arguments = settings.arguments;
+      GroupScreen? arguments = settings.arguments as GroupScreen?;
       return MaterialPageRoute(
           builder: (context) => GroupScreen(
-                arguments.group,
+                arguments!.group,
               ));
     default:
       return MaterialPageRoute(

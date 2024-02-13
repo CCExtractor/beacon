@@ -11,28 +11,28 @@ class GroupCustomWidgets {
   static final Color textColor = Color(0xFFAFAFAF);
 
   static Widget getGroupCard(BuildContext context, Group group) {
-    String noMembers = group.members.length.toString();
-    String noBeacons = group.beacons.length.toString();
+    String noMembers = group.members!.length.toString();
+    String noBeacons = group.beacons!.length.toString();
     return GestureDetector(
       onTap: () async {
         bool isMember = false;
-        for (var i in group.members) {
-          if (i.id == userConfig.currentUser.id) {
+        for (var i in group.members!) {
+          if (i.id == userConfig!.currentUser!.id) {
             isMember = true;
           }
         }
-        if (group.leader.id == userConfig.currentUser.id || isMember) {
-          navigationService.pushScreen('/groupScreen',
+        if (group.leader!.id == userConfig!.currentUser!.id || isMember) {
+          navigationService!.pushScreen('/groupScreen',
               arguments: GroupScreen(
                 group,
               ));
         } else {
-          await databaseFunctions.init();
-          final Group _group =
-              await databaseFunctions.joinGroup(group.shortcode);
+          await databaseFunctions!.init();
+          final Group? _group =
+              await databaseFunctions!.joinGroup(group.shortcode);
           if (_group != null) {
-            navigationService.pushScreen('/groupScreen',
-                arguments: GroupScreen(group));
+            navigationService!
+                .pushScreen('/groupScreen', arguments: GroupScreen(group));
           }
           //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
         }
@@ -53,7 +53,7 @@ class GroupCustomWidgets {
                 Container(
                   width: 70.w,
                   child: Text(
-                    '${group?.title} by ${group.leader.name} ',
+                    '${group.title} by ${group.leader!.name} ',
                     style: Style.titleTextStyle,
                   ),
                 ),
@@ -68,7 +68,7 @@ class GroupCustomWidgets {
                   style: Style.commonTextStyle,
                 ),
                 SizedBox(height: 4.0),
-                Text('Passkey: ${group?.shortcode}',
+                Text('Passkey: ${group.shortcode}',
                     style: Style.commonTextStyle),
               ],
             ),

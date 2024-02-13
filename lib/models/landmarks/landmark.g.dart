@@ -17,8 +17,8 @@ class LandmarkAdapter extends TypeAdapter<Landmark> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Landmark(
-      title: fields[0] as String,
-      location: fields[1] as Location,
+      title: fields[0] as String?,
+      location: fields[1] as Location?,
     );
   }
 

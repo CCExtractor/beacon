@@ -1,7 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GroupQueries {
-  String createGroup(String title) {
+  String createGroup(String? title) {
     return '''
         mutation{
           createGroup(group: {
@@ -45,7 +45,7 @@ class GroupQueries {
     ''';
   }
 
-  String joinGroup(String shortcode) {
+  String joinGroup(String? shortcode) {
     return '''
       mutation{
           joinGroup(
@@ -88,7 +88,7 @@ class GroupQueries {
     ''';
   }
 
-  String groupDetail(String id) {
+  String groupDetail(String? id) {
     return '''
       query{
         group(id:"$id")

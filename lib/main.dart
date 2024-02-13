@@ -16,15 +16,15 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   setupLocator();
-  await localNotif.initialize();
-  await hiveDb.init();
+  await localNotif!.initialize();
+  await hiveDb!.init();
   runApp(
     OverlaySupport(
       child: Sizer(
         builder: (context, orientation, deviceType) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Beacon',
-          navigatorKey: navigationService.navigatorKey,
+          navigatorKey: navigationService!.navigatorKey,
           theme: ThemeData(fontFamily: 'FuturaBold'),
           initialRoute: '/',
           onGenerateRoute: router.generateRoute,
@@ -35,7 +35,7 @@ void main() async {
 }
 
 class DemoPageView extends StatelessWidget {
-  const DemoPageView({@required Key key}) : super(key: key);
+  const DemoPageView({required Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,7 @@ import 'package:sizer/sizer.dart';
 import '../components/loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key key}) : super(key: key);
+  const AuthScreen({Key? key}) : super(key: key);
 
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -20,14 +20,14 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
-  Future<bool> _onPopHome() async {
+  Future<bool?> onPopHome() async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        // actionsAlignment: MainAxisAlignment.spaceEvenly,
         contentPadding: EdgeInsets.all(25.0),
         title: Text(
           'Confirm Exit',
@@ -59,86 +59,85 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: _onPopHome,
-      child: BaseView<AuthViewModel>(
-        builder: (context, model, child) {
-          return (model.isBusy)
-              ? LoadingScreen()
-              : new Scaffold(
-                  key: model.scaffoldKey,
-                  resizeToAvoidBottomInset: true,
-                  body: Container(
-                    width: screensize.width,
-                    height:
-                        screensize.height >= 775.0 ? screensize.height : 775.0,
-                    child: Stack(
-                      children: <Widget>[
-                        CustomPaint(
-                          size: Size(screensize.width, screensize.height),
-                          painter: ShapePainter(),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          padding:
-                              EdgeInsets.only(top: screensize.height / 3.5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 20.0),
-                                child: _buildMenuBar(context, model),
+    return
+        // WillPopScope(
+        // onWillPop: _onPopHome ?? ,
+        // child:
+        BaseView<AuthViewModel>(
+      builder: (context, model, child) {
+        return (model.isBusy)
+            ? LoadingScreen()
+            : new Scaffold(
+                key: model.scaffoldKey,
+                resizeToAvoidBottomInset: true,
+                body: Container(
+                  width: screensize.width,
+                  height:
+                      screensize.height >= 775.0 ? screensize.height : 775.0,
+                  child: Stack(
+                    children: <Widget>[
+                      CustomPaint(
+                        size: Size(screensize.width, screensize.height),
+                        painter: ShapePainter(),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: screensize.height / 3.5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: _buildMenuBar(context, model),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: PageView(
+                                controller: model.pageController,
+                                onPageChanged: (i) {
+                                  if (i == 0) {
+                                    setState(() {
+                                      model.right = Colors.black;
+                                      model.left = Colors.white;
+                                    });
+                                    Future.delayed(Duration(milliseconds: 500),
+                                        () {
+                                      model.requestFocusForFocusNode(
+                                          model.emailLogin);
+                                    });
+                                  } else if (i == 1) {
+                                    setState(() {
+                                      model.right = Colors.white;
+                                      model.left = Colors.black;
+                                    });
+                                    Future.delayed(Duration(milliseconds: 500),
+                                        () {
+                                      model
+                                          .requestFocusForFocusNode(model.name);
+                                    });
+                                  }
+                                },
+                                children: <Widget>[
+                                  new ConstrainedBox(
+                                    constraints: const BoxConstraints.expand(),
+                                    child: _buildSignIn(context, model),
+                                  ),
+                                  new ConstrainedBox(
+                                    constraints: const BoxConstraints.expand(),
+                                    child: _buildSignUp(context, model),
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: PageView(
-                                  controller: model.pageController,
-                                  onPageChanged: (i) {
-                                    if (i == 0) {
-                                      setState(() {
-                                        model.right = Colors.black;
-                                        model.left = Colors.white;
-                                      });
-                                      Future.delayed(
-                                          Duration(milliseconds: 500), () {
-                                        model.requestFocusForFocusNode(
-                                            model.emailLogin);
-                                      });
-                                    } else if (i == 1) {
-                                      setState(() {
-                                        model.right = Colors.white;
-                                        model.left = Colors.black;
-                                      });
-                                      Future.delayed(
-                                          Duration(milliseconds: 500), () {
-                                        model.requestFocusForFocusNode(
-                                            model.name);
-                                      });
-                                    }
-                                  },
-                                  children: <Widget>[
-                                    new ConstrainedBox(
-                                      constraints:
-                                          const BoxConstraints.expand(),
-                                      child: _buildSignIn(context, model),
-                                    ),
-                                    new ConstrainedBox(
-                                      constraints:
-                                          const BoxConstraints.expand(),
-                                      child: _buildSignUp(context, model),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-        },
-      ),
+                ),
+              );
+      },
+      // ),
     );
   }
 
@@ -224,7 +223,7 @@ class _AuthScreenState extends State<AuthScreen>
                           focusNode: model.emailLogin,
                           controller: model.loginEmailController,
                           validator: (value) =>
-                              Validator.validateEmail(value.trimRight()),
+                              Validator.validateEmail(value!.trimRight()),
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -251,7 +250,7 @@ class _AuthScreenState extends State<AuthScreen>
                           controller: model.loginPasswordController,
                           obscureText: model.obscureTextLogin,
                           validator: (value) =>
-                              Validator.validatePassword(value),
+                              Validator.validatePassword(value!),
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -335,7 +334,7 @@ class _AuthScreenState extends State<AuthScreen>
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateName(value),
+                          validator: (value) => Validator.validateName(value!),
                           focusNode: model.name,
                           textInputAction: TextInputAction.next,
                           controller: model.signupNameController,
@@ -362,7 +361,7 @@ class _AuthScreenState extends State<AuthScreen>
                             horizontal: 10, vertical: 10.0),
                         child: TextFormField(
                           autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateEmail(value),
+                          validator: (value) => Validator.validateEmail(value!),
                           focusNode: model.email,
                           textInputAction: TextInputAction.next,
                           controller: model.signupEmailController,
@@ -391,7 +390,7 @@ class _AuthScreenState extends State<AuthScreen>
                           focusNode: model.password,
                           textInputAction: TextInputAction.done,
                           validator: (value) =>
-                              Validator.validatePassword(value),
+                              Validator.validatePassword(value!),
                           controller: model.signupPasswordController,
                           obscureText: model.obscureTextSignup,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),

@@ -1,0 +1,4 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "dart.flutterSdkPath": ".fvm/versions/stable"
+}
