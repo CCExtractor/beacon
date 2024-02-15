@@ -1,0 +1,26 @@
+From 8e637b73c29e69f875e366a3973cbc52fe5eb4d7 Mon Sep 17 00:00:00 2001
+From: vkprogrammer-001 <vipinkumar212003@gmail.com>
+Date: Thu, 15 Feb 2024 15:45:40 +0530
+Subject: [PATCH] [fix] nstance of 'TZDateTime'
+
+---
+ lib/services/local_notification.dart | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/services/local_notification.dart b/lib/services/local_notification.dart
+index fec67aa..f7871a3 100644
+--- a/lib/services/local_notification.dart
++++ b/lib/services/local_notification.dart
+@@ -84,7 +84,8 @@ class LocalNotification {
+       beacon.id.hashCode,
+       'Reminder: ' + beacon.title! + ' will start in an hour',
+       'Get Ready!',
+-      scheduledDate,
++      tz.TZDateTime.from(
++              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
+       NotificationDetails(
+         android: AndroidNotificationDetails(
+           'channel id',
+-- 
+2.39.3 (Apple Git-145)
+
