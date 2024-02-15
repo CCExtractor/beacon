@@ -84,7 +84,8 @@ class LocalNotification {
       beacon.id.hashCode,
       'Reminder: ' + beacon.title! + ' will start in an hour',
       'Get Ready!',
-      scheduledDate,
+      tz.TZDateTime.from(
+              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
