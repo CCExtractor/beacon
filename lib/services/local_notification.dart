@@ -81,7 +81,7 @@ class LocalNotification {
     scheduledDate = await tz.TZDateTime.from(
       DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),
       tz.local,
-    ).subtract(Duration(hours: 1));
+    );
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Reminder: ' + beacon.title! + ' will start in an hour',
