@@ -48,6 +48,8 @@ class LocalNotification {
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
+    var scheduledDate = await tz.TZDateTime.from(
+        DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!), tz.local);
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Hike ' + beacon.title! + ' has started',
@@ -77,15 +79,12 @@ class LocalNotification {
     // We have to check if the hike is after 1 hour or not
 
     scheduledDate = await tz.TZDateTime.from(
-      DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),
-      tz.local,
-    ).subtract(Duration(hours: 1));
+      DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),tz.local);
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Reminder: ' + beacon.title! + ' will start in an hour',
       'Get Ready!',
-      tz.TZDateTime.from(
-              DateTime.fromMillisecondsSinceEpoch(beacon.startsAt), tz.local),
+      scheduledDate,
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
