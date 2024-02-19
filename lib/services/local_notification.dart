@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/views/hike_screen.dart';
