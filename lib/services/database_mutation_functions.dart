@@ -23,7 +23,10 @@ class DataBaseMutationFunctions {
   init() async {
     clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
     ValueNotifier(clientNonAuth);
-    clientAuth = await graphqlConfig!.authClient();
+    if (1 == 1) {
+      log('this is started');
+      clientAuth = await graphqlConfig!.authClient();
+    }
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
     _groupQuery = GroupQueries();
@@ -190,6 +193,7 @@ class DataBaseMutationFunctions {
         navigationService!.pushReplacementScreen('/auth');
       }
     } else if (result.data != null && result.isConcrete) {
+      log('data fetched');
       User userInfo = User.fromJson(
         result.data!['me'] as Map<String, dynamic>,
       );
@@ -282,8 +286,33 @@ class DataBaseMutationFunctions {
     return beacons;
   }
 
-  Future<Beacon?> createBeacon(
-      String? title, int startsAt, int expiresAt, String? groupID) async {
+  Future<Group?> fetchGroup(String? groupId) async {
+    Group? group = Group();
+
+    if (!await connectionChecker!.checkForInternetConnection()) {
+      // fetch from local db
+
+      group = await hiveDb!.getGroup(groupId!);
+      return group;
+    }
+    final QueryResult result = await clientAuth
+        .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupId))));
+
+    if (result.hasException) {
+      final bool exception =
+          encounteredExceptionOrError(result.exception!, showSnackBar: false);
+      if (exception) {
+        print('$exception');
+      }
+    } else if (result.data != null && result.isConcrete) {
+      group = Group.fromJson(result.data!['group']);
+      await hiveDb!.putGroupInGroupBox(groupId, group);
+    }
+    return group;
+  }
+
+  Future<Beacon?> createBeacon(String? title, int startsAt, int expiresAt,
+      String? groupID, bool showAdminName) async {
     log(startsAt.toString());
     LatLng loc;
     try {
@@ -294,8 +323,14 @@ class DataBaseMutationFunctions {
       return null;
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
-            loc.latitude.toString(), loc.longitude.toString(), groupID))));
+        document: gql(_beaconQuery.createBeacon(
+            title,
+            startsAt,
+            expiresAt,
+            loc.latitude.toString(),
+            loc.longitude.toString(),
+            groupID,
+            showAdminName))));
     if (result.hasException) {
       navigationService!.showSnackBar(
           "Something went wrong: ${result.exception!.graphqlErrors.first.message}");

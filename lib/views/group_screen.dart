@@ -7,9 +7,9 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
-import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../models/group/group.dart';
 
@@ -29,6 +29,11 @@ class _GroupScreenState extends State<GroupScreen>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<GroupViewModel>(context, listen: false)
+          .fetchGroupDetails(widget.group.id!);
+    });
   }
 
   fetchUserBeacons() async {
@@ -49,15 +54,20 @@ class _GroupScreenState extends State<GroupScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<GroupViewModel>(builder: (context, model, child) {
-      TabController tabController = new TabController(length: 2, vsync: this);
-      return model.isBusy
+    TabController tabController = new TabController(length: 2, vsync: this);
+    return PopScope(onPopInvoked: (didPop) {
+      if (didPop == true) {
+        Provider.of<GroupViewModel>(context, listen: false).clearGroupInfo();
+      }
+    }, child:
+        Consumer<GroupViewModel>(builder: (context, groupviewmodel, child) {
+      return groupviewmodel.isBusy
           ? LoadingScreen()
           : Scaffold(
               resizeToAvoidBottomInset: false,
               body: SafeArea(
                 child: ModalProgressHUD(
-                  inAsyncCall: model.isCreatingHike,
+                  inAsyncCall: groupviewmodel.isCreatingHike,
                   child: Stack(
                     children: <Widget>[
                       CustomPaint(
@@ -89,106 +99,203 @@ class _GroupScreenState extends State<GroupScreen>
                         ),
                       ),
                       Align(
-                        alignment: Alignment(0.9, -0.8),
-                        child: FloatingActionButton(
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    // actionsAlignment:
-                                    //     MainAxisAlignment.spaceEvenly,
-                                    title: Text(
-                                      userConfig!.currentUser!.isGuest!
-                                          ? 'Create Account'
-                                          : 'Logout',
-                                      style: TextStyle(
-                                          fontSize: 25, color: kYellow),
-                                    ),
-                                    content: Text(
-                                      userConfig!.currentUser!.isGuest!
-                                          ? 'Would you like to create an account?'
-                                          : 'Are you sure you wanna logout?',
-                                      style: TextStyle(
-                                          fontSize: 16, color: kBlack),
-                                    ),
-                                    actions: <Widget>[
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () =>
-                                            Navigator.of(context).pop(false),
-                                        text: 'No',
-                                        textSize: 18.0,
-                                      ),
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () {
-                                          navigationService!.pop();
-                                          model.logout();
-                                        },
-                                        text: 'Yes',
-                                        textSize: 18.0,
-                                      ),
-                                    ],
-                                  )),
-                          backgroundColor: kYellow,
-                          child: userConfig!.currentUser!.isGuest!
-                              ? Icon(Icons.person)
-                              : Icon(Icons.logout),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(4.w, 25.h, 4.w, 5),
+                        alignment: Alignment(0.8, -0.8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 45.w,
-                              child: HikeButton(
-                                buttonWidth: homebwidth,
-                                buttonHeight: homebheight - 2,
-                                text: 'Create Hike',
-                                textColor: Colors.white,
-                                borderColor: Colors.white,
-                                buttonColor: kYellow,
-                                onTap: () {
-                                  if (userConfig!.currentUser!.isGuest!) {
-                                    navigationService!.showSnackBar(
-                                        'You need to login with credentials to start a hike');
-                                  } else {
-                                    CreateJoinBeaconDialog.createHikeDialog(
-                                        context,
-                                        model,
-                                        reloadList,
-                                        widget.group.id);
-                                  }
-                                },
-                              ),
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            FloatingActionButton(
+                              heroTag: 'list button',
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        // actionsAlignment:
+                                        //     MainAxisAlignment.spaceEvenly,
+                                        title: Text(
+                                          'Group members',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 25, color: kYellow),
+                                        ),
+                                        content: Container(
+                                          height: 250,
+                                          width: 250,
+                                          child: Builder(
+                                            builder: (context) {
+                                              if (groupviewmodel
+                                                  .loadingGroupMembers) {
+                                                return Center(
+                                                  child: BeaconCustomWidgets
+                                                      .getPlaceholder(),
+                                                );
+                                              } else {
+                                                return groupviewmodel
+                                                        .groupMembers.isEmpty
+                                                    ? Container(
+                                                        child: Text('emplty'),
+                                                      )
+                                                    : ListView.builder(
+                                                        itemCount:
+                                                            groupviewmodel
+                                                                .groupMembers
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5),
+                                                            margin: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        5),
+                                                            height: 7.h,
+                                                            width: 50.w,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    color:
+                                                                        kLightBlue),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(groupviewmodel
+                                                                    .groupMembers[
+                                                                        index]
+                                                                    .name
+                                                                    .toString()),
+                                                                Text(index == 0
+                                                                    ? '(leader)'
+                                                                    : '(member)')
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      )),
+                              backgroundColor: kYellow,
+                              child: Icon(Icons.list),
                             ),
                             SizedBox(
                               width: 1.w,
                             ),
-                            Container(
-                              width: 45.w,
-                              child: HikeButton(
-                                buttonWidth: homebwidth,
-                                buttonHeight: homebheight - 2,
-                                text: 'Join a Hike',
-                                textColor: kYellow,
-                                borderColor: kYellow,
-                                buttonColor: Colors.white,
-                                onTap: () async {
-                                  CreateJoinBeaconDialog.joinBeaconDialog(
-                                      context, model, reloadList);
-                                },
-                              ),
+                            FloatingActionButton(
+                              heroTag: 'log out ',
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        // actionsAlignment:
+                                        //     MainAxisAlignment.spaceEvenly,
+                                        title: Text(
+                                          userConfig!.currentUser!.isGuest!
+                                              ? 'Create Account'
+                                              : 'Logout',
+                                          style: TextStyle(
+                                              fontSize: 25, color: kYellow),
+                                        ),
+                                        content: Text(
+                                          userConfig!.currentUser!.isGuest!
+                                              ? 'Would you like to create an account?'
+                                              : 'Are you sure you wanna logout?',
+                                          style: TextStyle(
+                                              fontSize: 16, color: kBlack),
+                                        ),
+                                        actions: <Widget>[
+                                          HikeButton(
+                                            buttonHeight: 2.5.h,
+                                            buttonWidth: 8.w,
+                                            onTap: () => Navigator.of(context)
+                                                .pop(false),
+                                            text: 'No',
+                                            textSize: 18.0,
+                                          ),
+                                          HikeButton(
+                                            buttonHeight: 2.5.h,
+                                            buttonWidth: 8.w,
+                                            onTap: () {
+                                              navigationService!.pop();
+                                              groupviewmodel.logout();
+                                            },
+                                            text: 'Yes',
+                                            textSize: 18.0,
+                                          ),
+                                        ],
+                                      )),
+                              backgroundColor: kYellow,
+                              child: userConfig!.currentUser!.isGuest!
+                                  ? Icon(Icons.person)
+                                  : Icon(Icons.logout),
+                            ),
+                            SizedBox(
+                              width: 2.w,
                             ),
                           ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 58.h,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(4.w, 25.h, 4.w, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                width: 45.w,
+                                child: HikeButton(
+                                  buttonWidth: homebwidth,
+                                  buttonHeight: homebheight - 2,
+                                  text: 'Create Hike',
+                                  textColor: Colors.white,
+                                  borderColor: Colors.white,
+                                  buttonColor: kYellow,
+                                  onTap: () {
+                                    if (userConfig!.currentUser!.isGuest!) {
+                                      navigationService!.showSnackBar(
+                                          'You need to login with credentials to start a hike');
+                                    } else {
+                                      CreateJoinBeaconDialog.createHikeDialog(
+                                          context,
+                                          groupviewmodel,
+                                          widget.group.id);
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 1.w,
+                              ),
+                              Container(
+                                width: 45.w,
+                                child: HikeButton(
+                                  buttonWidth: homebwidth,
+                                  buttonHeight: homebheight - 2,
+                                  text: 'Join a Hike',
+                                  textColor: kYellow,
+                                  borderColor: kYellow,
+                                  buttonColor: Colors.white,
+                                  onTap: () async {
+                                    CreateJoinBeaconDialog.joinBeaconDialog(
+                                        context, groupviewmodel, reloadList);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Column(
@@ -222,29 +329,21 @@ class _GroupScreenState extends State<GroupScreen>
                                     controller: tabController,
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: FutureBuilder(
-                                          future: fetchUserBeacons(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.done) {
-                                              if (snapshot.hasError) {
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Builder(
+                                            builder: (context) {
+                                              if (groupviewmodel
+                                                  .loadingUserBeacons) {
                                                 return Center(
-                                                  child: Text(
-                                                    snapshot.error.toString(),
-                                                    textAlign: TextAlign.center,
-                                                    textScaler:
-                                                        TextScaler.linear(1.3),
-                                                  ),
+                                                  child: BeaconCustomWidgets
+                                                      .getPlaceholder(),
                                                 );
-                                              }
-                                              final List<Beacon?> posts =
-                                                  snapshot.data
-                                                      as List<Beacon?>;
-                                              return Container(
-                                                  alignment: Alignment.center,
-                                                  child: posts.length == 0
-                                                      ? SingleChildScrollView(
+                                              } else {
+                                                return groupviewmodel
+                                                        .userBeacons.isEmpty
+                                                    ? Center(
+                                                        child:
+                                                            SingleChildScrollView(
                                                           physics:
                                                               AlwaysScrollableScrollPhysics(),
                                                           child: Column(
@@ -297,107 +396,71 @@ class _GroupScreenState extends State<GroupScreen>
                                                               ),
                                                             ],
                                                           ),
-                                                        )
-                                                      : ListView.builder(
+                                                        ),
+                                                      )
+                                                    : ListView.builder(
+                                                        itemCount:
+                                                            groupviewmodel
+                                                                .userBeacons
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return BeaconCustomWidgets
+                                                              .getBeaconCard(
+                                                                  context,
+                                                                  groupviewmodel
+                                                                          .userBeacons[
+                                                                      index]);
+                                                        },
+                                                      );
+                                              }
+                                            },
+                                          )),
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                            alignment: Alignment.center,
+                                            child: Builder(
+                                              builder: (context) {
+                                                if (groupviewmodel
+                                                    .loadingNearbyBeacons) {
+                                                  return Center(
+                                                    child: BeaconCustomWidgets
+                                                        .getPlaceholder(),
+                                                  );
+                                                } else {
+                                                  return groupviewmodel
+                                                          .nearByBeacons.isEmpty
+                                                      ? SingleChildScrollView(
                                                           physics:
                                                               AlwaysScrollableScrollPhysics(),
-                                                          scrollDirection:
-                                                              Axis.vertical,
+                                                          child: Center(
+                                                            child: Text(
+                                                              'No nearby beacons found :(',
+                                                              style: TextStyle(
+                                                                  color: kBlack,
+                                                                  fontSize: 20),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : ListView.builder(
                                                           itemCount:
-                                                              posts.length,
-                                                          padding:
-                                                              EdgeInsets.all(8),
+                                                              groupviewmodel
+                                                                  .nearByBeacons
+                                                                  .length,
                                                           itemBuilder:
                                                               (context, index) {
                                                             return BeaconCustomWidgets
                                                                 .getBeaconCard(
                                                                     context,
-                                                                    posts[
-                                                                        index]!);
+                                                                    groupviewmodel
+                                                                            .nearByBeacons[
+                                                                        index]);
                                                           },
-                                                        ));
-                                            } else {
-                                              return Center(
-                                                child: BeaconCustomWidgets
-                                                    .getPlaceholder(),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: FutureBuilder(
-                                            future: fetchNearByBeacons(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting)
-                                                return Center(
-                                                  child: BeaconCustomWidgets
-                                                      .getPlaceholder(),
-                                                );
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.done) {
-                                                if (snapshot.hasError) {
-                                                  return Center(
-                                                    child: Text(
-                                                      snapshot.error.toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      textScaler:
-                                                          TextScaler.linear(
-                                                              1.3),
-                                                    ),
-                                                  );
+                                                        );
                                                 }
-
-                                                final posts = snapshot.data
-                                                    as List<Beacon>;
-                                                if (posts.length == 0) {
-                                                  return SingleChildScrollView(
-                                                    physics:
-                                                        AlwaysScrollableScrollPhysics(),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'No nearby beacons found :(',
-                                                        style: TextStyle(
-                                                            color: kBlack,
-                                                            fontSize: 20),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                return ListView.builder(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: posts.length,
-                                                  padding: EdgeInsets.all(8),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return BeaconCustomWidgets
-                                                        .getBeaconCard(context,
-                                                            posts[index]);
-                                                  },
-                                                );
-                                              } else {
-                                                return SingleChildScrollView(
-                                                  physics:
-                                                      AlwaysScrollableScrollPhysics(),
-                                                  child: Center(
-                                                      child: Text(
-                                                          'No nearby beacons found :(',
-                                                          style: TextStyle(
-                                                              color: kBlack,
-                                                              fontSize: 18))),
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ),
+                                              },
+                                            )),
                                       ),
                                     ],
                                   ),
@@ -412,6 +475,6 @@ class _GroupScreenState extends State<GroupScreen>
                 ),
               ),
             );
-    });
+    }));
   }
 }

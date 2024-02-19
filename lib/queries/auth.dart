@@ -43,7 +43,6 @@ class AuthQueries {
   }
 
   String fetchUserInfo() {
-    log('fetching user info');
     return '''
       query{
         me{

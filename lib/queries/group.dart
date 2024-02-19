@@ -121,6 +121,7 @@ class GroupQueries {
                 _id
                 name
               }
+              showAdminName
               startsAt
               expiresAt
             }

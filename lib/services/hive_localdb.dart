@@ -11,7 +11,7 @@ import '../models/group/group.dart';
 class HiveLocalDb {
   late Box<User?> currentUserBox;
   late Box<Beacon?> beaconsBox;
-  Box<Group>? groupsBox;
+  late Box<Group?> groupsBox;
 
   Future<void> init() async {
     final appDocumentDirectory =
@@ -53,5 +53,28 @@ class HiveLocalDb {
     print("asd" + user.id!);
     final userBeacons = beaconsBox.values.toList();
     return userBeacons;
+  }
+
+  Future<void> putGroupInGroupBox(String? groupId, Group? group,
+      {bool fetchFromNetwork = false}) async {
+    if (groupsBox.containsKey(groupId)) {
+      await groupsBox.delete(groupId);
+    }
+    if (fetchFromNetwork) {
+      databaseFunctions!.init();
+      group = await databaseFunctions!.fetchGroup(groupId);
+    }
+    await groupsBox.put(groupId, group);
+  }
+
+  Future<Group?> getGroup(String groupId) async {
+    final group = await groupsBox.get(groupId);
+    return group;
+  }
+
+  Future<User?> getCurrentUser() async {
+    currentUserBox = await Hive.openBox<User?>('currentUser');
+    final user = await currentUserBox.get('user');
+    return user;
   }
 }

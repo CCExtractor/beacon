@@ -41,7 +41,7 @@ class BeaconQueries {
   }
 
   String createBeacon(String? title, int startsAt, int expiresAt, String lat,
-      String lon, String? groupID) {
+      String lon, String? groupID, bool showAdminName) {
     return '''
         mutation{
           createBeacon(beacon: {
@@ -51,6 +51,7 @@ class BeaconQueries {
             startLocation: {
               lat: "$lat", lon: "$lon"
             }
+            showAdminName: $showAdminName
           },
           groupID:"$groupID")
           {

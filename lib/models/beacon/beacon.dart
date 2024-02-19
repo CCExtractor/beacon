@@ -19,41 +19,42 @@ class Beacon extends HiveObject {
       this.route,
       this.landmarks,
       this.location,
-      this.group});
+      this.group,
+      this.showAdminName});
 
   factory Beacon.fromJson(Map<String, dynamic> json) {
     return Beacon(
-      id: json['_id'] as String?,
-      shortcode: json['shortcode'] as String?,
-      title: json['title'] != null ? json['title'] as String? : null,
-      startsAt: json['startsAt'] as int?,
-      expiresAt: json['expiresAt'] as int?,
-      leader: json['leader'] != null
-          ? User.fromJson(json['leader'] as Map<String, dynamic>)
-          : null,
-      location: json['location'] != null
-          ? Location.fromJson(json['location'] as Map<String, dynamic>)
-          : null,
-      followers: json['followers'] != null
-          ? (json['followers'] as List<dynamic>)
-              .map((e) => User.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : [],
-      route: json['route'] != null
-          ? (json['route'] as List<dynamic>)
-              .map((e) => Location.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : [],
-      landmarks: json['landmarks'] != null
-          ? (json['landmarks'] as List<dynamic>)
-              .map((e) => Landmark.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : [],
-      // group: json['group'] != null
-      //     ? Group.fromJson(json['group'] as Map<String, dynamic>)
-      //     : null,
-      group: json['group'] != null ? json['group']['_id'] : null,
-    );
+        id: json['_id'] as String?,
+        shortcode: json['shortcode'] as String?,
+        title: json['title'] != null ? json['title'] as String? : null,
+        startsAt: json['startsAt'] as int?,
+        expiresAt: json['expiresAt'] as int?,
+        leader: json['leader'] != null
+            ? User.fromJson(json['leader'] as Map<String, dynamic>)
+            : null,
+        location: json['location'] != null
+            ? Location.fromJson(json['location'] as Map<String, dynamic>)
+            : null,
+        followers: json['followers'] != null
+            ? (json['followers'] as List<dynamic>)
+                .map((e) => User.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : [],
+        route: json['route'] != null
+            ? (json['route'] as List<dynamic>)
+                .map((e) => Location.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : [],
+        landmarks: json['landmarks'] != null
+            ? (json['landmarks'] as List<dynamic>)
+                .map((e) => Landmark.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : [],
+        // group: json['group'] != null
+        //     ? Group.fromJson(json['group'] as Map<String, dynamic>)
+        //     : null,
+        group: json['group'] != null ? json['group']['_id'] : null,
+        showAdminName: json['showAdminName'] ?? false);
   }
 
   @HiveField(0)
@@ -78,6 +79,8 @@ class Beacon extends HiveObject {
   Location? location;
   @HiveField(10)
   String? group;
+  @HiveField(11)
+  bool? showAdminName;
 
   print() {
     debugPrint('shortCode: ${this.shortcode}');

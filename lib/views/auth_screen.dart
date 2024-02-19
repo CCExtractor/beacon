@@ -8,7 +8,6 @@ import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
-
 import '../components/loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/views/hike_screen.dart';
@@ -48,13 +50,13 @@ class LocalNotification {
   }
 
   Future<void> scheduleNotification(Beacon beacon) async {
-    var scheduledDate = await tz.TZDateTime.from(
+    tz.TZDateTime scheduledDate1 = await tz.TZDateTime.from(
         DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!), tz.local);
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Hike ' + beacon.title! + ' has started',
       'Click here to join!',
-      scheduledDate,
+      scheduledDate1,
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',
@@ -78,15 +80,20 @@ class LocalNotification {
     );
     // We have to check if the hike is after 1 hour or not
 
-    scheduledDate = await tz.TZDateTime.from(
+    var scheduledDate2 = await tz.TZDateTime.from(
       DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),
       tz.local,
     ).subtract(Duration(hours: 1));
+
+    // We will check if beacon start time is less than the 2nd notification scheduling time
+
+    if (scheduledDate2.compareTo(scheduledDate1) < 0) return;
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
       'Reminder: ' + beacon.title! + ' will start in an hour',
       'Get Ready!',
-      scheduledDate,
+      scheduledDate2,
       NotificationDetails(
         android: AndroidNotificationDetails(
           'channel id',

@@ -53,6 +53,22 @@ class AppConstants {
     Position position = await Geolocator.getCurrentPosition();
     return LatLng(position.latitude, position.longitude);
   }
+
+  double calculateDistance(double startLatitude, double startLongitude,
+      double endLatitude, double endLongitude) {
+    double distanceInMeters = Geolocator.distanceBetween(
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+    );
+
+    // The distance is returned in meters. You can convert it to kilometers or miles if needed.
+    // For example, to convert meters to kilometers:
+    double distanceInKm = distanceInMeters / 1000;
+
+    return distanceInKm;
+  }
 }
 
 //routes

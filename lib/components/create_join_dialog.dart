@@ -5,6 +5,7 @@ import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../view_model/home_screen_view_model.dart';
@@ -154,8 +155,8 @@ class CreateJoinGroupDialog {
 }
 
 class CreateJoinBeaconDialog {
-  static Future createHikeDialog(BuildContext context, GroupViewModel model,
-      Function reloadList, String? groupID) {
+  static Future createHikeDialog(
+      BuildContext context, GroupViewModel model, String? groupID) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     model.resultingDuration = Duration(minutes: 30);
     model.durationController = new TextEditingController();
@@ -173,7 +174,7 @@ class CreateJoinBeaconDialog {
             child: Form(
               key: model.formKeyCreate,
               child: Container(
-                height: isSmallSized ? 75.h : 65.h,
+                height: isSmallSized ? 85.h : 80.h,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -226,7 +227,7 @@ class CreateJoinBeaconDialog {
                                     data: ThemeData().copyWith(
                                       textTheme: Theme.of(context).textTheme,
                                       colorScheme: ColorScheme.light(
-                                        primary: kBlue,
+                                        primary: kYellow,
                                         onPrimary: Colors.white,
                                         surface: kBlue,
                                       ),
@@ -397,6 +398,35 @@ class CreateJoinBeaconDialog {
                       SizedBox(
                         height: 2.h,
                       ),
+                      Container(
+                        height: isSmallSized ? 14.h : 12.h,
+                        width: 100.w,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Show name',
+                                style: TextStyle(fontSize: 18, color: kYellow),
+                              ),
+                              Consumer<GroupViewModel>(
+                                builder: (context, groupviewmodel, child) {
+                                  return Switch(
+                                      value: groupviewmodel.showName,
+                                      onChanged: (value) {
+                                        groupviewmodel.toogleShowName(value);
+                                      });
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                        color: kLightBlue,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
                       Flexible(
                         flex: 2,
                         child: HikeButton(
@@ -426,7 +456,9 @@ class CreateJoinBeaconDialog {
                                     "Enter a valid date and time!!");
                                 return;
                               }
-                              model.createHikeRoom(groupID, reloadList);
+                              model.createHikeRoom(
+                                groupID,
+                              );
                             }),
                       ),
                     ],
