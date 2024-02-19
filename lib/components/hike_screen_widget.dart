@@ -30,7 +30,7 @@ class HikeScreenWidget extends ChangeNotifier {
 
   static Widget shareButton(BuildContext context, String? passkey) {
     return FloatingActionButton(
-       heroTag:
+      heroTag:
           'shareRouteTag', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
       onPressed: () {
         showDialog(
