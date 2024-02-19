@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
