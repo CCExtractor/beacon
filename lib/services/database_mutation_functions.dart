@@ -24,7 +24,6 @@ class DataBaseMutationFunctions {
     clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
     ValueNotifier(clientNonAuth);
     if (1 == 1) {
-      log('this is started');
       clientAuth = await graphqlConfig!.authClient();
     }
     _authQuery = AuthQueries();
@@ -193,7 +192,6 @@ class DataBaseMutationFunctions {
         navigationService!.pushReplacementScreen('/auth');
       }
     } else if (result.data != null && result.isConcrete) {
-      log('data fetched');
       User userInfo = User.fromJson(
         result.data!['me'] as Map<String, dynamic>,
       );
