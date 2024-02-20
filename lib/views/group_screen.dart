@@ -4,7 +4,6 @@ import 'package:beacon/components/hike_button.dart';
 import 'package:beacon/components/loading_screen.dart';
 import 'package:beacon/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/models/beacon/beacon.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +22,6 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen>
     with TickerProviderStateMixin {
-  late List<Beacon?> fetchingUserBeacons;
-  late List<Beacon?> fetchingNearbyBeacons;
-
   @override
   void initState() {
     super.initState();
@@ -34,22 +30,6 @@ class _GroupScreenState extends State<GroupScreen>
       Provider.of<GroupViewModel>(context, listen: false)
           .fetchGroupDetails(widget.group.id!);
     });
-  }
-
-  fetchUserBeacons() async {
-    return await databaseFunctions!.fetchUserBeacons(widget.group.id);
-  }
-
-  fetchNearByBeacons() async {
-    return await databaseFunctions!.fetchNearbyBeacon(widget.group.id);
-  }
-
-  reloadList() async {
-    fetchingUserBeacons =
-        await databaseFunctions!.fetchUserBeacons(widget.group.id);
-    fetchingNearbyBeacons = await databaseFunctions!
-        .fetchNearbyBeacon(widget.group.id) as List<Beacon?>;
-    setState(() {});
   }
 
   @override
@@ -112,8 +92,6 @@ class _GroupScreenState extends State<GroupScreen>
                                           borderRadius:
                                               BorderRadius.circular(10.0),
                                         ),
-                                        // actionsAlignment:
-                                        //     MainAxisAlignment.spaceEvenly,
                                         title: Text(
                                           'Group members',
                                           textAlign: TextAlign.center,
@@ -121,66 +99,87 @@ class _GroupScreenState extends State<GroupScreen>
                                               fontSize: 25, color: kYellow),
                                         ),
                                         content: Container(
-                                          height: 250,
-                                          width: 250,
-                                          child: Builder(
-                                            builder: (context) {
-                                              if (groupviewmodel
-                                                  .loadingGroupMembers) {
-                                                return Center(
-                                                  child: BeaconCustomWidgets
-                                                      .getPlaceholder(),
-                                                );
-                                              } else {
-                                                return groupviewmodel
-                                                        .groupMembers.isEmpty
-                                                    ? Container(
-                                                        child: Text('emplty'),
+                                            height: 250,
+                                            width: 250,
+                                            child: ListView(
+                                              children: [
+                                                widget.group.leader == null
+                                                    ? Container()
+                                                    : Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 5),
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 5),
+                                                        height: 7.h,
+                                                        width: 50.w,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                color:
+                                                                    kLightBlue),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(widget.group
+                                                                .leader!.name
+                                                                .toString()),
+                                                            Text('(leader)')
+                                                          ],
+                                                        ),
+                                                      ),
+                                                widget.group.members == null
+                                                    ? Container()
+                                                    : Container(
+                                                        width: 250,
+                                                        height: 250,
+                                                        child: ListView.builder(
+                                                          physics:
+                                                              NeverScrollableScrollPhysics(),
+                                                          itemCount: widget
+                                                              .group
+                                                              .members!
+                                                              .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          5),
+                                                              margin: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          5),
+                                                              height: 7.h,
+                                                              width: 50.w,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color:
+                                                                          kLightBlue),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(widget
+                                                                      .group
+                                                                      .members![
+                                                                          index]
+                                                                      .name
+                                                                      .toString()),
+                                                                  Text(
+                                                                      '(member)')
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
                                                       )
-                                                    : ListView.builder(
-                                                        itemCount:
-                                                            groupviewmodel
-                                                                .groupMembers
-                                                                .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          return Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        5),
-                                                            margin: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        5),
-                                                            height: 7.h,
-                                                            width: 50.w,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    color:
-                                                                        kLightBlue),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(groupviewmodel
-                                                                    .groupMembers[
-                                                                        index]
-                                                                    .name
-                                                                    .toString()),
-                                                                Text(index == 0
-                                                                    ? '(leader)'
-                                                                    : '(member)')
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                              }
-                                            },
-                                          ),
-                                        ),
+                                              ],
+                                            )),
                                       )),
                               backgroundColor: kYellow,
                               child: Icon(Icons.list),
@@ -290,7 +289,7 @@ class _GroupScreenState extends State<GroupScreen>
                                   buttonColor: Colors.white,
                                   onTap: () async {
                                     CreateJoinBeaconDialog.joinBeaconDialog(
-                                        context, groupviewmodel, reloadList);
+                                        context, groupviewmodel);
                                   },
                                 ),
                               ),

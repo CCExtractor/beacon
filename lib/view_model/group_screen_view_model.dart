@@ -1,8 +1,6 @@
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/models/group/group.dart';
-import 'package:beacon/models/user/user_info.dart';
 import 'package:beacon/utilities/constants.dart';
 import 'package:beacon/view_model/base_view_model.dart';
 import 'package:beacon/views/hike_screen.dart';
@@ -32,8 +30,6 @@ class GroupViewModel extends BaseModel {
   bool showName = false;
   bool loadingUserBeacons = false;
   List<Beacon> userBeacons = [];
-  bool loadingGroupMembers = false;
-  List<User> groupMembers = [];
   bool loadingNearbyBeacons = false;
   List<Beacon> nearByBeacons = [];
 
@@ -44,45 +40,29 @@ class GroupViewModel extends BaseModel {
 
   clearGroupInfo() {
     userBeacons.clear();
-    groupMembers.clear();
     nearByBeacons.clear();
   }
 
   fetchGroupDetails(String groupId) async {
     // starting loading indicator
     loadingUserBeacons = true;
-    loadingGroupMembers = true;
     loadingNearbyBeacons = true;
     notifyListeners();
 
-    // fetching group details
-    Group? group = await databaseFunctions!.fetchGroup(groupId);
+    // fetching group beacons
+    List<Beacon?> groupBeacons =
+        await databaseFunctions!.fetchUserBeacons(groupId);
 
-    if (group != null) {
-      // adding beacons
-      if (group.beacons != null) {
-        for (Beacon beacon in group.beacons!) {
-          userBeacons.add(beacon);
-        }
-      }
-      // adding group leader
-      if (group.leader != null) {
-        groupMembers.add(group.leader!);
-      }
-      // adding group members
-      if (group.members != null) {
-        for (User member in group.members!) {
-          groupMembers.add(member);
-        }
+    for (Beacon? beacon in groupBeacons) {
+      if (beacon != null) {
+        userBeacons.add(beacon);
       }
     }
 
-    // sorting nearby beacons from userbeacons
+    // sorting nearby beacons under 1.5 KM radius from userbeacons
     fetchNearByBeacons(userBeacons);
 
-    // turning off the loading widget
     loadingUserBeacons = false;
-    loadingGroupMembers = false;
     notifyListeners();
   }
 
@@ -114,6 +94,9 @@ class GroupViewModel extends BaseModel {
         double.parse(beacon.location!.lon!));
     if (distance < 1.5) {
       nearByBeacons.add(beacon);
+      List<Beacon> beacons = beaconsSorting(nearByBeacons);
+      nearByBeacons.clear();
+      nearByBeacons.addAll(beacons);
     }
   }
 
@@ -133,9 +116,17 @@ class GroupViewModel extends BaseModel {
           showName);
       // setState(ViewState.idle);
       if (beacon != null) {
+        // adding beacons and then sorting
         userBeacons.add(beacon);
+        List<Beacon> beacons = beaconsSorting(userBeacons);
+        userBeacons.clear();
+        userBeacons.addAll(beacons);
+        notifyListeners();
+
+        // checking if new beacon created is nearby or not
         checkNearByBeacon(beacon);
         notifyListeners();
+
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
         if (hasStarted) {
@@ -159,7 +150,7 @@ class GroupViewModel extends BaseModel {
     }
   }
 
-  joinHikeRoom(Function reloadList) async {
+  joinHikeRoom() async {
     FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyJoin.currentState!.validate()) {
@@ -172,7 +163,14 @@ class GroupViewModel extends BaseModel {
       if (beacon != null) {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
+        // adding beacons and then sorting
         userBeacons.add(beacon);
+        List<Beacon> beacons = beaconsSorting(userBeacons);
+        userBeacons.clear();
+        userBeacons.addAll(beacons);
+        notifyListeners();
+
+        // checking if new beacon created is nearby or not
         checkNearByBeacon(beacon);
         notifyListeners();
         if (hasStarted) {
@@ -195,6 +193,28 @@ class GroupViewModel extends BaseModel {
     } else {
       navigationService!.showSnackBar('Enter Valid Passkey');
     }
+  }
+
+  List<Beacon> beaconsSorting(List<Beacon?> beacons) {
+    List<Beacon> expiredBeacons = [];
+    List<Beacon> workingBeacons = [];
+
+    for (var beacon in beacons) {
+      if (beacon != null) {
+        if (DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)
+            .isBefore(DateTime.now())) {
+          expiredBeacons.insert(0, beacon);
+          expiredBeacons.sort((a, b) => a.expiresAt!.compareTo(b.expiresAt!));
+          expiredBeacons = expiredBeacons.reversed.toList();
+        } else {
+          workingBeacons.add(beacon);
+          workingBeacons.sort((a, b) => a.startsAt!.compareTo(b.startsAt!));
+        }
+      }
+    }
+    // adding expired beacons at last
+    workingBeacons.addAll(expiredBeacons);
+    return workingBeacons;
   }
 
   logout() async {

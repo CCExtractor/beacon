@@ -472,8 +472,7 @@ class CreateJoinBeaconDialog {
     );
   }
 
-  static Future joinBeaconDialog(
-      BuildContext context, GroupViewModel model, Function reloadList) {
+  static Future joinBeaconDialog(BuildContext context, GroupViewModel model) {
     bool isSmallSized = MediaQuery.of(context).size.height < 800;
     return showDialog(
       context: context,
@@ -527,7 +526,7 @@ class CreateJoinBeaconDialog {
                       buttonColor: kYellow,
                       onTap: () {
                         // navigationService.pop();
-                        model.joinHikeRoom(reloadList);
+                        model.joinHikeRoom();
                       },
                     ),
                   ),

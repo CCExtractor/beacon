@@ -242,9 +242,25 @@ class DataBaseMutationFunctions {
       return beacons;
     }
 
-    //if connected to internet take from internet.
+    if (!await connectionChecker!.checkForInternetConnection()) {
+      // fetch from local db
+
+      final userBeacons = hiveDb!.getAllUserBeacons();
+      for (Beacon? i in userBeacons) {
+        if (i!.group == groupid) {
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt!)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
+        }
+      }
+      beacons.addAll(expiredBeacons);
+      return beacons;
+    }
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupid))));
+
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception!, showSnackBar: false);
@@ -282,31 +298,6 @@ class DataBaseMutationFunctions {
     beacons.addAll(expiredBeacons);
 
     return beacons;
-  }
-
-  Future<Group?> fetchGroup(String? groupId) async {
-    Group? group = Group();
-
-    if (!await connectionChecker!.checkForInternetConnection()) {
-      // fetch from local db
-
-      group = await hiveDb!.getGroup(groupId!);
-      return group;
-    }
-    final QueryResult result = await clientAuth
-        .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupId))));
-
-    if (result.hasException) {
-      final bool exception =
-          encounteredExceptionOrError(result.exception!, showSnackBar: false);
-      if (exception) {
-        print('$exception');
-      }
-    } else if (result.data != null && result.isConcrete) {
-      group = Group.fromJson(result.data!['group']);
-      await hiveDb!.putGroupInGroupBox(groupId, group);
-    }
-    return group;
   }
 
   Future<Beacon?> createBeacon(String? title, int startsAt, int expiresAt,
