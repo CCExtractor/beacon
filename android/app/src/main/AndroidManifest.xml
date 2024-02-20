@@ -10,7 +10,7 @@
         android:label="Beacon"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC72TkXzQTsnbGdZy5ldeX64y0mofn_iUs"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="add your key here"/>
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
             android:launchMode="singleTop"
