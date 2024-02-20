@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/models/beacon/beacon.dart';
@@ -70,7 +68,6 @@ class GroupViewModel extends BaseModel {
       // adding group leader
       if (group.leader != null) {
         groupMembers.add(group.leader!);
-        log('added leader');
       }
       // adding group members
       if (group.members != null) {
