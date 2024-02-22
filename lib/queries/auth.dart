@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class AuthQueries {
   String registerUser(String? name, String email, String? password) {
     return '''
@@ -43,7 +41,6 @@ class AuthQueries {
   }
 
   String fetchUserInfo() {
-    log('fetching user info');
     return '''
       query{
         me{

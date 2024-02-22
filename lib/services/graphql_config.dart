@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -28,8 +26,6 @@ class GraphQLConfig {
   }
 
   GraphQLClient clientToQuery() {
-    log(httpLink.toString());
-    log(EnvironmentConfig.httpEndpoint!);
     return GraphQLClient(
       cache: GraphQLCache(),
       //  cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),

@@ -184,6 +184,7 @@ class _HikeScreenState extends State<HikeScreen> {
                       Align(
                         alignment: Alignment(-0.9, -0.98),
                         child: FloatingActionButton(
+                          heroTag: 'back button',
                           onPressed: () {
                             navigationService!.pop();
                           },

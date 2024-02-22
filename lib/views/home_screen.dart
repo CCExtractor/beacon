@@ -144,52 +144,55 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               : Icon(Icons.logout),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(4.w, 25.h, 4.w, 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 45.w,
-                              child: HikeButton(
-                                buttonWidth: homebwidth - 10,
-                                buttonHeight: homebheight - 2,
-                                text: 'Create Group',
-                                textColor: Colors.white,
-                                borderColor: Colors.white,
-                                buttonColor: kYellow,
-                                onTap: () {
-                                  if (userConfig!.currentUser!.isGuest!) {
-                                    navigationService!.showSnackBar(
-                                        'You need to login with credentials to be able to create a group');
-                                  } else {
-                                    CreateJoinGroupDialog.createGroupDialog(
+                      Positioned(
+                        bottom: 58.h,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(4.w, 25.h, 4.w, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                width: 45.w,
+                                child: HikeButton(
+                                  buttonWidth: homebwidth - 10,
+                                  buttonHeight: homebheight - 2,
+                                  text: 'Create Group',
+                                  textColor: Colors.white,
+                                  borderColor: Colors.white,
+                                  buttonColor: kYellow,
+                                  onTap: () {
+                                    if (userConfig!.currentUser!.isGuest!) {
+                                      navigationService!.showSnackBar(
+                                          'You need to login with credentials to be able to create a group');
+                                    } else {
+                                      CreateJoinGroupDialog.createGroupDialog(
+                                          context, model);
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 1.w,
+                              ),
+                              Container(
+                                width: 45.w,
+                                child: HikeButton(
+                                  buttonWidth: homebwidth,
+                                  buttonHeight: homebheight - 2,
+                                  text: 'Join a Group',
+                                  textColor: kYellow,
+                                  borderColor: kYellow,
+                                  buttonColor: Colors.white,
+                                  onTap: () async {
+                                    CreateJoinGroupDialog.joinGroupDialog(
                                         context, model);
-                                  }
-                                },
+                                  },
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 1.w,
-                            ),
-                            Container(
-                              width: 45.w,
-                              child: HikeButton(
-                                buttonWidth: homebwidth,
-                                buttonHeight: homebheight - 2,
-                                text: 'Join a Group',
-                                textColor: kYellow,
-                                borderColor: kYellow,
-                                buttonColor: Colors.white,
-                                onTap: () async {
-                                  CreateJoinGroupDialog.joinGroupDialog(
-                                      context, model);
-                                },
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       Column(

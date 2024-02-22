@@ -12,8 +12,31 @@ import 'package:intl/intl.dart';
 class BeaconCustomWidgets {
   static final Color textColor = Color(0xFFAFAFAF);
 
+  static Widget buildName(Beacon beacon) {
+    return FutureBuilder(
+      future: hiveDb!.getCurrentUser(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text(
+            '${beacon.title} by ... ',
+            style: Style.titleTextStyle,
+          );
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return Text(
+            '${beacon.title} by Anonymous ',
+            style: Style.titleTextStyle,
+          );
+        }
+        final user = snapshot.data;
+        return Text(
+          '${beacon.title} by ${user!.id == beacon.leader!.id ? beacon.leader!.name : beacon.showAdminName == true ? beacon.leader!.name : 'Anonymous'} ',
+          style: Style.titleTextStyle,
+        );
+      },
+    );
+  }
+
   static Widget getBeaconCard(BuildContext context, Beacon beacon) {
-    print(beacon.leader!.name);
     bool hasStarted;
     bool hasEnded;
     bool willStart;
@@ -78,13 +101,7 @@ class BeaconCustomWidgets {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: 70.w,
-                            child: Text(
-                              '${beacon.title} by ${beacon.leader!.name} ',
-                              style: Style.titleTextStyle,
-                            ),
-                          ),
+                          Container(width: 70.w, child: buildName(beacon)),
                           Align(
                             alignment: Alignment.topRight,
                             child: BlinkIcon(),
@@ -134,10 +151,7 @@ class BeaconCustomWidgets {
                             children: [
                               Container(
                                 width: 70.w,
-                                child: Text(
-                                  '${beacon.title} by ${beacon.leader!.name} ',
-                                  style: Style.titleTextStyle,
-                                ),
+                                child: buildName(beacon),
                               ),
                               Align(
                                 alignment: Alignment.topRight,
@@ -208,10 +222,7 @@ class BeaconCustomWidgets {
                         children: [
                           Container(
                             width: 70.w,
-                            child: Text(
-                              '${beacon.title} by ${beacon.leader!.name} ',
-                              style: Style.titleTextStyle,
-                            ),
+                            child: buildName(beacon),
                           ),
                           SizedBox(height: 4.0),
                           RichText(

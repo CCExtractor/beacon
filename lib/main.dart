@@ -2,9 +2,11 @@ import 'package:beacon/config/environment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/router.dart' as router;
 import 'package:beacon/view_model/base_view_model.dart';
+import 'package:beacon/view_model/group_screen_view_model.dart';
 import 'package:beacon/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -18,8 +20,9 @@ void main() async {
   setupLocator();
   await localNotif!.initialize();
   await hiveDb!.init();
-  runApp(
-    OverlaySupport(
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => GroupViewModel())],
+    child: OverlaySupport(
       child: Sizer(
         builder: (context, orientation, deviceType) => MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -31,7 +34,7 @@ void main() async {
         ),
       ),
     ),
-  );
+  ));
 }
 
 class DemoPageView extends StatelessWidget {

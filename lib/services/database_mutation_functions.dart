@@ -23,7 +23,9 @@ class DataBaseMutationFunctions {
   init() async {
     clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
     ValueNotifier(clientNonAuth);
-    clientAuth = await graphqlConfig!.authClient();
+    if (1 == 1) {
+      clientAuth = await graphqlConfig!.authClient();
+    }
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
     _groupQuery = GroupQueries();
@@ -240,9 +242,25 @@ class DataBaseMutationFunctions {
       return beacons;
     }
 
-    //if connected to internet take from internet.
+    if (!await connectionChecker!.checkForInternetConnection()) {
+      // fetch from local db
+
+      final userBeacons = hiveDb!.getAllUserBeacons();
+      for (Beacon? i in userBeacons) {
+        if (i!.group == groupid) {
+          if (DateTime.fromMillisecondsSinceEpoch(i.expiresAt!)
+              .isBefore(DateTime.now()))
+            expiredBeacons.add(i);
+          else
+            beacons.add(i);
+        }
+      }
+      beacons.addAll(expiredBeacons);
+      return beacons;
+    }
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_groupQuery.groupDetail(groupid))));
+
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception!, showSnackBar: false);
@@ -282,8 +300,8 @@ class DataBaseMutationFunctions {
     return beacons;
   }
 
-  Future<Beacon?> createBeacon(
-      String? title, int startsAt, int expiresAt, String? groupID) async {
+  Future<Beacon?> createBeacon(String? title, int startsAt, int expiresAt,
+      String? groupID, bool showAdminName) async {
     log(startsAt.toString());
     LatLng loc;
     try {
@@ -294,8 +312,14 @@ class DataBaseMutationFunctions {
       return null;
     }
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.createBeacon(title, startsAt, expiresAt,
-            loc.latitude.toString(), loc.longitude.toString(), groupID))));
+        document: gql(_beaconQuery.createBeacon(
+            title,
+            startsAt,
+            expiresAt,
+            loc.latitude.toString(),
+            loc.longitude.toString(),
+            groupID,
+            showAdminName))));
     if (result.hasException) {
       navigationService!.showSnackBar(
           "Something went wrong: ${result.exception!.graphqlErrors.first.message}");
