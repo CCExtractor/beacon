@@ -78,14 +78,14 @@ class LocalNotification {
     );
     // We have to check if the hike is after 1 hour or not
 
-    var scheduledDate2 = await tz.TZDateTime.from(
+    tz.TZDateTime scheduledDate2 = await tz.TZDateTime.from(
       DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!),
       tz.local,
     ).subtract(Duration(hours: 1));
 
-    // We will check if beacon start time is less than the 2nd notification scheduling time
+    // We will check if the beacon scheduled time is after then the current time
 
-    if (scheduledDate2.compareTo(scheduledDate1) < 0) return;
+    if (scheduledDate2.compareTo(tz.TZDateTime.now(tz.local)) < 0) return;
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       beacon.id.hashCode,
