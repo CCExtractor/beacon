@@ -140,7 +140,7 @@ class HikeScreenWidget extends ChangeNotifier {
         // All the neccessary info should be here.
         //Will be used as subject if shared via email, else isnt used.
         // await Share.shareXFiles([XFile(imageFile.path)],
-        //     text: textToShare, subject: subjectToShare);
+        // text: textToShare, subject: subjectToShare);
         //hide after sharing.
         await mapController.hideMarkerInfoWindow(MarkerId("1"));
         return;
