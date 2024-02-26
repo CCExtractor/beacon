@@ -143,7 +143,8 @@ class _HikeScreenState extends State<HikeScreen> {
                         // child: Text('hello'),
                         child: GoogleMap(
                             compassEnabled: true,
-                            padding: EdgeInsets.fromLTRB(320.0,520.0,0.0,0.0),
+                            padding:
+                                EdgeInsets.fromLTRB(320.0, 520.0, 0.0, 0.0),
                             mapType: MapType.terrain,
                             polylines: model.polylines,
                             initialCameraPosition: CameraPosition(
