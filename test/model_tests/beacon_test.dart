@@ -1,4 +1,4 @@
-import 'package:beacon/models/beacon/beacon.dart';
+import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:test/test.dart';
 
 void main() {

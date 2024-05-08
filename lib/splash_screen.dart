@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'package:beacon/views/hike_screen.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:beacon/router.dart';
+import 'package:beacon/old/components/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:beacon/locator.dart';
 import 'package:uni_links/uni_links.dart';
 
-import 'components/loading_screen.dart';
+import 'old/components/loading_screen.dart';
 
+@RoutePage()
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({required Key key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
