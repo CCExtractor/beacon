@@ -45,7 +45,7 @@ dependencies:
   flutter_geocoder_alternative: any
 
   # for routing
-  auto_route: ^8.1.3
+  auto_route: ^8.1.1
 
 
   # for state management
@@ -64,6 +64,7 @@ dev_dependencies:
     sdk: flutter
   hive_generator: 
   test: ^1.16.5 
+  auto_route_generator: any
 
 flutter_icons:
   android: "launcher_icon"
