@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:beacon/enums/view_state.dart';
+import 'package:beacon/old/components/enums/view_state.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/locator.dart';

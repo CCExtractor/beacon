@@ -1,7 +1,7 @@
 import 'package:beacon/main.dart';
 import 'package:beacon/old/components/services/connection_checker.dart';
 import 'package:beacon/old/components/services/database_mutation_functions.dart';
-import 'package:beacon/Bloc/config/graphql/graphql_config.dart';
+import 'package:beacon/Bloc/config/graphql_config.dart';
 import 'package:beacon/old/components/services/hive_localdb.dart';
 import 'package:beacon/old/components/services/local_notification.dart';
 import 'package:beacon/old/components/services/navigation_service.dart';

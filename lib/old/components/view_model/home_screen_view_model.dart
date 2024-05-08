@@ -1,4 +1,4 @@
-import 'package:beacon/enums/view_state.dart';
+import 'package:beacon/old/components/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/view_model/base_view_model.dart';
 import 'package:flutter/material.dart';

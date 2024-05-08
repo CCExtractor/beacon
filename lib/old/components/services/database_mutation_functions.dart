@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:beacon/Bloc/config/core/queries/auth.dart';
-import 'package:beacon/Bloc/config/core/queries/beacon.dart';
-import 'package:beacon/Bloc/config/core/queries/group.dart';
+import 'package:beacon/Bloc/core/queries/auth.dart';
+import 'package:beacon/Bloc/core/queries/beacon.dart';
+import 'package:beacon/Bloc/core/queries/group.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/models/group/group.dart';
 import 'package:beacon/old/components/models/landmarks/landmark.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:beacon/Bloc/config/core/queries/beacon.dart';
+import 'package:beacon/Bloc/core/queries/beacon.dart';
 import 'package:beacon/old/components/dialog_boxes.dart';
 import 'package:beacon/Bloc/config/enviornment_config.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/Bloc/config/graphql/graphql_config.dart';
+import 'package:beacon/Bloc/config/graphql_config.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animarker/core/ripple_marker.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:beacon/enums/view_state.dart';
+import 'package:beacon/old/components/enums/view_state.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/models/location/location.dart'
     deferred as locModel;
