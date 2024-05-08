@@ -35,7 +35,7 @@ class DialogBoxes {
           buttonHeight: 2.5.h,
           buttonWidth: 8.w,
           onTap: () => Navigator.of(context).pop(true),
-          // TODO
+          //
           // onTap: () {
           //   navigationService.removeAllAndPush('/groupScreen', '/',
           //       arguments: GroupScreen(

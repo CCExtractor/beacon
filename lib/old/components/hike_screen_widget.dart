@@ -239,8 +239,8 @@ class HikeScreenWidget extends ChangeNotifier {
                                         ? Fluttertoast.showToast(
                                             msg:
                                                 'Only beacon holder has access to change the duration')
-                                        //TODO: enable this once backend has updated.
-                                        //Commented, since we dont have the neccessary mutation atm on backend to change the duration.
+                                        // todo enable this once backend has updated.
+                                        // Commented, since we dont have the neccessary mutation atm on backend to change the duration.
                                         // : DialogBoxes.changeDurationDialog(context);
                                         : Container();
                                   },

@@ -4,7 +4,6 @@ import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/view_model/base_view_model.dart';
 import 'package:beacon/old/components/views/hike_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class GroupViewModel extends BaseModel {
   final formKeyCreate = GlobalKey<FormState>();

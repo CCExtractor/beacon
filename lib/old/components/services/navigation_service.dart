@@ -1,4 +1,3 @@
-import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:beacon/router.dart';
 import 'package:beacon/old/components/views/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
