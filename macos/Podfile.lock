@@ -63,10 +63,10 @@ SPEC CHECKSUMS:
   geolocator_apple: 72a78ae3f3e4ec0db62117bd93e34523f5011d58
   location: 7cdb0665bd6577d382b0a343acdadbcb7f964775
   modal_progress_hud_nsn: 8099d46c2cf9de7af8fe0a3f8f5d2aa32cf956c3
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
-  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
 
 PODFILE CHECKSUM: 236401fc2c932af29a9fcf0e97baeeb2d750d367
 

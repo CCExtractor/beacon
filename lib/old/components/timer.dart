@@ -1,7 +1,7 @@
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
-import 'package:beacon/old/components/views/hike_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/hike_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 

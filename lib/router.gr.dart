@@ -71,7 +71,7 @@ class AuthScreenRoute extends PageRouteInfo<void> {
 /// [GroupScreen]
 class GroupScreenRoute extends PageRouteInfo<GroupScreenRouteArgs> {
   GroupScreenRoute({
-    required Group group,
+    required GroupEntity group,
     List<PageRouteInfo>? children,
   }) : super(
           GroupScreenRoute.name,
@@ -88,7 +88,7 @@ class GroupScreenRoute extends PageRouteInfo<GroupScreenRouteArgs> {
 class GroupScreenRouteArgs {
   const GroupScreenRouteArgs({required this.group});
 
-  final Group group;
+  final GroupEntity group;
 
   @override
   String toString() {

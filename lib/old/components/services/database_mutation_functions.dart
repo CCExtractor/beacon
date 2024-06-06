@@ -21,9 +21,9 @@ class DataBaseMutationFunctions {
   late BeaconQueries _beaconQuery;
   late GroupQueries _groupQuery;
   init() async {
-    clientNonAuth = await ValueNotifier(graphqlConfig!.clientToQuery());
+    clientNonAuth = await ValueNotifier(graphqlConfig.clientToQuery());
     ValueNotifier(clientNonAuth);
-    clientAuth = await graphqlConfig!.authClient();
+    clientAuth = await graphqlConfig.authClient();
     _authQuery = AuthQueries();
     _beaconQuery = BeaconQueries();
     _groupQuery = GroupQueries();
@@ -205,6 +205,8 @@ class DataBaseMutationFunctions {
   Future<Beacon?> fetchBeaconInfo(String? id) async {
     final QueryResult result = await clientAuth
         .query(QueryOptions(document: gql(_beaconQuery.fetchBeaconDetail(id))));
+
+    log('fetching beacon info: $result');
     if (result.hasException) {
       final bool exception =
           encounteredExceptionOrError(result.exception!, showSnackBar: false);
@@ -461,7 +463,8 @@ class DataBaseMutationFunctions {
       // navigationService!.showSnackBar(
       //     "Something went wrong: ${result.exception!.graphqlErrors.first.message}");
       print("Something went wrong: ${result.exception}");
-      navigationService!.removeAllAndPush('/main', '/');
+      // navigationService!.removeAllAndPush('/main', '/');
+      // AutoRouter.of(context).pushNamed('/home');
     } else if (result.data != null && result.isConcrete) {
       final Group group = Group.fromJson(
         result.data!['joinBeacon'] as Map<String, dynamic>,

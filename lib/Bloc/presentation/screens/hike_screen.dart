@@ -162,19 +162,20 @@ class _HikeScreenState extends State<HikeScreen> {
                               // setPolyline();
                             },
                             onTap: (loc) async {
-                              if (model.panelController.isPanelOpen)
-                                model.panelController.close();
-                              else {
-                                String? title;
-                                HikeScreenWidget
-                                    .showCreateLandMarkDialogueDialog(
-                                  context,
-                                  model.landmarkFormKey,
-                                  title,
-                                  loc,
-                                  model.createLandmark,
-                                );
-                              }
+                              // if (model.panelController.isPanelOpen)
+                              //   model.panelController.close();
+                              // else {
+                              //   String? title;
+                              //   HikeScreenWidget
+                              //       .showCreateLandMarkDialogueDialog(
+                              //     context,
+                              //     model.landmarkFormKey,
+                              //     title,
+                              //     loc,
+                              //     model.createLandmark,
+
+                              //   );
+                              // }
                             }),
                       ),
                       Align(

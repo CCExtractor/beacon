@@ -20,15 +20,17 @@ class GraphQLConfig {
           ));
 
   Future getToken() async {
-    final _token = userConfig!.currentUser!.authToken;
-    token = _token;
+    await localApi.init();
+    final user = await localApi.fetchUser();
+    if (user != null) {
+      token = user.authToken;
+    }
     return true;
   }
 
   GraphQLClient clientToQuery() {
     return GraphQLClient(
-      cache: GraphQLCache(),
-      //  cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
+      cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
       link: httpLink,
     );
   }
@@ -45,7 +47,7 @@ class GraphQLConfig {
 
   GraphQLClient graphQlClient() {
     return GraphQLClient(
-      cache: GraphQLCache(),
+      cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
       link: Link.split(
         (request) => request.isSubscription,
         websocketLink,

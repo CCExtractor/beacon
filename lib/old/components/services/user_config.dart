@@ -15,7 +15,7 @@ class UserConfig {
       return false;
     }
     bool userUpdated = true;
-    await graphqlConfig!.getToken().then((value) async {
+    await graphqlConfig.getToken().then((value) async {
       print('${userConfig!._currentUser!.authToken}');
       await databaseFunctions!.init();
       await databaseFunctions!.fetchCurrentUserInfo().then((value) {

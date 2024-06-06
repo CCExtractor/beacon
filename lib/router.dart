@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beacon/Bloc/domain/entities/group/group_entity.dart';
+import 'package:beacon/Bloc/presentation/screens/splash_screen.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
-import 'package:beacon/old/components/models/group/group.dart';
-import 'package:beacon/splash_screen.dart';
-import 'package:beacon/old/components/views/home_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
-import 'package:beacon/old/components/views/auth_screen.dart';
-import 'package:beacon/old/components/views/group_screen.dart';
-import 'package:beacon/old/components/views/hike_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/auth_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/group_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/hike_screen.dart';
 part 'router.gr.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -17,7 +17,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => const AuthScreen(key: Key('auth')));
     case Routes.mainScreen:
       return MaterialPageRoute(
-          builder: (context) => const HomeScreen(key: Key('MainScreen')));
+          builder: (context) => HomeScreen(key: Key('MainScreen')));
     case Routes.hikeScreen:
       HikeScreen? arguments = settings.arguments as HikeScreen?;
       return MaterialPageRoute(
@@ -41,10 +41,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 class AppRouter extends _$AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SplashScreenRoute.page, initial: true),
-        AutoRoute(page: AuthScreenRoute.page),
-        AutoRoute(page: HomeScreenRoute.page),
-        AutoRoute(page: HikeScreenRoute.page),
-        AutoRoute(page: GroupScreenRoute.page),
+        AutoRoute(page: SplashScreenRoute.page, initial: true, path: '/'),
+        AutoRoute(page: AuthScreenRoute.page, path: '/auth'),
+        AutoRoute(page: HomeScreenRoute.page, path: '/home'),
+        AutoRoute(
+          page: HikeScreenRoute.page,
+          path: '/hike',
+        ),
+        AutoRoute(page: GroupScreenRoute.page, path: '/group'),
       ];
 }

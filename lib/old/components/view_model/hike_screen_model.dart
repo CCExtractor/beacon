@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
+import 'package:auto_route/auto_route.dart';
 import 'package:beacon/Bloc/core/queries/beacon.dart';
 import 'package:beacon/old/components/dialog_boxes.dart';
 import 'package:beacon/Bloc/config/enviornment_config.dart';
@@ -227,6 +229,7 @@ class HikeScreenViewModel extends BaseModel {
         value = hiveDb!.beaconsBox.get(beacon!.id);
         beacon = value;
       }
+      log('value: ${value}');
       await updateModel(value!);
     });
   }
@@ -375,6 +378,8 @@ class HikeScreenViewModel extends BaseModel {
   Future<void> initialise(Beacon beaconParsed, bool? widgetIsLeader) async {
     beacon = hiveDb!.beaconsBox.get(beaconParsed.id);
     isLeader = widgetIsLeader;
+    beacon = beaconParsed;
+    await databaseFunctions!.init();
 
     if (await connectionChecker!.checkForInternetConnection()) {
       await fetchData();
@@ -425,12 +430,10 @@ class HikeScreenViewModel extends BaseModel {
     setState(ViewState.idle);
   }
 
-  Future<void> createLandmark(
-    var title,
-    var loc,
-  ) async {
+  Future<void> createLandmark(var title, var loc, BuildContext context) async {
     if (landmarkFormKey.currentState!.validate()) {
-      navigationService!.pop();
+      // navigationService!.pop();
+      AutoRouter.of(context).maybePop();
       await databaseFunctions!.init();
       await databaseFunctions!
           .createLandmark(title, loc, beacon!.id)
