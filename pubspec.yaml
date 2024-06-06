@@ -55,7 +55,6 @@ dependencies:
   json_annotation: ^4.9.0
   dev: ^1.0.0
   json_serializable: ^6.8.0
-  auto_route_generator: ^8.0.0
 
 
 
