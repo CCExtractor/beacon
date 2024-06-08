@@ -171,6 +171,9 @@ query{
                 _id
                 name
               }
+              group{
+                _id
+              }
               startsAt
               expiresAt
 

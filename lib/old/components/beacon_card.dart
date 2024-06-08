@@ -71,10 +71,10 @@ class BeaconCustomWidgets {
               group: beacon.group == null ? '' : beacon.group!.id,
               landmarks: [],
               location: Location(
-                  lat: beacon.location!.lat, lon: beacon.location!.long),
+                  lat: beacon.location!.lat, lon: beacon.location!.lon),
               route: []);
 
-          log('location: ${beacon.location!.long} ${beacon.location!.lat}');
+          log('location: ${beacon.location!.lon} ${beacon.location!.lat}');
 
           AutoRouter.of(context)
               .push(HikeScreenRoute(beacon: refrencedBeacon, isLeader: false));

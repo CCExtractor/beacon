@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$LocationEntity {
   String? get lat => throw _privateConstructorUsedError;
-  String? get long => throw _privateConstructorUsedError;
+  String? get lon => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $LocationEntityCopyWith<LocationEntity> get copyWith =>
@@ -30,7 +30,7 @@ abstract class $LocationEntityCopyWith<$Res> {
           LocationEntity value, $Res Function(LocationEntity) then) =
       _$LocationEntityCopyWithImpl<$Res, LocationEntity>;
   @useResult
-  $Res call({String? lat, String? long});
+  $Res call({String? lat, String? lon});
 }
 
 /// @nodoc
@@ -47,16 +47,16 @@ class _$LocationEntityCopyWithImpl<$Res, $Val extends LocationEntity>
   @override
   $Res call({
     Object? lat = freezed,
-    Object? long = freezed,
+    Object? lon = freezed,
   }) {
     return _then(_value.copyWith(
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
               as String?,
-      long: freezed == long
-          ? _value.long
-          : long // ignore: cast_nullable_to_non_nullable
+      lon: freezed == lon
+          ? _value.lon
+          : lon // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -70,7 +70,7 @@ abstract class _$$LocationEntityImplCopyWith<$Res>
       __$$LocationEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? lat, String? long});
+  $Res call({String? lat, String? lon});
 }
 
 /// @nodoc
@@ -85,16 +85,16 @@ class __$$LocationEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? lat = freezed,
-    Object? long = freezed,
+    Object? lon = freezed,
   }) {
     return _then(_$LocationEntityImpl(
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
               as String?,
-      long: freezed == long
-          ? _value.long
-          : long // ignore: cast_nullable_to_non_nullable
+      lon: freezed == lon
+          ? _value.lon
+          : lon // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -103,16 +103,16 @@ class __$$LocationEntityImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LocationEntityImpl implements _LocationEntity {
-  _$LocationEntityImpl({this.lat, this.long});
+  _$LocationEntityImpl({this.lat, this.lon});
 
   @override
   final String? lat;
   @override
-  final String? long;
+  final String? lon;
 
   @override
   String toString() {
-    return 'LocationEntity(lat: $lat, long: $long)';
+    return 'LocationEntity(lat: $lat, lon: $lon)';
   }
 
   @override
@@ -121,11 +121,11 @@ class _$LocationEntityImpl implements _LocationEntity {
         (other.runtimeType == runtimeType &&
             other is _$LocationEntityImpl &&
             (identical(other.lat, lat) || other.lat == lat) &&
-            (identical(other.long, long) || other.long == long));
+            (identical(other.lon, lon) || other.lon == lon));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, lat, long);
+  int get hashCode => Object.hash(runtimeType, lat, lon);
 
   @JsonKey(ignore: true)
   @override
@@ -136,13 +136,13 @@ class _$LocationEntityImpl implements _LocationEntity {
 }
 
 abstract class _LocationEntity implements LocationEntity {
-  factory _LocationEntity({final String? lat, final String? long}) =
+  factory _LocationEntity({final String? lat, final String? lon}) =
       _$LocationEntityImpl;
 
   @override
   String? get lat;
   @override
-  String? get long;
+  String? get lon;
   @override
   @JsonKey(ignore: true)
   _$$LocationEntityImplCopyWith<_$LocationEntityImpl> get copyWith =>

@@ -69,6 +69,7 @@ dev_dependencies:
   freezed: ^2.5.2
   hive_generator: 
   test: ^1.16.5 
+  auto_route_generator:
 
 flutter_icons:
   android: "launcher_icon"

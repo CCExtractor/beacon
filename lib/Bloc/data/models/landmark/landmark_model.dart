@@ -5,9 +5,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'landmark_model.g.dart';
 
+@HiveType(typeId: 50)
 @JsonSerializable()
 class LandMarkModel implements LandMarkEntity {
+  @HiveField(0)
   String? title;
+  @HiveField(1)
   LocationModel? location;
 
   LandMarkModel({this.title, this.location});
@@ -29,21 +32,5 @@ class LandMarkModel implements LandMarkEntity {
       title: title ?? this.title,
       location: location ?? this.location,
     );
-  }
-}
-
-class LandMarkModelAdapter extends TypeAdapter<LandMarkModel> {
-  @override
-  final int typeId = 50;
-
-  @override
-  LandMarkModel read(BinaryReader reader) {
-    final fields = reader.readMap().cast<String, dynamic>();
-    return LandMarkModel.fromJson(fields);
-  }
-
-  @override
-  void write(BinaryWriter writer, LandMarkModel obj) {
-    writer.writeMap(obj.toJson());
   }
 }

@@ -5,21 +5,32 @@ import 'package:beacon/Bloc/data/models/user/user_model.dart';
 import 'package:beacon/Bloc/domain/entities/beacon/beacon_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 part 'beacon_model.g.dart';
 
+@HiveType(typeId: 20)
 @JsonSerializable()
 class BeaconModel implements BeaconEntity {
+  @HiveField(0)
   String? id;
+  @HiveField(1)
   String? title;
+  @HiveField(2)
   UserModel? leader;
+  @HiveField(3)
   GroupModel? group;
+  @HiveField(4)
   String? shortcode;
+  @HiveField(5)
   List<UserModel?>? followers;
+  @HiveField(6)
   List<LandMarkModel?>? landmarks;
+  @HiveField(7)
   LocationModel? location;
+  @HiveField(8)
   List<LocationModel?>? route;
+  @HiveField(9)
   int? startsAt;
+  @HiveField(10)
   int? expiresAt;
 
   BeaconModel({
@@ -71,21 +82,5 @@ class BeaconModel implements BeaconEntity {
       startsAt: startsAt ?? this.startsAt,
       expiresAt: expiresAt ?? this.expiresAt,
     );
-  }
-}
-
-class BeaconModelAdapter extends TypeAdapter<BeaconModel> {
-  @override
-  final int typeId = 20;
-
-  @override
-  BeaconModel read(BinaryReader reader) {
-    final fields = reader.readMap().cast<String, dynamic>();
-    return BeaconModel.fromJson(fields);
-  }
-
-  @override
-  void write(BinaryWriter writer, BeaconModel obj) {
-    writer.writeMap(obj.toJson());
   }
 }

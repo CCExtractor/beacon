@@ -217,7 +217,7 @@ class _$GroupEntityImpl implements _GroupEntity {
 
   @override
   String toString() {
-    return 'GroupEntity(_id: $id, beacons: $beacons, members: $members, leader: $leader, title: $title, shortcode: $shortcode)';
+    return 'GroupEntity(id: $id, beacons: $beacons, members: $members, leader: $leader, title: $title, shortcode: $shortcode)';
   }
 
   @override

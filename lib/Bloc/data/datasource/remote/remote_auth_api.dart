@@ -18,39 +18,35 @@ class RemoteAuthApi {
 
   Future<DataState<UserModel>> fetchUserInfo() async {
     clientAuth = await graphqlConfig.authClient();
-    try {
-      final isConnected = await utils.checkInternetConnectivity();
 
-      if (!isConnected)
-        return DataFailed('Beacon is trying to connect with internet...');
+    final isConnected = await utils.checkInternetConnectivity();
 
-      // api call
-      final result = await clientAuth
-          .mutate(MutationOptions(document: gql(_authQueries.fetchUserInfo())));
+    if (!isConnected)
+      return DataFailed('Beacon is trying to connect with internet...');
 
-      if (result.data != null && result.isConcrete) {
-        final json = result.data!['me'];
-        final user = UserModel.fromJson(json);
+    // api call
+    final result = await clientAuth
+        .mutate(MutationOptions(document: gql(_authQueries.fetchUserInfo())));
 
-        final currentUser = await localApi.fetchUser();
+    if (result.data != null && result.isConcrete) {
+      final json = result.data!['me'];
+      final user = UserModel.fromJson(json);
 
-        // checking if user is login
-        if (currentUser == null) return DataFailed('Please login first');
-        final newUser = user.copyWithModel(
-            authToken: currentUser.authToken,
-            isGuest: user.email == '' ? true : false);
+      final currentUser = await localApi.fetchUser();
 
-        // saving user details locally
-        await localApi.saveUser(newUser);
+      // checking if user is login
+      if (currentUser == null) return DataFailed('Please login first');
+      final newUser = user.copyWithModel(
+          authToken: currentUser.authToken,
+          isGuest: user.email == '' ? true : false);
 
-        // returning
-        return DataSuccess(newUser);
-      } else {
-        return DataFailed('Something went wrong!');
-      }
-    } catch (e) {
-      return DataFailed(e.toString());
+      // saving user details locally
+      await localApi.saveUser(newUser);
+
+      // returning
+      return DataSuccess(newUser);
     }
+    return DataFailed(encounteredExceptionOrError(result.exception!));
   }
 
   Future<DataState<UserModel>> register(

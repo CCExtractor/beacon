@@ -3,5 +3,5 @@ part 'location_entity.freezed.dart';
 
 @freezed
 class LocationEntity with _$LocationEntity {
-  factory LocationEntity({String? lat, String? long}) = _LocationEntity;
+  factory LocationEntity({String? lat, String? lon}) = _LocationEntity;
 }

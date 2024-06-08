@@ -4,14 +4,17 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:beacon/Bloc/domain/entities/location/location_entity.dart';
 part 'location_model.g.dart';
 
+@HiveType(typeId: 40)
 @JsonSerializable()
 class LocationModel implements LocationEntity {
+  @HiveField(0)
   final String? lat;
-  final String? long;
+  @HiveField(1)
+  final String? lon;
 
   LocationModel({
     this.lat,
-    this.long,
+    this.lon,
   });
 
   factory LocationModel.fromJson(Map<String, dynamic> json) =>
@@ -25,27 +28,11 @@ class LocationModel implements LocationEntity {
   }) {
     return LocationModel(
       lat: lat ?? this.lat,
-      long: long ?? this.long,
+      lon: lon ?? this.lon,
     );
   }
 
   @override
   $LocationEntityCopyWith<LocationEntity> get copyWith =>
       throw UnimplementedError();
-}
-
-class LocationModelAdapter extends TypeAdapter<LocationModel> {
-  @override
-  final int typeId = 40;
-
-  @override
-  LocationModel read(BinaryReader reader) {
-    final fields = reader.readMap().cast<String, dynamic>();
-    return LocationModel.fromJson(fields);
-  }
-
-  @override
-  void write(BinaryWriter writer, LocationModel obj) {
-    writer.writeMap(obj.toJson());
-  }
 }

@@ -49,38 +49,9 @@ class AuthQueries {
           name
           groups{
             _id
-            title
-            shortcode
-            leader {
-              _id
-              name
-            }
-            members {
-              _id
-              name
-            }
-            beacons{
-            _id
-            }
           }
           beacons{
             _id
-            title
-            shortcode
-            leader {
-              _id
-              name
-            }
-            followers{
-              _id
-              name
-            }
-            location {
-              lat
-              lon
-            }
-            startsAt
-            expiresAt
           }
         }
       }

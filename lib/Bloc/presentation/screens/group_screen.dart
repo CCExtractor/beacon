@@ -9,6 +9,7 @@ import 'package:beacon/old/components/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
+import 'package:beacon/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -129,8 +130,13 @@ class _GroupScreenState extends State<GroupScreen>
                                   HikeButton(
                                     buttonHeight: 2.5.h,
                                     buttonWidth: 8.w,
-                                    onTap: () {
+                                    onTap: () async {
                                       AutoRouter.of(context).maybePop();
+                                      AutoRouter.of(context).pushAndPopUntil(
+                                        AuthScreenRoute(),
+                                        predicate: (route) => true,
+                                      );
+                                      await localApi.deleteUser();
                                     },
                                     text: 'Yes',
                                     textSize: 18.0,

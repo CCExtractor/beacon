@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:beacon/Bloc/core/queries/beacon.dart';
 import 'package:beacon/Bloc/core/queries/group.dart';
 import 'package:beacon/Bloc/core/resources/data_state.dart';
 import 'package:beacon/Bloc/data/models/beacon/beacon_model.dart';
+import 'package:beacon/Bloc/data/models/group/group_model.dart';
 import 'package:beacon/locator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -19,6 +22,28 @@ class RemoteGroupApi {
     bool isConnected = await utils.checkInternetConnectivity();
 
     if (!isConnected) {
+      GroupModel? group = await localApi.getGroup(groupId);
+
+      if (group != null && group.beacons != null) {
+        int condition = (page - 1) * pageSize + pageSize;
+        int beaconLen = group.beacons!.length;
+
+        if (condition > beaconLen) {
+          condition = beaconLen;
+        }
+
+        List<BeaconModel> beacons = [];
+
+        for (int i = (page - 1) * pageSize; i < condition; i++) {
+          BeaconModel? beaconModel =
+              await localApi.getBeacon(group.beacons![i]!.id);
+
+          beaconModel != null ? beacons.add(beaconModel) : null;
+        }
+
+        return DataSuccess(beacons);
+      }
+
       return DataFailed('Please check your internet connection!');
     }
 
@@ -32,7 +57,14 @@ class RemoteGroupApi {
       List<BeaconModel> hikes = [];
 
       for (var hikeJson in hikesJson) {
-        hikes.add(BeaconModel.fromJson(hikeJson));
+        BeaconModel hike = BeaconModel.fromJson(hikeJson);
+        hikes.add(hike);
+
+        // storing beacon
+        if (1 == 1) {
+          log('called');
+          await localApi.saveBeacon(hike);
+        }
       }
 
       return DataSuccess(hikes);
@@ -57,6 +89,9 @@ class RemoteGroupApi {
       final hikeJson = result.data!['createBeacon'];
 
       final beacon = BeaconModel.fromJson(hikeJson);
+
+      // storing beacon
+      await localApi.saveBeacon(beacon);
       return DataSuccess(beacon);
     }
     return DataFailed(encounteredExceptionOrError(result.exception!));
@@ -76,6 +111,9 @@ class RemoteGroupApi {
       final hikeJosn = result.data!['joinBeacon'];
 
       final beacon = BeaconModel.fromJson(hikeJosn);
+
+      // storing beacon
+      await localApi.saveBeacon(beacon);
 
       return DataSuccess(beacon);
     }

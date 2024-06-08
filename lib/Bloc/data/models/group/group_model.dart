@@ -6,13 +6,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'group_model.g.dart';
 
+@HiveType(typeId: 30)
 @JsonSerializable()
 class GroupModel implements GroupEntity {
+  @HiveField(0)
   String? id;
+  @HiveField(1)
   String? title;
+  @HiveField(2)
   UserModel? leader;
+  @HiveField(3)
   List<UserModel?>? members;
+  @HiveField(4)
   String? shortcode;
+  @HiveField(5)
   List<BeaconModel?>? beacons;
 
   GroupModel({
@@ -48,21 +55,5 @@ class GroupModel implements GroupEntity {
       shortcode: shortcode ?? this.shortcode,
       beacons: beacons ?? this.beacons,
     );
-  }
-}
-
-class GroupModelAdapter extends TypeAdapter<GroupModel> {
-  @override
-  final int typeId = 30;
-
-  @override
-  GroupModel read(BinaryReader reader) {
-    final fields = reader.readMap().cast<String, dynamic>();
-    return GroupModel.fromJson(fields);
-  }
-
-  @override
-  void write(BinaryWriter writer, GroupModel obj) {
-    writer.writeMap(obj.toJson());
   }
 }

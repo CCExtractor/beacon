@@ -7,15 +7,31 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
 
+@HiveType(typeId: 10)
 @JsonSerializable()
 class UserModel implements UserEntity {
+  @HiveField(0)
   String? id;
+
+  @HiveField(1)
   String? name;
-  String? authToken;
+
+  @HiveField(2)
   String? email;
+
+  @HiveField(3)
+  String? authToken;
+
+  @HiveField(4)
   bool? isGuest;
+
+  @HiveField(5)
   List<GroupModel?>? groups;
+
+  @HiveField(6)
   List<BeaconModel?>? beacons;
+
+  @HiveField(7)
   LocationModel? location;
 
   UserModel(
@@ -56,20 +72,5 @@ class UserModel implements UserEntity {
       beacons: beacons ?? this.beacons,
       location: location ?? this.location,
     );
-  }
-}
-
-class UserModelAdapter extends TypeAdapter<UserModel> {
-  @override
-  final int typeId = 10;
-  @override
-  UserModel read(BinaryReader reader) {
-    final fields = reader.readMap().cast<String, dynamic>();
-    return UserModel.fromJson(fields);
-  }
-
-  @override
-  void write(BinaryWriter writer, UserModel obj) {
-    writer.writeMap(obj.toJson());
   }
 }
