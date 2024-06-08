@@ -9,6 +9,7 @@ import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:beacon/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:intl/intl.dart';
@@ -144,10 +145,24 @@ class BeaconCustomWidgets {
                           ],
                         ),
                       ),
-                      SizedBox(height: 4.0),
-                      Text('Passkey: ${beacon.shortcode}',
-                          style: Style.commonTextStyle),
-                      SizedBox(height: 4.0),
+                      Row(
+                        children: [
+                          Text('Passkey: ${beacon.shortcode}',
+                              style: Style.commonTextStyle),
+                          IconButton(
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                    text: beacon.shortcode.toString()));
+                                utils.showSnackBar(
+                                    'Shortcode copied!', context);
+                              },
+                              icon: Icon(
+                                Icons.copy,
+                                color: Colors.white,
+                                size: 15,
+                              ))
+                        ],
+                      ),
                       (beacon.startsAt != null)
                           ? Text(
                               'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
@@ -218,14 +233,30 @@ class BeaconCustomWidgets {
                               //   dateTime: DateTime.fromMillisecondsSinceEpoch(
                               //       beacon.startsAt!),
                               //   name: beacon.title,
-                              //   beacon: beacon,
+                              //   beacon: Beacon(),
                               // )
                             ],
                           ),
-                          SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon.shortcode}',
-                              style: Style.commonTextStyle),
-                          SizedBox(height: 4.0),
+                          // SizedBox(height: 4.0),
+                          Row(
+                            children: [
+                              Text('Passkey: ${beacon.shortcode}',
+                                  style: Style.commonTextStyle),
+                              IconButton(
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(
+                                        text: beacon.shortcode.toString()));
+                                    utils.showSnackBar(
+                                        'Shortcode copied!', context);
+                                  },
+                                  icon: Icon(
+                                    Icons.copy,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ))
+                            ],
+                          ),
+                          // SizedBox(height: 4.0),
                           (beacon.startsAt != null)
                               ? Text(
                                   'Starts At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
@@ -266,9 +297,24 @@ class BeaconCustomWidgets {
                               ],
                             ),
                           ),
-                          SizedBox(height: 4.0),
-                          Text('Passkey: ${beacon.shortcode}',
-                              style: Style.commonTextStyle),
+                          Row(
+                            children: [
+                              Text('Passkey: ${beacon.shortcode}',
+                                  style: Style.commonTextStyle),
+                              IconButton(
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(
+                                        text: beacon.shortcode.toString()));
+                                    utils.showSnackBar(
+                                        'Shortcode copied!', context);
+                                  },
+                                  icon: Icon(
+                                    Icons.copy,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ))
+                            ],
+                          ),
                           SizedBox(height: 4.0),
                           (beacon.startsAt != null)
                               ? Text(

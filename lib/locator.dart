@@ -27,7 +27,6 @@ import 'package:beacon/old/components/view_model/hike_screen_model.dart';
 import 'package:beacon/old/components/view_model/group_screen_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 GetIt locator = GetIt.instance;
 final UserConfig? userConfig = locator<UserConfig>();
@@ -43,8 +42,6 @@ final localApi = locator<LocalApi>();
 final remoteAuthApi = locator<RemoteAuthApi>();
 final remoteHomeApi = locator<RemoteHomeApi>();
 final utils = locator<Utils>();
-late GraphQLClient gclientAuth;
-late GraphQLClient gclientNonAuth;
 
 void setupLocator() async {
   // shared prefrence services
@@ -80,9 +77,6 @@ void setupLocator() async {
   locator.registerSingleton<LocalApi>(LocalApi());
 
   final authClient = await graphqlConfig.authClient();
-
-  gclientAuth = await graphqlConfig.authClient();
-  gclientAuth = await graphqlConfig.clientToQuery();
 
   // Remote Api
   locator.registerSingleton<RemoteAuthApi>(

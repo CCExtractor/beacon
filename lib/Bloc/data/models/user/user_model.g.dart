@@ -77,7 +77,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           ?.map((e) =>
               e == null ? null : GroupModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      id: json['id'] as String?,
+      id: json['_id'] as String?,
       isGuest: json['isGuest'] as bool?,
       location: json['location'] == null
           ? null
@@ -86,7 +86,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
-      'id': instance.id,
+      '_id': instance.id,
       'name': instance.name,
       'email': instance.email,
       'authToken': instance.authToken,

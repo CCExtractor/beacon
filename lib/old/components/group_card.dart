@@ -4,6 +4,7 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:beacon/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'models/group/group.dart';
@@ -74,9 +75,24 @@ class GroupCustomWidgets {
                   'Group has $noBeacons beacons ',
                   style: Style.commonTextStyle,
                 ),
-                SizedBox(height: 4.0),
-                Text('Passkey: ${group.shortcode}',
-                    style: Style.commonTextStyle),
+                // SizedBox(height: 4.0),
+                Row(
+                  children: [
+                    Text('Passkey: ${group.shortcode}',
+                        style: Style.commonTextStyle),
+                    IconButton(
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: group.shortcode.toString()));
+                          utils.showSnackBar('Shortcode copied!', context);
+                        },
+                        icon: Icon(
+                          Icons.copy,
+                          color: Colors.white,
+                          size: 15,
+                        ))
+                  ],
+                )
               ],
             ),
           ],

@@ -37,6 +37,7 @@ class _GroupScreenState extends State<GroupScreen>
     _scrollController = ScrollController();
     _scrollController.addListener(_listener);
     _groupCubit = context.read<GroupCubit>();
+    _groupCubit.position == null ? _groupCubit.fetchPosition() : null;
     _groupCubit.fetchGroupHikes(widget.group.id!);
     super.initState();
   }

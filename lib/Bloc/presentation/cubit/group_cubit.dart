@@ -1,7 +1,9 @@
+import 'package:beacon/Bloc/core/constants/location.dart';
 import 'package:beacon/Bloc/core/resources/data_state.dart';
 import 'package:beacon/Bloc/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/Bloc/domain/usecase/group_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class GroupState {}
 
@@ -32,6 +34,7 @@ class GroupCubit extends Cubit<GroupState> {
   bool isCompletelyFetched = false;
   List<BeaconEntity> _beacons = [];
   List<BeaconEntity> get beacons => _beacons;
+  Position? position;
 
   Future<void> createHike(String title, int startsAt, int expiresAt, String lat,
       String lon, String groupID) async {
@@ -87,6 +90,10 @@ class GroupCubit extends Cubit<GroupState> {
       }
       emit(GroupReloadState());
     }
+  }
+
+  Future<void> fetchPosition() async {
+    position = await LocationService.getCurrentLocation();
   }
 
   clear() {

@@ -75,7 +75,7 @@ class BeaconModelAdapter extends TypeAdapter<BeaconModel> {
 // **************************************************************************
 
 BeaconModel _$BeaconModelFromJson(Map<String, dynamic> json) => BeaconModel(
-      id: json['id'] as String?,
+      id: json['_id'] as String?,
       title: json['title'] as String?,
       leader: json['leader'] == null
           ? null
@@ -107,7 +107,7 @@ BeaconModel _$BeaconModelFromJson(Map<String, dynamic> json) => BeaconModel(
 
 Map<String, dynamic> _$BeaconModelToJson(BeaconModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      '_id': instance.id,
       'title': instance.title,
       'leader': instance.leader,
       'group': instance.group,

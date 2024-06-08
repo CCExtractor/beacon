@@ -123,6 +123,9 @@ class CreateJoinGroupDialog {
                         textCapitalization: TextCapitalization.characters,
                         style: TextStyle(fontSize: 22.0),
                         validator: (value) => Validator.validatePasskey(value!),
+                        onChanged: (value) {
+                          _joinGroupController.text = value.toUpperCase();
+                        },
                         decoration: InputDecoration(
                           alignLabelWithHint: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -392,7 +395,7 @@ class CreateJoinBeaconDialog {
                             textSize: 18.0,
                             textColor: Colors.white,
                             buttonColor: kYellow,
-                            onTap: () {
+                            onTap: () async {
                               if (_createFormKey.currentState!.validate()) {
                                 DateTime startsAt = DateTime(
                                     startDate!.year,
@@ -420,9 +423,21 @@ class CreateJoinBeaconDialog {
                                             duration!.inMinutes)
                                     .millisecondsSinceEpoch;
 
+                                if (groupCubit.position == null) {
+                                  utils.showSnackBar(
+                                      'Please give access to location!',
+                                      context);
+                                  groupCubit.fetchPosition();
+                                  return;
+                                }
                                 AutoRouter.of(context).maybePop();
-                                groupCubit.createHike(title, startingTime,
-                                    endTime, '103', '102', groupID!);
+                                groupCubit.createHike(
+                                    title,
+                                    startingTime,
+                                    endTime,
+                                    groupCubit.position!.latitude.toString(),
+                                    groupCubit.position!.longitude.toString(),
+                                    groupID!);
                               }
                             }),
                       ),

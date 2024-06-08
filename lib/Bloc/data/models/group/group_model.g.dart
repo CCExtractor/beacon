@@ -60,7 +60,7 @@ class GroupModelAdapter extends TypeAdapter<GroupModel> {
 // **************************************************************************
 
 GroupModel _$GroupModelFromJson(Map<String, dynamic> json) => GroupModel(
-      id: json['id'] as String?,
+      id: json['_id'] as String?,
       title: json['title'] as String?,
       leader: json['leader'] == null
           ? null
@@ -79,7 +79,7 @@ GroupModel _$GroupModelFromJson(Map<String, dynamic> json) => GroupModel(
 
 Map<String, dynamic> _$GroupModelToJson(GroupModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      '_id': instance.id,
       'title': instance.title,
       'leader': instance.leader,
       'members': instance.members,

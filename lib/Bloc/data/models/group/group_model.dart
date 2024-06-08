@@ -3,7 +3,6 @@ import 'package:beacon/Bloc/data/models/user/user_model.dart';
 import 'package:beacon/Bloc/domain/entities/group/group_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 part 'group_model.g.dart';
 
 @HiveType(typeId: 30)
