@@ -3,15 +3,19 @@ import 'package:beacon/Bloc/core/utils/utils.dart';
 import 'package:beacon/Bloc/data/datasource/local/local_api.dart';
 import 'package:beacon/Bloc/data/datasource/remote/remote_auth_api.dart';
 import 'package:beacon/Bloc/data/datasource/remote/remote_group_api.dart';
+import 'package:beacon/Bloc/data/datasource/remote/remote_hike_api.dart';
 import 'package:beacon/Bloc/data/datasource/remote/remote_home_api.dart';
 import 'package:beacon/Bloc/data/repositories/auth_repository_implementation.dart';
 import 'package:beacon/Bloc/data/repositories/group_repository_implementation.dart';
+import 'package:beacon/Bloc/data/repositories/hike_repository_implementation.dart';
 import 'package:beacon/Bloc/data/repositories/home_repository_implementation.dart';
 import 'package:beacon/Bloc/domain/repositories/auth_repository.dart';
 import 'package:beacon/Bloc/domain/repositories/group_repository.dart';
+import 'package:beacon/Bloc/domain/repositories/hike_repository.dart';
 import 'package:beacon/Bloc/domain/repositories/home_repository.dart';
 import 'package:beacon/Bloc/domain/usecase/auth_usecase.dart';
 import 'package:beacon/Bloc/domain/usecase/group_usecase.dart';
+import 'package:beacon/Bloc/domain/usecase/hike_usecase.dart';
 import 'package:beacon/Bloc/domain/usecase/home_usecase.dart';
 import 'package:beacon/main.dart';
 import 'package:beacon/old/components/services/connection_checker.dart';
@@ -93,6 +97,8 @@ void setupLocator() async {
   locator.registerSingleton<RemoteGroupApi>(
       RemoteGroupApi(authClient: authClient));
 
+  locator.registerSingleton<RemoteHikeApi>(RemoteHikeApi(authClient));
+
   // registering auth reporitory of domain
   locator.registerSingleton<AuthRepository>(
       AuthRepositoryImplementation(remoteAuthApi: locator<RemoteAuthApi>()));
@@ -100,6 +106,8 @@ void setupLocator() async {
       HomeRepostitoryImplementation(remoteHomeApi: locator<RemoteHomeApi>()));
   locator.registerSingleton<GroupRepository>(
       GroupRepostioryImplementation(remoteGroupApi: locator<RemoteGroupApi>()));
+  locator.registerSingleton<HikeRepository>(
+      HikeRepositoryImplementatioin(remoteHikeApi: locator<RemoteHikeApi>()));
 
   // use case
   locator.registerSingleton(
@@ -108,6 +116,8 @@ void setupLocator() async {
       HomeUseCase(homeRepository: locator<HomeRepository>()));
   locator.registerSingleton<GroupUseCase>(
       GroupUseCase(locator<GroupRepository>()));
+  locator.registerSingleton<HikeUseCase>(
+      HikeUseCase(hikeRepository: locator<HikeRepository>()));
 
   // // cubit
   // locator.registerFactory<HomeCubit>(() => HomeCubit(homeUseCase: locator()));

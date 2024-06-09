@@ -45,11 +45,11 @@ class GroupViewModel extends BaseModel {
         hasStarted = DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
         if (hasStarted) {
-          navigationService!.pushScreen('/hikeScreen',
-              arguments: HikeScreen(
-                beacon,
-                isLeader: true,
-              ));
+          // navigationService!.pushScreen('/hikeScreen',
+          //     arguments: HikeScreen(
+          //       beacon,
+          //       isLeader: true,
+          //     ));
         } else {
           localNotif!.scheduleNotification(beacon);
           setState(ViewState.idle);

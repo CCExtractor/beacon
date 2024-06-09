@@ -87,7 +87,7 @@ class BeaconQueries {
     ''';
   }
 
-  String updateLeaderLoc(String? id, String lat, String lon) {
+  String updateBeaconLocation(String? id, String lat, String lon) {
     return '''
         mutation {
             updateBeaconLocation(id: "$id", location: {lat: "$lat", lon:"$lon"}){

@@ -34,11 +34,11 @@ class LocalNotification {
 
   Future<void> onSelectNotification(notificationResponse) async {
     if (notificationResponse != null) {
-      Beacon beacon = await (databaseFunctions!
-          .fetchBeaconInfo(notificationResponse.payload) as Future<Beacon>);
-      bool isLeader = beacon.leader!.id == userConfig!.currentUser!.id;
-      navigationService!.pushScreen('/hikeScreen',
-          arguments: HikeScreen(beacon, isLeader: isLeader));
+      // Beacon beacon = await (databaseFunctions!
+      //     .fetchBeaconInfo(notificationResponse.payload) as Future<Beacon>);
+      // bool isLeader = beacon.leader!.id == userConfig!.currentUser!.id;
+      // navigationService!.pushScreen('/hikeScreen',
+      //     arguments: HikeScreen(beacon, isLeader: isLeader));
     }
     return;
   }

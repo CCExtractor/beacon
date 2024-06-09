@@ -2,6 +2,7 @@
 import 'package:beacon/Bloc/config/enviornment_config.dart';
 import 'package:beacon/Bloc/presentation/cubit/auth_cubit.dart';
 import 'package:beacon/Bloc/presentation/cubit/group_cubit.dart';
+import 'package:beacon/Bloc/presentation/cubit/hike_cubit.dart';
 import 'package:beacon/Bloc/presentation/cubit/home_cubit.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/view_model/base_view_model.dart';
@@ -68,6 +69,9 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider(
               create: (context) => GroupCubit(locator()),
+            ),
+            BlocProvider(
+              create: (context) => HikeCubit(hikeUsecase: locator()),
             ),
           ],
           child: MaterialApp.router(

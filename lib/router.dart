@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/Bloc/domain/entities/group/group_entity.dart';
 import 'package:beacon/Bloc/presentation/screens/splash_screen.dart';
-import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/Bloc/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:beacon/Bloc/presentation/screens/auth_screen.dart';
 import 'package:beacon/Bloc/presentation/screens/group_screen.dart';
 import 'package:beacon/Bloc/presentation/screens/hike_screen.dart';
+import 'package:beacon/Bloc/domain/entities/beacon/beacon_entity.dart';
 part 'router.gr.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -18,13 +18,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.mainScreen:
       return MaterialPageRoute(
           builder: (context) => HomeScreen(key: Key('MainScreen')));
-    case Routes.hikeScreen:
-      HikeScreen? arguments = settings.arguments as HikeScreen?;
-      return MaterialPageRoute(
-          builder: (context) => HikeScreen(
-                arguments!.beacon,
-                isLeader: arguments.isLeader,
-              ));
+    // case Routes.hikeScreen:
+    //   HikeScreen? arguments = settings.arguments as HikeScreen?;
+    //   return MaterialPageRoute(
+    //       builder: (context) => HikeScreen(
+    //             arguments!.beacon,
+    //             isLeader: arguments.isLeader,
+    //           ));
     case Routes.groupScreen:
       GroupScreen? arguments = settings.arguments as GroupScreen?;
       return MaterialPageRoute(

@@ -33,7 +33,8 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: HikeScreen(
-          args.beacon,
+          key: args.key,
+          beacon: args.beacon,
           isLeader: args.isLeader,
         ),
       );
@@ -100,12 +101,14 @@ class GroupScreenRouteArgs {
 /// [HikeScreen]
 class HikeScreenRoute extends PageRouteInfo<HikeScreenRouteArgs> {
   HikeScreenRoute({
-    required Beacon? beacon,
-    bool? isLeader,
+    Key? key,
+    required BeaconEntity beacon,
+    required bool? isLeader,
     List<PageRouteInfo>? children,
   }) : super(
           HikeScreenRoute.name,
           args: HikeScreenRouteArgs(
+            key: key,
             beacon: beacon,
             isLeader: isLeader,
           ),
@@ -120,17 +123,20 @@ class HikeScreenRoute extends PageRouteInfo<HikeScreenRouteArgs> {
 
 class HikeScreenRouteArgs {
   const HikeScreenRouteArgs({
+    this.key,
     required this.beacon,
-    this.isLeader,
+    required this.isLeader,
   });
 
-  final Beacon? beacon;
+  final Key? key;
+
+  final BeaconEntity beacon;
 
   final bool? isLeader;
 
   @override
   String toString() {
-    return 'HikeScreenRouteArgs{beacon: $beacon, isLeader: $isLeader}';
+    return 'HikeScreenRouteArgs{key: $key, beacon: $beacon, isLeader: $isLeader}';
   }
 }
 

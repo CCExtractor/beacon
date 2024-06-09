@@ -19,7 +19,7 @@ class GroupCustomWidgets {
       onTap: () async {
         bool isMember = false;
         for (var i in group.members!) {
-          if (i!.id == userConfig!.currentUser!.id) {
+          if (i!.id == localApi.userModel.id) {
             isMember = true;
           }
         }
@@ -28,8 +28,6 @@ class GroupCustomWidgets {
           //     arguments: GroupScreen(
           //       group,
           //     ));
-
-          // AutoRouter.of(context).pushNamed('/group');
 
           AutoRouter.of(context).push(GroupScreenRoute(group: group));
         } else {

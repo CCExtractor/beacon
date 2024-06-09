@@ -1,3 +1,4 @@
+import 'package:beacon/Bloc/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_countdown_timer/index.dart';
 class CountdownTimerPage extends StatefulWidget {
   final String? name;
   final DateTime dateTime;
-  final Beacon beacon;
+  final BeaconEntity beacon;
   CountdownTimerPage(
       {Key? key,
       required this.dateTime,
@@ -59,7 +60,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage>
                 widget.beacon.leader!.id == userConfig!.currentUser!.id;
             navigationService!.pushScreen(
               '/hikeScreen',
-              arguments: HikeScreen(widget.beacon, isLeader: isLeader),
+              // arguments: HikeScreen(widget.beacon, isLeader: isLeader),
             );
           },
         ),

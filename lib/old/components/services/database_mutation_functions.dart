@@ -314,7 +314,7 @@ class DataBaseMutationFunctions {
 
   Future<Location?> updateLeaderLoc(String? id, LatLng latLng) async {
     final QueryResult result = await clientAuth.mutate(MutationOptions(
-        document: gql(_beaconQuery.updateLeaderLoc(
+        document: gql(_beaconQuery.updateBeaconLocation(
             id, latLng.latitude.toString(), latLng.longitude.toString()))));
     if (result.hasException) {
       print(
