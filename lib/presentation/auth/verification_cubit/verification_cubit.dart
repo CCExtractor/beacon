@@ -2,7 +2,7 @@ import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/usecase/auth_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_state.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerificationCubit extends Cubit<OTPVerificationState> {
   AuthUseCase _authUseCase;

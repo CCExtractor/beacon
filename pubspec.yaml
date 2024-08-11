@@ -53,27 +53,12 @@ dependencies:
   # class comparison
   freezed_annotation: ^2.4.1
 
-
-
   # for dismissable widget
   flutter_slidable: ^3.1.0
   graphql_flutter: ^5.1.2
-  web_socket_channel: ^2.4.5
   geolocator: ^12.0.0
-  flutter_geocoder: ^0.2.2-nullsafety
-  geocoding: ^3.0.0
   http: ^0.13.6
-  otp_pin_field: ^1.2.9
-  hydrated_bloc: ^9.1.5
   pinput: ^5.0.0
-
-
-
-  
-  
-
-
-
 
 
 
@@ -87,7 +72,6 @@ dev_dependencies:
   hive_generator: 
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
-  auto_route_generator: 
 
 flutter_icons:
   android: "launcher_icon"
