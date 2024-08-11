@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:beacon/core/queries/group.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/data/models/group/group_model.dart';

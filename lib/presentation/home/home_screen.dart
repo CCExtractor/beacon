@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';

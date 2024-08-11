@@ -1,7 +1,3 @@
-import 'package:beacon/data/models/beacon/beacon_model.dart';
-import 'package:beacon/data/models/user/user_model.dart';
-import 'package:beacon/domain/entities/user/user_entity.dart';
-import 'package:test/test.dart';
 
 void main() {
   //structered according to fetchBeaconDetail Query.

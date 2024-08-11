@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beacon/core/queries/beacon.dart';
 import 'package:beacon/core/queries/group.dart';
@@ -13,13 +12,11 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class RemoteGroupApi {
   late GraphQLClient _authClient;
-  late GraphQLClient _subscriptionClient;
 
-  RemoteGroupApi(this._authClient, this._subscriptionClient);
+  RemoteGroupApi(this._authClient);
 
   void loadClient(GraphQLClient authClient, GraphQLClient subscriptionClient) {
     this._authClient = authClient;
-    this._subscriptionClient = subscriptionClient;
   }
 
   final _groupqueries = GroupQueries();

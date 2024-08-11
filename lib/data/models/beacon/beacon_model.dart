@@ -5,8 +5,6 @@ import 'package:beacon/data/models/location/location_model.dart';
 import 'package:beacon/data/models/subscriptions/user_location_model/user_location_model.dart';
 import 'package:beacon/data/models/user/user_model.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
-import 'package:beacon/domain/entities/geofence/geofence_entity.dart';
-import 'package:beacon/domain/entities/subscriptions/user_location_entity/user_location_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'beacon_model.g.dart';

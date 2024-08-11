@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/config/pip_manager.dart';
 import 'package:beacon/core/utils/constants.dart';

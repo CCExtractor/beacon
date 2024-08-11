@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:beacon/config/local_notification.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';

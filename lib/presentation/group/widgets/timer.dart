@@ -1,7 +1,4 @@
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
-import 'package:beacon/locator.dart';
-import 'package:beacon/core/utils/constants.dart';
-import 'package:beacon/config/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 

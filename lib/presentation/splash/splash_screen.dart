@@ -5,7 +5,6 @@ import 'package:beacon/domain/usecase/auth_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:beacon/locator.dart';
 import '../widgets/loading_screen.dart';
 
 @RoutePage()

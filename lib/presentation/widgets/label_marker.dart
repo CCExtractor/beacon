@@ -100,6 +100,7 @@ Future<BitmapDescriptor> createCustomMarkerBitmap(
           painter.width.toInt() + 40, painter.height.toInt() + 50))
       .toByteData(format: ui.ImageByteFormat.png);
   Uint8List data = Uint8List.view(pngBytes!.buffer);
+  // ignore: deprecated_member_use
   return BitmapDescriptor.fromBytes(data);
 }
 

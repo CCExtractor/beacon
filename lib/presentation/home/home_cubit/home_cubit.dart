@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
@@ -199,7 +198,7 @@ class HomeCubit extends Cubit<HomeState> {
           var groups = addNewMember(groupId, updatedGroup.newUser!);
           if (_currentGroupId != groupId) {
             String message =
-                '${newUser.name ?? 'Anonymous'} has joined the ${group!.title ?? 'title'}';
+                '${newUser.name ?? 'Anonymous'} has joined the ${group.title ?? 'title'}';
             emit(LoadedHomeState(groups: groups, message: message));
             showNotification(message, '');
           } else {
@@ -284,7 +283,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void showNotification(String title, String body) {
-    localNotif!.showInstantNotification(title, body);
+    localNotif.showInstantNotification(title, body);
   }
 
   List<GroupEntity> addBeaconInGroup(BeaconEntity newBeacon, String groupId) {

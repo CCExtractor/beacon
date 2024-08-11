@@ -10,8 +10,6 @@ import 'package:beacon/data/models/location/location_model.dart';
 import 'package:beacon/data/models/subscriptions/beacon_locations_model/beacon_locations_model.dart';
 import 'package:beacon/data/models/subscriptions/join_leave_beacon_model/join_leave_beacon_model.dart';
 import 'package:beacon/data/models/user/user_model.dart';
-import 'package:beacon/domain/entities/location/location_entity.dart';
-import 'package:beacon/domain/entities/subscriptions/join_leave_beacon_entity/join_leave_beacon_entity.dart';
 import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

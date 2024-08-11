@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:auto_route/auto_route.dart';
-import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
-import 'package:beacon/domain/usecase/group_usecase.dart';
-import 'package:beacon/domain/usecase/hike_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/hike/widgets/active_beacon.dart';
@@ -15,7 +11,6 @@ import 'package:beacon/config/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/config/router/router.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/usecase/auth_usecase.dart';

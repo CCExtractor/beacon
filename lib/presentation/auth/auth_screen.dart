@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:beacon/config/router/router.dart';
 import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/auth/auth_cubit/auth_state.dart';
-import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:beacon/presentation/widgets/text_field.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
@@ -178,7 +176,7 @@ class _AuthScreenState extends State<AuthScreen>
             Expanded(
               child: TextButton(
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
                 ),
                 //highlightColor: Colors.white,
                 onPressed: () {
@@ -201,7 +199,7 @@ class _AuthScreenState extends State<AuthScreen>
             Expanded(
               child: TextButton(
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
                 ),
                 onPressed: () {
                   pageController.animateToPage(1,

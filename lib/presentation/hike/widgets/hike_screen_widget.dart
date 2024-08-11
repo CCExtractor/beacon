@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';

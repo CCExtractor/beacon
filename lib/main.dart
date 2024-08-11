@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:beacon/config/enviornment_config.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';

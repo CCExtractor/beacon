@@ -9,7 +9,6 @@ import 'package:beacon/presentation/group/cubit/members_cubit/members_cubit.dart
 import 'package:beacon/presentation/group/widgets/create_join_dialog.dart';
 import 'package:beacon/presentation/group/widgets/beacon_card.dart';
 import 'package:beacon/presentation/group/widgets/group_widgets.dart';
-import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/widgets/shimmer.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/widgets/loading_screen.dart';

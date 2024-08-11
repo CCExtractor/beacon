@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beacon/core/queries/auth.dart';
 import 'package:beacon/core/resources/data_state.dart';

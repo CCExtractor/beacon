@@ -339,9 +339,8 @@ class LocationCubit extends Cubit<LocationState> {
               polyline: _polyline,
               version: DateTime.now().millisecondsSinceEpoch));
         } else if (beaconLocationsEntity.userSOS != null) {
-          var user = beaconLocationsEntity.userSOS;
 
-          // TODO: will update ui to ripple the marker
+
 
           // var marker = _hikeMarkers
           //     .firstWhere((marker) => marker.markerId.value == user!.id);
