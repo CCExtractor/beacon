@@ -3,9 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  connectivity_plus_windows
+  connectivity_plus
   geolocator_windows
-  modal_progress_hud_nsn
   share_plus
   url_launcher_windows
 )
