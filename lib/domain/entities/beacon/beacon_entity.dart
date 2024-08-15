@@ -36,16 +36,17 @@ extension BeaconEntityCopyWithExtension on BeaconEntity {
       LocationEntity? location,
       GroupEntity? group}) {
     return BeaconEntity(
-        id: id ?? this.id,
-        shortcode: shortcode ?? this.shortcode,
-        startsAt: startsAt ?? this.startsAt,
-        expiresAt: expiresAt ?? this.expiresAt,
-        title: title ?? this.title,
-        leader: leader ?? this.leader,
-        followers: followers ?? this.followers,
-        route: route ?? this.route,
-        landmarks: landmarks ?? this.landmarks,
-        location: location ?? this.location,
-        group: group ?? this.group,);
+      id: id ?? this.id,
+      shortcode: shortcode ?? this.shortcode,
+      startsAt: startsAt ?? this.startsAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      title: title ?? this.title,
+      leader: leader ?? this.leader,
+      followers: followers ?? this.followers,
+      route: route ?? this.route,
+      landmarks: landmarks ?? this.landmarks,
+      location: location ?? this.location,
+      group: group ?? this.group,
+    );
   }
 }

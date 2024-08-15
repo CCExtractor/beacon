@@ -73,13 +73,12 @@ class LocationCubit extends Cubit<LocationState> {
 
     _currentUserId = localApi.userModel.id!;
 
-     getLeaderAddress(locationToLatLng(beacon.leader!.location!));
+    getLeaderAddress(locationToLatLng(beacon.leader!.location!));
 
     // // adding leader location
     if (beacon.leader != null) {
       _leader = beacon.leader!;
 
-      
       // creating leader location
 
       if (_currentUserId == _leader!.id) {
@@ -784,7 +783,6 @@ class LocationCubit extends Cubit<LocationState> {
   double stringTodouble(String coord) {
     return double.parse(coord);
   }
-
 
   void changeMap(MapType mapType) {
     if (mapType == _mapType) return;

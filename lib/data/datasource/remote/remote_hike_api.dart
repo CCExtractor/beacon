@@ -59,10 +59,6 @@ class RemoteHikeApi {
     return DataFailed(encounteredExceptionOrError(result.exception!));
   }
 
-
-
-  
-
   Future<DataState<UserEntity>> changeUserLocation(
       String beaconId, LatLng latlng) async {
     bool isConnected = await utils.checkInternetConnectivity();
@@ -162,8 +158,6 @@ class RemoteHikeApi {
     }
   }
 
-
-
   Future<DataState<UserEntity>> sos(String id) async {
     bool isConnected = await utils.checkInternetConnectivity();
 
@@ -182,8 +176,6 @@ class RemoteHikeApi {
       return DataFailed(utils.filterException(result.exception!));
     }
   }
-
-  
 
   String encounteredExceptionOrError(OperationException exception) {
     if (exception.linkException != null) {

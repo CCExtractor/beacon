@@ -35,7 +35,6 @@ class RemoteAuthApi {
     final result = await _authClient
         .mutate(MutationOptions(document: gql(_authQueries.fetchUserInfo())));
 
-
     if (result.data != null && result.isConcrete) {
       final json = result.data!['me'];
       final user = UserModel.fromJson(json);
@@ -143,7 +142,6 @@ class RemoteAuthApi {
     final QueryResult result = await _authClient.mutate(
         MutationOptions(document: gql(_authQueries.sendVerficationCode())));
 
-
     if (result.data != null && result.isConcrete) {
       return DataSuccess(result.data!['sendVerificationCode'] as String);
     }
@@ -161,7 +159,6 @@ class RemoteAuthApi {
 
     final QueryResult result = await authClient.mutate(MutationOptions(
         document: gql(_authQueries.completeVerificationCode())));
-
 
     if (result.data != null && result.isConcrete) {
       var user = UserModel.fromJson(result.data!['completeVerification']);

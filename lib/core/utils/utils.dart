@@ -44,9 +44,6 @@ class Utils {
     );
   }
 
-
-
-
   String filterException(OperationException exception) {
     // checking grapqhl exceptions
     if (exception.graphqlErrors.isNotEmpty) {

@@ -144,7 +144,6 @@ deleteBeacon(id: "$id")
     ''';
   }
 
-
   String updateBeaconLocation(String? id, String lat, String lon) {
     return '''
         mutation {

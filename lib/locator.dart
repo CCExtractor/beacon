@@ -63,8 +63,7 @@ Future<void> setupLocator() async {
 
   locator.registerSingleton<RemoteHomeApi>(
       RemoteHomeApi(clientAuth, subscriptionClient));
-  locator.registerSingleton<RemoteGroupApi>(
-      RemoteGroupApi(clientAuth));
+  locator.registerSingleton<RemoteGroupApi>(RemoteGroupApi(clientAuth));
   locator.registerSingleton<RemoteHikeApi>(
       RemoteHikeApi(clientAuth, subscriptionClient));
 

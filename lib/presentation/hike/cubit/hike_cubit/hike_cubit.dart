@@ -1,4 +1,3 @@
-
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/domain/usecase/hike_usecase.dart';
@@ -21,7 +20,8 @@ class HikeCubit extends Cubit<HikeState> {
 
   BeaconEntity? _beacon;
 
-  Future<void> startHike(String beaconId, TickerProvider vsync, BuildContext context) async {
+  Future<void> startHike(
+      String beaconId, TickerProvider vsync, BuildContext context) async {
     emit(InitialHikeState());
     final dataState = await _hikeUseCase.fetchBeaconDetails(beaconId);
 

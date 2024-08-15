@@ -85,10 +85,8 @@ class RemoteGroupApi {
         document: gql(_beaconQueries.createBeacon(
             title, startsAt, expiresAt, lat, lon, groupID))));
 
-
     if (result.data != null && result.isConcrete) {
       final hikeJson = result.data!['createBeacon'];
-
 
       final beacon = BeaconModel.fromJson(hikeJson);
 

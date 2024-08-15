@@ -1,4 +1,3 @@
-
 import 'package:beacon/data/models/group/group_model.dart';
 import 'package:beacon/data/models/landmark/landmark_model.dart';
 import 'package:beacon/data/models/location/location_model.dart';
@@ -57,18 +56,19 @@ class BeaconModel implements BeaconEntity {
 
   Map<String, dynamic> toJson() => _$BeaconModelToJson(this);
 
-  BeaconModel copyWithModel(
-      {String? id,
-      String? title,
-      UserModel? leader,
-      GroupModel? group,
-      String? shortcode,
-      List<UserModel?>? followers,
-      List<LandMarkModel?>? landmarks,
-      LocationModel? location,
-      List<LocationModel?>? route,
-      int? startsAt,
-      int? expiresAt,}) {
+  BeaconModel copyWithModel({
+    String? id,
+    String? title,
+    UserModel? leader,
+    GroupModel? group,
+    String? shortcode,
+    List<UserModel?>? followers,
+    List<LandMarkModel?>? landmarks,
+    LocationModel? location,
+    List<LocationModel?>? route,
+    int? startsAt,
+    int? expiresAt,
+  }) {
     return BeaconModel(
         id: id ?? this.id,
         title: title ?? this.title,

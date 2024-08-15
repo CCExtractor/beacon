@@ -64,6 +64,4 @@ class MembersCubit extends Cubit<MembersState> {
         members: List<UserEntity>.from(_members),
         message: '${member.name} joined the group!'));
   }
-
-
 }

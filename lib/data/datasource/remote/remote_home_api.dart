@@ -122,8 +122,6 @@ class RemoteHomeApi {
     final result = await _authClient.mutate(
         MutationOptions(document: gql(_groupQueries.joinGroup(shortCode))));
 
-
-
     if (result.data != null && result.isConcrete) {
       GroupModel group = GroupModel.fromJson(
           result.data!['joinGroup'] as Map<String, dynamic>);

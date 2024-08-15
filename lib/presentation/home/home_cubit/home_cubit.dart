@@ -267,7 +267,6 @@ class HomeCubit extends Cubit<HomeState> {
 
   // this function is used for emitting state or reload the sate
   void resetGroupActivity({String? groupId}) {
-
     if (groupId != null) {
       for (int i = 0; i < _totalGroups.length; i++) {
         if (_totalGroups[i].id == groupId) {

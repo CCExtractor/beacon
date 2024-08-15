@@ -13,8 +13,7 @@ class BeaconLocationsModel implements BeaconLocationsEntity {
   @JsonKey(name: 'updatedUser')
   UserModel? user;
 
-  BeaconLocationsModel(
-      {this.userSOS, this.route, this.landmark, this.user});
+  BeaconLocationsModel({this.userSOS, this.route, this.landmark, this.user});
 
   factory BeaconLocationsModel.fromJson(Map<String, dynamic> json) =>
       _$BeaconLocationsModelFromJson(json);

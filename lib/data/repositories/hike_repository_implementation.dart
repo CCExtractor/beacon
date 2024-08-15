@@ -31,7 +31,6 @@ class HikeRepositoryImplementatioin implements HikeRepository {
       String id, String title, String lat, String lon) {
     return remoteHikeApi.createLandMark(id, lat, lon, title);
   }
-  
 
   @override
   Stream<DataState<BeaconLocationsEntity>> beaconLocationsSubscription(
@@ -54,8 +53,4 @@ class HikeRepositoryImplementatioin implements HikeRepository {
   Future<DataState<UserEntity>> sos(String beaconId) {
     return remoteHikeApi.sos(beaconId);
   }
-  
-
-  
-
 }

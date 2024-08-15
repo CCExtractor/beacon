@@ -15,8 +15,8 @@ abstract class HikeRepository {
       String id, String title, String lat, String lon);
   Future<DataState<UserEntity>> changeUserLocation(String id, LatLng latLng);
   Future<DataState<UserEntity>> sos(String beaconId);
-  Stream<DataState<BeaconLocationsEntity>> beaconLocationsSubscription(String beaconId);
+  Stream<DataState<BeaconLocationsEntity>> beaconLocationsSubscription(
+      String beaconId);
   Stream<DataState<JoinLeaveBeaconEntity>> joinLeaveBeaconSubscription(
       String beaconId);
 }
-

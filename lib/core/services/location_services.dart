@@ -42,7 +42,6 @@ class LocationService {
 
       _currentPosition = location;
 
-
       return location;
     } catch (e) {
       return Future.error('Failed to get location: $e');

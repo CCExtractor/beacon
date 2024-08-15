@@ -109,7 +109,6 @@ class HikeScreenWidget {
                           var locationCubit = locator<LocationCubit>();
                           var controller = locationCubit.mapController!;
 
-
                           if (!await utils.checkInternetConnectivity()) {
                             utils.showSnackBar(
                                 'Cannot share the route, please check your internet connection.',
