@@ -11,42 +11,45 @@ jobs:
     strategy:
       matrix:
         platform: [windows-latest, ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{matrix.platform}}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
         with:
-          java-version: '12.x'
-      - uses: subosito/flutter-action@v3
+          java-version: "12.x"
+      - uses: subosito/flutter-action@v2
         with:
+          # Temporary fix to failing CI
           flutter-version: '3.22.2'
           architecture: x64
+          # channel: "stable"
       - run: flutter pub get
       - run: dart format . --set-exit-if-changed
-      - run: flutter analyze
+      - run: flutter analyze .
       - run: flutter test
 
   build:
     strategy:
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{matrix.platform}}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
         with:
-          java-version: '12.x'
-      - uses: subosito/flutter-action@v3
+          java-version: "12.x"
+      - uses: subosito/flutter-action@v2
         with:
+          # Temporary fix to failing CI
           flutter-version: '3.22.2'
           architecture: x64
+          # channel: "stable"
       - run: flutter pub get
       - run: dart format . --set-exit-if-changed
-      - run: flutter analyze
+      - run: flutter analyze .
       - run: flutter test
-      # Uncomment the following lines if you want to build and upload artifacts
       # - run: flutter build apk
-      # - uses: actions/upload-artifact@v3
+      # - uses: actions/upload-artifact@v1
       #   with:
       #     name: release-apk
       #     path: build/app/outputs/apk/release/app-release.apk
