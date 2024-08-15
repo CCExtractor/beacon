@@ -23,6 +23,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:vibration/vibration.dart';
 
 class LocationCubit extends Cubit<LocationState> {
   final HikeUseCase _hikeUseCase;
@@ -454,6 +455,8 @@ class LocationCubit extends Cubit<LocationState> {
           var sosUser = beaconLocationsEntity.userSOS!;
           startAnimation(sosUser);
 
+          vibrateWithPattern();
+
           // var marker = _hikeMarkers
           //     .firstWhere((marker) => marker.markerId.value == user!.id);
 
@@ -462,6 +465,15 @@ class LocationCubit extends Cubit<LocationState> {
         }
       }
     });
+  }
+
+  void vibrateWithPattern() async {
+    if (await Vibration.hasVibrator() == true) {
+      Vibration.vibrate(
+        pattern: [500, 1000, 500, 2000], // Vibration pattern
+        intensities: [128, 255, 128, 255], // Optional intensities
+      );
+    }
   }
 
   void startAnimation(UserEntity user) {
