@@ -24,7 +24,6 @@ mixin _$LocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)
         loaded,
@@ -39,7 +38,6 @@ mixin _$LocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -54,7 +52,6 @@ mixin _$LocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -149,7 +146,6 @@ class _$InitialLocationStateImpl implements InitialLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)
         loaded,
@@ -167,7 +163,6 @@ class _$InitialLocationStateImpl implements InitialLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -185,7 +180,6 @@ class _$InitialLocationStateImpl implements InitialLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -248,7 +242,6 @@ abstract class _$$LoadedLocationStateImplCopyWith<$Res> {
       Set<Circle> geofence,
       Set<Marker> locationMarkers,
       Set<Polyline> polyline,
-      String? address,
       String? message,
       int version});
 }
@@ -268,7 +261,6 @@ class __$$LoadedLocationStateImplCopyWithImpl<$Res>
     Object? geofence = null,
     Object? locationMarkers = null,
     Object? polyline = null,
-    Object? address = freezed,
     Object? message = freezed,
     Object? version = null,
   }) {
@@ -289,10 +281,6 @@ class __$$LoadedLocationStateImplCopyWithImpl<$Res>
           ? _value._polyline
           : polyline // ignore: cast_nullable_to_non_nullable
               as Set<Polyline>,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String?,
       message: freezed == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -313,7 +301,6 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
       final Set<Circle> geofence = const {},
       final Set<Marker> locationMarkers = const {},
       final Set<Polyline> polyline = const {},
-      this.address,
       this.message,
       this.version = 0})
       : _geofence = geofence,
@@ -351,8 +338,6 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
   }
 
   @override
-  final String? address;
-  @override
   final String? message;
   @override
   @JsonKey()
@@ -360,7 +345,7 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
 
   @override
   String toString() {
-    return 'LocationState.loaded(mapType: $mapType, geofence: $geofence, locationMarkers: $locationMarkers, polyline: $polyline, address: $address, message: $message, version: $version)';
+    return 'LocationState.loaded(mapType: $mapType, geofence: $geofence, locationMarkers: $locationMarkers, polyline: $polyline, message: $message, version: $version)';
   }
 
   @override
@@ -373,7 +358,6 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
             const DeepCollectionEquality()
                 .equals(other._locationMarkers, _locationMarkers) &&
             const DeepCollectionEquality().equals(other._polyline, _polyline) &&
-            (identical(other.address, address) || other.address == address) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.version, version) || other.version == version));
   }
@@ -385,7 +369,6 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
       const DeepCollectionEquality().hash(_geofence),
       const DeepCollectionEquality().hash(_locationMarkers),
       const DeepCollectionEquality().hash(_polyline),
-      address,
       message,
       version);
 
@@ -405,14 +388,13 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)
         loaded,
     required TResult Function(String? message) error,
   }) {
-    return loaded(mapType, geofence, locationMarkers, polyline, address,
-        message, version);
+    return loaded(
+        mapType, geofence, locationMarkers, polyline, message, version);
   }
 
   @override
@@ -424,14 +406,13 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
     TResult? Function(String? message)? error,
   }) {
-    return loaded?.call(mapType, geofence, locationMarkers, polyline, address,
-        message, version);
+    return loaded?.call(
+        mapType, geofence, locationMarkers, polyline, message, version);
   }
 
   @override
@@ -443,7 +424,6 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -451,8 +431,8 @@ class _$LoadedLocationStateImpl implements LoadedLocationState {
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(mapType, geofence, locationMarkers, polyline, address,
-          message, version);
+      return loaded(
+          mapType, geofence, locationMarkers, polyline, message, version);
     }
     return orElse();
   }
@@ -498,7 +478,6 @@ abstract class LoadedLocationState implements LocationState {
       final Set<Circle> geofence,
       final Set<Marker> locationMarkers,
       final Set<Polyline> polyline,
-      final String? address,
       final String? message,
       final int version}) = _$LoadedLocationStateImpl;
 
@@ -506,7 +485,6 @@ abstract class LoadedLocationState implements LocationState {
   Set<Circle> get geofence;
   Set<Marker> get locationMarkers;
   Set<Polyline> get polyline;
-  String? get address;
   String? get message;
   int get version;
   @JsonKey(ignore: true)
@@ -585,7 +563,6 @@ class _$LocationErrorStateImpl implements LocationErrorState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)
         loaded,
@@ -603,7 +580,6 @@ class _$LocationErrorStateImpl implements LocationErrorState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,
@@ -621,7 +597,6 @@ class _$LocationErrorStateImpl implements LocationErrorState {
             Set<Circle> geofence,
             Set<Marker> locationMarkers,
             Set<Polyline> polyline,
-            String? address,
             String? message,
             int version)?
         loaded,

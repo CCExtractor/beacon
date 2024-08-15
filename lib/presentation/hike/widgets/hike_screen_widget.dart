@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -37,7 +39,9 @@ class HikeScreenWidget {
     );
   }
 
-  static Widget shareButton(BuildContext context, String? passkey) {
+  static GlobalKey _repaintBoundaryKey = GlobalKey();
+  static Widget shareButton(
+      BuildContext context, String? passkey, BeaconEntity beacon) {
     return FloatingActionButton(
       heroTag:
           'shareRouteTag', //had to pass this tag else we would get error since there will be two FAB in the same subtree with the same tag.
@@ -101,8 +105,36 @@ class HikeScreenWidget {
                         text: 'Share Image',
                         textColor: Colors.white,
                         buttonColor: kYellow,
-                        onTap: () {
+                        onTap: () async {
                           appRouter.maybePop();
+                          var locationCubit = locator<LocationCubit>();
+                          var controller = locationCubit.mapController!;
+
+                          // TODO: turning on the info window of all markers
+
+                          if (!await utils.checkInternetConnectivity()) {
+                            utils.showSnackBar(
+                                'Cannot share the route, please check your internet connection.',
+                                context);
+                            return;
+                          }
+
+                          // await mapController.showMarkerInfoWindow(MarkerId("1"));
+
+                          final image = await (controller.takeSnapshot());
+                          final appDir =
+                              await getApplicationDocumentsDirectory();
+                          File imageFile =
+                              await File('${appDir.path}/shareImage.png')
+                                  .create();
+                          imageFile.writeAsBytesSync(image!);
+                          await Share.shareXFiles([XFile(imageFile.path)],
+                              text: 'Location of ${beacon.leader}',
+                              subject:
+                                  'Current coordinated: ( ${beacon.location?.lat!} ,${beacon.location?.lon} ) \n Address: ${locationCubit.address ?? ''}');
+                          //hide after sharing.
+                          // await controller.hideMarkerInfoWindow(MarkerId("1"));
+                          return;
                         },
                       ),
                     )
@@ -145,7 +177,7 @@ class HikeScreenWidget {
 
   static Widget showMapViewSelector(BuildContext context) {
     return DropdownButton<MapType>(
-      icon: Icon(CupertinoIcons.map),
+      icon: null,
       value: _selectedMapType,
       items: mapTypeNames.entries.map((entry) {
         return DropdownMenuItem(
@@ -182,7 +214,13 @@ class HikeScreenWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             child: Column(
-              children: <Widget>[
+              children: [
+                Gap(10),
+                Text(
+                  'Create Landmark',
+                  style: TextStyle(fontSize: 25),
+                ),
+                Gap(20),
                 HikeButton(
                   text: 'Create Landmark',
                   onTap: () {
@@ -190,16 +228,6 @@ class HikeScreenWidget {
                     showCreateLandMarkDialogueDialog(context, beaconId, loc);
                   },
                 ),
-                Gap(10),
-                HikeButton(
-                  text: 'Create Geofence',
-                  onTap: () {
-                    Navigator.pop(context);
-                    locator<LocationCubit>()
-                        .changeGeofenceRadius(_value * 1000, loc);
-                    showCreateGeofenceDialogueDialog(context, beaconId, loc);
-                  },
-                )
               ],
             ),
           ),
@@ -208,111 +236,111 @@ class HikeScreenWidget {
     );
   }
 
-  static GlobalKey<FormState> _geofenceKey = GlobalKey<FormState>();
-  static double _value = 0.1;
+  // static GlobalKey<FormState> _geofenceKey = GlobalKey<FormState>();
+  // static double _value = 0.1;
 
-  static void showCreateGeofenceDialogueDialog(
-    BuildContext context,
-    String beaconId,
-    LatLng loc,
-  ) {
-    bool isSmallSized = 100.h < 800;
-    bool isGeofenceCreated = false;
+  // static void showCreateGeofenceDialogueDialog(
+  //   BuildContext context,
+  //   String beaconId,
+  //   LatLng loc,
+  // ) {
+  //   bool isSmallSized = 100.h < 800;
+  //   bool isGeofenceCreated = false;
 
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      builder: (context) {
-        return Stack(
-          children: [
-            Container(
-              height: isSmallSized ? 30.h : 25.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: Form(
-                  key: _geofenceKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                            onPressed: () {
-                              appRouter.maybePop().then((value) {
-                                locator<LocationCubit>()
-                                    .removeUncreatedGeofence();
-                              });
-                            },
-                            icon: Icon(
-                              Icons.cancel,
-                              color: kBlue,
-                            )),
-                      ),
-                      StatefulBuilder(
-                        builder: (context, setState) {
-                          return Stack(
-                            children: [
-                              Slider(
-                                activeColor: kBlue,
-                                inactiveColor: kYellow,
-                                value: _value,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _value = value;
-                                  });
-                                  locator<LocationCubit>()
-                                      .changeGeofenceRadius(_value * 1000, loc);
-                                },
-                              ),
-                              Align(
-                                alignment: Alignment(1, -1),
-                                child: Text(
-                                  '${(_value * 1000).toStringAsFixed(0)} meters',
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      Gap(10),
-                      Flexible(
-                        child: HikeButton(
-                          buttonHeight: 15,
-                          onTap: () async {
-                            if (!_geofenceKey.currentState!.validate()) return;
-                            locator<LocationCubit>()
-                                .createGeofence(beaconId, loc, _value)
-                                .then((onvalue) {
-                              isGeofenceCreated = true;
-                            });
-                            appRouter.maybePop().then((onValue) {
-                              if (isGeofenceCreated) {
-                                locator<LocationCubit>()
-                                    .removeUncreatedGeofence();
-                              }
-                            });
-                          },
-                          text: 'Create Geofence',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isDismissible: false,
+  //     builder: (context) {
+  //       return Stack(
+  //         children: [
+  //           Container(
+  //             height: isSmallSized ? 30.h : 25.h,
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.only(
+  //                 topLeft: Radius.circular(20),
+  //                 topRight: Radius.circular(20),
+  //               ),
+  //             ),
+  //             child: Padding(
+  //               padding:
+  //                   const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+  //               child: Form(
+  //                 key: _geofenceKey,
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     Container(
+  //                       alignment: Alignment.topRight,
+  //                       child: IconButton(
+  //                           onPressed: () {
+  //                             appRouter.maybePop().then((value) {
+  //                               locator<LocationCubit>()
+  //                                   .removeUncreatedGeofence();
+  //                             });
+  //                           },
+  //                           icon: Icon(
+  //                             Icons.cancel,
+  //                             color: kBlue,
+  //                           )),
+  //                     ),
+  //                     StatefulBuilder(
+  //                       builder: (context, setState) {
+  //                         return Stack(
+  //                           children: [
+  //                             Slider(
+  //                               activeColor: kBlue,
+  //                               inactiveColor: kYellow,
+  //                               value: _value,
+  //                               onChanged: (value) {
+  //                                 setState(() {
+  //                                   _value = value;
+  //                                 });
+  //                                 locator<LocationCubit>()
+  //                                     .changeGeofenceRadius(_value * 1000, loc);
+  //                               },
+  //                             ),
+  //                             Align(
+  //                               alignment: Alignment(1, -1),
+  //                               child: Text(
+  //                                 '${(_value * 1000).toStringAsFixed(0)} meters',
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         );
+  //                       },
+  //                     ),
+  //                     Gap(10),
+  //                     Flexible(
+  //                       child: HikeButton(
+  //                         buttonHeight: 15,
+  //                         onTap: () async {
+  //                           if (!_geofenceKey.currentState!.validate()) return;
+  //                           locator<LocationCubit>()
+  //                               .createGeofence(beaconId, loc, _value)
+  //                               .then((onvalue) {
+  //                             isGeofenceCreated = true;
+  //                           });
+  //                           appRouter.maybePop().then((onValue) {
+  //                             if (isGeofenceCreated) {
+  //                               locator<LocationCubit>()
+  //                                   .removeUncreatedGeofence();
+  //                             }
+  //                           });
+  //                         },
+  //                         text: 'Create Geofence',
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   static void showCreateLandMarkDialogueDialog(
     BuildContext context,

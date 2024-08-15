@@ -38,7 +38,7 @@ dependencies:
   responsive_sizer: ^3.3.1
   skeleton_text: ^3.0.1
   sliding_up_panel: ^2.0.0+1
-  uni_links: ^0.5.1
+  # uni_links: ^0.5.1
   data_connection_checker_nulls: ^0.0.2
   flutter_geocoder_alternative: any
   gap: ^3.0.1
@@ -59,6 +59,8 @@ dependencies:
   geolocator: ^12.0.0
   http: ^0.13.6
   pinput: ^5.0.0
+  uni_links: ^0.5.1
+  vibration: ^1.9.0
 
 
 

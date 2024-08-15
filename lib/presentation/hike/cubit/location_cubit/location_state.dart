@@ -10,7 +10,6 @@ class LocationState with _$LocationState {
     @Default({}) Set<Circle> geofence,
     @Default({}) Set<Marker> locationMarkers,
     @Default({}) Set<Polyline> polyline,
-    String? address,
     String? message,
     @Default(0) int version,
   }) = LoadedLocationState;

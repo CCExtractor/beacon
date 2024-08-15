@@ -30,20 +30,20 @@ class HikeScreen extends StatefulWidget {
   State<HikeScreen> createState() => _HikeScreenState();
 }
 
-class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
+class _HikeScreenState extends State<HikeScreen> with TickerProviderStateMixin {
   HikeCubit _hikeCubit = locator<HikeCubit>();
   LocationCubit _locationCubit = locator();
+
+  int value = 0;
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     PIPMode.switchPIPMode();
-    _hikeCubit.startHike(widget.beacon.id!);
+    _hikeCubit.startHike(widget.beacon.id!, this, context);
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     PIPMode.disablePIPMode();
     _hikeCubit.clear();
     _locationCubit.clear();
@@ -76,6 +76,13 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                       body: Stack(
                     children: [
                       SlidingUpPanel(
+                          onPanelOpened: () {
+                            setState(() {});
+                          },
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15),
+                          ),
                           controller: _panelController,
                           maxHeight: 60.h,
                           minHeight: isSmallsized ? 22.h : 18.h,
@@ -92,15 +99,22 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                             },
                             builder: (context, state) {
                               if (state is InitialLocationState) {
-                                return SpinKitPianoWave();
+                                return SpinKitPianoWave(
+                                  color: kYellow,
+                                );
                               } else if (state is LoadedLocationState) {
                                 return GoogleMap(
+                                    circles: state.geofence,
                                     polylines: state.polyline,
                                     mapType: state.mapType,
                                     compassEnabled: true,
                                     onTap: (latlng) {
-                                      HikeScreenWidget.selectionButton(
-                                          context, widget.beacon.id!, latlng);
+                                      _panelController.close();
+                                      HikeScreenWidget
+                                          .showCreateLandMarkDialogueDialog(
+                                              context,
+                                              widget.beacon.id!,
+                                              latlng);
                                     },
                                     zoomControlsEnabled: true,
                                     onMapCreated: _locationCubit.onMapCreated,
@@ -110,7 +124,15 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                                         target: state
                                             .locationMarkers.first.position));
                               }
-                              return Container();
+                              return Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    appRouter.maybePop();
+                                  },
+                                  child: Text(
+                                      'Something went wrong please try again!'),
+                                ),
+                              );
                             },
                           )),
                       Align(
@@ -119,7 +141,7 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                           heroTag: 'BackButton',
                           backgroundColor: kYellow,
                           onPressed: () {
-                            PIPMode.enterPIPMode();
+                            // PIPMode.enterPIPMode();
                           },
                           child: Icon(
                             CupertinoIcons.back,
@@ -130,7 +152,7 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                       Align(
                           alignment: Alignment(0.85, -0.9),
                           child: HikeScreenWidget.shareButton(
-                              context, widget.beacon.shortcode)),
+                              context, widget.beacon.shortcode, widget.beacon)),
                       Align(
                           alignment: Alignment(1, -0.7),
                           child: HikeScreenWidget.showMapViewSelector(context)),
@@ -149,17 +171,19 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
   Widget _collapsedWidget() {
     var beacon = widget.beacon;
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
           color: kBlue,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10),
+            topLeft: Radius.circular(10),
+          ),
         ),
         child: BlocBuilder<PanelCubit, SlidingPanelState>(
           builder: (context, state) {
             return state.when(
               initial: () {
-                return CircularProgressIndicator();
+                return SpinKitCircle(color: kYellow);
               },
               loaded: (
                 isActive,
@@ -195,22 +219,25 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                             color: Colors.white,
                             fontFamily: '',
                             fontWeight: FontWeight.w700)),
-                    Text('Beacon leader at: <>',
+                    Gap(2),
+                    Text('Beacon leader at: ${leaderAddress ?? '<>'}',
                         maxLines: 2,
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             color: Colors.white,
                             fontFamily: '',
                             fontWeight: FontWeight.w600)),
+                    Gap(1.5),
                     Text('Total followers: ${followers.length} ',
                         style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 16,
                             color: Colors.white,
                             fontFamily: '',
                             fontWeight: FontWeight.w500)),
+                    Gap(1),
                     Text('Share the pass key to join user: ${beacon.shortcode}',
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             color: Colors.white,
                             fontFamily: '',
                             fontWeight: FontWeight.w500))
@@ -248,59 +275,50 @@ class _HikeScreenState extends State<HikeScreen> with WidgetsBindingObserver {
                 members.add(element!);
               });
             }
-            return Column(
-              children: [
-                Gap(10),
-                Container(
-                  height: 1.h,
-                  width: 20.w,
-                  decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                Gap(10),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: members.length,
-                    itemBuilder: (context, index) {
-                      var member = members[index];
-                      return Container(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Row(
-                          children: [
-                            Gap(10),
-                            CircleAvatar(
-                              radius: 25,
-                              backgroundColor: kYellow,
-                              child: Icon(
-                                Icons.person_2_rounded,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                            ),
-                            Gap(10),
-                            Text(
-                              member.name ?? 'Anonymous',
-                              style: TextStyle(fontSize: 19),
-                            ),
-                            Spacer(),
-                            Container(
-                              height: 40,
-                              width: 40,
-                              child: FloatingActionButton(
-                                backgroundColor: kYellow,
-                                onPressed: () async {},
-                                child: Icon(Icons.location_city),
-                              ),
-                            ),
-                            Gap(10),
-                          ],
+
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: members.length,
+              itemBuilder: (context, index) {
+                var member = members[index];
+                return Container(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    children: [
+                      Gap(10),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: kYellow,
+                        child: Icon(
+                          Icons.person_2_rounded,
+                          color: Colors.white,
+                          size: 40,
                         ),
-                      );
-                    },
+                      ),
+                      Gap(10),
+                      Text(
+                        member.name ?? 'Anonymous',
+                        style: TextStyle(fontSize: 19),
+                      ),
+                      Spacer(),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        child: FloatingActionButton(
+                          backgroundColor: kYellow,
+                          onPressed: () async {
+                            _locationCubit
+                                .changeCameraPosition(member.id ?? '');
+                            _panelController.close();
+                          },
+                          child: Icon(Icons.location_city),
+                        ),
+                      ),
+                      Gap(10),
+                    ],
                   ),
-                ),
-              ],
+                );
+              },
             );
           },
           error: (message) {

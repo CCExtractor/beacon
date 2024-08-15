@@ -6,6 +6,7 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/hike_cubit/hike_state.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HikeCubit extends Cubit<HikeState> {
@@ -20,7 +21,7 @@ class HikeCubit extends Cubit<HikeState> {
 
   BeaconEntity? _beacon;
 
-  Future<void> startHike(String beaconId) async {
+  Future<void> startHike(String beaconId, TickerProvider vsync, BuildContext context) async {
     emit(InitialHikeState());
     final dataState = await _hikeUseCase.fetchBeaconDetails(beaconId);
 
@@ -28,7 +29,7 @@ class HikeCubit extends Cubit<HikeState> {
       final beacon = dataState.data!;
       _beacon = beacon;
 
-      locator<LocationCubit>().loadBeaconData(beacon);
+      locator<LocationCubit>().loadBeaconData(beacon, vsync, context);
       locator<PanelCubit>().loadBeaconData(beacon);
       emit(LoadedHikeState(beacon: _beacon, message: 'Welcome to hike!'));
     } else {

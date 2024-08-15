@@ -36,7 +36,7 @@ class RemoteHikeApi {
     final result = await _authClient.mutate(MutationOptions(
         document: gql(beaconQueries.fetchBeaconDetail(beaconId))));
 
-
+    log(result.toString());
 
     if (result.isConcrete && result.data != null) {
       final beaconJson = result.data!['beacon'];
@@ -73,7 +73,7 @@ class RemoteHikeApi {
         document: gql(beaconQueries.createGeofence(beaconId,
             latlng.latitude.toString(), latlng.longitude.toString(), radius))));
 
-;
+    ;
     if (result.isConcrete && result.data != null) {
       final beaconJson = result.data!['createGeofence'];
       try {
@@ -201,8 +201,6 @@ class RemoteHikeApi {
         document: gql(beaconQueries.changeUserLocation(beaconId,
             latlng.latitude.toString(), latlng.longitude.toString()))));
 
-
-
     if (result.isConcrete &&
         result.data != null &&
         result.data!['updateUserLocation'] != null) {
@@ -249,14 +247,18 @@ class RemoteHikeApi {
     final resultStream =
         await _subscriptionClient.subscribe(subscriptionOptions);
 
-    await for (var stream in resultStream) {
-      if (stream.hasException) {
-        yield DataFailed('Something went wrong');
-      } else {
-        var locations =
-            BeaconLocationsModel.fromJson(stream.data!['beaconLocations']);
-        yield DataSuccess(locations);
+    try {
+      await for (var stream in resultStream) {
+        if (stream.hasException) {
+          yield DataFailed('Something went wrong');
+        } else {
+          var locations =
+              BeaconLocationsModel.fromJson(stream.data!['beaconLocations']);
+          yield DataSuccess(locations);
+        }
       }
+    } catch (e) {
+      log(e.toString());
     }
   }
 
@@ -346,7 +348,6 @@ class RemoteHikeApi {
           "Content-Type": "application/json"
         },
         body: jsonEncode({"coordinates": coordinates}));
-
 
     if (response.statusCode == 200) {
       return DataSuccess([]);

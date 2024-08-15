@@ -286,6 +286,10 @@ deleteBeacon(id: "$id")
               lat
               lon
             }
+            route{
+              lat
+              lon
+            }
             startsAt
             expiresAt
             shortcode
