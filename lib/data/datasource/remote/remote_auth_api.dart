@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:beacon/core/queries/auth.dart';
 import 'package:beacon/core/resources/data_state.dart';
@@ -86,6 +87,7 @@ class RemoteAuthApi {
   }
 
   Future<DataState<UserEntity>> login(String email, String password) async {
+    log('calling login function $email');
     final isConnected = await utils.checkInternetConnectivity();
 
     if (!isConnected) {
@@ -98,8 +100,15 @@ class RemoteAuthApi {
     if (result.data != null && result.isConcrete) {
       final token = "Bearer ${result.data!['login']}";
 
+      UserModel? user;
+
+      // if (email.isEmpty) {
+      //   user = UserModel(authToken: token, isGuest: true);
+      // } else {
+      user = UserModel(authToken: token, isGuest: false);
+      // }
+
       // storing auth token in hive
-      final user = UserModel(authToken: token, isGuest: false);
       await localApi.saveUser(user);
 
       // loading clients

@@ -10,6 +10,7 @@ class HikeButton extends StatelessWidget {
   final Color buttonColor;
   final double buttonWidth;
   final double buttonHeight;
+  final Widget? widget;
   HikeButton(
       {this.onTap,
       this.borderColor = Colors.white,
@@ -18,7 +19,8 @@ class HikeButton extends StatelessWidget {
       this.textColor = Colors.white,
       this.buttonWidth = 15,
       this.buttonHeight = 20,
-      this.textSize = 18});
+      this.textSize = 18,
+      this.widget});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +34,11 @@ class HikeButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: buttonWidth, vertical: buttonHeight),
-        child: Text(
-          text!,
-          style: TextStyle(color: textColor, fontSize: textSize),
-        ),
+        child: widget ??
+            Text(
+              text!,
+              style: TextStyle(color: textColor, fontSize: textSize),
+            ),
       ),
       onPressed: onTap as void Function()?,
     );

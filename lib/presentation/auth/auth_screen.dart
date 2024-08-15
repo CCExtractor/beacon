@@ -10,6 +10,7 @@ import 'package:beacon/core/utils/validators.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/presentation/widgets/indication_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -43,13 +44,13 @@ class _AuthScreenState extends State<AuthScreen>
           HikeButton(
             buttonHeight: 2.5.h,
             buttonWidth: 8.w,
-            onTap: () => AutoRouter.of(context).maybePop(false),
+            onTap: () => appRouter.maybePop(false),
             text: 'No',
           ),
           HikeButton(
             buttonHeight: 2.5.h,
             buttonWidth: 8.w,
-            onTap: () => AutoRouter.of(context).maybePop(true),
+            onTap: () => appRouter.maybePop(true),
             text: 'Yes',
           ),
         ],
@@ -66,97 +67,109 @@ class _AuthScreenState extends State<AuthScreen>
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
     final authCubit = BlocProvider.of<AuthCubit>(context);
-    return
-        // WillPopScope(
-        // onWillPop: _onPopHome ?? ,
-        // child:
-        BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is SuccessState) {
-          appRouter.replaceNamed('/home');
-          utils.showSnackBar(state.message!, context);
-        } else if (state is AuthVerificationState) {
-          context.read<AuthCubit>().navigate();
-        } else if (state is AuthErrorState) {
-          utils.showSnackBar(state.error!, context,
-              duration: Duration(seconds: 2));
-        }
-      },
-      builder: (context, state) {
-        return state is AuthLoadingState
-            ? LoadingScreen()
-            : Scaffold(
-                resizeToAvoidBottomInset: true,
-                body: Container(
-                  width: screensize.width,
-                  height:
-                      screensize.height >= 775.0 ? screensize.height : 775.0,
-                  child: Stack(
-                    children: <Widget>[
-                      CustomPaint(
-                        size: Size(screensize.width, screensize.height),
-                        painter: ShapePainter(),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.only(top: screensize.height / 3.5),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 20.0),
-                              child: _buildMenuBar(context, _pageController),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: PageView(
-                                controller: _pageController,
-                                onPageChanged: (i) {
-                                  if (i == 0) {
-                                    setState(() {
-                                      rightColor = Colors.black;
-                                      leftColor = Colors.white;
-                                    });
-                                    Future.delayed(Duration(milliseconds: 500),
-                                        () {
-                                      authCubit.requestFocus(
-                                          loginEmailFocus, context);
-                                    });
-                                  } else if (i == 1) {
-                                    setState(() {
-                                      rightColor = Colors.white;
-                                      leftColor = Colors.black;
-                                    });
-                                    Future.delayed(Duration(milliseconds: 500),
-                                        () {
-                                      authCubit.requestFocus(
-                                          signUpNameFocus, context);
-                                    });
-                                  }
-                                },
-                                children: <Widget>[
-                                  new ConstrainedBox(
-                                    constraints: const BoxConstraints.expand(),
-                                    child: _buildSignIn(context),
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) async {
+          bool? popped = await onPopHome();
+
+          if (popped == true) {
+            await SystemNavigator.pop();
+          }
+        },
+        child: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is SuccessState) {
+              appRouter.replaceNamed('/home');
+              state.message != null
+                  ? utils.showSnackBar(state.message!, context)
+                  : null;
+            } else if (state is AuthVerificationState) {
+              context.read<AuthCubit>().navigate();
+            } else if (state is AuthErrorState) {
+              utils.showSnackBar(state.error!, context,
+                  duration: Duration(seconds: 2));
+            }
+          },
+          builder: (context, state) {
+            return state is AuthLoadingState
+                ? LoadingScreen()
+                : Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    body: Container(
+                      width: screensize.width,
+                      height: screensize.height >= 775.0
+                          ? screensize.height
+                          : 775.0,
+                      child: Stack(
+                        children: <Widget>[
+                          CustomPaint(
+                            size: Size(screensize.width, screensize.height),
+                            painter: ShapePainter(),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            padding:
+                                EdgeInsets.only(top: screensize.height / 3.5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20.0),
+                                  child:
+                                      _buildMenuBar(context, _pageController),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: PageView(
+                                    controller: _pageController,
+                                    onPageChanged: (i) {
+                                      if (i == 0) {
+                                        setState(() {
+                                          rightColor = Colors.black;
+                                          leftColor = Colors.white;
+                                        });
+                                        Future.delayed(
+                                            Duration(milliseconds: 500), () {
+                                          authCubit.requestFocus(
+                                              loginEmailFocus, context);
+                                        });
+                                      } else if (i == 1) {
+                                        setState(() {
+                                          rightColor = Colors.white;
+                                          leftColor = Colors.black;
+                                        });
+                                        Future.delayed(
+                                            Duration(milliseconds: 500), () {
+                                          authCubit.requestFocus(
+                                              signUpNameFocus, context);
+                                        });
+                                      }
+                                    },
+                                    children: <Widget>[
+                                      new ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints.expand(),
+                                        child: _buildSignIn(context),
+                                      ),
+                                      new ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints.expand(),
+                                        child: _buildSignUp(
+                                          context,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  new ConstrainedBox(
-                                    constraints: const BoxConstraints.expand(),
-                                    child: _buildSignUp(
-                                      context,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              );
-      },
-    );
+                    ),
+                  );
+          },
+        ));
   }
 
   Widget _buildMenuBar(BuildContext context, PageController pageController) {
@@ -327,12 +340,28 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             HikeButton(
               onTap: () {
-                authCubit.login(
-                  loginEmailController.text.trim(),
-                  loginPasswordController.text.trim(),
-                );
+                context.read<AuthCubit>().googleSignIn();
               },
-              text: 'LOGIN AS GUEST',
+              text: '',
+              widget: Container(
+                width: 110,
+                child: Row(
+                  children: [
+                    Image(
+                      image: AssetImage(
+                        'images/google.png',
+                      ),
+                      height: 30,
+                    ),
+                    Spacer(),
+                    Text(
+                      'Sign In',
+                      style: TextStyle(fontSize: 17, color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+              buttonColor: kYellow,
             ),
           ],
         ),

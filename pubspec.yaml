@@ -61,6 +61,7 @@ dependencies:
   http: ^0.13.6
   pinput: ^5.0.0
   vibration: ^1.9.0
+  google_sign_in: ^6.2.1
   
 
 

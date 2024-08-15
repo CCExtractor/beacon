@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beacon/config/router/router.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/usecase/auth_usecase.dart';
@@ -6,6 +8,7 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   static AuthCubit? _instance;
@@ -65,5 +68,28 @@ class AuthCubit extends Cubit<AuthState> {
   Future<bool> isGuest() async {
     bool? isguest = await localApi.userModel.isGuest;
     return isguest!;
+  }
+
+  void googleSignIn() async {
+    try {
+      const List<String> scopes = <String>[
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ];
+
+      GoogleSignIn _googleSignIn = GoogleSignIn(
+        // Optional clientId
+        // clientId: 'your-client_id.apps.googleusercontent.com',
+        scopes: scopes,
+      );
+
+      final gAuth=await _googleSignIn.signIn();
+
+
+      // log(_googleSignIn.currentUser!.email);
+      // log(_googleSignIn.currentUser!.displayName!);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
