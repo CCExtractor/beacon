@@ -49,7 +49,6 @@ class LocationCubit extends Cubit<LocationState> {
   LocationData? _lastLocation;
   Set<Circle> _geofence = {};
   MapType _mapType = MapType.normal;
-  Timer? _timer;
 
   StreamSubscription<DataState<BeaconLocationsEntity>>?
       _beaconlocationsSubscription;

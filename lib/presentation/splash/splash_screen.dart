@@ -4,10 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beacon/config/router/router.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/user/user_entity.dart';
-import 'package:beacon/domain/repositories/group_repository.dart';
 import 'package:beacon/domain/usecase/auth_usecase.dart';
 import 'package:beacon/domain/usecase/group_usecase.dart';
-import 'package:beacon/domain/usecase/hike_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
   }
 
-  late StreamSubscription _sub;
+  StreamSubscription? _sub;
   Uri? _latestUri;
   Uri? _initialUri;
 
@@ -129,6 +127,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
+    _sub?.cancel();
     super.dispose();
   }
 

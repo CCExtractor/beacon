@@ -39,7 +39,6 @@ class HikeScreenWidget {
     );
   }
 
-  static GlobalKey _repaintBoundaryKey = GlobalKey();
   static Widget shareButton(
       BuildContext context, String? passkey, BeaconEntity beacon) {
     return FloatingActionButton(
@@ -110,7 +109,6 @@ class HikeScreenWidget {
                           var locationCubit = locator<LocationCubit>();
                           var controller = locationCubit.mapController!;
 
-                          // TODO: turning on the info window of all markers
 
                           if (!await utils.checkInternetConnectivity()) {
                             utils.showSnackBar(

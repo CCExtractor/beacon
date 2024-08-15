@@ -2,7 +2,6 @@ import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
 import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/domain/usecase/group_usecase.dart';
-import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_state.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/group/cubit/members_cubit/members_state.dart';
 import 'package:beacon/locator.dart';

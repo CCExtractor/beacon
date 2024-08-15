@@ -6,7 +6,6 @@ import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/domain/entities/subscriptions/join_leave_beacon_entity/join_leave_beacon_entity.dart';
 import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/domain/usecase/hike_usecase.dart';
-import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
