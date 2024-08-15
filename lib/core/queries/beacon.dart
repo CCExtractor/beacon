@@ -144,20 +144,6 @@ deleteBeacon(id: "$id")
     ''';
   }
 
-  String createGeofence(
-      String beaconId, String lat, String lon, double radius) {
-    return '''
-     mutation{
-       createGeofence(id: "$beaconId", location: {lat: "$lat", lon:"$lon"}, radius: $radius){
-       radius
-       center{
-         lat
-         lon
-       }
-       }
-     }
-    ''';
-  }
 
   String updateBeaconLocation(String? id, String lat, String lon) {
     return '''
@@ -262,13 +248,6 @@ deleteBeacon(id: "$id")
                 lat
                 lon
               }
-            }
-            geofence{
-            center{
-              lat 
-              lon
-            }
-            radius
             }
             landmarks{
               _id
@@ -473,14 +452,6 @@ deleteBeacon(id: "$id")
        location{
          lat
          lon
-       }
-      }
-
-      geofence{
-       radius
-       center{
-        lat
-        lon
        }
       }
 

@@ -28,15 +28,13 @@ class BeaconModelAdapter extends TypeAdapter<BeaconModel> {
       route: (fields[8] as List?)?.cast<LocationModel?>(),
       startsAt: fields[9] as int?,
       expiresAt: fields[10] as int?,
-      geofence: fields[11] as GeofenceModel?,
-      membersLocation: (fields[12] as List?)?.cast<UserLocationModel?>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, BeaconModel obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -58,11 +56,7 @@ class BeaconModelAdapter extends TypeAdapter<BeaconModel> {
       ..writeByte(9)
       ..write(obj.startsAt)
       ..writeByte(10)
-      ..write(obj.expiresAt)
-      ..writeByte(11)
-      ..write(obj.geofence)
-      ..writeByte(12)
-      ..write(obj.membersLocation);
+      ..write(obj.expiresAt);
   }
 
   @override
@@ -109,14 +103,6 @@ BeaconModel _$BeaconModelFromJson(Map<String, dynamic> json) => BeaconModel(
           .toList(),
       startsAt: (json['startsAt'] as num?)?.toInt(),
       expiresAt: (json['expiresAt'] as num?)?.toInt(),
-      geofence: json['geofence'] == null
-          ? null
-          : GeofenceModel.fromJson(json['geofence'] as Map<String, dynamic>),
-      membersLocation: (json['membersLocation'] as List<dynamic>?)
-          ?.map((e) => e == null
-              ? null
-              : UserLocationModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
     );
 
 Map<String, dynamic> _$BeaconModelToJson(BeaconModel instance) =>
@@ -132,6 +118,4 @@ Map<String, dynamic> _$BeaconModelToJson(BeaconModel instance) =>
       'route': instance.route,
       'startsAt': instance.startsAt,
       'expiresAt': instance.expiresAt,
-      'geofence': instance.geofence,
-      'membersLocation': instance.membersLocation,
     };

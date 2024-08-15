@@ -1,8 +1,6 @@
-import 'package:beacon/domain/entities/geofence/geofence_entity.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
 import 'package:beacon/domain/entities/landmark/landmark_entity.dart';
 import 'package:beacon/domain/entities/location/location_entity.dart';
-import 'package:beacon/domain/entities/subscriptions/user_location_entity/user_location_entity.dart';
 import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'beacon_entity.freezed.dart';
@@ -21,8 +19,6 @@ class BeaconEntity with _$BeaconEntity {
     List<LandMarkEntity?>? landmarks,
     LocationEntity? location,
     GroupEntity? group,
-    GeofenceEntity? geofence,
-    List<UserLocationEntity?>? membersLocation,
   }) = _BeaconEntity;
 }
 
@@ -38,9 +34,7 @@ extension BeaconEntityCopyWithExtension on BeaconEntity {
       List<LocationEntity?>? route,
       List<LandMarkEntity?>? landmarks,
       LocationEntity? location,
-      GroupEntity? group,
-      GeofenceEntity? geofence,
-      List<UserLocationEntity?>? membersLocation}) {
+      GroupEntity? group}) {
     return BeaconEntity(
         id: id ?? this.id,
         shortcode: shortcode ?? this.shortcode,
@@ -52,8 +46,6 @@ extension BeaconEntityCopyWithExtension on BeaconEntity {
         route: route ?? this.route,
         landmarks: landmarks ?? this.landmarks,
         location: location ?? this.location,
-        group: group ?? this.group,
-        geofence: geofence ?? this.geofence,
-        membersLocation: membersLocation ?? this.membersLocation);
+        group: group ?? this.group,);
   }
 }

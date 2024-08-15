@@ -1,6 +1,5 @@
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
-import 'package:beacon/domain/entities/geofence/geofence_entity.dart';
 import 'package:beacon/domain/entities/landmark/landmark_entity.dart';
 import 'package:beacon/domain/entities/location/location_entity.dart';
 import 'package:beacon/domain/entities/subscriptions/beacon_locations_entity/beacon_locations_entity.dart';
@@ -32,28 +31,6 @@ class HikeUseCase {
     return hikeRepository.changeUserLocation(id, latlng);
   }
 
-  Future<DataState<GeofenceEntity>> createGeofence(
-      String beaconId, LatLng latlng, double radius) {
-    return hikeRepository.createGeofence(beaconId, latlng, radius);
-  }
-
-  Future<DataState<bool>> addRoute(String id, LatLng latlng) {
-    return hikeRepository.addRoute(id, latlng);
-  }
-
-  Stream<DataState<LocationEntity>> beaconLocationSubscription(
-      String beaconId) {
-    return hikeRepository.beaconLocationSubscription(beaconId);
-  }
-
-  Stream<DataState<UserEntity>> beaconJoinedSubscription(String beaconId) {
-    return hikeRepository.beaconJoinedSubscription(beaconId);
-  }
-
-  Stream<DataState<dynamic>> beaconUpdateSubscription(String beaconId) {
-    return hikeRepository.beaconUpdateSubscription(beaconId);
-  }
-
   Stream<DataState<BeaconLocationsEntity>> beaconlocationsSubscription(
       String beaconId) {
     return hikeRepository.beaconLocationsSubscription(beaconId);
@@ -62,10 +39,6 @@ class HikeUseCase {
   Stream<DataState<JoinLeaveBeaconEntity>> joinleavebeaconSubscription(
       String beaconId) {
     return hikeRepository.joinLeaveBeaconSubscription(beaconId);
-  }
-
-  Future<DataState<List<LatLng>>> getRoutes(List<LatLng> latlng) {
-    return hikeRepository.getRoute(latlng);
   }
 
   Future<DataState<UserEntity>> sos(String id) {

@@ -27,9 +27,6 @@ mixin _$BeaconEntity {
   List<LandMarkEntity?>? get landmarks => throw _privateConstructorUsedError;
   LocationEntity? get location => throw _privateConstructorUsedError;
   GroupEntity? get group => throw _privateConstructorUsedError;
-  GeofenceEntity? get geofence => throw _privateConstructorUsedError;
-  List<UserLocationEntity?>? get membersLocation =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $BeaconEntityCopyWith<BeaconEntity> get copyWith =>
@@ -53,14 +50,11 @@ abstract class $BeaconEntityCopyWith<$Res> {
       List<LocationEntity?>? route,
       List<LandMarkEntity?>? landmarks,
       LocationEntity? location,
-      GroupEntity? group,
-      GeofenceEntity? geofence,
-      List<UserLocationEntity?>? membersLocation});
+      GroupEntity? group});
 
   $UserEntityCopyWith<$Res>? get leader;
   $LocationEntityCopyWith<$Res>? get location;
   $GroupEntityCopyWith<$Res>? get group;
-  $GeofenceEntityCopyWith<$Res>? get geofence;
 }
 
 /// @nodoc
@@ -87,8 +81,6 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
     Object? landmarks = freezed,
     Object? location = freezed,
     Object? group = freezed,
-    Object? geofence = freezed,
-    Object? membersLocation = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -135,14 +127,6 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
           ? _value.group
           : group // ignore: cast_nullable_to_non_nullable
               as GroupEntity?,
-      geofence: freezed == geofence
-          ? _value.geofence
-          : geofence // ignore: cast_nullable_to_non_nullable
-              as GeofenceEntity?,
-      membersLocation: freezed == membersLocation
-          ? _value.membersLocation
-          : membersLocation // ignore: cast_nullable_to_non_nullable
-              as List<UserLocationEntity?>?,
     ) as $Val);
   }
 
@@ -181,18 +165,6 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
       return _then(_value.copyWith(group: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $GeofenceEntityCopyWith<$Res>? get geofence {
-    if (_value.geofence == null) {
-      return null;
-    }
-
-    return $GeofenceEntityCopyWith<$Res>(_value.geofence!, (value) {
-      return _then(_value.copyWith(geofence: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -214,9 +186,7 @@ abstract class _$$BeaconEntityImplCopyWith<$Res>
       List<LocationEntity?>? route,
       List<LandMarkEntity?>? landmarks,
       LocationEntity? location,
-      GroupEntity? group,
-      GeofenceEntity? geofence,
-      List<UserLocationEntity?>? membersLocation});
+      GroupEntity? group});
 
   @override
   $UserEntityCopyWith<$Res>? get leader;
@@ -224,8 +194,6 @@ abstract class _$$BeaconEntityImplCopyWith<$Res>
   $LocationEntityCopyWith<$Res>? get location;
   @override
   $GroupEntityCopyWith<$Res>? get group;
-  @override
-  $GeofenceEntityCopyWith<$Res>? get geofence;
 }
 
 /// @nodoc
@@ -250,8 +218,6 @@ class __$$BeaconEntityImplCopyWithImpl<$Res>
     Object? landmarks = freezed,
     Object? location = freezed,
     Object? group = freezed,
-    Object? geofence = freezed,
-    Object? membersLocation = freezed,
   }) {
     return _then(_$BeaconEntityImpl(
       id: freezed == id
@@ -298,14 +264,6 @@ class __$$BeaconEntityImplCopyWithImpl<$Res>
           ? _value.group
           : group // ignore: cast_nullable_to_non_nullable
               as GroupEntity?,
-      geofence: freezed == geofence
-          ? _value.geofence
-          : geofence // ignore: cast_nullable_to_non_nullable
-              as GeofenceEntity?,
-      membersLocation: freezed == membersLocation
-          ? _value._membersLocation
-          : membersLocation // ignore: cast_nullable_to_non_nullable
-              as List<UserLocationEntity?>?,
     ));
   }
 }
@@ -324,13 +282,10 @@ class _$BeaconEntityImpl implements _BeaconEntity {
       final List<LocationEntity?>? route,
       final List<LandMarkEntity?>? landmarks,
       this.location,
-      this.group,
-      this.geofence,
-      final List<UserLocationEntity?>? membersLocation})
+      this.group})
       : _followers = followers,
         _route = route,
-        _landmarks = landmarks,
-        _membersLocation = membersLocation;
+        _landmarks = landmarks;
 
   @override
   final String? id;
@@ -378,21 +333,10 @@ class _$BeaconEntityImpl implements _BeaconEntity {
   final LocationEntity? location;
   @override
   final GroupEntity? group;
-  @override
-  final GeofenceEntity? geofence;
-  final List<UserLocationEntity?>? _membersLocation;
-  @override
-  List<UserLocationEntity?>? get membersLocation {
-    final value = _membersLocation;
-    if (value == null) return null;
-    if (_membersLocation is EqualUnmodifiableListView) return _membersLocation;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'BeaconEntity(id: $id, shortcode: $shortcode, startsAt: $startsAt, expiresAt: $expiresAt, title: $title, leader: $leader, followers: $followers, route: $route, landmarks: $landmarks, location: $location, group: $group, geofence: $geofence, membersLocation: $membersLocation)';
+    return 'BeaconEntity(id: $id, shortcode: $shortcode, startsAt: $startsAt, expiresAt: $expiresAt, title: $title, leader: $leader, followers: $followers, route: $route, landmarks: $landmarks, location: $location, group: $group)';
   }
 
   @override
@@ -416,11 +360,7 @@ class _$BeaconEntityImpl implements _BeaconEntity {
                 .equals(other._landmarks, _landmarks) &&
             (identical(other.location, location) ||
                 other.location == location) &&
-            (identical(other.group, group) || other.group == group) &&
-            (identical(other.geofence, geofence) ||
-                other.geofence == geofence) &&
-            const DeepCollectionEquality()
-                .equals(other._membersLocation, _membersLocation));
+            (identical(other.group, group) || other.group == group));
   }
 
   @override
@@ -436,9 +376,7 @@ class _$BeaconEntityImpl implements _BeaconEntity {
       const DeepCollectionEquality().hash(_route),
       const DeepCollectionEquality().hash(_landmarks),
       location,
-      group,
-      geofence,
-      const DeepCollectionEquality().hash(_membersLocation));
+      group);
 
   @JsonKey(ignore: true)
   @override
@@ -459,9 +397,7 @@ abstract class _BeaconEntity implements BeaconEntity {
       final List<LocationEntity?>? route,
       final List<LandMarkEntity?>? landmarks,
       final LocationEntity? location,
-      final GroupEntity? group,
-      final GeofenceEntity? geofence,
-      final List<UserLocationEntity?>? membersLocation}) = _$BeaconEntityImpl;
+      final GroupEntity? group}) = _$BeaconEntityImpl;
 
   @override
   String? get id;
@@ -485,10 +421,6 @@ abstract class _BeaconEntity implements BeaconEntity {
   LocationEntity? get location;
   @override
   GroupEntity? get group;
-  @override
-  GeofenceEntity? get geofence;
-  @override
-  List<UserLocationEntity?>? get membersLocation;
   @override
   @JsonKey(ignore: true)
   _$$BeaconEntityImplCopyWith<_$BeaconEntityImpl> get copyWith =>

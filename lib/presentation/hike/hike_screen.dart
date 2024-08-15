@@ -1,3 +1,4 @@
+
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/config/pip_manager.dart';
 import 'package:beacon/core/utils/constants.dart';
@@ -18,6 +19,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:simple_pip_mode/pip_widget.dart';
+import 'package:simple_pip_mode/simple_pip.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 @RoutePage()
@@ -30,37 +33,47 @@ class HikeScreen extends StatefulWidget {
   State<HikeScreen> createState() => _HikeScreenState();
 }
 
-class _HikeScreenState extends State<HikeScreen> with TickerProviderStateMixin {
+class _HikeScreenState extends State<HikeScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   HikeCubit _hikeCubit = locator<HikeCubit>();
   LocationCubit _locationCubit = locator();
 
   int value = 0;
   @override
   void initState() {
-    PIPMode.switchPIPMode();
+    WidgetsBinding.instance.addObserver(this);
     _hikeCubit.startHike(widget.beacon.id!, this, context);
+    SimplePip().setAutoPipMode(aspectRatio: [2, 3]);
     super.initState();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     PIPMode.disablePIPMode();
     _hikeCubit.clear();
     _locationCubit.clear();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {}
+  }
+
   bool isSmallsized = 100.h < 800;
   PanelController _panelController = PanelController();
-
-  bool _isPipMode = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isPipMode
-          ? Container()
-          : BlocBuilder<HikeCubit, HikeState>(
+      body: PipWidget(
+          onPipExited: () {
+            _panelController.open();
+          },
+          builder: (context) {
+            return BlocBuilder<HikeCubit, HikeState>(
               builder: (context, state) {
                 if (state is InitialHikeState) {
                   return Center(
@@ -88,60 +101,14 @@ class _HikeScreenState extends State<HikeScreen> with TickerProviderStateMixin {
                           minHeight: isSmallsized ? 22.h : 18.h,
                           panel: _SlidingPanelWidget(),
                           collapsed: _collapsedWidget(),
-                          body: BlocConsumer<LocationCubit, LocationState>(
-                            listener: (context, state) {
-                              if (state is LoadedLocationState) {
-                                state.message != null
-                                    ? utils.showSnackBar(
-                                        state.message!, context)
-                                    : null;
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is InitialLocationState) {
-                                return SpinKitPianoWave(
-                                  color: kYellow,
-                                );
-                              } else if (state is LoadedLocationState) {
-                                return GoogleMap(
-                                    circles: state.geofence,
-                                    polylines: state.polyline,
-                                    mapType: state.mapType,
-                                    compassEnabled: true,
-                                    onTap: (latlng) {
-                                      _panelController.close();
-                                      HikeScreenWidget
-                                          .showCreateLandMarkDialogueDialog(
-                                              context,
-                                              widget.beacon.id!,
-                                              latlng);
-                                    },
-                                    zoomControlsEnabled: true,
-                                    onMapCreated: _locationCubit.onMapCreated,
-                                    markers: state.locationMarkers,
-                                    initialCameraPosition: CameraPosition(
-                                        zoom: 15,
-                                        target: state
-                                            .locationMarkers.first.position));
-                              }
-                              return Center(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    appRouter.maybePop();
-                                  },
-                                  child: Text(
-                                      'Something went wrong please try again!'),
-                                ),
-                              );
-                            },
-                          )),
+                          body: _mapScreen()),
                       Align(
                         alignment: Alignment(-0.9, -0.9),
                         child: FloatingActionButton(
                           heroTag: 'BackButton',
                           backgroundColor: kYellow,
                           onPressed: () {
-                            // PIPMode.enterPIPMode();
+                            SimplePip().enterPipMode();
                           },
                           child: Icon(
                             CupertinoIcons.back,
@@ -164,7 +131,52 @@ class _HikeScreenState extends State<HikeScreen> with TickerProviderStateMixin {
                   ));
                 }
               },
-            ),
+            );
+          },
+          pipChild: _mapScreen()),
+    );
+  }
+
+  Widget _mapScreen() {
+    return BlocConsumer<LocationCubit, LocationState>(
+      listener: (context, state) {
+        if (state is LoadedLocationState) {
+          state.message != null
+              ? utils.showSnackBar(state.message!, context)
+              : null;
+        }
+      },
+      builder: (context, state) {
+        if (state is InitialLocationState) {
+          return SpinKitPianoWave(
+            color: kYellow,
+          );
+        } else if (state is LoadedLocationState) {
+          return GoogleMap(
+              circles: state.geofence,
+              polylines: state.polyline,
+              mapType: state.mapType,
+              compassEnabled: true,
+              onTap: (latlng) {
+                _panelController.close();
+                HikeScreenWidget.showCreateLandMarkDialogueDialog(
+                    context, widget.beacon.id!, latlng);
+              },
+              zoomControlsEnabled: true,
+              onMapCreated: _locationCubit.onMapCreated,
+              markers: state.locationMarkers,
+              initialCameraPosition: CameraPosition(
+                  zoom: 15, target: state.locationMarkers.first.position));
+        }
+        return Center(
+          child: GestureDetector(
+            onTap: () {
+              appRouter.maybePop();
+            },
+            child: Text('Something went wrong please try again!'),
+          ),
+        );
+      },
     );
   }
 

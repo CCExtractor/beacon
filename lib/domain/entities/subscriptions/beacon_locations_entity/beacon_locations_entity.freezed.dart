@@ -18,7 +18,6 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$BeaconLocationsEntity {
   UserEntity? get userSOS => throw _privateConstructorUsedError;
   List<LocationEntity?>? get route => throw _privateConstructorUsedError;
-  GeofenceEntity? get geofence => throw _privateConstructorUsedError;
   LandMarkEntity? get landmark => throw _privateConstructorUsedError;
   UserEntity? get user => throw _privateConstructorUsedError;
 
@@ -36,12 +35,10 @@ abstract class $BeaconLocationsEntityCopyWith<$Res> {
   $Res call(
       {UserEntity? userSOS,
       List<LocationEntity?>? route,
-      GeofenceEntity? geofence,
       LandMarkEntity? landmark,
       UserEntity? user});
 
   $UserEntityCopyWith<$Res>? get userSOS;
-  $GeofenceEntityCopyWith<$Res>? get geofence;
   $LandMarkEntityCopyWith<$Res>? get landmark;
   $UserEntityCopyWith<$Res>? get user;
 }
@@ -62,7 +59,6 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
   $Res call({
     Object? userSOS = freezed,
     Object? route = freezed,
-    Object? geofence = freezed,
     Object? landmark = freezed,
     Object? user = freezed,
   }) {
@@ -75,10 +71,6 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
           ? _value.route
           : route // ignore: cast_nullable_to_non_nullable
               as List<LocationEntity?>?,
-      geofence: freezed == geofence
-          ? _value.geofence
-          : geofence // ignore: cast_nullable_to_non_nullable
-              as GeofenceEntity?,
       landmark: freezed == landmark
           ? _value.landmark
           : landmark // ignore: cast_nullable_to_non_nullable
@@ -99,18 +91,6 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
 
     return $UserEntityCopyWith<$Res>(_value.userSOS!, (value) {
       return _then(_value.copyWith(userSOS: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $GeofenceEntityCopyWith<$Res>? get geofence {
-    if (_value.geofence == null) {
-      return null;
-    }
-
-    return $GeofenceEntityCopyWith<$Res>(_value.geofence!, (value) {
-      return _then(_value.copyWith(geofence: value) as $Val);
     });
   }
 
@@ -151,14 +131,11 @@ abstract class _$$BeaconLocationsEntityImplCopyWith<$Res>
   $Res call(
       {UserEntity? userSOS,
       List<LocationEntity?>? route,
-      GeofenceEntity? geofence,
       LandMarkEntity? landmark,
       UserEntity? user});
 
   @override
   $UserEntityCopyWith<$Res>? get userSOS;
-  @override
-  $GeofenceEntityCopyWith<$Res>? get geofence;
   @override
   $LandMarkEntityCopyWith<$Res>? get landmark;
   @override
@@ -179,7 +156,6 @@ class __$$BeaconLocationsEntityImplCopyWithImpl<$Res>
   $Res call({
     Object? userSOS = freezed,
     Object? route = freezed,
-    Object? geofence = freezed,
     Object? landmark = freezed,
     Object? user = freezed,
   }) {
@@ -192,10 +168,6 @@ class __$$BeaconLocationsEntityImplCopyWithImpl<$Res>
           ? _value._route
           : route // ignore: cast_nullable_to_non_nullable
               as List<LocationEntity?>?,
-      geofence: freezed == geofence
-          ? _value.geofence
-          : geofence // ignore: cast_nullable_to_non_nullable
-              as GeofenceEntity?,
       landmark: freezed == landmark
           ? _value.landmark
           : landmark // ignore: cast_nullable_to_non_nullable
@@ -214,7 +186,6 @@ class _$BeaconLocationsEntityImpl implements _BeaconLocationsEntity {
   _$BeaconLocationsEntityImpl(
       {this.userSOS,
       final List<LocationEntity?>? route,
-      this.geofence,
       this.landmark,
       this.user})
       : _route = route;
@@ -232,15 +203,13 @@ class _$BeaconLocationsEntityImpl implements _BeaconLocationsEntity {
   }
 
   @override
-  final GeofenceEntity? geofence;
-  @override
   final LandMarkEntity? landmark;
   @override
   final UserEntity? user;
 
   @override
   String toString() {
-    return 'BeaconLocationsEntity(userSOS: $userSOS, route: $route, geofence: $geofence, landmark: $landmark, user: $user)';
+    return 'BeaconLocationsEntity(userSOS: $userSOS, route: $route, landmark: $landmark, user: $user)';
   }
 
   @override
@@ -250,8 +219,6 @@ class _$BeaconLocationsEntityImpl implements _BeaconLocationsEntity {
             other is _$BeaconLocationsEntityImpl &&
             (identical(other.userSOS, userSOS) || other.userSOS == userSOS) &&
             const DeepCollectionEquality().equals(other._route, _route) &&
-            (identical(other.geofence, geofence) ||
-                other.geofence == geofence) &&
             (identical(other.landmark, landmark) ||
                 other.landmark == landmark) &&
             (identical(other.user, user) || other.user == user));
@@ -259,7 +226,7 @@ class _$BeaconLocationsEntityImpl implements _BeaconLocationsEntity {
 
   @override
   int get hashCode => Object.hash(runtimeType, userSOS,
-      const DeepCollectionEquality().hash(_route), geofence, landmark, user);
+      const DeepCollectionEquality().hash(_route), landmark, user);
 
   @JsonKey(ignore: true)
   @override
@@ -273,7 +240,6 @@ abstract class _BeaconLocationsEntity implements BeaconLocationsEntity {
   factory _BeaconLocationsEntity(
       {final UserEntity? userSOS,
       final List<LocationEntity?>? route,
-      final GeofenceEntity? geofence,
       final LandMarkEntity? landmark,
       final UserEntity? user}) = _$BeaconLocationsEntityImpl;
 
@@ -281,8 +247,6 @@ abstract class _BeaconLocationsEntity implements BeaconLocationsEntity {
   UserEntity? get userSOS;
   @override
   List<LocationEntity?>? get route;
-  @override
-  GeofenceEntity? get geofence;
   @override
   LandMarkEntity? get landmark;
   @override

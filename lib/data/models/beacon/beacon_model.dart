@@ -1,8 +1,7 @@
-import 'package:beacon/data/models/geofence/geofence_model.dart';
+
 import 'package:beacon/data/models/group/group_model.dart';
 import 'package:beacon/data/models/landmark/landmark_model.dart';
 import 'package:beacon/data/models/location/location_model.dart';
-import 'package:beacon/data/models/subscriptions/user_location_model/user_location_model.dart';
 import 'package:beacon/data/models/user/user_model.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:hive/hive.dart';
@@ -35,10 +34,6 @@ class BeaconModel implements BeaconEntity {
   int? startsAt;
   @HiveField(10)
   int? expiresAt;
-  @HiveField(11)
-  GeofenceModel? geofence;
-  @HiveField(12)
-  List<UserLocationModel?>? membersLocation;
 
   BeaconModel(
       {this.id,
@@ -51,9 +46,7 @@ class BeaconModel implements BeaconEntity {
       this.location,
       this.route,
       this.startsAt,
-      this.expiresAt,
-      this.geofence,
-      this.membersLocation});
+      this.expiresAt});
 
   @override
   $BeaconEntityCopyWith<BeaconEntity> get copyWith =>
@@ -75,9 +68,7 @@ class BeaconModel implements BeaconEntity {
       LocationModel? location,
       List<LocationModel?>? route,
       int? startsAt,
-      int? expiresAt,
-      GeofenceModel? geofence,
-      List<UserLocationModel>? membersLocation}) {
+      int? expiresAt,}) {
     return BeaconModel(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -89,8 +80,6 @@ class BeaconModel implements BeaconEntity {
         location: location ?? this.location,
         route: route ?? this.route,
         startsAt: startsAt ?? this.startsAt,
-        expiresAt: expiresAt ?? this.expiresAt,
-        geofence: geofence ?? this.geofence,
-        membersLocation: membersLocation ?? this.membersLocation);
+        expiresAt: expiresAt ?? this.expiresAt);
   }
 }

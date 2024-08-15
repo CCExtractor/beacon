@@ -73,9 +73,13 @@ class LocationCubit extends Cubit<LocationState> {
 
     _currentUserId = localApi.userModel.id!;
 
+     getLeaderAddress(locationToLatLng(beacon.leader!.location!));
+
     // // adding leader location
     if (beacon.leader != null) {
       _leader = beacon.leader!;
+
+      
       // creating leader location
 
       if (_currentUserId == _leader!.id) {
@@ -92,7 +96,6 @@ class LocationCubit extends Cubit<LocationState> {
             onTap: () {
               log('${beacon.leader?.name}');
             }));
-        getLeaderAddress(locationToLatLng(_leader!.location!));
       }
     }
     // adding members location
@@ -782,33 +785,6 @@ class LocationCubit extends Cubit<LocationState> {
     return double.parse(coord);
   }
 
-  Future<void> createGeofence(
-      String beaconId, LatLng latlng, double radius) async {
-    var dataState = await _hikeUseCase.createGeofence(beaconId, latlng, radius);
-
-    if (dataState is DataSuccess && dataState.data != null) {
-      _geofence.clear();
-
-      var geofence = dataState.data!;
-
-      _geofence.add(Circle(
-        circleId: CircleId(DateTime.now().millisecondsSinceEpoch.toString()),
-        center: locationToLatLng(geofence.center!),
-        radius: (geofence.radius! * 1000),
-        strokeColor: kYellow,
-        strokeWidth: 2,
-        fillColor: kYellow.withOpacity(0.2),
-      ));
-
-      emit(LoadedLocationState(
-          polyline: _polyline,
-          locationMarkers: _hikeMarkers,
-          geofence: _geofence,
-          mapType: _mapType,
-          message: 'New geofence created!',
-          version: DateTime.now().microsecond));
-    }
-  }
 
   void changeMap(MapType mapType) {
     if (mapType == _mapType) return;

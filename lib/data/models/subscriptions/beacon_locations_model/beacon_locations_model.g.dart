@@ -17,9 +17,6 @@ BeaconLocationsModel _$BeaconLocationsModelFromJson(
               ? null
               : LocationModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      geofence: json['geofence'] == null
-          ? null
-          : GeofenceModel.fromJson(json['geofence'] as Map<String, dynamic>),
       landmark: json['landmark'] == null
           ? null
           : LandMarkModel.fromJson(json['landmark'] as Map<String, dynamic>),
@@ -34,6 +31,5 @@ Map<String, dynamic> _$BeaconLocationsModelToJson(
       'userSOS': instance.userSOS,
       'route': instance.route,
       'landmark': instance.landmark,
-      'geofence': instance.geofence,
       'updatedUser': instance.user,
     };

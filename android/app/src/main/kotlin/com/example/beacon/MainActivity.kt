@@ -1,51 +1,21 @@
 package com.example.beacon
 
-import android.app.PictureInPictureParams
-import android.os.Build
-import android.util.Rational
+import android.content.res.Configuration
+import androidx.annotation.NonNull
+import cl.puntito.simple_pip_mode.PipCallbackHelper
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.beacon/pip"
-    private var shouldEnterPipMode = false
+  private var callbackHelper = PipCallbackHelper()
 
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "switchPIPMode"->{
-                    shouldEnterPipMode = true
-                    result.success(null)
-                }
-                "enablePIPMode" -> {
-                    shouldEnterPipMode = true
-                    result.success(null)
-                }
-                "disablePIPMode" -> {
-                    shouldEnterPipMode = false
-                    result.success(null)
-                }
-                else -> result.notImplemented()
-            }
-        }
-    }
+  override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+    super.configureFlutterEngine(flutterEngine)
+    callbackHelper.configureFlutterEngine(flutterEngine)
+  }
 
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        if (shouldEnterPipMode) {
-            enterPIPMode()
-        }
-    }
-
-    private fun enterPIPMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val aspectRatio = Rational(16, 9)
-            val pipParams = PictureInPictureParams.Builder()
-                .setAspectRatio(aspectRatio)
-                .build()
-            enterPictureInPictureMode(pipParams)
-        }
-    }
+  override fun onPictureInPictureModeChanged(active: Boolean, newConfig: Configuration?) {
+    super.onPictureInPictureModeChanged(active, newConfig)
+    callbackHelper.onPictureInPictureModeChanged(active)
+  }
 }

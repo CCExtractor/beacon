@@ -1,4 +1,3 @@
-import 'package:beacon/data/models/geofence/geofence_model.dart';
 import 'package:beacon/data/models/landmark/landmark_model.dart';
 import 'package:beacon/data/models/location/location_model.dart';
 import 'package:beacon/data/models/user/user_model.dart';
@@ -11,12 +10,11 @@ class BeaconLocationsModel implements BeaconLocationsEntity {
   UserModel? userSOS;
   List<LocationModel?>? route;
   LandMarkModel? landmark;
-  GeofenceModel? geofence;
   @JsonKey(name: 'updatedUser')
   UserModel? user;
 
   BeaconLocationsModel(
-      {this.userSOS, this.route, this.geofence, this.landmark, this.user});
+      {this.userSOS, this.route, this.landmark, this.user});
 
   factory BeaconLocationsModel.fromJson(Map<String, dynamic> json) =>
       _$BeaconLocationsModelFromJson(json);
