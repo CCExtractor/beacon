@@ -12,6 +12,14 @@ class AuthQueries {
     ''';
   }
 
+  String gAuth(String? name, String email) {
+    return '''
+        mutation{
+          oAuth(userInput: {email: "$email", name: "$name"})
+        }
+    ''';
+  }
+
   String loginAsGuest(String? name) {
     return '''
         mutation{

@@ -12,6 +12,8 @@ abstract class AuthRepository {
   // Login function
   Future<DataState<UserEntity>> login(String email, String password);
 
+  Future<DataState<UserEntity>> oAuth(String name, String email);
+
   Future<DataState<String>> sendVerificationCode();
 
   Future<DataState<UserEntity>> completeVerification();

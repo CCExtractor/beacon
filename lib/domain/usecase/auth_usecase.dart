@@ -17,6 +17,10 @@ class AuthUseCase {
     return authRepository.login(email, password);
   }
 
+  Future<DataState<UserEntity>> oAuthUseCase(String name, String email) async {
+    return authRepository.oAuth(name, email);
+  }
+
   Future<DataState<UserEntity>> getUserInfoUseCase() async {
     return authRepository.getUser();
   }

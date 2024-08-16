@@ -1,5 +1,4 @@
 import 'package:beacon/config/enviornment_config.dart';
-import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
@@ -79,53 +78,3 @@ class MyApp extends StatelessWidget {
     )
   ];
 }
-
-class DrawCircle extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = kBlue
-      ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(Offset(size.width / 2, 0), size.width / 2, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-// class DrawCircle extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..color = kBlue
-//       ..style = PaintingStyle.fill;
-
-//     final path = Path();
-
-//     // Convert angles to radians
-//     final angle1Rad = 60 * (math.pi / 180);
-//     final angle2Rad = 30 * (math.pi / 180);
-
-//     // Calculate the height of the cut based on the rectangle width and angle
-//     final cutHeight1 = size.width * math.tan(angle1Rad);
-//     final cutHeight2 = size.width * math.tan(angle2Rad);
-
-//     // Define the path
-//     path.moveTo(0, cutHeight1); // Start at the top-left corner with a cut
-//     path.lineTo(size.width, 0); // Top-right corner
-//     path.lineTo(
-//         size.width, size.height - cutHeight2); // Bottom-right corner with a cut
-//     path.lineTo(0, size.height); // Bottom-left corner
-//     path.close();
-
-//     canvas.drawPath(path, paint);
-//   }
-
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-//     return false;
-//   }
-// }

@@ -86,6 +86,61 @@ class RemoteAuthApi {
     }
   }
 
+  Future<DataState<UserEntity>> gAuth(String name, String email) async {
+    log('name: $name');
+    log('email: $email');
+
+    final isConnected = await utils.checkInternetConnectivity();
+
+    if (!isConnected) {
+      return DataFailed('Beacon is trying to connect with internet...');
+    }
+
+    final QueryResult result = await clientNonAuth.mutate(
+        MutationOptions(document: gql(_authQueries.gAuth(name, email))));
+
+    log(result.toString());
+
+    if (result.data != null && result.isConcrete) {
+      final token = "Bearer ${result.data!['oAuth']}";
+
+      UserModel? user;
+
+      user = UserModel(authToken: token, isGuest: false);
+
+      // storing auth token in hive
+      await localApi.saveUser(user);
+
+      // loading clients
+      final authClient = await graphqlConfig.authClient();
+      final subscriptionClient = await graphqlConfig.graphQlClient();
+      locator<RemoteAuthApi>().loadClient(authClient);
+      locator<RemoteHomeApi>().loadClient(authClient, subscriptionClient);
+      locator<RemoteGroupApi>().loadClient(authClient, subscriptionClient);
+      locator<RemoteHikeApi>().loadClient(authClient, subscriptionClient);
+
+      // fetching User Info
+
+      final dataState = await fetchUserInfo();
+
+      if (dataState is DataSuccess) {
+        final updatedUser = dataState.data!
+            .copyWithModel(authToken: user.authToken, isGuest: user.isGuest);
+
+        // saving locally
+        await localApi.saveUser(updatedUser);
+
+        return DataSuccess(updatedUser);
+      }
+    } else if (result.hasException) {
+      final message = encounteredExceptionOrError(result.exception!);
+
+      return DataFailed(message);
+    }
+
+    return DataFailed('An unexpected error occured.');
+  }
+
   Future<DataState<UserEntity>> login(String email, String password) async {
     log('calling login function $email');
     final isConnected = await utils.checkInternetConnectivity();

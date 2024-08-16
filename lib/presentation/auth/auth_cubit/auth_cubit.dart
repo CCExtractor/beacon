@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beacon/config/router/router.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/domain/usecase/auth_usecase.dart';
@@ -71,25 +69,29 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void googleSignIn() async {
-    try {
-      const List<String> scopes = <String>[
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ];
+    const List<String> scopes = <String>[
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ];
 
-      GoogleSignIn _googleSignIn = GoogleSignIn(
-        // Optional clientId
-        // clientId: 'your-client_id.apps.googleusercontent.com',
-        scopes: scopes,
-      );
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: scopes,
+    );
 
-      final gAuth=await _googleSignIn.signIn();
+    final gAuth = await _googleSignIn.signIn();
 
+    if (gAuth != null && gAuth.displayName != null) {
+      var dataState =
+          await authUseCase.oAuthUseCase(gAuth.displayName!, gAuth.email);
 
-      // log(_googleSignIn.currentUser!.email);
-      // log(_googleSignIn.currentUser!.displayName!);
-    } catch (e) {
-      log(e.toString());
+      if (dataState is DataSuccess && dataState.data != null) {
+        emit(SuccessState());
+      } else {
+        emit(AuthErrorState(error: dataState.error!));
+      }
+    } else {
+      emit(AuthErrorState(
+          error: 'Something went wrong please try again later!'));
     }
   }
 }
