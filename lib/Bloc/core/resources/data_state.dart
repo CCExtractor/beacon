@@ -1,8 +1,6 @@
-import 'package:graphql/client.dart';
-
 abstract class DataState<T> {
   final T? data;
-  final OperationException? error;
+  final String? error;
 
   const DataState({this.data, this.error});
 }
@@ -12,5 +10,5 @@ class DataSuccess<T> extends DataState<T> {
 }
 
 class DataFailed<T> extends DataState<T> {
-  const DataFailed(OperationException error) : super(error: error);
+  const DataFailed(String error) : super(error: error);
 }

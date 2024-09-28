@@ -1,6 +1,29 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GroupQueries {
+  String fetchUserGroups(int page, int pageSize) {
+    return '''
+      query {
+        groups(page: $page, pageSize: $pageSize) {
+          _id
+          title
+          shortcode
+          leader {
+            _id
+            name
+          }
+          members {
+            _id
+            name
+          }
+          beacons {
+            _id
+          }
+        }
+      }
+    ''';
+  }
+
   String createGroup(String? title) {
     return '''
         mutation{
@@ -127,6 +150,36 @@ class GroupQueries {
           }
       }
     ''';
+  }
+
+  String fetchHikes(String groupID, int page, int pageSize) {
+    return '''
+query{
+  beacons(groupId: "$groupID", page: $page, pageSize: $pageSize){
+    _id
+              title
+              shortcode
+              leader {
+                _id
+                name
+              }
+              location{
+                lat
+                lon
+              }
+              followers {
+                _id
+                name
+              }
+              group{
+                _id
+              }
+              startsAt
+              expiresAt
+
+  }
+}
+''';
   }
 
   final groupJoinedSubGql = gql(r'''

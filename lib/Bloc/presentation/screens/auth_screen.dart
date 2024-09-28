@@ -1,16 +1,16 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beacon/Bloc/presentation/cubit/auth_cubit.dart';
+import 'package:beacon/Bloc/presentation/widgets/text_field.dart';
+import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/hike_button.dart';
+import 'package:beacon/old/components/loading_screen.dart';
 import 'package:beacon/old/components/shape_painter.dart';
-import 'package:beacon/old/components/services/validators.dart';
+import 'package:beacon/Bloc/core/utils/validators.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:beacon/old/components/utilities/indication_painter.dart';
-import 'package:beacon/old/components/view_model/auth_screen_model.dart';
-import 'package:beacon/old/components/views/base_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-
-import '../loading_screen.dart';
 
 @RoutePage()
 class AuthScreen extends StatefulWidget {
@@ -29,7 +29,6 @@ class _AuthScreenState extends State<AuthScreen>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        // actionsAlignment: MainAxisAlignment.spaceEvenly,
         contentPadding: EdgeInsets.all(25.0),
         title: Text(
           'Confirm Exit',
@@ -43,14 +42,13 @@ class _AuthScreenState extends State<AuthScreen>
           HikeButton(
             buttonHeight: 2.5.h,
             buttonWidth: 8.w,
-            onTap: () => Navigator.of(context).pop(false),
+            onTap: () => AutoRouter.of(context).maybePop(false),
             text: 'No',
           ),
           HikeButton(
             buttonHeight: 2.5.h,
             buttonWidth: 8.w,
-            onTap: () =>
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+            onTap: () => AutoRouter.of(context).maybePop(true),
             text: 'Yes',
           ),
         ],
@@ -58,19 +56,34 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
+  PageController _pageController = PageController();
+
+  Color leftColor = Colors.white;
+  Color rightColor = Colors.black;
+
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
+    final authCubit = BlocProvider.of<AuthCubit>(context);
     return
         // WillPopScope(
         // onWillPop: _onPopHome ?? ,
         // child:
-        BaseView<AuthViewModel>(
-      builder: (context, model, child) {
-        return (model.isBusy)
+        BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is SuccessState) {
+          AutoRouter.of(context).replaceNamed('/home');
+          utils.showSnackBar('Login successful !', context,
+              duration: Duration(seconds: 2));
+        } else if (state is AuthErrorState) {
+          utils.showSnackBar(state.error!, context,
+              duration: Duration(seconds: 2));
+        }
+      },
+      builder: (context, state) {
+        return state is AuthLoadingState
             ? LoadingScreen()
-            : new Scaffold(
-                key: model.scaffoldKey,
+            : Scaffold(
                 resizeToAvoidBottomInset: true,
                 body: Container(
                   width: screensize.width,
@@ -90,43 +103,45 @@ class _AuthScreenState extends State<AuthScreen>
                           children: [
                             Padding(
                               padding: EdgeInsets.only(top: 20.0),
-                              child: _buildMenuBar(context, model),
+                              child: _buildMenuBar(context, _pageController),
                             ),
                             Expanded(
                               flex: 2,
                               child: PageView(
-                                controller: model.pageController,
+                                controller: _pageController,
                                 onPageChanged: (i) {
                                   if (i == 0) {
                                     setState(() {
-                                      model.right = Colors.black;
-                                      model.left = Colors.white;
+                                      rightColor = Colors.black;
+                                      leftColor = Colors.white;
                                     });
                                     Future.delayed(Duration(milliseconds: 500),
                                         () {
-                                      model.requestFocusForFocusNode(
-                                          model.emailLogin);
+                                      authCubit.requestFocus(
+                                          loginEmailFocus, context);
                                     });
                                   } else if (i == 1) {
                                     setState(() {
-                                      model.right = Colors.white;
-                                      model.left = Colors.black;
+                                      rightColor = Colors.white;
+                                      leftColor = Colors.black;
                                     });
                                     Future.delayed(Duration(milliseconds: 500),
                                         () {
-                                      model
-                                          .requestFocusForFocusNode(model.name);
+                                      authCubit.requestFocus(
+                                          signUpNameFocus, context);
                                     });
                                   }
                                 },
                                 children: <Widget>[
                                   new ConstrainedBox(
                                     constraints: const BoxConstraints.expand(),
-                                    child: _buildSignIn(context, model),
+                                    child: _buildSignIn(context),
                                   ),
                                   new ConstrainedBox(
                                     constraints: const BoxConstraints.expand(),
-                                    child: _buildSignUp(context, model),
+                                    child: _buildSignUp(
+                                      context,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -139,11 +154,10 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
               );
       },
-      // ),
     );
   }
 
-  Widget _buildMenuBar(BuildContext context, AuthViewModel model) {
+  Widget _buildMenuBar(BuildContext context, PageController pageController) {
     Size screensize = MediaQuery.of(context).size;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13.5.w),
@@ -153,7 +167,7 @@ class _AuthScreenState extends State<AuthScreen>
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
       child: CustomPaint(
-        painter: TabIndicationPainter(pageController: model.pageController),
+        painter: TabIndicationPainter(pageController: pageController),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -163,11 +177,18 @@ class _AuthScreenState extends State<AuthScreen>
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                 ),
                 //highlightColor: Colors.white,
-                onPressed: model.onSignInButtonPress,
+                onPressed: () {
+                  pageController.animateToPage(0,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.decelerate);
+                  leftColor = Colors.white;
+                  rightColor = Colors.black;
+                  setState(() {});
+                },
                 child: Text(
                   "Existing",
                   style: TextStyle(
-                    color: model.left,
+                    color: leftColor,
                     fontSize: 18.0,
                   ),
                 ),
@@ -178,11 +199,18 @@ class _AuthScreenState extends State<AuthScreen>
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                 ),
-                onPressed: model.onSignUpButtonPress,
+                onPressed: () {
+                  pageController.animateToPage(1,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.decelerate);
+                  rightColor = Colors.white;
+                  leftColor = Colors.black;
+                  setState(() {});
+                },
                 child: Text(
                   "New",
                   style: TextStyle(
-                    color: model.right,
+                    color: rightColor,
                     fontSize: 18.0,
                   ),
                 ),
@@ -194,8 +222,25 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildSignIn(BuildContext context, AuthViewModel model) {
+  GlobalKey<FormState> _signInFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
+  final loginEmailController = TextEditingController();
+  final loginPasswordController = TextEditingController();
+
+  final signUpNameController = TextEditingController();
+  final signUpEmailController = TextEditingController();
+  final signUpPasswordController = TextEditingController();
+
+  final signUpNameFocus = FocusNode();
+  final signUpEmailFocus = FocusNode();
+  final signUpPasswordFocus = FocusNode();
+
+  final loginEmailFocus = FocusNode();
+  final loginPasswordFocus = FocusNode();
+  Widget _buildSignIn(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
+
+    final authCubit = BlocProvider.of<AuthCubit>(context);
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
@@ -210,8 +255,7 @@ class _AuthScreenState extends State<AuthScreen>
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Form(
-                key: model.formKeyLogin,
-                autovalidateMode: model.loginValidate,
+                key: _signInFormKey,
                 child: Container(
                   width: screensize.width - 70,
                   child: Column(
@@ -220,25 +264,13 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.emailLogin,
-                          controller: model.loginEmailController,
-                          validator: (value) =>
-                              Validator.validateEmail(value!.trimRight()),
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail_outline,
-                              color: Colors.black,
-                              size: 24.0,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
+                        child: CustomTextField(
+                          iconData: Icons.email,
+                          hintText: 'Email Address',
+                          controller: loginEmailController,
+                          focusNode: loginEmailFocus,
+                          nextFocusNode: loginPasswordFocus,
+                          validator: Validator.validateEmail,
                         ),
                       ),
                       separator(),
@@ -246,36 +278,13 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.loginValidate,
-                          focusNode: model.passwordLogin,
-                          controller: model.loginPasswordController,
-                          obscureText: model.obscureTextLogin,
-                          validator: (value) =>
-                              Validator.validatePassword(value!),
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              size: 24.0,
-                              color: Colors.black,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                            suffixIcon: IconButton(
-                              onPressed: () => model.displayPasswordLogin(),
-                              icon: Icon(
-                                model.obscureTextLogin
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                size: 20.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
+                        child: CustomTextField(
+                            iconData: Icons.lock,
+                            hintText: 'Password',
+                            controller: loginPasswordController,
+                            focusNode: loginPasswordFocus,
+                            showTrailing: true,
+                            validator: Validator.validatePassword),
                       ),
                     ],
                   ),
@@ -285,9 +294,23 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               height: 3.5.h,
             ),
-            HikeButton(
-              onTap: model.nextLogin,
-              text: 'LOGIN',
+            BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                return HikeButton(
+                  onTap: () {
+                    if (_signInFormKey.currentState!.validate()) {
+                      authCubit.login(
+                        loginEmailController.text.trim(),
+                        loginPasswordController.text.trim(),
+                      );
+                    } else {
+                      utils.showSnackBar(
+                          'Please complete all the fields', context);
+                    }
+                  },
+                  text: 'LOGIN',
+                );
+              },
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -301,7 +324,12 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             HikeButton(
-              onTap: () => model.loginAsGuest(),
+              onTap: () {
+                authCubit.login(
+                  loginEmailController.text.trim(),
+                  loginPasswordController.text.trim(),
+                );
+              },
               text: 'LOGIN AS GUEST',
             ),
           ],
@@ -310,7 +338,8 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildSignUp(BuildContext context, AuthViewModel model) {
+  Widget _buildSignUp(BuildContext context) {
+    final authCubit = BlocProvider.of<AuthCubit>(context);
     Size screensize = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
@@ -324,8 +353,7 @@ class _AuthScreenState extends State<AuthScreen>
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Form(
-                key: model.formKeySignup,
-                autovalidateMode: model.signupValidate,
+                key: _registerFormKey,
                 child: Container(
                     width: screensize.width - 70,
                     // height: 280.0,
@@ -334,26 +362,13 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateName(value!),
-                          focusNode: model.name,
-                          textInputAction: TextInputAction.next,
-                          controller: model.signupNameController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(fontSize: 18.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.account_box,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            hintText: "Name",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
+                        child: CustomTextField(
+                          iconData: Icons.person_2_sharp,
+                          hintText: 'Name',
+                          controller: signUpNameController,
+                          focusNode: signUpNameFocus,
+                          nextFocusNode: signUpEmailFocus,
+                          validator: Validator.validateName,
                         ),
                       ),
                       separator(),
@@ -361,25 +376,13 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          validator: (value) => Validator.validateEmail(value!),
-                          focusNode: model.email,
-                          textInputAction: TextInputAction.next,
-                          controller: model.signupEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.mail,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
+                        child: CustomTextField(
+                          iconData: Icons.mail,
+                          hintText: 'Email Address',
+                          controller: signUpEmailController,
+                          focusNode: signUpEmailFocus,
+                          nextFocusNode: signUpPasswordFocus,
+                          validator: Validator.validateEmail,
                         ),
                       ),
                       separator(),
@@ -387,37 +390,13 @@ class _AuthScreenState extends State<AuthScreen>
                         height: 13.h,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
-                        child: TextFormField(
-                          autovalidateMode: model.signupValidate,
-                          focusNode: model.password,
-                          textInputAction: TextInputAction.done,
-                          validator: (value) =>
-                              Validator.validatePassword(value!),
-                          controller: model.signupPasswordController,
-                          obscureText: model.obscureTextSignup,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.lock,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () => model.displayPasswordSignup(),
-                              icon: Icon(
-                                model.obscureTextSignup
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                size: 20.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontSize: hintsize - 2, color: hintColor),
-                          ),
-                        ),
+                        child: CustomTextField(
+                            iconData: Icons.lock,
+                            hintText: 'Password',
+                            controller: signUpPasswordController,
+                            focusNode: signUpPasswordFocus,
+                            showTrailing: true,
+                            validator: Validator.validatePassword),
                       ),
                     ])),
               ),
@@ -426,15 +405,32 @@ class _AuthScreenState extends State<AuthScreen>
               height: 3.5.h,
             ),
             Container(
-              // margin: EdgeInsets.only(top: 300.0),
-              decoration: new BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              ),
-              child: HikeButton(
-                onTap: () => model.nextSignup(),
-                text: 'SIGN UP',
-              ),
-            ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+                child: BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      child: HikeButton(
+                        onTap: () {
+                          if (_registerFormKey.currentState!.validate()) {
+                            authCubit.register(
+                                signUpNameController.text.trim(),
+                                signUpEmailController.text.trim(),
+                                signUpPasswordController.text.trim());
+                          } else {
+                            utils.showSnackBar(
+                                'Please complete all the fields', context);
+                          }
+                        },
+                        text: 'SIGN UP',
+                      ),
+                    );
+                  },
+                ))
           ],
         ),
       ),

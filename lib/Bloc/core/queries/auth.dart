@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class AuthQueries {
   String registerUser(String? name, String email, String? password) {
     return '''
@@ -43,7 +41,6 @@ class AuthQueries {
   }
 
   String fetchUserInfo() {
-    log('fetching user info');
     return '''
       query{
         me{
@@ -52,38 +49,9 @@ class AuthQueries {
           name
           groups{
             _id
-            title
-            shortcode
-            leader {
-              _id
-              name
-            }
-            members {
-              _id
-              name
-            }
-            beacons{
-            _id
-            }
           }
           beacons{
             _id
-            title
-            shortcode
-            leader {
-              _id
-              name
-            }
-            followers{
-              _id
-              name
-            }
-            location {
-              lat
-              lon
-            }
-            startsAt
-            expiresAt
           }
         }
       }

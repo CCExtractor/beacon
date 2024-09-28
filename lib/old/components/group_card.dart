@@ -1,38 +1,46 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:beacon/Bloc/domain/entities/group/group_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/utilities/constants.dart';
+import 'package:beacon/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeleton_text/skeleton_text.dart';
-
 import 'models/group/group.dart';
-import 'views/group_screen.dart';
 
 class GroupCustomWidgets {
   static final Color textColor = Color(0xFFAFAFAF);
 
-  static Widget getGroupCard(BuildContext context, Group group) {
+  static Widget getGroupCard(BuildContext context, GroupEntity group) {
     String noMembers = group.members!.length.toString();
     String noBeacons = group.beacons!.length.toString();
     return GestureDetector(
       onTap: () async {
         bool isMember = false;
         for (var i in group.members!) {
-          if (i.id == userConfig!.currentUser!.id) {
+          if (i!.id == userConfig!.currentUser!.id) {
             isMember = true;
           }
         }
-        if (group.leader!.id == userConfig!.currentUser!.id || isMember) {
-          navigationService!.pushScreen('/groupScreen',
-              arguments: GroupScreen(
-                group,
-              ));
+        if (group.leader!.id == localApi.userModel.id || isMember) {
+          // navigationService!.pushScreen('/groupScreen',
+          //     arguments: GroupScreen(
+          //       group,
+          //     ));
+
+          // AutoRouter.of(context).pushNamed('/group');
+
+          AutoRouter.of(context).push(GroupScreenRoute(group: group));
         } else {
           await databaseFunctions!.init();
           final Group? _group =
               await databaseFunctions!.joinGroup(group.shortcode);
           if (_group != null) {
-            navigationService!
-                .pushScreen('/groupScreen', arguments: GroupScreen(group));
+            // navigationService!
+            //     .pushScreen('/groupScreen', arguments: GroupScreen(group));
+            // AutoRouter.of(context).pushNamed('/group');
+            AutoRouter.of(context).push(GroupScreenRoute(group: group));
           }
           //Snackbar is displayed by joinBeacon itself on any error or trying to join expired beacon.
         }
@@ -67,9 +75,24 @@ class GroupCustomWidgets {
                   'Group has $noBeacons beacons ',
                   style: Style.commonTextStyle,
                 ),
-                SizedBox(height: 4.0),
-                Text('Passkey: ${group.shortcode}',
-                    style: Style.commonTextStyle),
+                // SizedBox(height: 4.0),
+                Row(
+                  children: [
+                    Text('Passkey: ${group.shortcode}',
+                        style: Style.commonTextStyle),
+                    IconButton(
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: group.shortcode.toString()));
+                          utils.showSnackBar('Shortcode copied!', context);
+                        },
+                        icon: Icon(
+                          Icons.copy,
+                          color: Colors.white,
+                          size: 15,
+                        ))
+                  ],
+                )
               ],
             ),
           ],

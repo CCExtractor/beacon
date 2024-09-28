@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:beacon/old/components/enums/view_state.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/old/components/models/beacon/beacon.dart';
 import 'package:beacon/old/components/view_model/base_view_model.dart';
-import 'package:beacon/old/components/views/hike_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/hike_screen.dart';
 import 'package:flutter/material.dart';
 
 class GroupViewModel extends BaseModel {
@@ -24,11 +25,13 @@ class GroupViewModel extends BaseModel {
   TextEditingController startsAtTime = new TextEditingController();
   String? enteredPasskey;
 
-  createHikeRoom(String? groupID, Function reloadList) async {
+  createHikeRoom(
+      String? groupID, Function reloadList, BuildContext context) async {
     FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyCreate.currentState!.validate()) {
-      navigationService!.pop();
+      // navigationService!.pop();
+      AutoRouter.of(context).maybePop();
       setState(ViewState.busy);
       validate = AutovalidateMode.disabled;
       databaseFunctions!.init();
@@ -64,7 +67,7 @@ class GroupViewModel extends BaseModel {
   }
 
   joinHikeRoom(Function reloadList) async {
-    FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
+    // FocusScope.of(navigationService!.navigatorKey.currentContext!).unfocus();
     validate = AutovalidateMode.always;
     if (formKeyJoin.currentState!.validate()) {
       setState(ViewState.busy);
@@ -78,8 +81,8 @@ class GroupViewModel extends BaseModel {
             .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!));
 
         if (hasStarted) {
-          navigationService!.pushScreen('/hikeScreen',
-              arguments: HikeScreen(beacon, isLeader: false));
+          // navigationService!.pushScreen('/hikeScreen',
+          //     arguments: HikeScreen(beacon, isLeader: false));
         } else {
           localNotif!.scheduleNotification(beacon);
           setState(ViewState.idle);
@@ -105,6 +108,6 @@ class GroupViewModel extends BaseModel {
     await hiveDb!.beaconsBox.clear();
     // setState(ViewState.idle);
     await localNotif!.deleteNotification();
-    navigationService!.removeAllAndPush('/auth', '/');
+    // navigationService!.removeAllAndPush('/auth', '/');
   }
 }

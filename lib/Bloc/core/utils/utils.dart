@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:beacon/old/components/utilities/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql/client.dart';
@@ -13,7 +14,7 @@ class Utils {
           message,
           style: TextStyle(color: Colors.black),
         ),
-        // backgroundColor: kLightBlue.withOpacity(0.8),
+        backgroundColor: kLightBlue.withOpacity(0.8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -40,7 +41,7 @@ class Utils {
   }
 
   Future<bool> checkInternetConnectivity() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
+    final connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi ||
