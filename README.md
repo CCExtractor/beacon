@@ -60,23 +60,23 @@ beacon/
 │   │   └── usecases/                   # Domain use cases
 │   ├── presentation/
 │   │   ├── auth/
-│   │   │   ├── cubit/                 # Authentication Cubit
-│   │   │   ├── widget/                # Authentication widgets
-│   │   │   └── screen/                # Authentication screens
+│   │   │   ├── cubit/                  # Authentication Cubit
+│   │   │   ├── widget/                 # Authentication widgets
+│   │   │   └── screen/                 # Authentication screens
 │   │   ├── home/
-│   │   │   ├── cubit/                 # Home Cubit
-│   │   │   ├── widget/                # Home widgets
-│   │   │   └── screen/                # Home screens
+│   │   │   ├── cubit/                  # Home Cubit
+│   │   │   ├── widget/                 # Home widgets
+│   │   │   └── screen/                 # Home screens
 │   │   ├── group/
-│   │   │   ├── cubit/                 # Group Cubit
-│   │   │   ├── widget/                # Group widgets
-│   │   │   └── screen/                # Group screens
+│   │   │   ├── cubit/                  # Group Cubit
+│   │   │   ├── widget/                 # Group widgets
+│   │   │   └── screen/                 # Group screens
 │   │   ├── hike/
-│   │   │   ├── cubit/                 # Hike Cubit
-│   │   │   ├── widget/                # Hike widgets
-│   │   │   └── screen/                # Hike screens
-│   │   ├── widgets/                   # Shared widgets used across all presentation folders
-│   │   └── splash_screen.dart         # Initial screen displayed while loading
+│   │   │   ├── cubit/                  # Hike Cubit
+│   │   │   ├── widget/                 # Hike widgets
+│   │   │   └── screen/                 # Hike screens
+│   │   ├── widgets/                    # Shared widgets used across all presentation folders
+│   │   └── splash_screen.dart          # Initial screen displayed while loading
 ├── main.dart                           # App entry point
 ├── theme/                              # Theme configurations
 ├── locator.dart                        # Dependency injection setup (using get_it)
@@ -86,6 +86,10 @@ beacon/
 ## Screenshots
 
 <img src="screenshots/1.jpg" width="24%" /> <img src="screenshots/2.jpg" width="24%"/> <img src="screenshots/3.jpg" width="24%"/> <img src="screenshots/4.jpg" width="24%"/>
+
+<img src="screenshots/5.png" width="24%" /> <img src="screenshots/6.png" width="24%"/> <img src="screenshots/7.png" width="24%"/> <img src="screenshots/8.png" width="24%"/>
+
+<img src="screenshots/9.png" width="24%" /> <img src="screenshots/10.png" width="24%"/> 
 
 ## Contributing
 
