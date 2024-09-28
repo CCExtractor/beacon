@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+*.env
 
 # IntelliJ related
 *.iml
@@ -44,3 +45,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Testing
+/coverage/
+
+# FVM Version Cache
+.fvm/
+.gitignore

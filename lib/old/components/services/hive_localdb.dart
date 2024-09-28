@@ -1,0 +1,57 @@
+import 'package:beacon/locator.dart';
+import 'package:beacon/old/components/models/beacon/beacon.dart';
+import 'package:beacon/old/components/models/landmarks/landmark.dart';
+import 'package:beacon/old/components/models/location/location.dart';
+import 'package:beacon/old/components/models/user/user_info.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+
+import '../models/group/group.dart';
+
+class HiveLocalDb {
+  late Box<User?> currentUserBox;
+  late Box<Beacon?> beaconsBox;
+  Box<Group>? groupsBox;
+
+  Future<void> init() async {
+    final appDocumentDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+    Hive
+      ..init(appDocumentDirectory.path)
+      ..registerAdapter(UserAdapter())
+      ..registerAdapter(BeaconAdapter())
+      ..registerAdapter(LocationAdapter())
+      ..registerAdapter(LandmarkAdapter())
+      ..registerAdapter(GroupAdapter());
+    currentUserBox = await Hive.openBox<User?>('currentUser');
+    beaconsBox = await Hive.openBox<Beacon?>('beacons');
+    groupsBox = await Hive.openBox<Group>('groups');
+  }
+
+  Future<void> saveUserInHive(User? currentUser) async {
+    final box = currentUserBox;
+    if (currentUserBox.containsKey('user')) {
+      currentUserBox.delete('user');
+    }
+    return await box.put('user', currentUser);
+  }
+
+  Future<void> putBeaconInBeaconBox(String? id, Beacon? beacon,
+      {bool fetchFromNetwork = false}) async {
+    if (beaconsBox.containsKey(id)) {
+      await beaconsBox.delete(id);
+    }
+    if (fetchFromNetwork) {
+      databaseFunctions!.init();
+      beacon = await databaseFunctions!.fetchBeaconInfo(id);
+    }
+    await beaconsBox.put(id, beacon);
+  }
+
+  List<Beacon?> getAllUserBeacons() {
+    final user = currentUserBox.get('user')!;
+    print("asd" + user.id!);
+    final userBeacons = beaconsBox.values.toList();
+    return userBeacons;
+  }
+}

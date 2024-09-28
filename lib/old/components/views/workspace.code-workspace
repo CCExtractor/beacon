@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../EnHike/images"
+		}
+	],
+"settings": {
+	"java.configuration.updateBuildConfiguration": "interactive"
+}
+}

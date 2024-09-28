@@ -1,11 +1,14 @@
-import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/splash_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:beacon/Bloc/domain/entities/group/group_entity.dart';
+import 'package:beacon/Bloc/presentation/screens/splash_screen.dart';
+import 'package:beacon/old/components/models/beacon/beacon.dart';
+import 'package:beacon/Bloc/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:beacon/utilities/constants.dart';
-import 'package:beacon/views/auth_screen.dart';
-import 'package:beacon/views/home.dart';
-import 'package:beacon/views/hike_screen.dart';
+import 'package:beacon/old/components/utilities/constants.dart';
+import 'package:beacon/Bloc/presentation/screens/auth_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/group_screen.dart';
+import 'package:beacon/Bloc/presentation/screens/hike_screen.dart';
+part 'router.gr.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -14,16 +17,37 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => const AuthScreen(key: Key('auth')));
     case Routes.mainScreen:
       return MaterialPageRoute(
-          builder: (context) => const MainScreen(key: Key('MainScreen')));
+          builder: (context) => HomeScreen(key: Key('MainScreen')));
     case Routes.hikeScreen:
-      HikeScreen arguments = settings.arguments;
+      HikeScreen? arguments = settings.arguments as HikeScreen?;
       return MaterialPageRoute(
           builder: (context) => HikeScreen(
-                arguments.beacon,
+                arguments!.beacon,
                 isLeader: arguments.isLeader,
+              ));
+    case Routes.groupScreen:
+      GroupScreen? arguments = settings.arguments as GroupScreen?;
+      return MaterialPageRoute(
+          builder: (context) => GroupScreen(
+                arguments!.group,
               ));
     default:
       return MaterialPageRoute(
           builder: (context) => const SplashScreen(key: Key('SplashScreen')));
   }
+}
+
+@AutoRouterConfig(replaceInRouteName: 'Route')
+class AppRouter extends _$AppRouter {
+  @override
+  List<AutoRoute> get routes => [
+        AutoRoute(page: SplashScreenRoute.page, initial: true, path: '/'),
+        AutoRoute(page: AuthScreenRoute.page, path: '/auth'),
+        AutoRoute(page: HomeScreenRoute.page, path: '/home'),
+        AutoRoute(
+          page: HikeScreenRoute.page,
+          path: '/hike',
+        ),
+        AutoRoute(page: GroupScreenRoute.page, path: '/group'),
+      ];
 }
