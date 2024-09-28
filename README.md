@@ -41,36 +41,55 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Project Structure
 
-This project follows MVVM architecture with following structure:
+This project follows Clean architecture with following structure:
 
 ```bash
-beacon/lib/
-├── components/                             # Shared Components such as dialog boxes, button, and other shared widgets
-├── enums/                                  # enum files
-|   └── view_state.dart                     # defines view states i.e Idle, Busy, Error
-├── models/                                 # model classes: group, beacon, location, landmark, user
-├── queries/                                # includes all graphql query strings
-├── services/                               # services
-|   ├── database_mutation_function.dart/    # Graphql Queries implementations
-|   ├── navigation_service.dart/            # All required navigation services
-|   └── ...                                 # all config files
-├── utilities/                              # Utilities that includes constants file
-├── views/                                  # Views/UI layer
-|  ├── auth_screen.dart
-|  ├── base_view.dart
-|  ├── hike_screen.dart
-|  ├── group_screen.dart
-|  ├── home.dart
-├── viewmodels/                             # Viewmodels layer
-├── splash_screen.dart                      # Very first screen displayed whilst data is loading
-├── router.dart                             # All routes to ease navigation
-├── locator.dart                            # dependency injection using get_it
-├── main.dart                               # <3 of the app
+beacon/
+├── lib/
+│   ├── config/                         # Configuration files
+│   ├── core/                           # Core application logic
+│   ├── data/
+│   │   ├── datasources/
+│   │   │   ├── local/                  # Local data sources
+│   │   │   └── remote/                 # Remote data sources
+│   │   ├── models/                     # Data models
+│   │   └── repositories/               # Data repositories
+│   ├── domain/
+│   │   ├── entities/                   # Domain entities
+│   │   ├── repositories/               # Domain repositories
+│   │   └── usecases/                   # Domain use cases
+│   ├── presentation/
+│   │   ├── auth/
+│   │   │   ├── cubit/                  # Authentication Cubit
+│   │   │   ├── widget/                 # Authentication widgets
+│   │   │   └── screen/                 # Authentication screens
+│   │   ├── home/
+│   │   │   ├── cubit/                  # Home Cubit
+│   │   │   ├── widget/                 # Home widgets
+│   │   │   └── screen/                 # Home screens
+│   │   ├── group/
+│   │   │   ├── cubit/                  # Group Cubit
+│   │   │   ├── widget/                 # Group widgets
+│   │   │   └── screen/                 # Group screens
+│   │   ├── hike/
+│   │   │   ├── cubit/                  # Hike Cubit
+│   │   │   ├── widget/                 # Hike widgets
+│   │   │   └── screen/                 # Hike screens
+│   │   ├── widgets/                    # Shared widgets used across all presentation folders
+│   │   └── splash_screen.dart          # Initial screen displayed while loading
+├── main.dart                           # App entry point
+├── theme/                              # Theme configurations
+├── locator.dart                        # Dependency injection setup (using get_it)
+├── router.dart                         # App navigation routes
 ```
 
 ## Screenshots
 
 <img src="screenshots/1.jpg" width="24%" /> <img src="screenshots/2.jpg" width="24%"/> <img src="screenshots/3.jpg" width="24%"/> <img src="screenshots/4.jpg" width="24%"/>
+
+<img src="screenshots/5.png" width="24%" /> <img src="screenshots/6.png" width="24%"/> <img src="screenshots/7.png" width="24%"/> <img src="screenshots/8.png" width="24%"/>
+
+<img src="screenshots/9.png" width="24%" /> <img src="screenshots/10.png" width="24%"/> 
 
 ## Contributing
 
