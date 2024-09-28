@@ -1,5 +1,5 @@
-import 'package:beacon/models/beacon/beacon.dart';
-import 'package:beacon/models/user/user_info.dart';
+import 'package:beacon/old/components/models/beacon/beacon.dart';
+import 'package:beacon/old/components/models/user/user_info.dart';
 import 'package:test/test.dart';
 
 void main() {

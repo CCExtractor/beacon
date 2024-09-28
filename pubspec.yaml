@@ -42,7 +42,20 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   uni_links: ^0.5.1
   data_connection_checker_nulls: ^0.0.2
-  flutter_geocoder_alternative: 
+  flutter_geocoder_alternative: any
+
+  # for routing
+  auto_route: ^8.1.1
+
+
+  # for state management
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.5
+
+
+
+
+
 
 dev_dependencies:
   build_runner: ^2.1.2 

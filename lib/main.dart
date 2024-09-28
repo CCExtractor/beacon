@@ -1,8 +1,8 @@
-import 'package:beacon/config/environment_config.dart';
+import 'package:beacon/Bloc/config/enviornment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/router.dart' as router;
-import 'package:beacon/view_model/base_view_model.dart';
-import 'package:beacon/views/base_view.dart';
+import 'package:beacon/old/components/view_model/base_view_model.dart';
+import 'package:beacon/old/components/views/base_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
@@ -16,6 +16,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   setupLocator();
+
   await localNotif!.initialize();
   await hiveDb!.init();
   runApp(
