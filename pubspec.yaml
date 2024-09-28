@@ -22,6 +22,7 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   flutter_spinkit: ^5.2.0
   fluttertoast: ^8.2.4
+  geolocator: any
   get_it: ^7.6.4 
   google_maps_flutter: ^2.5.3
   hive: ^2.2.3
