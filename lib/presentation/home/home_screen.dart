@@ -99,13 +99,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) async {
-          bool? popped = await _onPopHome(context);
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+  if (didPop) {
+    return;
+  }
+  
+  bool? popped = await _onPopHome(context);
+  if (popped == true) {
+    await SystemNavigator.pop();
+  }
+},
 
-          if (popped == true) {
-            await SystemNavigator.pop();
-          }
-        },
         child: BlocConsumer<HomeCubit, HomeState>(
           listener: (context, state) {
             if (state is LoadedHomeState) {
