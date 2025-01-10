@@ -441,7 +441,7 @@ class LocationCubit extends Cubit<LocationState> {
                       ))
                 ],
               ),
-              backgroundColor: kLightBlue.withOpacity(0.8),
+              backgroundColor: kLightBlue.withValues(alpha:0.8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
@@ -526,8 +526,8 @@ class LocationCubit extends Cubit<LocationState> {
         circleId: CircleId('rippleCircle$index'),
         center: locationToLatLng(user.location!),
         radius: radius < 0 ? 0 : radius,
-        fillColor: Colors.red.withOpacity((0.5).clamp(0.0, 1.0)),
-        strokeColor: Colors.red.withOpacity(0.5),
+        fillColor: Colors.red.withValues(alpha:(0.5).clamp(0.0, 1.0)),
+        strokeColor: Colors.red.withValues(alpha: .5),
         strokeWidth: 2,
       );
     });
@@ -752,7 +752,7 @@ class LocationCubit extends Cubit<LocationState> {
         radius: radius,
         strokeColor: Colors.blue,
         strokeWidth: 2,
-        fillColor: Colors.blue.withOpacity(0.1),
+        fillColor: Colors.blue.withValues(alpha:0.1),
       ));
     }
     emit(LoadedLocationState(

@@ -71,7 +71,7 @@ class _BeaconCardState extends State<BeaconCard> {
               '${widget.beacon.title} is now active! \nYou can join the hike',
               style: TextStyle(color: Colors.black),
             ),
-            backgroundColor: kLightBlue.withOpacity(0.8),
+            backgroundColor: kLightBlue.withValues(alpha: 0.8),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
