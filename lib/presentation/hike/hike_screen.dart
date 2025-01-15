@@ -42,7 +42,7 @@ class _HikeScreenState extends State<HikeScreen>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _hikeCubit.startHike(widget.beacon.id!, this, context);
-    SimplePip().setAutoPipMode(aspectRatio: [2, 3]);
+    SimplePip().setAutoPipMode(aspectRatio: (2, 3));
     super.initState();
   }
 
@@ -97,7 +97,7 @@ class _HikeScreenState extends State<HikeScreen>
                           ),
                           controller: _panelController,
                           maxHeight: 60.h,
-                          minHeight: isSmallsized ? 22.h : 18.h,
+                          minHeight: isSmallsized ? 22.h : 20.h,
                           panel: _SlidingPanelWidget(),
                           collapsed: _collapsedWidget(),
                           body: _mapScreen()),
@@ -212,7 +212,7 @@ class _HikeScreenState extends State<HikeScreen>
                       alignment: Alignment.center,
                       child: Container(
                         alignment: Alignment.center,
-                        height: 0.5.h,
+                        height: 0.8.h,
                         width: 18.w,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -233,6 +233,7 @@ class _HikeScreenState extends State<HikeScreen>
                     Gap(2),
                     Text('Beacon leader at: ${leaderAddress ?? '<>'}',
                         maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
