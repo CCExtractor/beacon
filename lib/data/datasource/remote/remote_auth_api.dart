@@ -202,9 +202,11 @@ class RemoteAuthApi {
     if (!isConnected) {
       return DataFailed('Beacon is trying to connect with internet...');
     }
-
-    final QueryResult result = await _authClient.mutate(
-        MutationOptions(document: gql(_authQueries.sendVerficationCode())));
+    final UserModel? user = await localApi.fetchUser();
+    final QueryResult result = await _authClient.mutate(MutationOptions(
+        document: gql(_authQueries.sendVerficationCode(
+      user!.email,
+    ))));
 
     if (result.data != null && result.isConcrete) {
       return DataSuccess(result.data!['sendVerificationCode'] as String);
@@ -218,11 +220,11 @@ class RemoteAuthApi {
     if (!isConnected) {
       return DataFailed('Beacon is trying to connect with internet...');
     }
-
+    final UserModel? user = await localApi.fetchUser();
     var authClient = await graphqlConfig.authClient();
 
     final QueryResult result = await authClient.mutate(MutationOptions(
-        document: gql(_authQueries.completeVerificationCode())));
+        document: gql(_authQueries.completeVerificationCode(user!.id))));
 
     if (result.data != null && result.isConcrete) {
       var user = UserModel.fromJson(result.data!['completeVerification']);

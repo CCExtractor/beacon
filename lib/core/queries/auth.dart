@@ -32,18 +32,20 @@ class AuthQueries {
     ''';
   }
 
-  String sendVerficationCode() {
+  String sendVerficationCode(String? email) {
     return '''
         mutation{
-          sendVerificationCode
+          sendVerificationCode(email: "$email")
         }
     ''';
   }
 
-  String completeVerificationCode() {
+  String completeVerificationCode(String? userId) {
     return '''
         mutation{
-           completeVerification{
+           completeVerification(
+                userId: "$userId"
+           ){
                _id
                email
                name
