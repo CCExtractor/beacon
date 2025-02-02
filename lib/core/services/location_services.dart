@@ -14,7 +14,9 @@ class LocationService {
   Position? get currentPosition => _currentPosition;
 
   Future<Position?> getCurrentLocation() async {
+    // ignore: unused_local_variable
     bool serviceEnabled;
+    // ignore: unused_local_variable
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
