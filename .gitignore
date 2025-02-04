@@ -9,6 +9,11 @@
 .history
 .svn/
 *.env
+.vscode
+/lib/firebase_options.dart
+/android/app/google-services.json
+/firebase.json
+
 
 # IntelliJ related
 *.iml
