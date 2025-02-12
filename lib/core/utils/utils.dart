@@ -29,7 +29,7 @@ class Utils {
             )
           ],
         ),
-        backgroundColor: kLightBlue.withOpacity(0.8),
+        backgroundColor: kLightBlue.withValues(alpha: 0.8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
