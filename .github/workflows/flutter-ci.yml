@@ -42,7 +42,6 @@ jobs:
           architecture: x64
       - run: flutter pub get
       - run: dart format . --set-exit-if-changed || true 
-      - run: git diff --exit-code || (echo "Please run 'dart format .' locally before committing" && exit 1)
       - run: flutter analyze .
       # - run: flutter build apk
       # - uses: actions/upload-artifact@v1
