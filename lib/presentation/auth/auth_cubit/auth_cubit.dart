@@ -94,4 +94,10 @@ class AuthCubit extends Cubit<AuthState> {
           error: 'Something went wrong please try again later!'));
     }
   }
+
+  void googleSignOut() async {
+    print('signing out');
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    await _googleSignIn.signOut();
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
+import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_state.dart';
 import 'package:beacon/presentation/group/widgets/create_join_dialog.dart';
@@ -99,9 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) async {
-          bool? popped = await _onPopHome(context);
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+          if (didPop) {
+            return;
+          }
 
+          bool? popped = await _onPopHome(context);
           if (popped == true) {
             await SystemNavigator.pop();
           }
@@ -172,6 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         onTap: () async {
                                           appRouter.replaceNamed('/auth');
                                           localApi.deleteUser();
+                                          context
+                                              .read<AuthCubit>()
+                                              .googleSignOut();
                                         },
                                         text: 'Yes',
                                         textSize: 18.0,
