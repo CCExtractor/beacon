@@ -69,12 +69,16 @@ class _AuthScreenState extends State<AuthScreen>
     final authCubit = BlocProvider.of<AuthCubit>(context);
     return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) async {
-          bool? popped = await onPopHome();
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+          if (didPop) {
+            return;
+          }
 
+          bool? popped = await onPopHome();
           if (popped == true) {
             await SystemNavigator.pop();
           }
+          return;
         },
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
