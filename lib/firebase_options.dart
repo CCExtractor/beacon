@@ -67,5 +67,4 @@ class DefaultFirebaseOptions {
     iosClientId: '',
     iosBundleId: '',
   );
-
 }
