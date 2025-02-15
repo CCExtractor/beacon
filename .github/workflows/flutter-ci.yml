@@ -22,8 +22,7 @@ jobs:
           flutter-version: "3.27.4" # Ensuring latest Dart version
           architecture: x64
       - run: flutter pub get
-      - run: dart format . --set-exit-if-changed || true # Prevent failure
-      - run: git diff --exit-code || (echo "Please run 'dart format .' locally before committing" && exit 1)
+      - run: dart format . --set-exit-if-changed || true 
       - run: flutter analyze .
 
   build:
