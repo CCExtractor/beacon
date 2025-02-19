@@ -1,6 +1,10 @@
 # Beacon
 [![Flutter CI](https://github.com/CCExtractor/beacon/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/CCExtractor/beacon/actions/workflows/flutter-ci.yml)
 
+## Official Documentation
+https://ccextractor-beacon-docs.netlify.app/
+
+
 ## About the Project
 
 This project is a flutter build native interface to ease the group travelling (or hiking). By using this, the group leader would be able to share his location with the entire crew, and in case if someone loses contact with the group, he can quickly get in the right place by following the beacon.
