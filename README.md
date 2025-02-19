@@ -4,6 +4,7 @@
 ## Official Documentation
 https://ccextractor-beacon-docs.netlify.app/
 
+The source code of documentation can be found here: https://github.com/CCExtractor/Beacon-Documentation
 
 ## About the Project
 
