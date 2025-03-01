@@ -632,7 +632,7 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<void> sendSOS(String id, BuildContext context) async {
     final dataState = await _hikeUseCase.sos(id);
-    
+
     if (dataState is DataSuccess) {
       log('data coming from sos: ${dataState.data.toString()}');
       // // Ensure _hikeMarkers is a Set of marker objects
