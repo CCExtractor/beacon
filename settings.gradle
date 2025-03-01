@@ -1,0 +1,4 @@
+
+include ':flutter_config'
+
+project(':flutter_config').projectDir = file('android/flutter_config')
