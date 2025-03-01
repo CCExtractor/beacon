@@ -1,13 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/config/router/router.dart';
-import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_cubit.dart';
 import 'package:beacon/presentation/auth/verification_cubit/verification_state.dart';
-import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 @RoutePage()
