@@ -49,7 +49,9 @@ class MyApp extends StatelessWidget {
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: 'Beacon',
-            theme: ThemeData(fontFamily: 'FuturaBold'),
+            theme: ThemeData(
+                fontFamily: 'Inter',
+                scaffoldBackgroundColor: Color(0xffFAFAFA)),
             routerConfig: appRouter.config(),
           ),
         ),

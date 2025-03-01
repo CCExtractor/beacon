@@ -63,10 +63,15 @@ class _AuthScreenState extends State<AuthScreen>
   Color leftColor = Colors.white;
   Color rightColor = Colors.black;
 
+  int _currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
+    print(
+      "_currentPage: $_currentPage",
+    );
     Size screensize = MediaQuery.of(context).size;
-    final authCubit = BlocProvider.of<AuthCubit>(context);
+
     return PopScope(
         canPop: false,
         onPopInvokedWithResult: (bool didPop, Object? result) async {
@@ -99,146 +104,41 @@ class _AuthScreenState extends State<AuthScreen>
                 ? LoadingScreen()
                 : Scaffold(
                     resizeToAvoidBottomInset: true,
-                    body: Container(
-                      width: screensize.width,
-                      height: screensize.height >= 775.0
-                          ? screensize.height
-                          : 775.0,
-                      child: Stack(
-                        children: <Widget>[
-                          CustomPaint(
-                            size: Size(screensize.width, screensize.height),
-                            painter: ShapePainter(),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            padding:
-                                EdgeInsets.only(top: screensize.height / 3.5),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20.0),
-                                  child:
-                                      _buildMenuBar(context, _pageController),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: PageView(
-                                    controller: _pageController,
-                                    onPageChanged: (i) {
-                                      if (i == 0) {
-                                        setState(() {
-                                          rightColor = Colors.black;
-                                          leftColor = Colors.white;
-                                        });
-                                        Future.delayed(
-                                            Duration(milliseconds: 500), () {
-                                          authCubit.requestFocus(
-                                              loginEmailFocus, context);
-                                        });
-                                      } else if (i == 1) {
-                                        setState(() {
-                                          rightColor = Colors.white;
-                                          leftColor = Colors.black;
-                                        });
-                                        Future.delayed(
-                                            Duration(milliseconds: 500), () {
-                                          authCubit.requestFocus(
-                                              signUpNameFocus, context);
-                                        });
-                                      }
-                                    },
-                                    children: <Widget>[
-                                      new ConstrainedBox(
-                                        constraints:
-                                            const BoxConstraints.expand(),
-                                        child: _buildSignIn(context),
-                                      ),
-                                      new ConstrainedBox(
-                                        constraints:
-                                            const BoxConstraints.expand(),
-                                        child: _buildSignUp(
-                                          context,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                    body: SafeArea(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screensize.width * 0.08),
+                        child: Column(
+                          children: [
+                            SizedBox(height: screensize.height * 0.15),
+                            Text(
+                              'welcome to',
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
-                          ),
-                        ],
+                            SizedBox(height: screensize.height * 0.01),
+                            Image.asset(
+                              'images/beacon_logo.png',
+                              width: screensize.width * 0.7,
+                              fit: BoxFit.contain,
+                            ),
+                            SizedBox(height: screensize.height * 0.08),
+                            Expanded(
+                              child: PageView(
+                                physics: const NeverScrollableScrollPhysics(),
+                                controller: _pageController,
+                                children: <Widget>[
+                                  _buildSignIn(context),
+                                  _buildSignUp(context),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
           },
         ));
-  }
-
-  Widget _buildMenuBar(BuildContext context, PageController pageController) {
-    Size screensize = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 13.5.w),
-      width: screensize.width,
-      height: screensize.height < 800 ? 7.5.h : 6.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-      ),
-      child: CustomPaint(
-        painter: TabIndicationPainter(pageController: pageController),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              child: TextButton(
-                style: ButtonStyle(
-                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                ),
-                //highlightColor: Colors.white,
-                onPressed: () {
-                  pageController.animateToPage(0,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.decelerate);
-                  leftColor = Colors.white;
-                  rightColor = Colors.black;
-                  setState(() {});
-                },
-                child: Text(
-                  "Existing",
-                  style: TextStyle(
-                    color: leftColor,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                style: ButtonStyle(
-                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                ),
-                onPressed: () {
-                  pageController.animateToPage(1,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.decelerate);
-                  rightColor = Colors.white;
-                  leftColor = Colors.black;
-                  setState(() {});
-                },
-                child: Text(
-                  "New",
-                  style: TextStyle(
-                    color: rightColor,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   GlobalKey<FormState> _signInFormKey = GlobalKey<FormState>();
@@ -260,63 +160,47 @@ class _AuthScreenState extends State<AuthScreen>
     Size screensize = MediaQuery.of(context).size;
 
     final authCubit = BlocProvider.of<AuthCubit>(context);
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
-        width: screensize.width,
+    return Container(
+      width: screensize.width,
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Card(
-              elevation: 2.0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Form(
-                key: _signInFormKey,
-                child: Container(
-                  width: screensize.width - 70,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: CustomTextField(
-                          iconData: Icons.email,
-                          hintText: 'Email Address',
-                          controller: loginEmailController,
-                          focusNode: loginEmailFocus,
-                          nextFocusNode: loginPasswordFocus,
-                          validator: Validator.validateEmail,
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: CustomTextField(
-                            iconData: Icons.lock,
-                            hintText: 'Password',
-                            controller: loginPasswordController,
-                            focusNode: loginPasswordFocus,
-                            showTrailing: true,
-                            validator: Validator.validatePassword),
-                      ),
-                    ],
-                  ),
+            Form(
+              key: _signInFormKey,
+              child: Container(
+                width: screensize.width - 70,
+                child: Column(
+                  children: <Widget>[
+                    CustomTextField(
+                      iconData: Icons.email,
+                      hintText: 'Email Address',
+                      controller: loginEmailController,
+                      focusNode: loginEmailFocus,
+                      nextFocusNode: loginPasswordFocus,
+                      validator: Validator.validateEmail,
+                    ),
+                    SizedBox(
+                      height: 2.5.h,
+                    ),
+                    CustomTextField(
+                        iconData: Icons.lock,
+                        hintText: 'Password',
+                        controller: loginPasswordController,
+                        focusNode: loginPasswordFocus,
+                        showTrailing: true,
+                        validator: Validator.validatePassword),
+                  ],
                 ),
               ),
             ),
             SizedBox(
-              height: 3.5.h,
+              height: 2.5.h,
             ),
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
-                return HikeButton(
-                  onTap: () {
+                return ElevatedButton(
+                  onPressed: () {
                     if (_signInFormKey.currentState!.validate()) {
                       authCubit.login(
                         loginEmailController.text.trim(),
@@ -327,46 +211,23 @@ class _AuthScreenState extends State<AuthScreen>
                           'Please complete all the fields', context);
                     }
                   },
-                  text: 'LOGIN',
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      minimumSize: Size(screensize.width - 70, 45)),
+                  child: const Text(
+                    'Continue with Email',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
                 );
               },
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15.0, bottom: 15.0),
-              child: Text(
-                "Or",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                ),
-              ),
-            ),
-            HikeButton(
-              onTap: () {
-                context.read<AuthCubit>().googleSignIn();
-              },
-              text: '',
-              widget: Container(
-                width: 110,
-                child: Row(
-                  children: [
-                    Image(
-                      image: AssetImage(
-                        'images/google.png',
-                      ),
-                      height: 30,
-                    ),
-                    Spacer(),
-                    Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 17, color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-              buttonColor: kYellow,
-            ),
+            _switchPageHelper(),
           ],
         ),
       ),
@@ -376,68 +237,49 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildSignUp(BuildContext context) {
     final authCubit = BlocProvider.of<AuthCubit>(context);
     Size screensize = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(top: 3.h, left: 8.5.w, right: 8.5.w),
+    return Container(
+      width: screensize.width,
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Card(
-              elevation: 2.0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Form(
-                key: _registerFormKey,
-                child: Container(
-                    width: screensize.width - 70,
-                    // height: 280.0,
-                    child: Column(children: <Widget>[
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: CustomTextField(
-                          iconData: Icons.person_2_sharp,
-                          hintText: 'Name',
-                          controller: signUpNameController,
-                          focusNode: signUpNameFocus,
-                          nextFocusNode: signUpEmailFocus,
-                          validator: Validator.validateName,
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: CustomTextField(
-                          iconData: Icons.mail,
-                          hintText: 'Email Address',
-                          controller: signUpEmailController,
-                          focusNode: signUpEmailFocus,
-                          nextFocusNode: signUpPasswordFocus,
-                          validator: Validator.validateEmail,
-                        ),
-                      ),
-                      separator(),
-                      Container(
-                        height: 13.h,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        child: CustomTextField(
-                            iconData: Icons.lock,
-                            hintText: 'Password',
-                            controller: signUpPasswordController,
-                            focusNode: signUpPasswordFocus,
-                            showTrailing: true,
-                            validator: Validator.validatePassword),
-                      ),
-                    ])),
-              ),
+            Form(
+              key: _registerFormKey,
+              child: Container(
+                  width: screensize.width - 70,
+                  child: Column(children: <Widget>[
+                    CustomTextField(
+                      iconData: Icons.person_2_sharp,
+                      hintText: 'Name',
+                      controller: signUpNameController,
+                      focusNode: signUpNameFocus,
+                      nextFocusNode: signUpEmailFocus,
+                      validator: Validator.validateName,
+                    ),
+                    SizedBox(
+                      height: 1.2.h,
+                    ),
+                    CustomTextField(
+                      iconData: Icons.mail,
+                      hintText: 'Email Address',
+                      controller: signUpEmailController,
+                      focusNode: signUpEmailFocus,
+                      nextFocusNode: signUpPasswordFocus,
+                      validator: Validator.validateEmail,
+                    ),
+                    SizedBox(
+                      height: 1.2.h,
+                    ),
+                    CustomTextField(
+                        iconData: Icons.lock,
+                        hintText: 'Password',
+                        controller: signUpPasswordController,
+                        focusNode: signUpPasswordFocus,
+                        showTrailing: true,
+                        validator: Validator.validatePassword),
+                  ])),
             ),
             SizedBox(
-              height: 3.5.h,
+              height: 1.2.h,
             ),
             Container(
                 decoration: BoxDecoration(
@@ -445,38 +287,129 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
                 child: BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      child: HikeButton(
-                        onTap: () {
-                          if (_registerFormKey.currentState!.validate()) {
-                            authCubit.register(
-                                signUpNameController.text.trim(),
-                                signUpEmailController.text.trim(),
-                                signUpPasswordController.text.trim());
-                          } else {
-                            utils.showSnackBar(
-                                'Please complete all the fields', context);
-                          }
-                        },
-                        text: 'SIGN UP',
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (_registerFormKey.currentState!.validate()) {
+                          authCubit.register(
+                              signUpNameController.text.trim(),
+                              signUpEmailController.text.trim(),
+                              signUpPasswordController.text.trim());
+                        } else {
+                          utils.showSnackBar(
+                              'Please complete all the fields', context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          minimumSize: Size(screensize.width - 70, 45)),
+                      child: const Text(
+                        'Continue with Email',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                       ),
                     );
                   },
-                ))
+                )),
+            _switchPageHelper(),
           ],
         ),
       ),
     );
   }
 
-  Widget separator() {
-    return Container(
-      width: 62.w,
-      height: 0.2.h,
-      color: Colors.grey[400],
+  Widget _switchPageHelper() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _currentPage == 0
+                  ? 'Don\'t have an account?'
+                  : 'Already have an account?',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                _pageController.animateToPage(
+                  _currentPage == 0 ? 1 : 0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+
+                setState(() {
+                  _currentPage == 0 ? _currentPage = 1 : _currentPage = 0;
+                });
+              },
+              child: Text(
+                _currentPage == 0 ? 'Sign up' : 'Sign in',
+                style: TextStyle(
+                  color: Color(0xFF6A1B9A),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 1.h),
+        SizedBox(
+          width: 200,
+          child: Row(
+            children: const [
+              Expanded(
+                child: Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'or',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 4.h),
+        OutlinedButton(
+          onPressed: () {
+            context.read<AuthCubit>().googleSignIn();
+          },
+          style: OutlinedButton.styleFrom(
+              minimumSize: const Size(56, 56),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              backgroundColor: Colors.black12,
+              padding: EdgeInsets.zero,
+              side: BorderSide.none),
+          child: Image.asset(
+            'images/google.png',
+            height: 24,
+            width: 24,
+          ),
+        ),
+      ],
     );
   }
 }
