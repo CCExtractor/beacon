@@ -45,7 +45,7 @@ dependencies:
   data_connection_checker_nulls: ^0.0.2
   flutter_geocoder_alternative: any
   gap: ^3.0.1
-
+  lottie:
   # routing
   auto_route: ^8.1.1
 
@@ -89,8 +89,17 @@ flutter:
 
   assets:
     - images/
+    - animations/
 
   fonts:
-    - family: FuturaBold
+    - family: Inter
       fonts:
-        - asset: fonts/futura_bold.otf
+        - asset: fonts/Inter-bold.ttf
+        - asset: fonts/Inter-black.ttf
+        - asset: fonts/Inter-ExtraBold.ttf
+        - asset: fonts/Inter-ExtraLight.ttf
+        - asset: fonts/Inter-Light.ttf
+        - asset: fonts/Inter-Medium.ttf
+        - asset: fonts/Inter-Regular.ttf
+        - asset: fonts/Inter-SemiBold.ttf
+        - asset: fonts/Inter-Thin.ttf
