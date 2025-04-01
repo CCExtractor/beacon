@@ -200,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             width: 45.w,
                             child: HikeButton(
-                              buttonWidth: homebwidth - 10,
-                              buttonHeight: homebheight - 2,
+                              buttonWidth: homebwidth ,
+                              buttonHeight: homebheight - homebheight / 3,
                               text: 'Create Group',
                               textColor: Colors.white,
                               borderColor: Colors.white,
@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 45.w,
                             child: HikeButton(
                               buttonWidth: homebwidth,
-                              buttonHeight: homebheight - 2,
+                              buttonHeight: homebheight - homebheight / 3,
                               text: 'Join a Group',
                               textColor: kYellow,
                               borderColor: kYellow,
