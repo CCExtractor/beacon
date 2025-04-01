@@ -38,6 +38,7 @@ class HikeButton extends StatelessWidget {
             Text(
               text!,
               style: TextStyle(color: textColor, fontSize: textSize),
+              
             ),
       ),
       onPressed: onTap as void Function()?,
