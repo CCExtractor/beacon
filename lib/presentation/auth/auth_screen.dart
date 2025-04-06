@@ -27,16 +27,16 @@ class _AuthScreenState extends State<AuthScreen>
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(10.sp), // Responsive radius
         ),
-        contentPadding: EdgeInsets.all(25.0),
+        contentPadding: EdgeInsets.all(25.sp), // Responsive padding
         title: Text(
           'Confirm Exit',
-          style: TextStyle(fontSize: 25, color: kYellow),
+          style: TextStyle(fontSize: 25.sp, color: kYellow), // Responsive font
         ),
         content: Text(
           'Do you really want to exit?',
-          style: TextStyle(fontSize: 18, color: kBlack),
+          style: TextStyle(fontSize: 18.sp, color: kBlack), // Responsive font
         ),
         actions: <Widget>[
           HikeButton(
@@ -58,16 +58,10 @@ class _AuthScreenState extends State<AuthScreen>
 
   PageController _pageController = PageController();
 
-  Color leftColor = Colors.white;
-  Color rightColor = Colors.black;
-
   int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
-    print(
-      "_currentPage: $_currentPage",
-    );
     Size screensize = MediaQuery.of(context).size;
 
     return PopScope(
@@ -94,12 +88,12 @@ class _AuthScreenState extends State<AuthScreen>
               context.read<AuthCubit>().navigate();
             } else if (state is AuthErrorState) {
               utils.showSnackBar(state.error!, context,
-                  duration: Duration(seconds: 2));
+                  duration: const Duration(seconds: 2));
             }
           },
           builder: (context, state) {
             return state is AuthLoadingState
-                ? LoadingScreen()
+                ? const LoadingScreen()
                 : Scaffold(
                     resizeToAvoidBottomInset: true,
                     body: SafeArea(
@@ -205,21 +199,20 @@ class _AuthScreenState extends State<AuthScreen>
                         loginPasswordController.text.trim(),
                       );
                     } else {
-                      utils.showSnackBar(
-                          'Please complete all the fields', context);
+                      utils.showSnackBar('Please complete all the fields', context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.teal,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.sp), // Responsive radius
                       ),
                       minimumSize: Size(screensize.width - 70, 45)),
-                  child: const Text(
+                  child: Text(
                     'Continue with Email',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 16.sp, // Responsive font
                     ),
                   ),
                 );
@@ -280,7 +273,7 @@ class _AuthScreenState extends State<AuthScreen>
               height: 1.2.h,
             ),
             Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration( // Add const
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 ),
                 child: BlocBuilder<AuthCubit, AuthState>(
@@ -293,21 +286,20 @@ class _AuthScreenState extends State<AuthScreen>
                               signUpEmailController.text.trim(),
                               signUpPasswordController.text.trim());
                         } else {
-                          utils.showSnackBar(
-                              'Please complete all the fields', context);
+                          utils.showSnackBar('Please complete all the fields', context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(14.sp), // Responsive radius
                           ),
                           minimumSize: Size(screensize.width - 70, 45)),
-                      child: const Text(
+                      child: Text(
                         'Continue with Email',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          fontSize: 16.sp, // Responsive font
                         ),
                       ),
                     );
@@ -332,7 +324,7 @@ class _AuthScreenState extends State<AuthScreen>
                   : 'Already have an account?',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 14,
+                fontSize: 14.sp, // Responsive font
               ),
             ),
             TextButton(
@@ -350,9 +342,9 @@ class _AuthScreenState extends State<AuthScreen>
               child: Text(
                 _currentPage == 0 ? 'Sign up' : 'Sign in',
                 style: TextStyle(
-                  color: Color(0xFF6A1B9A),
+                  color: const Color(0xFF6A1B9A),
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 14.sp, // Responsive font
                 ),
               ),
             ),
@@ -362,24 +354,24 @@ class _AuthScreenState extends State<AuthScreen>
         SizedBox(
           width: 200,
           child: Row(
-            children: const [
-              Expanded(
+            children: [
+              const Expanded( // Add const
                 child: Divider(
                   color: Colors.grey,
                   thickness: 1,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 8.sp), // Responsive padding
                 child: Text(
                   'or',
                   style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 14,
+                    fontSize: 14.sp, // Responsive font
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded( // Add const
                 child: Divider(
                   color: Colors.grey,
                   thickness: 1,
