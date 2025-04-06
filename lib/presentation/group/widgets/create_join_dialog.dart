@@ -21,7 +21,6 @@ class CreateJoinGroupDialog {
   static Future createGroupDialog(
     BuildContext context,
   ) {
-    bool isSmallSized = 100.h < 800;
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -31,61 +30,60 @@ class CreateJoinGroupDialog {
         child: SingleChildScrollView(
           child: Form(
             key: _groupKey,
-            child: Container(
-              height: isSmallSized ? 30.h : 25.h,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: isSmallSized ? 12.h : 10.h,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: TextFormField(
-                          controller: _groupNameController,
-                          style: TextStyle(fontSize: 22.0),
-                          validator: (value) =>
-                              Validator.validateBeaconTitle(value!),
-                          onChanged: (name) {},
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter Title Here',
-                              labelStyle: TextStyle(
-                                  fontSize: labelsize, color: kYellow),
-                              hintStyle: TextStyle(
-                                  fontSize: hintsize, color: hintColor),
-                              labelText: 'Title',
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none),
-                        ),
-                      ),
-                      color: kLightBlue,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(1.h),
+                    decoration: BoxDecoration(
+                      color: kLightBlue, 
+                      borderRadius: BorderRadius.circular(8)
                     ),
-                    SizedBox(
-                      height: 2.h,
+                    child: TextFormField(
+                      controller: _groupNameController,
+                      style: TextStyle(fontSize: 22.0),
+                      validator: (value) =>
+                          Validator.validateBeaconTitle(value!),
+                      onChanged: (name) {},
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter Title Here',
+                          labelStyle: TextStyle(
+                              fontSize: labelsize, color: kYellow),
+                          hintStyle: TextStyle(
+                              fontSize: hintsize, color: hintColor),
+                          labelText: 'Title',
+                          alignLabelWithHint: true,
+                          floatingLabelBehavior:
+                              FloatingLabelBehavior.always,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none),
                     ),
-                    Flexible(
-                      flex: 2,
-                      child: HikeButton(
-                          text: 'Create Group',
-                          textSize: 18.0,
-                          textColor: Colors.white,
-                          buttonColor: kYellow,
-                          onTap: () {
-                            if (!_groupKey.currentState!.validate()) return;
-                            AutoRouter.of(context).maybePop();
-                            context
-                                .read<HomeCubit>()
-                                .createGroup(_groupNameController.text.trim());
-                            _groupNameController.clear();
-                          }),
-                    ),
-                  ],
-                ),
+                    color: kLightBlue,
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: HikeButton(
+                        text: 'Create Group',
+                        textSize: 18.0,
+                        textColor: Colors.white,
+                        buttonColor: kYellow,
+                        onTap: () {
+                          if (!_groupKey.currentState!.validate()) return;
+                          AutoRouter.of(context).maybePop();
+                          context
+                              .read<HomeCubit>()
+                              .createGroup(_groupNameController.text.trim());
+                          _groupNameController.clear();
+                        }),
+                  ),
+                ],
               ),
             ),
           ),
@@ -100,7 +98,7 @@ class CreateJoinGroupDialog {
       TextEditingController();
 
   static Future joinGroupDialog(BuildContext context) {
-    bool isSmallSized = MediaQuery.of(context).size.height < 800;
+    
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -109,61 +107,60 @@ class CreateJoinGroupDialog {
         ),
         child: Form(
           key: _joinGroupKey,
-          child: Container(
-            height: isSmallSized ? 30.h : 25.h,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: Column(
-                children: [
-                  Container(
-                    height: isSmallSized ? 12.h : 10.h,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextFormField(
-                        controller: _joinGroupController,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
-                        style: TextStyle(fontSize: 22.0),
-                        validator: (value) => Validator.validatePasskey(value!),
-                        onChanged: (value) {
-                          _joinGroupController.text = value.toUpperCase();
-                        },
-                        decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          hintText: 'Enter Group Code Here',
-                          hintStyle:
-                              TextStyle(fontSize: hintsize, color: hintColor),
-                          labelText: 'Code',
-                          labelStyle:
-                              TextStyle(fontSize: labelsize, color: kYellow),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    color: kLightBlue,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(1.h),
+                  decoration: BoxDecoration(
+                    color: kLightBlue, 
+                    borderRadius: BorderRadius.circular(8)
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Flexible(
-                    child: HikeButton(
-                      text: 'Join Group',
-                      textSize: 18.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
-                      onTap: () {
-                        if (!_joinGroupKey.currentState!.validate()) return;
-                        appRouter.maybePop();
-                        context
-                            .read<HomeCubit>()
-                            .joinGroup(_joinGroupController.text.trim());
-                        _joinGroupController.clear();
-                      },
+                  child: TextFormField(
+                    controller: _joinGroupController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    style: TextStyle(fontSize: 22.0),
+                    validator: (value) => Validator.validatePasskey(value!),
+                    onChanged: (value) {
+                      _joinGroupController.text = value.toUpperCase();
+                    },
+                    decoration: InputDecoration(
+                      alignLabelWithHint: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      hintText: 'Enter Group Code Here',
+                      hintStyle:
+                          TextStyle(fontSize: hintsize, color: hintColor),
+                      labelText: 'Code',
+                      labelStyle:
+                          TextStyle(fontSize: labelsize, color: kYellow),
+                      border: InputBorder.none,
                     ),
                   ),
-                ],
-              ),
+                  color: kLightBlue,
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Flexible(
+                  child: HikeButton(
+                    text: 'Join Group',
+                    textSize: 18.0,
+                    textColor: Colors.white,
+                    buttonColor: kYellow,
+                    onTap: () {
+                      if (!_joinGroupKey.currentState!.validate()) return;
+                      appRouter.maybePop();
+                      context
+                          .read<HomeCubit>()
+                          .joinGroup(_joinGroupController.text.trim());
+                      _joinGroupController.clear();
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
