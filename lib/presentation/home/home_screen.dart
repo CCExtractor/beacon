@@ -135,6 +135,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     //   size: Size(100.w, 100.h),
                     //   painter: DrawCircle(),
                     // ),
+                    if (localApi.userModel.isGuest == true) 
+                      Align(
+                        alignment: Alignment(0.7, -0.8),
+                        child: FloatingActionButton(
+                          onPressed: () => appRouter.pushNamed('/auth'),
+                          backgroundColor: kYellow,
+                          child: Icon(Icons.login, color: Colors.white),
+                        ),
+                      ),
                     Align(
                       alignment: Alignment(0.9, -0.8),
                       child: FloatingActionButton(
