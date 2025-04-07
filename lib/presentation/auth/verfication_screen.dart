@@ -133,25 +133,32 @@ class _VerificationScreenState extends State<VerificationScreen> {
               ),
               SizedBox(height: 6.h),
               // Confirm button
-              BlocBuilder<VerificationCubit, OTPVerificationState>(
+              BlocConsumer<VerificationCubit, OTPVerificationState>(
+                listener: (context, state) {
+                  if (state is OTPVerifiedState) {
+                    appRouter.replaceNamed('/home');
+                  } else if (state is OTPFailureState) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Verification failed. Please try again.'
+                        )
+                      )
+                    );
+                  }
+                },
                 builder: (context, state) {
                   return Container(
                     width: double.infinity,
                     height: 6.h,
                     child: ElevatedButton(
                       onPressed: state is OTPSentState
-                          ? () async {
+                          ? () {
                               if (_otpCode == state.otp) {
-                                await locator<VerificationCubit>()
-                                    .completeVerification();
-                                if (state is OTPVerifiedState) {
-                                  appRouter.push(VerificationScreenRoute());
-                                }
+                                locator<VerificationCubit>().completeVerification();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Please enter valid OTP'),
-                                  ),
+                                  const SnackBar(content: Text('Please enter valid OTP')),
                                 );
                               }
                             }
@@ -162,7 +169,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Confirm',
                         style: TextStyle(
                           color: Colors.black,
