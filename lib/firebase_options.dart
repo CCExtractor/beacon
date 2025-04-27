@@ -51,20 +51,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: '',
-    appId: '1:724090909650:android:33a605e98b134abe8f8e0b',
-    messagingSenderId: '724090909650',
-    projectId: 'beacon-b75bf',
-    storageBucket: 'beacon-b75bf.firebasestorage.app',
+    appId: '',
+    messagingSenderId: '',
+    projectId: '',
+    storageBucket: '',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: '',
-    appId: '1:724090909650:ios:7dfc01703caf03d48f8e0b',
-    messagingSenderId: '724090909650',
-    projectId: 'beacon-b75bf',
-    storageBucket: 'beacon-b75bf.firebasestorage.app',
+    appId: '',
+    messagingSenderId: '',
+    projectId: '',
+    storageBucket: '',
     androidClientId: '',
     iosClientId: '',
-    iosBundleId: 'com.ccextractor.beaconmobile',
+    iosBundleId: '',
   );
 }
