@@ -3,12 +3,10 @@ import 'package:beacon/core/utils/validators.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -18,75 +16,92 @@ class CreateJoinGroupDialog {
   static final TextEditingController _groupNameController =
       TextEditingController();
 
-  static Future createGroupDialog(
-    BuildContext context,
-  ) {
-    bool isSmallSized = 100.h < 800;
+  static Future createGroupDialog(BuildContext context) {
+    // Use MediaQuery instead of responsive height for more consistent sizing
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 800;
+
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        child: SingleChildScrollView(
+        child: Container(
+          width: size.width * 0.85, // Set a reasonable width
+          height: isSmallScreen ? size.height * 0.3 : size.height * 0.25,
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: _groupKey,
-            child: Container(
-              height: isSmallSized ? 30.h : 25.h,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: isSmallSized ? 12.h : 10.h,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: TextFormField(
-                          controller: _groupNameController,
-                          style: TextStyle(fontSize: 22.0),
-                          validator: (value) =>
-                              Validator.validateBeaconTitle(value!),
-                          onChanged: (name) {},
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter Title Here',
-                              labelStyle: TextStyle(
-                                  fontSize: labelsize, color: kYellow),
-                              hintStyle: TextStyle(
-                                  fontSize: hintsize, color: hintColor),
-                              labelText: 'Title',
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none),
-                        ),
-                      ),
-                      color: kLightBlue,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: HikeButton(
-                          text: 'Create Group',
-                          textSize: 18.0,
-                          textColor: Colors.white,
-                          buttonColor: kYellow,
-                          onTap: () {
-                            if (!_groupKey.currentState!.validate()) return;
-                            AutoRouter.of(context).maybePop();
-                            context
-                                .read<HomeCubit>()
-                                .createGroup(_groupNameController.text.trim());
-                            _groupNameController.clear();
-                          }),
-                    ),
-                  ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Create New Group',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: kLightBlue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: TextFormField(
+                    controller: _groupNameController,
+                    style: TextStyle(fontSize: 18.0),
+                    validator: (value) => Validator.validateBeaconTitle(value!),
+                    decoration: InputDecoration(
+                      hintText: 'Enter Group Title',
+                      labelText: 'Title',
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      hintStyle:
+                          TextStyle(fontSize: 16, color: Colors.grey[400]),
+                      alignLabelWithHint: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (!_groupKey.currentState!.validate()) return;
+                    AutoRouter.of(context).maybePop();
+                    context
+                        .read<HomeCubit>()
+                        .createGroup(_groupNameController.text.trim());
+                    _groupNameController.clear();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: Size(160, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                    'Create Group',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -100,70 +115,95 @@ class CreateJoinGroupDialog {
       TextEditingController();
 
   static Future joinGroupDialog(BuildContext context) {
-    bool isSmallSized = MediaQuery.of(context).size.height < 800;
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 800;
+
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Form(
-          key: _joinGroupKey,
-          child: Container(
-            height: isSmallSized ? 30.h : 25.h,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: Column(
-                children: [
-                  Container(
-                    height: isSmallSized ? 12.h : 10.h,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextFormField(
-                        controller: _joinGroupController,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
-                        style: TextStyle(fontSize: 22.0),
-                        validator: (value) => Validator.validatePasskey(value!),
-                        onChanged: (value) {
-                          _joinGroupController.text = value.toUpperCase();
-                        },
-                        decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          hintText: 'Enter Group Code Here',
-                          hintStyle:
-                              TextStyle(fontSize: hintsize, color: hintColor),
-                          labelText: 'Code',
-                          labelStyle:
-                              TextStyle(fontSize: labelsize, color: kYellow),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
+        child: Container(
+          width: size.width * 0.85,
+          height: isSmallScreen ? size.height * 0.3 : size.height * 0.25,
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _joinGroupKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Join Group',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
                     color: kLightBlue,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Flexible(
-                    child: HikeButton(
-                      text: 'Join Group',
-                      textSize: 18.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
-                      onTap: () {
-                        if (!_joinGroupKey.currentState!.validate()) return;
-                        appRouter.maybePop();
-                        context
-                            .read<HomeCubit>()
-                            .joinGroup(_joinGroupController.text.trim());
-                        _joinGroupController.clear();
-                      },
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: TextFormField(
+                    controller: _joinGroupController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    style: TextStyle(fontSize: 18.0),
+                    validator: (value) => Validator.validatePasskey(value!),
+                    onChanged: (value) {
+                      _joinGroupController.text = value.toUpperCase();
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter Group Code Here',
+                      labelText: 'Code',
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      hintStyle:
+                          TextStyle(fontSize: 16, color: Colors.grey[400]),
+                      alignLabelWithHint: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (!_joinGroupKey.currentState!.validate()) return;
+                    appRouter.maybePop();
+                    context
+                        .read<HomeCubit>()
+                        .joinGroup(_joinGroupController.text.trim());
+                    _joinGroupController.clear();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: Size(160, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                    'Join Group',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -180,47 +220,74 @@ Duration? duration = Duration(minutes: 5);
 
 class CreateJoinBeaconDialog {
   static Future createHikeDialog(BuildContext context, String groupId) {
-    bool isSmallSized = 100.h < 800;
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 800;
+
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         child: Container(
-          height: isSmallSized ? 30.h : 25.h,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
+          width: size.width * 0.85,
+          height: isSmallScreen ? size.height * 0.3 : size.height * 0.25,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Gap(15),
               Text(
-                'Create hike',
-                textAlign: TextAlign.center,
+                'Create Hike',
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Gap(20),
-              HikeButton(
-                text: 'Start Hike',
-                buttonWidth: 2,
-                buttonHeight: 16,
-                buttonColor: kYellow,
-                onTap: () {
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
                   Navigator.of(context).pop();
                   createHikeBox(context, groupId, true);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  minimumSize: Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+                child: Text(
+                  'Start Hike',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              Gap(10),
-              HikeButton(
-                text: 'Schedule Hike',
-                buttonWidth: 5,
-                buttonHeight: 16,
-                buttonColor: kYellow,
-                onTap: () {
+              const SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: () {
                   Navigator.of(context).pop();
                   createHikeBox(context, groupId, false);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  minimumSize: Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+                child: Text(
+                  'Schedule Hike',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -252,8 +319,9 @@ class CreateJoinBeaconDialog {
       builder: (context) => GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Dialog(
+          backgroundColor: Colors.grey[100],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(16.0),
           ),
           child: SingleChildScrollView(
             child: Form(
@@ -268,11 +336,12 @@ class CreateJoinBeaconDialog {
                         : 65.h,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Column(
                     children: [
                       Container(
                         height: isSmallSized ? 14.h : 12.h,
+
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: TextFormField(
@@ -287,10 +356,15 @@ class CreateJoinBeaconDialog {
                               _titleNode.unfocus();
                             },
                             decoration: InputDecoration(
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
                                 border: InputBorder.none,
                                 hintText: 'Enter Title Here',
                                 labelStyle: TextStyle(
-                                    fontSize: labelsize, color: kYellow),
+                                    fontSize: labelsize,
+                                    color: Theme.of(context).primaryColor),
                                 hintStyle: TextStyle(
                                     fontSize: hintsize, color: hintColor),
                                 labelText: 'Title',
@@ -301,9 +375,9 @@ class CreateJoinBeaconDialog {
                                 enabledBorder: InputBorder.none),
                           ),
                         ),
-                        color: kLightBlue,
+                        // color: Colors.grey[200],
                       ),
-                      isInstant ? Container() : SizedBox(height: 2.h),
+                      isInstant ? Container() : SizedBox(height: 1.2.h),
                       // start date field
                       isInstant
                           ? Container()
@@ -318,17 +392,6 @@ class CreateJoinBeaconDialog {
                                       initialDate: startDate ?? DateTime.now(),
                                       firstDate: startDate ?? DateTime.now(),
                                       lastDate: DateTime(2100),
-                                      // builder: (context, child) => Theme(
-                                      //     // data: ThemeData().copyWith(
-                                      //     //   textTheme:
-                                      //     //       Theme.of(context).textTheme,
-                                      //     //   colorScheme: ColorScheme.light(
-                                      //     //     primary: kLightBlue,
-                                      //     //     onPrimary: Colors.grey,
-                                      //     //     surface: kBlue,
-                                      //     //   ),
-                                      //     // ),
-                                      //     child: child!),
                                     );
                                     if (startDate == null) return;
                                     _dateController.text =
@@ -343,11 +406,16 @@ class CreateJoinBeaconDialog {
                                     focusNode: _startDateNode,
                                     onEditingComplete: () {},
                                     decoration: InputDecoration(
+                                        fillColor: Colors.grey[200],
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 8),
                                         border: InputBorder.none,
                                         hintText: 'Choose Start Date',
                                         labelStyle: TextStyle(
                                             fontSize: labelsize,
-                                            color: kYellow),
+                                            color:
+                                                Theme.of(context).primaryColor),
                                         hintStyle: TextStyle(
                                             fontSize: hintsize,
                                             color: hintColor),
@@ -360,9 +428,8 @@ class CreateJoinBeaconDialog {
                                   ),
                                 ),
                               ),
-                              color: kLightBlue,
                             ),
-                      isInstant ? Container() : SizedBox(height: 2.h),
+                      isInstant ? Container() : SizedBox(height: 1.2.h),
                       // Start Time Field
                       isInstant
                           ? SizedBox.shrink()
@@ -397,6 +464,10 @@ class CreateJoinBeaconDialog {
                                     enabled: false,
                                     onEditingComplete: () {},
                                     decoration: InputDecoration(
+                                      fillColor: Colors.grey[200],
+                                      filled: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
                                       border: InputBorder.none,
                                       alignLabelWithHint: true,
                                       errorStyle:
@@ -405,7 +476,9 @@ class CreateJoinBeaconDialog {
                                           FloatingLabelBehavior.always,
                                       labelText: 'Start Time',
                                       labelStyle: TextStyle(
-                                          fontSize: labelsize, color: kYellow),
+                                          fontSize: labelsize,
+                                          color:
+                                              Theme.of(context).primaryColor),
                                       hintStyle: TextStyle(
                                           fontSize: hintsize, color: hintColor),
                                       hintText: 'Choose start time',
@@ -415,9 +488,8 @@ class CreateJoinBeaconDialog {
                                   ),
                                 ),
                               ),
-                              color: kLightBlue,
                             ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 1.2.h),
                       // Duration Field
                       Container(
                         height: isSmallSized ? 14.h : 12.h,
@@ -445,6 +517,10 @@ class CreateJoinBeaconDialog {
                               validator: (value) =>
                                   Validator.validateDuration(value.toString()),
                               decoration: InputDecoration(
+                                  fillColor: Colors.grey[200],
+                                  filled: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
                                   border: InputBorder.none,
                                   alignLabelWithHint: true,
                                   errorStyle: TextStyle(color: Colors.red[800]),
@@ -452,7 +528,8 @@ class CreateJoinBeaconDialog {
                                       FloatingLabelBehavior.always,
                                   labelText: 'Duration',
                                   labelStyle: TextStyle(
-                                      fontSize: labelsize, color: kYellow),
+                                      fontSize: labelsize,
+                                      color: Theme.of(context).primaryColor),
                                   hintStyle: TextStyle(
                                       fontSize: hintsize, color: hintColor),
                                   hintText: 'Enter duration of hike',
@@ -461,17 +538,13 @@ class CreateJoinBeaconDialog {
                             ),
                           ),
                         ),
-                        color: kLightBlue,
                       ),
                       SizedBox(height: 2.h),
                       Flexible(
-                        flex: 2,
-                        child: HikeButton(
-                            text: isInstant ? 'Start' : 'Create',
-                            textSize: 18.0,
-                            textColor: Colors.white,
-                            buttonColor: kYellow,
-                            onTap: () async {
+                          flex: 2,
+                          child: // Replace the Flexible widget with this
+                              ElevatedButton(
+                            onPressed: () async {
                               if (_createFormKey.currentState!.validate()) {
                                 var groupCubit = locator<GroupCubit>();
                                 if (!isInstant) {
@@ -483,7 +556,6 @@ class CreateJoinBeaconDialog {
                                       startTime!.minute);
 
                                   final startsAt = start.millisecondsSinceEpoch;
-
                                   final expiresAt = start
                                       .add(duration!)
                                       .millisecondsSinceEpoch;
@@ -498,7 +570,6 @@ class CreateJoinBeaconDialog {
                                 } else {
                                   int startsAt =
                                       DateTime.now().millisecondsSinceEpoch;
-
                                   int expiresAt = DateTime.now()
                                       .add(duration!)
                                       .millisecondsSinceEpoch;
@@ -512,8 +583,25 @@ class CreateJoinBeaconDialog {
                                   appRouter.maybePop();
                                 }
                               }
-                            }),
-                      ),
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              minimumSize: Size(160, 48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                            child: Text(
+                              isInstant ? 'Start' : 'Create',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )),
                     ],
                   ),
                 ),
@@ -528,69 +616,92 @@ class CreateJoinBeaconDialog {
   static GlobalKey<FormState> _joinBeaconKey = GlobalKey<FormState>();
   static TextEditingController _joinBeaconController = TextEditingController();
   static Future joinBeaconDialog(BuildContext context) {
-    bool isSmallSized = MediaQuery.of(context).size.height < 800;
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 800;
+
     return showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Form(
-          key: _joinBeaconKey,
-          child: Container(
-            height: isSmallSized ? 30.h : 25.h,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: isSmallSized ? 14.h : 12.h,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextFormField(
-                        controller: _joinBeaconController,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
-                        style: TextStyle(fontSize: 22.0),
-                        validator: (value) => Validator.validatePasskey(value!),
-                        onChanged: (key) {
-                          _joinBeaconController.text = key.toUpperCase();
-                        },
-                        decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          hintText: 'Enter Passkey Here',
-                          hintStyle:
-                              TextStyle(fontSize: hintsize, color: hintColor),
-                          labelText: 'Passkey',
-                          labelStyle:
-                              TextStyle(fontSize: labelsize, color: kYellow),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
+        child: Container(
+          width: size.width * 0.85,
+          height: isSmallScreen ? size.height * 0.3 : size.height * 0.25,
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _joinBeaconKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Join Beacon',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
                     color: kLightBlue,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Flexible(
-                    child: HikeButton(
-                      text: 'Validate',
-                      textSize: 18.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
-                      onTap: () {
-                        if (!_joinBeaconKey.currentState!.validate()) return;
-                        locator<GroupCubit>().joinBeaconWithShortCode(
-                            _joinBeaconController.text);
-                        appRouter.maybePop();
-                        _joinBeaconController.clear();
-                      },
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: TextFormField(
+                    controller: _joinBeaconController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    style: TextStyle(fontSize: 18.0),
+                    validator: (value) => Validator.validatePasskey(value!),
+                    onChanged: (key) {
+                      _joinBeaconController.text = key.toUpperCase();
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter Passkey Here',
+                      labelText: 'Passkey',
+                      labelStyle: TextStyle(
+                          fontSize: 14, color: Theme.of(context).primaryColor),
+                      hintStyle:
+                          TextStyle(fontSize: 16, color: Colors.grey[400]),
+                      alignLabelWithHint: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (!_joinBeaconKey.currentState!.validate()) return;
+                    locator<GroupCubit>()
+                        .joinBeaconWithShortCode(_joinBeaconController.text);
+                    appRouter.maybePop();
+                    _joinBeaconController.clear();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: Size(160, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                    'Validate',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

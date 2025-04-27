@@ -13,6 +13,8 @@
 /lib/firebase_options.dart
 /android/app/google-services.json
 /firebase.json
+/android/app/upload-keystore.jks
+/lib/firebase_options.dart
 
 
 # IntelliJ related
