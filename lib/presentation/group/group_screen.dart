@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
+import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_state.dart';
 import 'package:beacon/presentation/group/cubit/members_cubit/members_cubit.dart';
@@ -12,12 +13,10 @@ import 'package:beacon/presentation/group/widgets/group_widgets.dart';
 import 'package:beacon/presentation/widgets/shimmer.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/widgets/loading_screen.dart';
-import 'package:beacon/presentation/widgets/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -71,7 +70,7 @@ class _GroupScreenState extends State<GroupScreen>
 
   @override
   Widget build(BuildContext context) {
-    TabController tabController = TabController(length: 1, vsync: this);
+    final screensize = MediaQuery.of(context).size;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -86,62 +85,178 @@ class _GroupScreenState extends State<GroupScreen>
             return ModalProgressHUD(
               progressIndicator: const LoadingScreen(),
               inAsyncCall: state is LoadingGroupState,
-              child: Stack(
-                children: <Widget>[
-                  CustomPaint(
-                    size: Size(100.w, 100.h - 200),
-                    painter: ShapePainter(),
-                  ),
-                  _buildGroupName(),
-                  Align(
-                    alignment: Alignment(0.9, -0.70),
-                    child: GroupWidgetUtils.filterBeacons(
-                        context, widget.group.id!, _groupCubit),
-                  ),
-                  Align(
-                    alignment: Alignment(0.5, -0.70),
-                    child: GroupWidgetUtils.membersWidget(context),
-                  ),
-                  _buildJoinCreateButton(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.565,
-                        margin: EdgeInsets.only(top: 20),
-                        decoration: BoxDecoration(
-                          color: kLightBlue,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(50.0),
-                            topRight: Radius.circular(50.0),
-                          ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: screensize.width * 0.04,
+                    right: screensize.width * 0.04,
+                    top: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.all(0),
+                          icon: const Icon(Icons.arrow_back_outlined,
+                              color: Colors.grey),
+                          onPressed: () => AutoRouter.of(context).maybePop(),
                         ),
-                        child: Column(
+                        Image.asset(
+                          'images/beacon_logo.png',
+                          height: 28,
+                        ),
+                        IconButton(
+                            icon: const Icon(Icons.power_settings_new,
+                                color: Colors.grey),
+                            onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      backgroundColor: Color(0xffFAFAFA),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      ),
+                                      title:
+                                          Text('Logout', style: Style.heading),
+                                      content: Text(
+                                        'Are you sure you want to logout?',
+                                        style: TextStyle(
+                                            fontSize: 16, color: kBlack),
+                                      ),
+                                      actions: <Widget>[
+                                        HikeButton(
+                                          buttonWidth: 80,
+                                          buttonHeight: 40,
+                                          isDotted: true,
+                                          onTap: () => AutoRouter.of(context)
+                                              .maybePop(false),
+                                          text: 'No',
+                                          textSize: 18.0,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        HikeButton(
+                                          buttonWidth: 80,
+                                          buttonHeight: 40,
+                                          onTap: () async {
+                                            appRouter.replaceNamed('/auth');
+                                            localApi.deleteUser();
+                                            context
+                                                .read<AuthCubit>()
+                                                .googleSignOut();
+                                          },
+                                          text: 'Yes',
+                                          textSize: 18.0,
+                                        ),
+                                      ],
+                                    ))),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    _buildGroupName(),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        widget.group.members != null &&
+                                widget.group.members!.isNotEmpty
+                            ? SizedBox(
+                                width: 40 *
+                                    widget.group.members!.length.toDouble(),
+                                // 40 is the width of each profile circle
+                                height: 40,
+                                child: Stack(
+                                  children: (widget.group.members != null &&
+                                              widget.group.members!.length > 3
+                                          ? widget.group.members!.sublist(0, 3)
+                                          : widget.group.members ?? [])
+                                      .map((member) {
+                                    if (member != null) {
+                                      return Positioned(
+                                        left: widget.group.members!
+                                                .indexOf(member) *
+                                            20.0,
+                                        child: _buildProfileCircle(
+                                          member.id == localApi.userModel.id
+                                              ? Colors.teal
+                                              : shimmerSkeletonColor,
+                                        ),
+                                      );
+                                    } else {
+                                      return const SizedBox.shrink();
+                                    }
+                                  }).toList(),
+                                ),
+                              )
+                            : Container(),
+                        const SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TabBar(
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              indicatorColor: kBlue,
-                              labelColor: kBlack,
-                              tabs: [
-                                _buildTab(state),
-                              ],
-                              controller: tabController,
+                            Text(
+                              'Group has ${widget.group.members!.length.toString()} ${widget.group.members!.length == 1 ? 'member' : 'members'}',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
-                            Expanded(
-                              child: TabBarView(
-                                controller: tabController,
-                                children: <Widget>[
-                                  _groupBeacons(state),
-                                ],
+                            const SizedBox(height: 2),
+                            // view all members button
+                            GestureDetector(
+                              onTap: () {
+                                GroupWidgetUtils.showMembers(context);
+                              },
+                              child: Text(
+                                "View all members",
+                                style: TextStyle(
+                                  color: kBlack,
+                                  fontSize: 14,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                textAlign: TextAlign.start,
                               ),
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    _buildJoinCreateButton(),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'All Beacons',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          padding: EdgeInsets.all(0),
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () {
+                            GroupWidgetUtils.showFilterBeaconAlertBox(
+                                context, widget.group.id!, _groupCubit);
+                          },
+                          icon: Icon(
+                            Icons.filter_alt_outlined,
+                            color: Colors.purple,
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(child: _groupBeacons(state)),
+                  ],
+                ),
               ),
             );
           },
@@ -151,57 +266,51 @@ class _GroupScreenState extends State<GroupScreen>
   }
 
   Widget _buildJoinCreateButton() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(4.w, 23.h, 4.w, 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 45.w,
-            child: HikeButton(
-              buttonWidth: homebwidth,
-              buttonHeight: homebheight - 2,
-              text: 'Create Hike',
-              textColor: Colors.white,
-              borderColor: Colors.white,
-              buttonColor: kYellow,
-              onTap: () {
-                CreateJoinBeaconDialog.createHikeDialog(
-                    context, widget.group.id!);
-              },
+    Size screensize = MediaQuery.of(context).size;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 45.w,
+          child: HikeButton(
+            text: 'Create Hike',
+            widget: Icon(
+              Icons.add,
+              color: Colors.black,
+              size: 18,
             ),
+            textColor: Colors.white,
+            borderColor: Colors.white,
+            buttonWidth: screensize.width * 0.44,
+            buttonHeight: 45,
+            onTap: () {
+              CreateJoinBeaconDialog.createHikeDialog(
+                  context, widget.group.id!);
+            },
           ),
-          SizedBox(width: 1.w),
-          Container(
-            width: 45.w,
-            child: HikeButton(
-              buttonWidth: homebwidth,
-              buttonHeight: homebheight - 2,
-              text: 'Join a Hike',
-              textColor: kYellow,
-              borderColor: kYellow,
-              buttonColor: Colors.white,
-              onTap: () async {
-                CreateJoinBeaconDialog.joinBeaconDialog(context);
-              },
+        ),
+        SizedBox(width: 1.w),
+        Container(
+          width: 45.w,
+          child: HikeButton(
+            text: 'Join a Hike',
+            widget: Icon(
+              Icons.add,
+              color: Colors.black,
+              size: 18,
             ),
+            buttonColor: Colors.white,
+            isDotted: true,
+            buttonWidth: screensize.width * 0.44,
+            buttonHeight: 45,
+            onTap: () async {
+              CreateJoinBeaconDialog.joinBeaconDialog(context);
+            },
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTab(GroupState state) {
-    return Tab(
-      text: state is AllBeaconGroupState
-          ? 'All Beacons'
-          : state is NearbyBeaconGroupState
-              ? 'Nearby Beacons'
-              : state is StatusFilterBeaconGroupState
-                  ? '${state.type!.name[0] + state.type!.name.substring(1).toLowerCase()} Beacons'
-                  : 'Loading Beacons..',
+        ),
+      ],
     );
   }
 
@@ -238,16 +347,25 @@ class _GroupScreenState extends State<GroupScreen>
   }
 
   Widget _buildGroupName() {
-    return Align(
-      alignment: Alignment(-0.7, -0.95),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: Text(
-          'Welcome to Group ${widget.group.title!}',
+    return Row(
+      children: [
+        Text(
+          'Welcome to Group ',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 25, color: Colors.white),
+          style: TextStyle(fontSize: 20, color: Colors.black),
         ),
-      ),
+        SizedBox(
+          width: 2.w,
+        ),
+        Text(
+          widget.group.title!,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 24,
+              color: Colors.tealAccent,
+              fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
@@ -278,50 +396,20 @@ class _GroupScreenState extends State<GroupScreen>
   }
 
   Widget _buildBeaconCard(BeaconEntity beacon) {
-    return Slidable(
-      key: Key(beacon.id!.toString()),
-      startActionPane: ActionPane(
-        dragDismissible: true,
-        dismissible: DismissiblePane(
-          onDismissed: () {
-            _groupCubit.reloadState(message: 'Beacon deleted');
-          },
-          confirmDismiss: () async {
-            bool? value = await GroupWidgetUtils.deleteDialog(context);
-            if (value == null || !value) {
-              return false;
-            }
-            bool delete = await _groupCubit.deleteBeacon(beacon);
-            return delete;
-          },
-        ),
-        motion: ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: null,
-            backgroundColor: Color.fromARGB(255, 217, 100, 94),
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
-          ),
-        ],
-      ),
-      endActionPane: ActionPane(
-        motion: ScrollMotion(),
-        children: [
-          SlidableAction(
-            flex: 1,
-            onPressed: (context) {
-              GroupWidgetUtils.reScheduleHikeDialog(context, beacon);
-            },
-            backgroundColor: Colors.blueGrey,
-            foregroundColor: Colors.white,
-            icon: Icons.edit_calendar,
-            label: 'Reschedule',
-          ),
-        ],
-      ),
-      child: BeaconCard(beacon: beacon),
+    return BeaconCard(
+      beacon: beacon,
+      onDelete: () async {
+        bool? value = await GroupWidgetUtils.deleteDialog(context);
+        if (value == null || !value) {
+          return;
+        }
+        await _groupCubit.deleteBeacon(beacon);
+        _groupCubit.reloadState(message: 'Beacon deleted');
+        return;
+      },
+      onReschedule: () {
+        GroupWidgetUtils.reScheduleHikeDialog(context, beacon);
+      },
     );
   }
 
@@ -408,6 +496,103 @@ class _GroupScreenState extends State<GroupScreen>
             height: 2.h,
           ),
         ],
+      ),
+    );
+  }
+}
+
+Widget _buildProfileCircle(Color color) {
+  return Container(
+    width: 40,
+    height: 40,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: color,
+      border: Border.all(color: Colors.white, width: 2),
+    ),
+  );
+}
+
+class HikeCard extends StatelessWidget {
+  final bool isActive;
+  final String startTime;
+  final String endTime;
+  final String passkey;
+
+  const HikeCard({
+    super.key,
+    required this.isActive,
+    required this.startTime,
+    required this.endTime,
+    required this.passkey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: const [
+                Icon(Icons.hiking, size: 28),
+                SizedBox(width: 8),
+                Text('Hike 1',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Hike is ${isActive ? "Active" : "inactive"}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: isActive ? Colors.teal : Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text('Started at: $startTime'),
+            Text('Expires at: $endTime'),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text('Passkey: $passkey',
+                    style: const TextStyle(fontWeight: FontWeight.w500)),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.copy),
+                  onPressed: () {
+                    // TODO: Copy to clipboard
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    // TODO: Delete action
+                  },
+                  child: const Text("Delete"),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton(
+                  onPressed: () {
+                    // TODO: Reschedule action
+                  },
+                  child: const Text("Reschedule"),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

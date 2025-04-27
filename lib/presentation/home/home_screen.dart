@@ -8,7 +8,6 @@ import 'package:beacon/presentation/widgets/shimmer.dart';
 import 'package:beacon/presentation/home/widgets/group_card.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/widgets/loading_screen.dart';
-import 'package:beacon/presentation/widgets/shape_painter.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -98,6 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screensize = MediaQuery.of(context).size;
+
     return PopScope(
         canPop: false,
         onPopInvokedWithResult: (bool didPop, Object? result) async {
@@ -125,180 +127,167 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ModalProgressHUD(
                 inAsyncCall: state is LoadingHomeState ? true : false,
                 progressIndicator: LoadingScreen(),
-                child: Stack(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    CustomPaint(
-                      size: Size(100.w, 100.h - 200),
-                      painter: ShapePainter(),
-                    ),
-                    // CustomPaint(
-                    //   size: Size(100.w, 100.h),
-                    //   painter: DrawCircle(),
-                    // ),
-                    Align(
-                      alignment: Alignment(0.9, -0.8),
-                      child: FloatingActionButton(
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    title: Text(
-                                      localApi.userModel.isGuest == true
-                                          ? 'Create Account'
-                                          : 'Logout',
-                                      style: TextStyle(
-                                          fontSize: 25, color: kYellow),
-                                    ),
-                                    content: Text(
-                                      localApi.userModel.isGuest == true
-                                          ? 'Would you like to create an account?'
-                                          : 'Are you sure you want to logout?',
-                                      style: TextStyle(
-                                          fontSize: 16, color: kBlack),
-                                    ),
-                                    actions: <Widget>[
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () => AutoRouter.of(context)
-                                            .maybePop(false),
-                                        text: 'No',
-                                        textSize: 18.0,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      HikeButton(
-                                        buttonHeight: 2.5.h,
-                                        buttonWidth: 8.w,
-                                        onTap: () async {
-                                          appRouter.replaceNamed('/auth');
-                                          localApi.deleteUser();
-                                          context
-                                              .read<AuthCubit>()
-                                              .googleSignOut();
-                                        },
-                                        text: 'Yes',
-                                        textSize: 18.0,
-                                      ),
-                                    ],
-                                  )),
-                          backgroundColor: kYellow,
-                          child: localApi.userModel.isGuest == true
-                              ? Icon(Icons.person)
-                              : Icon(Icons.logout)),
-                    ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(4.w, 23.h, 4.w, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      padding: EdgeInsets.only(
+                          left: screensize.width * 0.04,
+                          right: screensize.width * 0.04,
+                          top: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 45.w,
-                            child: HikeButton(
-                              buttonWidth: homebwidth - 10,
-                              buttonHeight: homebheight - 2,
-                              text: 'Create Group',
-                              textColor: Colors.white,
-                              borderColor: Colors.white,
-                              buttonColor: kYellow,
-                              onTap: () async {
-                                CreateJoinGroupDialog.createGroupDialog(
-                                    context);
-                              },
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset(
+                                'images/beacon_logo.png',
+                                height: 28,
+                              ),
+                              IconButton(
+                                  icon: const Icon(Icons.power_settings_new,
+                                      color: Colors.grey),
+                                  onPressed: () => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            backgroundColor: Color(0xffFAFAFA),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
+                                            ),
+                                            title: Text('Logout',
+                                                style: Style.heading),
+                                            content: Text(
+                                              'Are you sure you want to logout?',
+                                              style: TextStyle(
+                                                  fontSize: 16, color: kBlack),
+                                            ),
+                                            actions: <Widget>[
+                                              HikeButton(
+                                                buttonWidth: 80,
+                                                buttonHeight: 40,
+                                                isDotted: true,
+                                                onTap: () =>
+                                                    AutoRouter.of(context)
+                                                        .maybePop(false),
+                                                text: 'No',
+                                                textSize: 18.0,
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              HikeButton(
+                                                buttonWidth: 80,
+                                                buttonHeight: 40,
+                                                onTap: () async {
+                                                  appRouter
+                                                      .replaceNamed('/auth');
+                                                  localApi.deleteUser();
+                                                  context
+                                                      .read<AuthCubit>()
+                                                      .googleSignOut();
+                                                },
+                                                text: 'Yes',
+                                                textSize: 18.0,
+                                              ),
+                                            ],
+                                          ))),
+                            ],
                           ),
-                          SizedBox(
-                            width: 1.w,
+
+                          // welcome message
+                          const SizedBox(height: 20),
+
+                          // Welcome message
+                          Row(
+                            children: [
+                              Text(
+                                'Welcome back, ',
+                                style: Style.subHeading
+                                    .copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                  localApi.userModel.name
+                                          .toString()
+                                          .toUpperCase()[0] +
+                                      localApi.userModel.name
+                                          .toString()
+                                          .substring(1),
+                                  style: Style.heading
+                                      .copyWith(color: Colors.teal)),
+                            ],
                           ),
-                          Container(
-                            width: 45.w,
-                            child: HikeButton(
-                              buttonWidth: homebwidth,
-                              buttonHeight: homebheight - 2,
-                              text: 'Join a Group',
-                              textColor: kYellow,
-                              borderColor: kYellow,
-                              buttonColor: Colors.white,
-                              onTap: () async {
-                                CreateJoinGroupDialog.joinGroupDialog(context);
-                              },
+
+                          // Ready to explore
+                          Text(
+                            'Ready to explore?',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF673AB7),
                             ),
+                            textAlign: TextAlign.start,
+                          ),
+
+                          SizedBox(height: 2.h),
+
+                          // Create and Join Group
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              HikeButton(
+                                widget: Icon(
+                                  Icons.add,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                                buttonWidth: screensize.width * 0.44,
+                                buttonHeight: 45,
+                                text: 'Create Group',
+                                onTap: () async {
+                                  CreateJoinGroupDialog.createGroupDialog(
+                                      context);
+                                },
+                              ),
+                              SizedBox(
+                                width: 1.w,
+                              ),
+                              HikeButton(
+                                widget: Icon(
+                                  Icons.add,
+                                  color: Colors.teal,
+                                  size: 18,
+                                ),
+                                isDotted: true,
+                                buttonWidth: screensize.width * 0.44,
+                                buttonHeight: 45,
+                                text: 'Join a Group',
+                                onTap: () async {
+                                  CreateJoinGroupDialog.joinGroupDialog(
+                                      context);
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'Your Groups',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.start,
                           ),
                         ],
                       ),
                     ),
-                    Positioned(
-                        bottom: 0,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: kLightBlue,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    topRight: Radius.circular(30))),
-                            height: 56.h,
-                            width: 100.w,
-                            child: Column(
-                              children: [
-                                Tab(text: 'Your Groups'),
-                                Container(
-                                  height: 0.2.h,
-                                  color: kBlack,
-                                ),
-                                localApi.userModel.isGuest == true
-                                    ? Expanded(
-                                        child: Center(
-                                            child: SingleChildScrollView(
-                                          physics:
-                                              AlwaysScrollableScrollPhysics(),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                'You haven\'t joined or created any group yet',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 20),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              RichText(
-                                                text: TextSpan(
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20),
-                                                  children: [
-                                                    TextSpan(
-                                                        text: 'Join',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text: ' a Group or '),
-                                                    TextSpan(
-                                                        text: 'Create',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text: ' a new one!'),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                      )
-                                    : _buildList()
-                              ],
-                            )))
+
+                    // Your Groups
+                    _buildList()
                   ],
                 ),
               )),
@@ -321,39 +310,46 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (state is LoadedHomeState) {
             List<GroupEntity> groups = state.groups;
             if (groups.isEmpty) {
-              return Center(
-                  child: SingleChildScrollView(
+              return SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Text(
-                      'You haven\'t joined or created any group yet',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        children: [
-                          TextSpan(
-                              text: 'Join',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: ' a Group or '),
-                          TextSpan(
-                              text: 'Create',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: ' a new one!'),
-                        ],
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Lottie.asset('animations/empty.json',
+                          width: 200, height: 200),
+                      const SizedBox(height: 20),
+                      Text(
+                        'You haven\'t joined or created any group yet',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          children: [
+                            TextSpan(
+                                text: 'Join',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: ' a Group or '),
+                            TextSpan(
+                                text: 'Create',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: ' a new one!'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ));
+              );
             } else {
               return ListView.builder(
+                shrinkWrap: true,
                 controller: _scrollController,
                 physics: AlwaysScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
@@ -364,8 +360,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (index == groups.length) {
                     return Center(child: LinearProgressIndicator());
                   } else {
-                    return GroupCustomWidgets.getGroupCard(
-                        context, groups[index]);
+                    return GroupCard(
+                      group: groups[index],
+                    );
+                    // return GroupCustomWidgets.getGroupCard(
+                    //     context, groups[index]);
                   }
                 },
               );

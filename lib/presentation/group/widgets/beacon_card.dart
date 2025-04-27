@@ -16,7 +16,14 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class BeaconCard extends StatefulWidget {
   final BeaconEntity beacon;
-  const BeaconCard({required this.beacon});
+  final void Function()? onDelete;
+  final void Function()? onReschedule;
+  BeaconCard(
+      {required this.beacon,
+      required this.onDelete,
+      required this.onReschedule,
+      Key? key})
+      : super(key: key);
 
   @override
   State<BeaconCard> createState() => _BeaconCardState();
@@ -109,178 +116,214 @@ class _BeaconCardState extends State<BeaconCard> {
         locator<GroupCubit>().joinBeacon(beacon, hasEnded, hasStarted);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 10.0,
-        ),
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8, top: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: 70.w,
-                      child: Text(
-                        '${beacon.title} by ${beacon.leader!.name} ',
-                        style: Style.titleTextStyle,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: (hasStarted && !hasEnded)
-                          ? BlinkIcon()
-                          : willStart
-                              ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Icon(
-                                    Icons.circle,
-                                    color: kYellow,
-                                    size: 10,
-                                  ),
-                                )
-                              : null,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.0),
-                (hasStarted && !hasEnded)
-                    ? RichText(
-                        text: TextSpan(
-                          text: 'Hike is ',
-                          style: Style.commonTextStyle,
-                          children: const <TextSpan>[
-                            TextSpan(
-                              text: 'Active',
+          margin: const EdgeInsets.only(bottom: 10.0),
+          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8, top: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 70.w,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.hiking,
+                              color: Colors.black,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              '${beacon.title!.toUpperCase()} by ${beacon.leader!.name} ',
                               style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0),
+                                fontSize: 18.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ],
                         ),
-                      )
-                    : willStart
-                        ? Row(
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Hike ',
-                                  style: Style.commonTextStyle,
-                                  children: const <TextSpan>[
-                                    TextSpan(
-                                      text: 'Starts ',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1.0),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: (hasStarted && !hasEnded)
+                            ? BlinkIcon()
+                            : willStart
+                                ? Align(
+                                    alignment: Alignment.topRight,
+                                    child: Icon(
+                                      Icons.circle,
+                                      color: kYellow,
+                                      size: 10,
                                     ),
-                                    TextSpan(
-                                      text: 'in ',
-                                      style: TextStyle(
-                                          color: const Color(0xffb6b2df),
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 3.0,
-                              ),
-                              CountdownTimerPage(
-                                dateTime: DateTime.fromMillisecondsSinceEpoch(
-                                    beacon.startsAt!),
-                                name: beacon.title,
-                                beacon: beacon,
-                              )
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Hike ',
-                                  style: Style.commonTextStyle,
-                                  children: const <TextSpan>[
-                                    TextSpan(
-                                      text: 'is Ended',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1.0),
-                                    ),
-                                  ],
-                                ),
+                                  )
+                                : null,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.0),
+                  (hasStarted && !hasEnded)
+                      ? RichText(
+                          text: TextSpan(
+                            text: 'Hike is ',
+                            style: Style.commonTextStyle,
+                            children: const <TextSpan>[
+                              TextSpan(
+                                text: 'Active',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0),
                               ),
                             ],
                           ),
-                SizedBox(height: 4.0),
-                Row(
-                  children: [
-                    Text('Passkey: ${beacon.shortcode}',
-                        style: Style.commonTextStyle),
-                    Gap(10),
-                    InkWell(
-                        onTap: () {
-                          Clipboard.setData(
-                              ClipboardData(text: beacon.shortcode.toString()));
-                          utils.showSnackBar('Shortcode copied!', context);
-                        },
-                        child: Icon(
-                          Icons.copy,
-                          color: Colors.white,
-                          size: 15,
-                        ))
-                  ],
-                ),
-                SizedBox(height: 4.0),
-                (beacon.startsAt != null)
-                    ? Text(
-                        willStart
-                            ? 'Starting At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}'
-                            : 'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
-                        style: Style.commonTextStyle)
-                    : Container(),
-                SizedBox(height: 4.0),
-                (beacon.expiresAt != null)
-                    ? willStart
-                        ? Text(
-                            'Expiring At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
-                            style: Style.commonTextStyle)
-                        : Text(
-                            'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
-                            style: Style.commonTextStyle)
-                    : Container(),
-              ],
-            )
-          ],
-        ),
-        decoration: BoxDecoration(
-          color: willStart
-              ? Color(0xFF141546)
-              : hasEnded
-                  ? lightkBlue
-                  : kBlue,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10.0,
-              offset: Offset(0.0, 10.0),
-            ),
-          ],
-        ),
-      ),
+                        )
+                      : willStart
+                          ? Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Hike ',
+                                    style: Style.commonTextStyle,
+                                    children: const <TextSpan>[
+                                      TextSpan(
+                                        text: 'Starts ',
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1.0),
+                                      ),
+                                      TextSpan(
+                                        text: 'in ',
+                                        style: TextStyle(
+                                            color: const Color(0xffb6b2df),
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 3.0,
+                                ),
+                                CountdownTimerPage(
+                                  dateTime: DateTime.fromMillisecondsSinceEpoch(
+                                      beacon.startsAt!),
+                                  name: beacon.title,
+                                  beacon: beacon,
+                                )
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Hike ',
+                                    style: Style.commonTextStyle,
+                                    children: const <TextSpan>[
+                                      TextSpan(
+                                        text: 'is Ended',
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                  SizedBox(height: 4.0),
+                  Row(
+                    children: [
+                      Text('Passkey: ${beacon.shortcode}',
+                          style: Style.commonTextStyle),
+                      Gap(10),
+                      InkWell(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                                text: beacon.shortcode.toString()));
+                            utils.showSnackBar('Shortcode copied!', context);
+                          },
+                          child: Icon(
+                            Icons.copy,
+                            color: Colors.black,
+                            size: 15,
+                          ))
+                    ],
+                  ),
+                  SizedBox(height: 4.0),
+                  (beacon.startsAt != null)
+                      ? Text(
+                          willStart
+                              ? 'Starting At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}'
+                              : 'Started At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!)).toString()}',
+                          style: Style.commonTextStyle)
+                      : Container(),
+                  SizedBox(height: 4.0),
+                  (beacon.expiresAt != null)
+                      ? willStart
+                          ? Text(
+                              'Expiring At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
+                              style: Style.commonTextStyle)
+                          : Text(
+                              'Expires At: ${DateFormat("hh:mm a, d/M/y").format(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!)).toString()}',
+                              style: Style.commonTextStyle)
+                      : Container(),
+                  SizedBox(height: 4.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            visualDensity: const VisualDensity(
+                                horizontal: -2.0, vertical: -2.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            side: const BorderSide(color: Colors.black)),
+                        onPressed: widget.onDelete,
+                        child: const Text("Delete"),
+                      ),
+                      const SizedBox(width: 10),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            visualDensity: const VisualDensity(
+                                horizontal: .0, vertical: -2.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            foregroundColor: Colors.black,
+                            side: const BorderSide(color: Colors.black)),
+                        onPressed: widget.onReschedule,
+                        child: const Text("Reschedule"),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, 1.0),
+                blurRadius: 6.0,
+              ),
+            ],
+          )),
     );
   }
 

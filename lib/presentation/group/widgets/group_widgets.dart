@@ -23,13 +23,13 @@ class GroupWidgetUtils {
       heroTag: 'members',
       backgroundColor: kYellow,
       onPressed: () {
-        _showMembers(context);
+        showMembers(context);
       },
       child: Icon(Icons.person, size: 30),
     );
   }
 
-  static void _showMembers(BuildContext context) {
+  static void showMembers(BuildContext context) {
     // Dialog for filtering beacons
     locator<MembersCubit>().loadMembers();
     showDialog(
@@ -163,7 +163,7 @@ class GroupWidgetUtils {
     return FloatingActionButton(
       heroTag: 'filter beacon',
       backgroundColor: kYellow,
-      onPressed: () => _showFilterBeaconAlertBox(context, groupId, groupCubit),
+      onPressed: () => showFilterBeaconAlertBox(context, groupId, groupCubit),
       child: ImageIcon(
         AssetImage(AppConstants.filterIconPath),
         size: 35,
@@ -420,7 +420,7 @@ class GroupWidgetUtils {
     );
   }
 
-  static void _showFilterBeaconAlertBox(
+  static void showFilterBeaconAlertBox(
       BuildContext context, String groupId, GroupCubit groupCubit) {
     log(100.h.toString());
     // Dialog for filtering beacons
@@ -429,12 +429,12 @@ class GroupWidgetUtils {
       builder: (context) {
         bool isSmallSized = 100.h < 800;
         return AlertDialog(
+          backgroundColor: Colors.grey[100],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ImageIcon(
                 AssetImage(AppConstants.filterIconPath),
-                size: 30,
                 semanticLabel: 'Filter',
                 color: Colors.black,
               ),
@@ -454,21 +454,27 @@ class GroupWidgetUtils {
                 itemBuilder: (context, index) {
                   String type = filters.values[index].name;
 
-                  return HikeButton(
-                    buttonWidth: 2.w,
-                    buttonHeight: 1.h,
-                    text: type,
-                    onTap: () {
-                      Navigator.pop(context);
-                      if (filters.values[index] == filters.NEARBY) {
-                        _neabyFilterAlertBox(context, groupId, groupCubit);
-                      } else {
-                        locator<GroupCubit>()
-                            .changeFilter(filters.values[index]);
-                      }
-                    },
-                    buttonColor: kYellow,
-                  );
+                  return ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        if (filters.values[index] == filters.NEARBY) {
+                          _neabyFilterAlertBox(context, groupId, groupCubit);
+                        } else {
+                          locator<GroupCubit>()
+                              .changeFilter(filters.values[index]);
+                        }
+                      },
+                      child: Text(
+                        type,
+                        style: TextStyle(fontSize: 18, height: 1.5),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      ));
                 },
               ),
             ),

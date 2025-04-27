@@ -85,9 +85,8 @@ class Style {
   );
 
   static TextStyle subHeading = TextStyle(
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: textGray,
   );
 
   static TextStyle body = TextStyle(
