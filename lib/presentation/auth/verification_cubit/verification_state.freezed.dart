@@ -96,21 +96,19 @@ class _$OTPVerificationStateCopyWithImpl<$Res,
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
+  final $Res Function(<span class="math-inline">Val\) \_then;
+\}
 /// @nodoc
-abstract class _$$InitialOTPStateImplCopyWith<$Res> {
-  factory _$$InitialOTPStateImplCopyWith(_$InitialOTPStateImpl value,
+abstract class \_</span>$InitialOTPStateImplCopyWith<<span class="math-inline">Res\> \{
+factory \_</span>$InitialOTPStateImplCopyWith(_$InitialOTPStateImpl value,
           $Res Function(_$InitialOTPStateImpl) then) =
-      __$$InitialOTPStateImplCopyWithImpl<$Res>;
-}
-
+      __$$InitialOTPStateImplCopyWithImpl<<span class="math-inline">Res\>;
+\}
 /// @nodoc
-class __$$InitialOTPStateImplCopyWithImpl<$Res>
+class \_\_</span>$InitialOTPStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$InitialOTPStateImpl>
-    implements _$$InitialOTPStateImplCopyWith<$Res> {
-  __$$InitialOTPStateImplCopyWithImpl(
+    implements _$$InitialOTPStateImplCopyWith<<span class="math-inline">Res\> \{
+\_\_</span>$InitialOTPStateImplCopyWithImpl(
       _$InitialOTPStateImpl _value, $Res Function(_$InitialOTPStateImpl) _then)
       : super(_value, _then);
 }
@@ -118,7 +116,7 @@ class __$$InitialOTPStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$InitialOTPStateImpl implements InitialOTPState {
-  _$InitialOTPStateImpl();
+  const _$InitialOTPStateImpl();
 
   @override
   String toString() {
@@ -222,21 +220,20 @@ class _$InitialOTPStateImpl implements InitialOTPState {
 }
 
 abstract class InitialOTPState implements OTPVerificationState {
-  factory InitialOTPState() = _$InitialOTPStateImpl;
+  const factory InitialOTPState() = _$InitialOTPStateImpl;
 }
 
 /// @nodoc
-abstract class _$$OTPSendingStateImplCopyWith<$Res> {
-  factory _$$OTPSendingStateImplCopyWith(_$OTPSendingStateImpl value,
+abstract class _$$OTPSendingStateImplCopyWith<<span class="math-inline">Res\> \{
+factory \_</span>$OTPSendingStateImplCopyWith(_$OTPSendingStateImpl value,
           $Res Function(_$OTPSendingStateImpl) then) =
-      __$$OTPSendingStateImplCopyWithImpl<$Res>;
-}
-
+      __$$OTPSendingStateImplCopyWithImpl<<span class="math-inline">Res\>;
+\}
 /// @nodoc
-class __$$OTPSendingStateImplCopyWithImpl<$Res>
+class \_\_</span>$OTPSendingStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$OTPSendingStateImpl>
-    implements _$$OTPSendingStateImplCopyWith<$Res> {
-  __$$OTPSendingStateImplCopyWithImpl(
+    implements _$$OTPSendingStateImplCopyWith<<span class="math-inline">Res\> \{
+\_\_</span>$OTPSendingStateImplCopyWithImpl(
       _$OTPSendingStateImpl _value, $Res Function(_$OTPSendingStateImpl) _then)
       : super(_value, _then);
 }
@@ -244,7 +241,7 @@ class __$$OTPSendingStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OTPSendingStateImpl implements OTPSendingState {
-  _$OTPSendingStateImpl();
+  const _$OTPSendingStateImpl();
 
   @override
   String toString() {
@@ -348,23 +345,22 @@ class _$OTPSendingStateImpl implements OTPSendingState {
 }
 
 abstract class OTPSendingState implements OTPVerificationState {
-  factory OTPSendingState() = _$OTPSendingStateImpl;
+  const factory OTPSendingState() = _$OTPSendingStateImpl;
 }
 
 /// @nodoc
-abstract class _$$OTPSentStateImplCopyWith<$Res> {
-  factory _$$OTPSentStateImplCopyWith(
+abstract class _$$OTPSentStateImplCopyWith<<span class="math-inline">Res\> \{
+factory \_</span>$OTPSentStateImplCopyWith(
           _$OTPSentStateImpl value, $Res Function(_$OTPSentStateImpl) then) =
       __$$OTPSentStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String? otp});
-}
-
+  <span class="math-inline">Res call\(\{String? otp\}\);
+\}
 /// @nodoc
-class __$$OTPSentStateImplCopyWithImpl<$Res>
+class \_\_</span>$OTPSentStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$OTPSentStateImpl>
-    implements _$$OTPSentStateImplCopyWith<$Res> {
-  __$$OTPSentStateImplCopyWithImpl(
+    implements _$$OTPSentStateImplCopyWith<<span class="math-inline">Res\> \{
+\_\_</span>$OTPSentStateImplCopyWithImpl(
       _$OTPSentStateImpl _value, $Res Function(_$OTPSentStateImpl) _then)
       : super(_value, _then);
 
@@ -385,7 +381,7 @@ class __$$OTPSentStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OTPSentStateImpl implements OTPSentState {
-  _$OTPSentStateImpl({this.otp});
+  const _$OTPSentStateImpl({this.otp});
 
   @override
   final String? otp;
@@ -500,7 +496,7 @@ class _$OTPSentStateImpl implements OTPSentState {
 }
 
 abstract class OTPSentState implements OTPVerificationState {
-  factory OTPSentState({final String? otp}) = _$OTPSentStateImpl;
+  const factory OTPSentState({final String? otp}) = _$OTPSentStateImpl;
 
   String? get otp;
   @JsonKey(ignore: true)
@@ -509,17 +505,16 @@ abstract class OTPSentState implements OTPVerificationState {
 }
 
 /// @nodoc
-abstract class _$$OTPVerifyingStateImplCopyWith<$Res> {
-  factory _$$OTPVerifyingStateImplCopyWith(_$OTPVerifyingStateImpl value,
+abstract class _$$OTPVerifyingStateImplCopyWith<<span class="math-inline">Res\> \{
+factory \_</span>$OTPVerifyingStateImplCopyWith(_$OTPVerifyingStateImpl value,
           $Res Function(_$OTPVerifyingStateImpl) then) =
-      __$$OTPVerifyingStateImplCopyWithImpl<$Res>;
-}
-
+      __$$OTPVerifyingStateImplCopyWithImpl<<span class="math-inline">Res\>;
+\}
 /// @nodoc
-class __$$OTPVerifyingStateImplCopyWithImpl<$Res>
+class \_\_</span>$OTPVerifyingStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$OTPVerifyingStateImpl>
-    implements _$$OTPVerifyingStateImplCopyWith<$Res> {
-  __$$OTPVerifyingStateImplCopyWithImpl(_$OTPVerifyingStateImpl _value,
+    implements _$$OTPVerifyingStateImplCopyWith<<span class="math-inline">Res\> \{
+\_\_</span>$OTPVerifyingStateImplCopyWithImpl(_$OTPVerifyingStateImpl _value,
       $Res Function(_$OTPVerifyingStateImpl) _then)
       : super(_value, _then);
 }
@@ -527,7 +522,7 @@ class __$$OTPVerifyingStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OTPVerifyingStateImpl implements OTPVerifyingState {
-  _$OTPVerifyingStateImpl();
+  const _$OTPVerifyingStateImpl();
 
   @override
   String toString() {
@@ -631,21 +626,20 @@ class _$OTPVerifyingStateImpl implements OTPVerifyingState {
 }
 
 abstract class OTPVerifyingState implements OTPVerificationState {
-  factory OTPVerifyingState() = _$OTPVerifyingStateImpl;
+  const factory OTPVerifyingState() = _$OTPVerifyingStateImpl;
 }
 
 /// @nodoc
-abstract class _$$OTPVerifiedStateImplCopyWith<$Res> {
-  factory _$$OTPVerifiedStateImplCopyWith(_$OTPVerifiedStateImpl value,
+abstract class _$$OTPVerifiedStateImplCopyWith<<span class="math-inline">Res\> \{
+factory \_</span>$OTPVerifiedStateImplCopyWith(_$OTPVerifiedStateImpl value,
           $Res Function(_$OTPVerifiedStateImpl) then) =
-      __$$OTPVerifiedStateImplCopyWithImpl<$Res>;
-}
-
+      __$$OTPVerifiedStateImplCopyWithImpl<<span class="math-inline">Res\>;
+\}
 /// @nodoc
-class __$$OTPVerifiedStateImplCopyWithImpl<$Res>
+class \_\_</span>$OTPVerifiedStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$OTPVerifiedStateImpl>
-    implements _$$OTPVerifiedStateImplCopyWith<$Res> {
-  __$$OTPVerifiedStateImplCopyWithImpl(_$OTPVerifiedStateImpl _value,
+    implements _$$OTPVerifiedStateImplCopyWith<<span class="math-inline">Res\> \{
+\_\_</span>$OTPVerifiedStateImplCopyWithImpl(_$OTPVerifiedStateImpl _value,
       $Res Function(_$OTPVerifiedStateImpl) _then)
       : super(_value, _then);
 }
@@ -653,7 +647,7 @@ class __$$OTPVerifiedStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OTPVerifiedStateImpl implements OTPVerifiedState {
-  _$OTPVerifiedStateImpl();
+  const _$OTPVerifiedStateImpl();
 
   @override
   String toString() {
@@ -757,7 +751,7 @@ class _$OTPVerifiedStateImpl implements OTPVerifiedState {
 }
 
 abstract class OTPVerifiedState implements OTPVerificationState {
-  factory OTPVerifiedState() = _$OTPVerifiedStateImpl;
+  const factory OTPVerifiedState() = _$OTPVerifiedStateImpl;
 }
 
 /// @nodoc
@@ -771,15 +765,15 @@ abstract class _$$OTPFailureStateImplCopyWith<$Res> {
 class __$$OTPFailureStateImplCopyWithImpl<$Res>
     extends _$OTPVerificationStateCopyWithImpl<$Res, _$OTPFailureStateImpl>
     implements _$$OTPFailureStateImplCopyWith<$Res> {
-  __$$OTPFailureStateImplCopyWithImpl(
-      _$OTPFailureStateImpl _value, $Res Function(_$OTPFailureStateImpl) _then)
+  __$$OTPFailureStateImplCopyWithImpl(_$OTPFailureStateImpl _value,
+      $Res Function(_$OTPFailureStateImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
 class _$OTPFailureStateImpl implements OTPFailureState {
-  _$OTPFailureStateImpl();
+  const _$OTPFailureStateImpl();
 
   @override
   String toString() {
@@ -883,5 +877,5 @@ class _$OTPFailureStateImpl implements OTPFailureState {
 }
 
 abstract class OTPFailureState implements OTPVerificationState {
-  factory OTPFailureState() = _$OTPFailureStateImpl;
+  const factory OTPFailureState() = _$OTPFailureStateImpl;
 }

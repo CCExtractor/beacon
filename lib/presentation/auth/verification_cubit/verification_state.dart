@@ -4,10 +4,10 @@ part 'verification_state.freezed.dart';
 
 @freezed
 class OTPVerificationState with _$OTPVerificationState {
-  factory OTPVerificationState.initial() = InitialOTPState;
-  factory OTPVerificationState.otpSending() = OTPSendingState;
-  factory OTPVerificationState.otpSent({String? otp}) = OTPSentState;
-  factory OTPVerificationState.otpVerifying() = OTPVerifyingState;
-  factory OTPVerificationState.otpVerified() = OTPVerifiedState;
-  factory OTPVerificationState.failure() = OTPFailureState;
+  const factory OTPVerificationState.initial() = InitialOTPState;
+  const factory OTPVerificationState.otpSending() = OTPSendingState;
+  const factory OTPVerificationState.otpSent({String? otp}) = OTPSentState;
+  const factory OTPVerificationState.otpVerifying() = OTPVerifyingState;
+  const factory OTPVerificationState.otpVerified() = OTPVerifiedState;
+  const factory OTPVerificationState.failure({String? errorMessage}) = OTPFailureState;
 }

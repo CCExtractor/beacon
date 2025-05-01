@@ -5,27 +5,29 @@ import 'package:beacon/presentation/auth/verification_cubit/verification_state.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerificationCubit extends Cubit<OTPVerificationState> {
-  AuthUseCase _authUseCase;
+  final AuthUseCase _authUseCase;
+
   VerificationCubit(this._authUseCase) : super(InitialOTPState());
 
-  emitVerificationSentstate(String otp) {
+  void emitVerificationSentState(String otp) {
     emit(OTPSentState(otp: otp));
   }
 
-  _clear() async {
+  Future<void> _clearStoredOTPData() async {
     await sp.deleteData('time');
     await sp.deleteData('otp');
   }
 
   Future<void> sendEmailVerification() async {
     emit(OTPSendingState());
+
     final dataState = await _authUseCase.sendVerificationCode();
 
-    if (dataState is DataSuccess && dataState.data != null) {
+    if (dataState is DataSuccess<String> && dataState.data != null) {
       await sp.init();
       await sp.saveData('time', DateTime.now().toIso8601String());
       await sp.saveData('otp', dataState.data!);
-      emit(OTPSentState(otp: dataState.data));
+      emit(OTPSentState(otp: dataState.data!));
     } else {
       emit(OTPFailureState());
     }
@@ -36,10 +38,10 @@ class VerificationCubit extends Cubit<OTPVerificationState> {
 
     final dataState = await _authUseCase.completeVerification();
 
-    if (dataState is DataSuccess && dataState.data != null) {
-      _clear();
+    if (dataState is DataSuccess<bool> && dataState.data == true) {
+      await _clearStoredOTPData();
       appRouter.replaceNamed('/home');
-    } else if (dataState is DataFailed) {
+    } else {
       emit(OTPFailureState());
     }
   }
