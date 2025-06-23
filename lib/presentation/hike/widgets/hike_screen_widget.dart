@@ -163,7 +163,6 @@ class HikeScreenWidget {
     );
   }
 
-
   static TextEditingController _landMarkeController = TextEditingController();
   static GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
 
