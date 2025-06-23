@@ -50,7 +50,7 @@ class HikeButton extends StatelessWidget {
                   ? Colors.transparent
                   : isDisabled!
                       ? Colors.grey
-                      : Colors.teal,
+                      : buttonColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -65,7 +65,7 @@ class HikeButton extends StatelessWidget {
                       ? Colors.teal
                       : isDisabled!
                           ? Colors.white
-                          : Colors.black,
+                          : textColor,
                 ),
               ),
             ]),

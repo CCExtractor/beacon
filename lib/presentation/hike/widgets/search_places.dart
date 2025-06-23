@@ -8,7 +8,7 @@ class LocationSearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: TypeAheadField<String>(
         suggestionsCallback: (pattern) async {
           return await geoapifyService.getLocationSuggestions(pattern);
@@ -16,8 +16,8 @@ class LocationSearchWidget extends StatelessWidget {
         builder: (context, controller, focusNode) {
           return Container(
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                color: Colors.white, borderRadius: BorderRadius.circular(50)),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
             child: TextFormField(
               controller: controller,
               focusNode: focusNode,

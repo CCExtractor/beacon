@@ -163,40 +163,6 @@ class HikeScreenWidget {
     );
   }
 
-  static final Map<MapType, String> mapTypeNames = {
-    MapType.hybrid: 'Hybrid',
-    MapType.normal: 'Normal',
-    MapType.satellite: 'Satellite',
-    MapType.terrain: 'Terrain',
-  };
-
-  static MapType _selectedMapType = MapType.normal;
-
-  static Widget showMapViewSelector(BuildContext context) {
-    return DropdownButton<MapType>(
-      icon: null,
-      value: _selectedMapType,
-      items: mapTypeNames.entries.map((entry) {
-        return DropdownMenuItem(
-          onTap: () {
-            locator<LocationCubit>().changeMap(entry.key);
-          },
-          value: entry.key,
-          child: Text(entry.value),
-        );
-      }).toList(),
-      onChanged: (newValue) {},
-      selectedItemBuilder: (BuildContext context) {
-        return mapTypeNames.entries.map((entry) {
-          return FloatingActionButton(
-            backgroundColor: kYellow,
-            onPressed: null,
-            child: Icon(CupertinoIcons.map),
-          );
-        }).toList();
-      },
-    );
-  }
 
   static TextEditingController _landMarkeController = TextEditingController();
   static GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
@@ -233,179 +199,82 @@ class HikeScreenWidget {
     );
   }
 
-  // static GlobalKey<FormState> _geofenceKey = GlobalKey<FormState>();
-  // static double _value = 0.1;
-
-  // static void showCreateGeofenceDialogueDialog(
-  //   BuildContext context,
-  //   String beaconId,
-  //   LatLng loc,
-  // ) {
-  //   bool isSmallSized = 100.h < 800;
-  //   bool isGeofenceCreated = false;
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isDismissible: false,
-  //     builder: (context) {
-  //       return Stack(
-  //         children: [
-  //           Container(
-  //             height: isSmallSized ? 30.h : 25.h,
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               borderRadius: BorderRadius.only(
-  //                 topLeft: Radius.circular(20),
-  //                 topRight: Radius.circular(20),
-  //               ),
-  //             ),
-  //             child: Padding(
-  //               padding:
-  //                   const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-  //               child: Form(
-  //                 key: _geofenceKey,
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Container(
-  //                       alignment: Alignment.topRight,
-  //                       child: IconButton(
-  //                           onPressed: () {
-  //                             appRouter.maybePop().then((value) {
-  //                               locator<LocationCubit>()
-  //                                   .removeUncreatedGeofence();
-  //                             });
-  //                           },
-  //                           icon: Icon(
-  //                             Icons.cancel,
-  //                             color: kBlue,
-  //                           )),
-  //                     ),
-  //                     StatefulBuilder(
-  //                       builder: (context, setState) {
-  //                         return Stack(
-  //                           children: [
-  //                             Slider(
-  //                               activeColor: kBlue,
-  //                               inactiveColor: kYellow,
-  //                               value: _value,
-  //                               onChanged: (value) {
-  //                                 setState(() {
-  //                                   _value = value;
-  //                                 });
-  //                                 locator<LocationCubit>()
-  //                                     .changeGeofenceRadius(_value * 1000, loc);
-  //                               },
-  //                             ),
-  //                             Align(
-  //                               alignment: Alignment(1, -1),
-  //                               child: Text(
-  //                                 '${(_value * 1000).toStringAsFixed(0)} meters',
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         );
-  //                       },
-  //                     ),
-  //                     Gap(10),
-  //                     Flexible(
-  //                       child: HikeButton(
-  //                         buttonHeight: 15,
-  //                         onTap: () async {
-  //                           if (!_geofenceKey.currentState!.validate()) return;
-  //                           locator<LocationCubit>()
-  //                               .createGeofence(beaconId, loc, _value)
-  //                               .then((onvalue) {
-  //                             isGeofenceCreated = true;
-  //                           });
-  //                           appRouter.maybePop().then((onValue) {
-  //                             if (isGeofenceCreated) {
-  //                               locator<LocationCubit>()
-  //                                   .removeUncreatedGeofence();
-  //                             }
-  //                           });
-  //                         },
-  //                         text: 'Create Geofence',
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   static void showCreateLandMarkDialogueDialog(
     BuildContext context,
     String beaconId,
     LatLng loc,
   ) {
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 800;
+
     showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: Colors.grey[100],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
         child: Container(
-          height: MediaQuery.of(context).size.height < 800 ? 33.h : 25.h,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            child: Form(
-              key: _landmarkFormKey,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height:
-                        MediaQuery.of(context).size.height < 800 ? 14.h : 12.h,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextFormField(
-                        controller: _landMarkeController,
-                        style: TextStyle(fontSize: 20.0),
-                        onChanged: (key) {},
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter title for landmark";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          alignLabelWithHint: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          hintText: 'Add title for the landmark',
-                          hintStyle:
-                              TextStyle(fontSize: hintsize, color: hintColor),
-                          labelText: 'Title',
-                          labelStyle:
-                              TextStyle(fontSize: labelsize, color: kYellow),
-                        ),
-                      ),
-                    ),
+          width: size.width * 0.85, // Set a reasonable width
+          height: isSmallScreen ? size.height * 0.25 : size.height * 0.2,
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _landmarkFormKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
                     color: kLightBlue,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Flexible(
-                    child: HikeButton(
-                      text: 'Create Landmark',
-                      textSize: 14.0,
-                      textColor: Colors.white,
-                      buttonColor: kYellow,
-                      onTap: () {
-                        if (!_landmarkFormKey.currentState!.validate()) return;
-                        appRouter.maybePop();
-                        locator<LocationCubit>().createLandmark(
-                            beaconId, _landMarkeController.text, loc);
-                        _landMarkeController.clear();
-                      },
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: TextFormField(
+                    controller: _landMarkeController,
+                    style: TextStyle(fontSize: 18.0),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter title for landmark";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter Landmark Title',
+                      labelText: 'Title',
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      hintStyle:
+                          TextStyle(fontSize: 16, color: Colors.grey[400]),
+                      alignLabelWithHint: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 16),
+                HikeButton(
+                  buttonHeight: 5.5.h,
+                  buttonWidth: 50.w,
+                  textSize: 14.0,
+                  textColor: Colors.white,
+                  onTap: () {
+                    if (!_landmarkFormKey.currentState!.validate()) return;
+                    appRouter.maybePop();
+                    locator<LocationCubit>().createLandmark(
+                        beaconId, _landMarkeController.text.trim(), loc);
+                    _landMarkeController.clear();
+                  },
+                  text: 'Create Landmark',
+                )
+              ],
             ),
           ),
         ),

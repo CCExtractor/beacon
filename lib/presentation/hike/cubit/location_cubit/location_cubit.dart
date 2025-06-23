@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
@@ -13,7 +16,6 @@ import 'package:beacon/domain/usecase/hike_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_state.dart';
 import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_cubit.dart';
-import 'package:beacon/presentation/widgets/custom_label_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +23,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:vibration/vibration.dart';
 
@@ -61,6 +62,29 @@ class LocationCubit extends Cubit<LocationState> {
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  void centerMap() {
+    Location location = new Location();
+    location.changeSettings(
+        interval: 5000, accuracy: LocationAccuracy.high, distanceFilter: 0);
+
+    _streamLocaitonData =
+        location.onLocationChanged.listen((LocationData newPosition) async {
+      var latLng = locationDataToLatLng(newPosition);
+
+      mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: latLng, zoom: 15),
+      ));
+    });
+  }
+
+  void zoomIn() {
+    mapController?.animateCamera(CameraUpdate.zoomIn());
+  }
+
+  void zoomOut() {
+    mapController?.animateCamera(CameraUpdate.zoomOut());
   }
 
   Future<void> loadBeaconData(
@@ -675,7 +699,7 @@ class LocationCubit extends Cubit<LocationState> {
         _hikeMarkers.where((element) => element.markerId == markerId);
 
     if (existingMarkers.isEmpty) {
-      var newMarker = await createMarker(landMark);
+      var newMarker = await createMarkerWithCircularNetworkImage(landMark);
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position
@@ -717,23 +741,92 @@ class LocationCubit extends Cubit<LocationState> {
     }
   }
 
-  Future<Marker> createMarker(LandMarkEntity landmark) async {
-    final pictureRecorder = PictureRecorder();
-    final canvas = Canvas(pictureRecorder);
-    final customMarker = CustomMarker(text: landmark.title!);
-    customMarker.paint(canvas, Size(100, 100));
-    final picture = pictureRecorder.endRecording();
-    final image = await picture.toImage(100, 100);
-    final bytes = await image.toByteData(format: ImageByteFormat.png);
+  Future<Marker> createMarkerWithCircularNetworkImage(
+      LandMarkEntity landmark) async {
+    final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuNhTZJTtkR6b-ADMhmzPvVwaLuLdz273wvQ&s",
+      size: 80,
+      borderColor: Colors.deepPurple,
+      borderWidth: 4,
+    );
 
     return Marker(
       markerId: MarkerId(landmark.id!.toString()),
       position: locationToLatLng(landmark.location!),
-      icon: BitmapDescriptor.bytes(bytes!.buffer.asUint8List()),
+      icon: BitmapDescriptor.fromBytes(markerIcon),
       infoWindow: InfoWindow(
         title: 'Created by: ${landmark.createdBy?.name ?? 'Anonymous'}',
       ),
     );
+  }
+
+  Future<Uint8List> getCircularImageWithBorderAndPointer(
+    String imageUrl, {
+    int size = 150,
+    Color borderColor = Colors.red,
+    double borderWidth = 6,
+  }) async {
+    final http.Response response = await http.get(Uri.parse(imageUrl));
+    final Uint8List bytes = response.bodyBytes;
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      bytes,
+      targetWidth: size,
+      targetHeight: size,
+    );
+    final ui.FrameInfo frame = await codec.getNextFrame();
+    final ui.Image image = frame.image;
+
+    final double radius = size / 2;
+    final double triangleHeight = size * 0.35; // Increase triangle height here
+    final double totalHeight = size + triangleHeight;
+
+    final ui.PictureRecorder recorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(recorder);
+    final Paint paint = Paint()..isAntiAlias = true;
+
+    final Offset circleCenter = Offset(radius, radius);
+
+    // 1. Draw triangle FIRST (so it goes behind the circle)
+    paint
+      ..style = PaintingStyle.fill
+      ..color = borderColor;
+
+    final Path trianglePath = Path()
+      ..moveTo(radius - 25, size.toDouble() - 10) // narrower base
+      ..lineTo(radius + 25, size.toDouble() - 10)
+      ..lineTo(radius, size + triangleHeight - 10)
+      ..close();
+
+    canvas.drawPath(trianglePath, paint);
+
+    // 2. Draw white background circle
+    paint.color = Colors.white;
+    canvas.drawCircle(circleCenter, radius, paint);
+
+    // 3. Clip and draw circular image
+    Path clipPath = Path()
+      ..addOval(
+          Rect.fromCircle(center: circleCenter, radius: radius - borderWidth));
+    canvas.save();
+    canvas.clipPath(clipPath);
+    canvas.drawImage(image, Offset.zero, Paint());
+    canvas.restore();
+
+    // 4. Draw circular border
+    paint
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+    canvas.drawCircle(circleCenter, radius - borderWidth / 2, paint);
+
+    // 5. Convert to PNG bytes
+    final ui.Image finalImage =
+        await recorder.endRecording().toImage(size, totalHeight.toInt());
+    final ByteData? byteData =
+        await finalImage.toByteData(format: ui.ImageByteFormat.png);
+
+    return byteData!.buffer.asUint8List();
   }
 
   void changeGeofenceRadius(double radius, LatLng center) {

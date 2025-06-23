@@ -2,20 +2,21 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beacon/config/pip_manager.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
-import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/locator.dart';
+import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/hike_cubit/hike_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/hike_cubit/hike_state.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_state.dart';
-import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_cubit.dart';
-import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_state.dart';
+
 import 'package:beacon/presentation/hike/widgets/hike_screen_widget.dart';
+import 'package:beacon/presentation/hike/widgets/search_places.dart';
+import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:gap/gap.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_pip_mode/pip_widget.dart';
@@ -85,49 +86,154 @@ class _HikeScreenState extends State<HikeScreen>
                   );
                 } else {
                   return Scaffold(
-                      body: Stack(
-                    children: [
-                      SlidingUpPanel(
-                          onPanelOpened: () {
-                            setState(() {});
-                          },
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15),
-                            topLeft: Radius.circular(15),
-                          ),
-                          controller: _panelController,
-                          maxHeight: 60.h,
-                          minHeight: isSmallsized ? 22.h : 20.h,
-                          panel: _SlidingPanelWidget(),
-                          collapsed: _collapsedWidget(),
-                          body: _mapScreen()),
-                      Align(
-                        alignment: Alignment(-0.9, -0.9),
-                        child: FloatingActionButton(
-                          heroTag: 'BackButton',
-                          backgroundColor: kYellow,
+                      appBar: AppBar(
+                        backgroundColor: Colors.grey[50],
+                        leading: IconButton(
+                          icon: Icon(Icons.arrow_back_ios_new,
+                              size: 20, color: Colors.grey),
                           onPressed: () {
-                            SimplePip().enterPipMode();
+                            _panelController.close();
+                            appRouter.maybePop();
                           },
-                          child: Icon(
-                            CupertinoIcons.back,
-                            color: kBlue,
-                          ),
                         ),
+                        centerTitle: true,
+                        title: Image.asset(
+                          'images/beacon_logo.png',
+                          height: 28,
+                        ),
+                        actions: [
+                          IconButton(
+                              icon: const Icon(Icons.power_settings_new,
+                                  color: Colors.grey),
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        backgroundColor: Color(0xffFAFAFA),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                        ),
+                                        title: Text('Logout',
+                                            style: Style.heading),
+                                        content: Text(
+                                          'Are you sure you want to logout?',
+                                          style: TextStyle(
+                                              fontSize: 16, color: kBlack),
+                                        ),
+                                        actions: <Widget>[
+                                          HikeButton(
+                                            buttonWidth: 80,
+                                            buttonHeight: 40,
+                                            isDotted: true,
+                                            onTap: () => AutoRouter.of(context)
+                                                .maybePop(false),
+                                            text: 'No',
+                                            textSize: 18.0,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          HikeButton(
+                                            buttonWidth: 80,
+                                            buttonHeight: 40,
+                                            onTap: () async {
+                                              appRouter.replaceNamed('/auth');
+                                              localApi.deleteUser();
+                                              context
+                                                  .read<AuthCubit>()
+                                                  .googleSignOut();
+                                            },
+                                            text: 'Yes',
+                                            textSize: 18.0,
+                                          ),
+                                        ],
+                                      ))),
+                        ],
                       ),
-                      Align(
-                          alignment: Alignment(0.85, -0.9),
-                          child: HikeScreenWidget.shareButton(
-                              context, widget.beacon.shortcode, widget.beacon)),
-                      Align(
-                          alignment: Alignment(1, -0.7),
-                          child: HikeScreenWidget.showMapViewSelector(context)),
-                      Align(
-                          alignment: Alignment(0.85, -0.5),
-                          child: HikeScreenWidget.sosButton(
-                              widget.beacon.id!, context)),
-                    ],
-                  ));
+                      body: Stack(
+                        children: [
+                          _mapScreen(),
+                          LocationSearchWidget(),
+                          Positioned(
+                            bottom: 200,
+                            right: 10,
+                            child: Column(
+                              children: [
+                                FloatingActionButton(
+                                  backgroundColor: Colors.white,
+                                  mini: true,
+                                  onPressed: () => _locationCubit.zoomIn(),
+                                  child: Icon(Icons.add),
+                                ),
+                                //SizedBox(height: 2),
+                                FloatingActionButton(
+                                  backgroundColor: Colors.white,
+                                  mini: true,
+                                  onPressed: () => _locationCubit.zoomOut(),
+                                  child: Icon(Icons.remove),
+                                ),
+                                SizedBox(height: 2),
+                                FloatingActionButton(
+                                  backgroundColor: Colors.white,
+                                  mini: true,
+                                  onPressed: () => _locationCubit.centerMap(),
+                                  child: Icon(Icons.map),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              height: 100,
+                              child: Container(
+                                height: 100,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // Left Circular Icon Button
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  "https://media.istockphoto.com/id/1253926432/vector/flashlight-warning-alarm-light-and-siren-light-flat-design-vector-design.jpg?s=612x612&w=0&k=20&c=yOj6Jpu7XDrPJCTfUIpQm-LWI9q9RWQB91s-N7CgQDQ="))),
+                                    ),
+
+                                    const SizedBox(width: 10),
+
+                                    // Right Red SOS Button
+                                    HikeButton(
+                                      buttonWidth: 70.w,
+                                      buttonHeight: 50,
+                                      text: 'Send SOS',
+                                      textSize: 18.0,
+                                      buttonColor: Colors.red,
+                                      textColor: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              )),
+                        ],
+                      ));
                 }
               },
             );
@@ -152,20 +258,19 @@ class _HikeScreenState extends State<HikeScreen>
           );
         } else if (state is LoadedLocationState) {
           return GoogleMap(
-              circles: state.geofence,
-              polylines: state.polyline,
-              mapType: state.mapType,
-              compassEnabled: true,
-              onTap: (latlng) {
-                _panelController.close();
-                HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                    context, widget.beacon.id!, latlng);
-              },
-              zoomControlsEnabled: true,
-              onMapCreated: _locationCubit.onMapCreated,
-              markers: state.locationMarkers,
-              initialCameraPosition: CameraPosition(
-                  zoom: 15, target: state.locationMarkers.first.position));
+            circles: state.geofence,
+            polylines: state.polyline,
+            onLongPress: (latlng) {
+              HikeScreenWidget.showCreateLandMarkDialogueDialog(
+                  context, widget.beacon.id!, latlng);
+            },
+            onMapCreated: _locationCubit.onMapCreated,
+            markers: state.locationMarkers,
+            initialCameraPosition: CameraPosition(
+              zoom: 15,
+              target: state.locationMarkers.first.position,
+            ),
+          );
         }
         return Center(
           child: GestureDetector(
@@ -174,168 +279,6 @@ class _HikeScreenState extends State<HikeScreen>
             },
             child: Text('Something went wrong please try again!'),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _collapsedWidget() {
-    var beacon = widget.beacon;
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: kBlue,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10),
-            topLeft: Radius.circular(10),
-          ),
-        ),
-        child: BlocBuilder<PanelCubit, SlidingPanelState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () {
-                return SpinKitCircle(color: kYellow);
-              },
-              loaded: (
-                isActive,
-                expiringTime,
-                leaderAddress,
-                leader,
-                followers,
-                message,
-              ) {
-                followers = followers ?? [];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 0.8.h,
-                        width: 18.w,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                      ),
-                    ),
-                    Gap(10),
-                    Text(
-                        isActive == true
-                            ? 'Beacon expiring at ${expiringTime ?? '<>'}'
-                            : 'Beacon is expired',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontFamily: '',
-                            fontWeight: FontWeight.w700)),
-                    Gap(2),
-                    Text('Beacon leader at: ${leaderAddress ?? '<>'}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: '',
-                            fontWeight: FontWeight.w600)),
-                    Gap(1.5),
-                    Text('Total followers: ${followers.length} ',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: '',
-                            fontWeight: FontWeight.w500)),
-                    Gap(1),
-                    Text('Share the pass key to join user: ${beacon.shortcode}',
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                            fontFamily: '',
-                            fontWeight: FontWeight.w500))
-                  ],
-                );
-              },
-              error: (message) {
-                return Text(message.toString());
-              },
-            );
-          },
-        ));
-  }
-
-  Widget _SlidingPanelWidget() {
-    // return Container();
-    return BlocBuilder<PanelCubit, SlidingPanelState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () {
-            return CircularProgressIndicator();
-          },
-          loaded: (
-            isActive,
-            expiringTime,
-            leaderAddress,
-            leader,
-            followers,
-            message,
-          ) {
-            List<UserEntity> members = [];
-            members.add(leader!);
-            if (followers != null) {
-              followers.forEach((element) {
-                members.add(element!);
-              });
-            }
-
-            return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: members.length,
-              itemBuilder: (context, index) {
-                var member = members[index];
-                return Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    children: [
-                      Gap(10),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: kYellow,
-                        child: Icon(
-                          Icons.person_2_rounded,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                      ),
-                      Gap(10),
-                      Text(
-                        member.name ?? 'Anonymous',
-                        style: TextStyle(fontSize: 19),
-                      ),
-                      Spacer(),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        child: FloatingActionButton(
-                          backgroundColor: kYellow,
-                          onPressed: () async {
-                            _locationCubit
-                                .changeCameraPosition(member.id ?? '');
-                            _panelController.close();
-                          },
-                          child: Icon(Icons.location_city),
-                        ),
-                      ),
-                      Gap(10),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-          error: (message) {
-            return Text(message.toString());
-          },
         );
       },
     );
