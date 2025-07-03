@@ -21,7 +21,9 @@ mixin _$LandMarkEntity {
   LocationEntity? get location => throw _privateConstructorUsedError;
   UserEntity? get createdBy => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LandMarkEntityCopyWith<LandMarkEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -52,6 +54,8 @@ class _$LandMarkEntityCopyWithImpl<$Res, $Val extends LandMarkEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +84,8 @@ class _$LandMarkEntityCopyWithImpl<$Res, $Val extends LandMarkEntity>
     ) as $Val);
   }
 
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LocationEntityCopyWith<$Res>? get location {
@@ -92,6 +98,8 @@ class _$LandMarkEntityCopyWithImpl<$Res, $Val extends LandMarkEntity>
     });
   }
 
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get createdBy {
@@ -133,6 +141,8 @@ class __$$LandMarkEntityImplCopyWithImpl<$Res>
       _$LandMarkEntityImpl _value, $Res Function(_$LandMarkEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -198,7 +208,9 @@ class _$LandMarkEntityImpl implements _LandMarkEntity {
   @override
   int get hashCode => Object.hash(runtimeType, id, title, location, createdBy);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LandMarkEntityImplCopyWith<_$LandMarkEntityImpl> get copyWith =>
@@ -221,8 +233,11 @@ abstract class _LandMarkEntity implements LandMarkEntity {
   LocationEntity? get location;
   @override
   UserEntity? get createdBy;
+
+  /// Create a copy of LandMarkEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LandMarkEntityImplCopyWith<_$LandMarkEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

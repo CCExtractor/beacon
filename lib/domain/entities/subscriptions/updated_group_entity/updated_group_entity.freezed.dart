@@ -22,7 +22,9 @@ mixin _$UpdatedGroupEntity {
   BeaconEntity? get newBeacon => throw _privateConstructorUsedError;
   UserEntity? get newUser => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UpdatedGroupEntityCopyWith<UpdatedGroupEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,6 +58,8 @@ class _$UpdatedGroupEntityCopyWithImpl<$Res, $Val extends UpdatedGroupEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -89,6 +93,8 @@ class _$UpdatedGroupEntityCopyWithImpl<$Res, $Val extends UpdatedGroupEntity>
     ) as $Val);
   }
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $BeaconEntityCopyWith<$Res>? get deletedBeacon {
@@ -101,6 +107,8 @@ class _$UpdatedGroupEntityCopyWithImpl<$Res, $Val extends UpdatedGroupEntity>
     });
   }
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $BeaconEntityCopyWith<$Res>? get updatedBeacon {
@@ -113,6 +121,8 @@ class _$UpdatedGroupEntityCopyWithImpl<$Res, $Val extends UpdatedGroupEntity>
     });
   }
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $BeaconEntityCopyWith<$Res>? get newBeacon {
@@ -125,6 +135,8 @@ class _$UpdatedGroupEntityCopyWithImpl<$Res, $Val extends UpdatedGroupEntity>
     });
   }
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get newUser {
@@ -171,6 +183,8 @@ class __$$UpdatedGroupEntityImplCopyWithImpl<$Res>
       $Res Function(_$UpdatedGroupEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -250,7 +264,9 @@ class _$UpdatedGroupEntityImpl implements _UpdatedGroupEntity {
   int get hashCode => Object.hash(
       runtimeType, id, deletedBeacon, updatedBeacon, newBeacon, newUser);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UpdatedGroupEntityImplCopyWith<_$UpdatedGroupEntityImpl> get copyWith =>
@@ -276,8 +292,11 @@ abstract class _UpdatedGroupEntity implements UpdatedGroupEntity {
   BeaconEntity? get newBeacon;
   @override
   UserEntity? get newUser;
+
+  /// Create a copy of UpdatedGroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UpdatedGroupEntityImplCopyWith<_$UpdatedGroupEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -247,6 +247,7 @@ deleteBeacon(id: "$id")
                 lat
                 lon
               }
+              imageUrl
             }
             landmarks{
               _id
@@ -258,6 +259,7 @@ deleteBeacon(id: "$id")
               createdBy{
               _id
               name
+              imageUrl
               }
             }
             location{
@@ -414,6 +416,7 @@ deleteBeacon(id: "$id")
           createdBy{
           _id
           name
+          imageUrl
           }
         }
       }
@@ -448,6 +451,7 @@ deleteBeacon(id: "$id")
       updatedUser{
        _id
        name
+       imageUrl
        location{
          lat
          lon
@@ -465,10 +469,24 @@ deleteBeacon(id: "$id")
        _id
        name
        email
+        imageUrl
        }
       }
 
       }
     }
   ''');
+
+  String updateUserImage(String? imageUrl) {
+    return '''
+      mutation{
+        updateUserImage(imageUrl: "$imageUrl"){
+          _id
+          name
+          email
+          imageUrl
+        }
+      }
+    ''';
+  }
 }

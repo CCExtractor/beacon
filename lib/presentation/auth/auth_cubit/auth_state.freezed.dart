@@ -89,6 +89,9 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -105,6 +108,9 @@ class __$$InitialAuthStateImplCopyWithImpl<$Res>
   __$$InitialAuthStateImplCopyWithImpl(_$InitialAuthStateImpl _value,
       $Res Function(_$InitialAuthStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -225,6 +231,9 @@ class __$$AuthLoadingStateImplCopyWithImpl<$Res>
   __$$AuthLoadingStateImplCopyWithImpl(_$AuthLoadingStateImpl _value,
       $Res Function(_$AuthLoadingStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -348,6 +357,8 @@ class __$$AuthErrorStateImplCopyWithImpl<$Res>
       _$AuthErrorStateImpl _value, $Res Function(_$AuthErrorStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -386,7 +397,9 @@ class _$AuthErrorStateImpl implements AuthErrorState {
   @override
   int get hashCode => Object.hash(runtimeType, error);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AuthErrorStateImplCopyWith<_$AuthErrorStateImpl> get copyWith =>
@@ -478,7 +491,10 @@ abstract class AuthErrorState implements AuthState {
   const factory AuthErrorState({final String? error}) = _$AuthErrorStateImpl;
 
   String? get error;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AuthErrorStateImplCopyWith<_$AuthErrorStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -500,6 +516,8 @@ class __$$SuccessStateImplCopyWithImpl<$Res>
       _$SuccessStateImpl _value, $Res Function(_$SuccessStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -538,7 +556,9 @@ class _$SuccessStateImpl implements SuccessState {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SuccessStateImplCopyWith<_$SuccessStateImpl> get copyWith =>
@@ -629,7 +649,10 @@ abstract class SuccessState implements AuthState {
   const factory SuccessState({final String? message}) = _$SuccessStateImpl;
 
   String? get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SuccessStateImplCopyWith<_$SuccessStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -649,6 +672,9 @@ class __$$AuthVerificationStateImplCopyWithImpl<$Res>
   __$$AuthVerificationStateImplCopyWithImpl(_$AuthVerificationStateImpl _value,
       $Res Function(_$AuthVerificationStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc

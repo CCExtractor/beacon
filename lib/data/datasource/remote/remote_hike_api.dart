@@ -33,6 +33,8 @@ class RemoteHikeApi {
     final result = await _authClient.mutate(MutationOptions(
         document: gql(beaconQueries.fetchBeaconDetail(beaconId))));
 
+    print("Result fetch beacon queries: ${result.data}");
+
     if (result.isConcrete && result.data != null) {
       final beaconJson = result.data!['beacon'];
 
@@ -91,6 +93,8 @@ class RemoteHikeApi {
 
     final result = await _authClient.mutate(MutationOptions(
         document: gql(beaconQueries.createLandmark(id, lat, lon, title))));
+
+    print("Result: ${result.data}");
 
     if (result.isConcrete &&
         result.data != null &&

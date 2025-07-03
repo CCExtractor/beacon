@@ -15,6 +15,8 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "GroupCard member IDs: ${group.members?.map((m) => m?.imageUrl).toList()}");
     String noMembers = group.members!.length.toString();
     String noBeacons = group.beacons!.length.toString();
 

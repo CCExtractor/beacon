@@ -25,7 +25,9 @@ mixin _$GroupEntity {
   bool get hasBeaconActivity => throw _privateConstructorUsedError;
   bool get hasMemberActivity => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GroupEntityCopyWith<GroupEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -59,6 +61,8 @@ class _$GroupEntityCopyWithImpl<$Res, $Val extends GroupEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -107,6 +111,8 @@ class _$GroupEntityCopyWithImpl<$Res, $Val extends GroupEntity>
     ) as $Val);
   }
 
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get leader {
@@ -150,6 +156,8 @@ class __$$GroupEntityImplCopyWithImpl<$Res>
       _$GroupEntityImpl _value, $Res Function(_$GroupEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -284,7 +292,9 @@ class _$GroupEntityImpl implements _GroupEntity {
       hasBeaconActivity,
       hasMemberActivity);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$GroupEntityImplCopyWith<_$GroupEntityImpl> get copyWith =>
@@ -318,8 +328,11 @@ abstract class _GroupEntity implements GroupEntity {
   bool get hasBeaconActivity;
   @override
   bool get hasMemberActivity;
+
+  /// Create a copy of GroupEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GroupEntityImplCopyWith<_$GroupEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -368,6 +368,18 @@ class HomeCubit extends Cubit<HomeState> {
     _currentGroupId = groupId;
   }
 
+  void updateUserImage(String userId, String? imageUrl) async {
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      var dataState = await homeUseCase.updateUserImage(userId, imageUrl);
+
+      if (dataState is DataSuccess && dataState.data == true) {
+        emit(_loadedhomeState.copyWith(message: 'Profile image updated!'));
+      } else {
+        emit(_loadedhomeState.copyWith(message: dataState.error));
+      }
+    }
+  }
+
   void init() async {
     var groups = localApi.userModel.groups ?? [];
     _groupIds = List.generate(groups.length, (index) => groups[index]!.id!);

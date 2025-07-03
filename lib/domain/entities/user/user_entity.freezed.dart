@@ -25,8 +25,11 @@ mixin _$UserEntity {
   String? get name => throw _privateConstructorUsedError;
   bool? get isVerified => throw _privateConstructorUsedError;
   LocationEntity? get location => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UserEntityCopyWith<UserEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -46,7 +49,8 @@ abstract class $UserEntityCopyWith<$Res> {
       bool? isGuest,
       String? name,
       bool? isVerified,
-      LocationEntity? location});
+      LocationEntity? location,
+      String? imageUrl});
 
   $LocationEntityCopyWith<$Res>? get location;
 }
@@ -61,6 +65,8 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -73,6 +79,7 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
     Object? name = freezed,
     Object? isVerified = freezed,
     Object? location = freezed,
+    Object? imageUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -111,9 +118,15 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LocationEntity?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LocationEntityCopyWith<$Res>? get location {
@@ -144,7 +157,8 @@ abstract class _$$UserEntityImplCopyWith<$Res>
       bool? isGuest,
       String? name,
       bool? isVerified,
-      LocationEntity? location});
+      LocationEntity? location,
+      String? imageUrl});
 
   @override
   $LocationEntityCopyWith<$Res>? get location;
@@ -158,6 +172,8 @@ class __$$UserEntityImplCopyWithImpl<$Res>
       _$UserEntityImpl _value, $Res Function(_$UserEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -170,6 +186,7 @@ class __$$UserEntityImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? isVerified = freezed,
     Object? location = freezed,
+    Object? imageUrl = freezed,
   }) {
     return _then(_$UserEntityImpl(
       id: freezed == id
@@ -208,6 +225,10 @@ class __$$UserEntityImplCopyWithImpl<$Res>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LocationEntity?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -224,7 +245,8 @@ class _$UserEntityImpl implements _UserEntity {
       this.isGuest,
       this.name,
       this.isVerified,
-      this.location})
+      this.location,
+      this.imageUrl})
       : _groups = groups,
         _beacons = beacons;
 
@@ -262,10 +284,12 @@ class _$UserEntityImpl implements _UserEntity {
   final bool? isVerified;
   @override
   final LocationEntity? location;
+  @override
+  final String? imageUrl;
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, groups: $groups, beacons: $beacons, authToken: $authToken, email: $email, isGuest: $isGuest, name: $name, isVerified: $isVerified, location: $location)';
+    return 'UserEntity(id: $id, groups: $groups, beacons: $beacons, authToken: $authToken, email: $email, isGuest: $isGuest, name: $name, isVerified: $isVerified, location: $location, imageUrl: $imageUrl)';
   }
 
   @override
@@ -284,7 +308,9 @@ class _$UserEntityImpl implements _UserEntity {
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
             (identical(other.location, location) ||
-                other.location == location));
+                other.location == location) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl));
   }
 
   @override
@@ -298,9 +324,12 @@ class _$UserEntityImpl implements _UserEntity {
       isGuest,
       name,
       isVerified,
-      location);
+      location,
+      imageUrl);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UserEntityImplCopyWith<_$UserEntityImpl> get copyWith =>
@@ -317,7 +346,8 @@ abstract class _UserEntity implements UserEntity {
       final bool? isGuest,
       final String? name,
       final bool? isVerified,
-      final LocationEntity? location}) = _$UserEntityImpl;
+      final LocationEntity? location,
+      final String? imageUrl}) = _$UserEntityImpl;
 
   @override
   String? get id;
@@ -338,7 +368,12 @@ abstract class _UserEntity implements UserEntity {
   @override
   LocationEntity? get location;
   @override
-  @JsonKey(ignore: true)
+  String? get imageUrl;
+
+  /// Create a copy of UserEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UserEntityImplCopyWith<_$UserEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

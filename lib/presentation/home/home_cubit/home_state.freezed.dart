@@ -89,6 +89,9 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -105,6 +108,9 @@ class __$$InitialHomeStateImplCopyWithImpl<$Res>
   __$$InitialHomeStateImplCopyWithImpl(_$InitialHomeStateImpl _value,
       $Res Function(_$InitialHomeStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -225,6 +231,9 @@ class __$$ShimmerHomeStateImplCopyWithImpl<$Res>
   __$$ShimmerHomeStateImplCopyWithImpl(_$ShimmerHomeStateImpl _value,
       $Res Function(_$ShimmerHomeStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -345,6 +354,9 @@ class __$$LoadingHomeStateImplCopyWithImpl<$Res>
   __$$LoadingHomeStateImplCopyWithImpl(_$LoadingHomeStateImpl _value,
       $Res Function(_$LoadingHomeStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -472,6 +484,8 @@ class __$$LoadedHomeStateImplCopyWithImpl<$Res>
       _$LoadedHomeStateImpl _value, $Res Function(_$LoadedHomeStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -554,7 +568,9 @@ class _$LoadedHomeStateImpl implements LoadedHomeState {
       isLoadingmore,
       hasReachedEnd);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoadedHomeStateImplCopyWith<_$LoadedHomeStateImpl> get copyWith =>
@@ -653,7 +669,10 @@ abstract class LoadedHomeState implements HomeState {
   String? get message;
   bool get isLoadingmore;
   bool get hasReachedEnd;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedHomeStateImplCopyWith<_$LoadedHomeStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

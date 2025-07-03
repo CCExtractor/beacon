@@ -46,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login(String email, String password) async {
     emit(AuthLoadingState());
     final dataState = await authUseCase.loginUserCase(email, password);
-
+    print("Data State from login: ${dataState.data?.imageUrl}");
     if (dataState is DataSuccess && dataState.data != null) {
       if (dataState.data!.isVerified == false) {
         // show verification screen

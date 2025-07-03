@@ -7,6 +7,7 @@ class AuthQueries {
             _id
             name
             email
+            imageUrl
           }
         }
     ''';
@@ -85,6 +86,7 @@ class AuthQueries {
           email
           name
           isVerified
+          imageUrl
           groups{
             _id
           }

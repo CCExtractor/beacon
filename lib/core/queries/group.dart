@@ -17,6 +17,7 @@ class GroupQueries {
         members{
                _id
                name
+               imageUrl
         }
        shortcode
        __typename
@@ -122,10 +123,12 @@ class GroupQueries {
             leader {
               _id
               name
+              imageUrl
             }
             members {
               _id
               name
+              imageUrl
             }
             beacons
             {
@@ -146,6 +149,7 @@ query{
               leader {
                 _id
                 name
+                imageUrl
               }
               location{
                 lat
@@ -154,6 +158,7 @@ query{
               followers {
                 _id
                 name
+                imageUrl
               }
               group{
                 _id
@@ -178,10 +183,12 @@ query{
         leader{
                _id
                name
+                imageUrl
         }
         members{
                _id
                name
+                imageUrl
         }
        shortcode
        __typename
@@ -200,6 +207,7 @@ query{
         _id
         name
         email
+        imageUrl
         }
 
         newBeacon{
@@ -209,10 +217,12 @@ query{
           _id
           name
           email
+          imageUrl
         }
         followers {
           _id
           name
+          imageUrl
         }
         group{
         _id
@@ -257,10 +267,12 @@ query{
           _id
           name
           email
+          imageUrl
         }
         followers {
           _id
           name
+          imageUrl
         }
         group{
         _id
@@ -300,4 +312,18 @@ query{
       }
     }
   ''');
+
+  String updateUserImage(String userId, String? imageUrl) {
+    return '''
+      mutation{
+        updateUserImage(userId: "${userId}", imageUrl: "$imageUrl")
+        {
+          _id
+          name
+          email
+          imageUrl
+        }
+      }
+    ''';
+  }
 }

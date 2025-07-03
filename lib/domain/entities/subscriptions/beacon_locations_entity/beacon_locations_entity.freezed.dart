@@ -21,7 +21,9 @@ mixin _$BeaconLocationsEntity {
   LandMarkEntity? get landmark => throw _privateConstructorUsedError;
   UserEntity? get user => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BeaconLocationsEntityCopyWith<BeaconLocationsEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -54,6 +56,8 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -82,6 +86,8 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get userSOS {
@@ -94,6 +100,8 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LandMarkEntityCopyWith<$Res>? get landmark {
@@ -106,6 +114,8 @@ class _$BeaconLocationsEntityCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get user {
@@ -151,6 +161,8 @@ class __$$BeaconLocationsEntityImplCopyWithImpl<$Res>
       $Res Function(_$BeaconLocationsEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -228,7 +240,9 @@ class _$BeaconLocationsEntityImpl implements _BeaconLocationsEntity {
   int get hashCode => Object.hash(runtimeType, userSOS,
       const DeepCollectionEquality().hash(_route), landmark, user);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BeaconLocationsEntityImplCopyWith<_$BeaconLocationsEntityImpl>
@@ -251,8 +265,11 @@ abstract class _BeaconLocationsEntity implements BeaconLocationsEntity {
   LandMarkEntity? get landmark;
   @override
   UserEntity? get user;
+
+  /// Create a copy of BeaconLocationsEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BeaconLocationsEntityImplCopyWith<_$BeaconLocationsEntityImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -204,4 +204,20 @@ class RemoteHomeApi {
       return exception.graphqlErrors[0].message.toString();
     }
   }
+
+  Future<DataState<bool>> updateUserImage(
+      String userId, String? imageUrl) async {
+    bool isConnected = await utils.checkInternetConnectivity();
+    if (!isConnected) {
+      return DataFailed('No internet connection');
+    }
+
+    final result = await _authClient.mutate(MutationOptions(
+        document: gql(_groupQueries.updateUserImage(userId, imageUrl))));
+
+    if (result.isConcrete && result.data != null) {
+      return DataSuccess(true);
+    }
+    return DataFailed(encounteredExceptionOrError(result.exception!));
+  }
 }

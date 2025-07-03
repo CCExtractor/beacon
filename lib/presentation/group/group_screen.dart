@@ -175,15 +175,14 @@ class _GroupScreenState extends State<GroupScreen>
                                           : widget.group.members ?? [])
                                       .map((member) {
                                     if (member != null) {
+                                      print(
+                                          'Member Image URL: ${member.imageUrl}');
                                       return Positioned(
                                         left: widget.group.members!
                                                 .indexOf(member) *
                                             20.0,
                                         child: _buildProfileCircle(
-                                          member.id == localApi.userModel.id
-                                              ? Colors.teal
-                                              : shimmerSkeletonColor,
-                                        ),
+                                            member.imageUrl!),
                                       );
                                     } else {
                                       return const SizedBox.shrink();
@@ -501,14 +500,18 @@ class _GroupScreenState extends State<GroupScreen>
   }
 }
 
-Widget _buildProfileCircle(Color color) {
+Widget _buildProfileCircle(String url) {
   return Container(
     width: 40,
     height: 40,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
-      color: color,
+      color: Colors.grey[300],
       border: Border.all(color: Colors.white, width: 2),
+      image: DecorationImage(
+        image: NetworkImage(url),
+        fit: BoxFit.cover,
+      ),
     ),
   );
 }

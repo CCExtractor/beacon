@@ -638,12 +638,15 @@ class LocationCubit extends Cubit<LocationState> {
     return _address.isNotEmpty ? _address : null;
   }
 
+ // update here
   Future<void> createLandmark(
       String beaconId, String title, LatLng latlng) async {
     var dataState = await _hikeUseCase.createLandMark(beaconId, title,
         latlng.latitude.toString(), latlng.longitude.toString());
 
     if (dataState is DataSuccess && dataState.data != null) {
+      print(
+          'Creating marker for landmark: 1: ${dataState.data!.createdBy?.imageUrl}');
       await _createLandMarkMarker(dataState.data!);
       emit(LoadedLocationState(
           polyline: _polyline,
@@ -717,6 +720,7 @@ class LocationCubit extends Cubit<LocationState> {
     final markerPosition = locationToLatLng(user.location!);
 
     // final bitmap = await _createCustomMarkerBitmap();
+    print("logging user marker creation: ${user.name}");
 
     final existingMarkers =
         _hikeMarkers.where((element) => element.markerId == markerId);
@@ -743,8 +747,10 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<Marker> createMarkerWithCircularNetworkImage(
       LandMarkEntity landmark) async {
+    print("Creating marker for landmark: ${landmark.createdBy?.imageUrl}");
     final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuNhTZJTtkR6b-ADMhmzPvVwaLuLdz273wvQ&s",
+      landmark.createdBy?.imageUrl ??
+          'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
       size: 80,
       borderColor: Colors.deepPurple,
       borderWidth: 4,

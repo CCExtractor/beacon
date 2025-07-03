@@ -17,7 +17,7 @@ class HikeButton extends StatelessWidget {
   HikeButton(
       {this.onTap,
       this.borderColor = Colors.white,
-      this.buttonColor = kYellow,
+      this.buttonColor = Colors.teal,
       this.text,
       this.textColor = Colors.white,
       this.buttonWidth = 100,

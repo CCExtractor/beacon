@@ -7,16 +7,18 @@ part 'user_entity.freezed.dart';
 
 @freezed
 class UserEntity with _$UserEntity {
-  const factory UserEntity(
-      {String? id,
-      List<GroupEntity?>? groups,
-      List<BeaconEntity?>? beacons,
-      String? authToken,
-      String? email,
-      bool? isGuest,
-      String? name,
-      bool? isVerified,
-      LocationEntity? location}) = _UserEntity;
+  const factory UserEntity({
+    String? id,
+    List<GroupEntity?>? groups,
+    List<BeaconEntity?>? beacons,
+    String? authToken,
+    String? email,
+    bool? isGuest,
+    String? name,
+    bool? isVerified,
+    LocationEntity? location,
+    String? imageUrl, // Add this line
+  }) = _UserEntity;
 }
 
 extension UserEntityCopyWithExtension on UserEntity {
@@ -30,16 +32,19 @@ extension UserEntityCopyWithExtension on UserEntity {
     String? name,
     bool? isVerified,
     LocationEntity? location,
+    String? imageUrl, // Add this line
   }) {
     return UserEntity(
-        id: id ?? this.id,
-        groups: groups ?? this.groups,
-        beacons: beacons ?? this.beacons,
-        authToken: authToken ?? this.authToken,
-        email: email ?? this.email,
-        isGuest: isGuest ?? this.isGuest,
-        name: name ?? this.name,
-        location: location ?? this.location,
-        isVerified: isVerified ?? this.isVerified);
+      id: id ?? this.id,
+      groups: groups ?? this.groups,
+      beacons: beacons ?? this.beacons,
+      authToken: authToken ?? this.authToken,
+      email: email ?? this.email,
+      isGuest: isGuest ?? this.isGuest,
+      name: name ?? this.name,
+      location: location ?? this.location,
+      isVerified: isVerified ?? this.isVerified,
+      imageUrl: imageUrl ?? this.imageUrl, // Add this line
+    );
   }
 }

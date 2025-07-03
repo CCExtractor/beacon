@@ -261,8 +261,12 @@ class _HikeScreenState extends State<HikeScreen>
             circles: state.geofence,
             polylines: state.polyline,
             onLongPress: (latlng) {
+              // share user info
               HikeScreenWidget.showCreateLandMarkDialogueDialog(
-                  context, widget.beacon.id!, latlng);
+                context,
+                widget.beacon.id!,
+                latlng,
+              );
             },
             onMapCreated: _locationCubit.onMapCreated,
             markers: state.locationMarkers,
