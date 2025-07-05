@@ -102,6 +102,7 @@ class LocationCubit extends Cubit<LocationState> {
     // // adding leader location
     if (beacon.leader != null) {
       _leader = beacon.leader!;
+      print('location state leader: ${_leader!.imageUrl}');
 
       // creating leader location
 
@@ -114,8 +115,16 @@ class LocationCubit extends Cubit<LocationState> {
             position: locationToLatLng(_leader!.location!),
             ripple: false,
             infoWindow: InfoWindow(
-              title: '${_beacon!.leader?.name ?? 'Anonymous'}}',
+              title: 'this is ${_beacon!.leader?.name ?? 'Anonymous'}}',
             ),
+            icon: BitmapDescriptor.fromBytes(
+                await getCircularImageWithBorderAndPointer(
+              _leader!.imageUrl ??
+                  'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+              size: 80,
+              borderColor: Colors.red,
+              borderWidth: 4,
+            )),
             onTap: () {
               log('${beacon.leader?.name}');
             }));
@@ -135,13 +144,13 @@ class LocationCubit extends Cubit<LocationState> {
     }
 
     if (beacon.route != null) {
-      var marker = Marker(
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-          markerId: MarkerId('leader initial position'),
-          position: locationToLatLng(beacon.route!.first!));
+      // var marker = Marker(
+      //     markerId: MarkerId('leader initial position'),
+      //     icon:
+      //         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+      //     position: locationToLatLng(beacon.route!.first!));
 
-      _hikeMarkers.add(marker);
+      // _hikeMarkers.add(marker);
 
       // handling polyline here
       for (var point in beacon.route!) {
@@ -346,7 +355,7 @@ class LocationCubit extends Cubit<LocationState> {
         if (beaconLocationsEntity.landmark != null) {
           LandMarkEntity newLandMark = beaconLocationsEntity.landmark!;
 
-          await _createLandMarkMarker(newLandMark);
+          //  await _createLandMarkMarker(newLandMark);
 
           emit(LoadedLocationState(
               polyline: _polyline,
@@ -401,6 +410,14 @@ class LocationCubit extends Cubit<LocationState> {
           if (markers.isEmpty) {
             _hikeMarkers.add(Marker(
                 markerId: MarkerId(_beacon!.leader!.id.toString()),
+                icon: BitmapDescriptor.fromBytes(
+                    await getCircularImageWithBorderAndPointer(
+                  _leader!.imageUrl ??
+                      'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+                  size: 80,
+                  borderColor: Colors.red,
+                  borderWidth: 4,
+                )),
                 position: _points.last));
           }
           var leaderRipplingMarker = markers.first;
@@ -420,6 +437,8 @@ class LocationCubit extends Cubit<LocationState> {
           if (initialMarkers.isEmpty) {
             _hikeMarkers.add(RippleMarker(
                 markerId: MarkerId('leader initial position'),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueYellow),
                 ripple: false,
                 infoWindow: InfoWindow(title: 'Leader initial position'),
                 position: _points.first));
@@ -638,7 +657,7 @@ class LocationCubit extends Cubit<LocationState> {
     return _address.isNotEmpty ? _address : null;
   }
 
- // update here
+  // update here
   Future<void> createLandmark(
       String beaconId, String title, LatLng latlng) async {
     var dataState = await _hikeUseCase.createLandMark(beaconId, title,
@@ -719,6 +738,14 @@ class LocationCubit extends Cubit<LocationState> {
     final markerId = MarkerId(user.id!);
     final markerPosition = locationToLatLng(user.location!);
 
+    final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
+      user.imageUrl ??
+          'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+      size: 80,
+      borderColor: Colors.deepPurple,
+      borderWidth: 4,
+    );
+
     // final bitmap = await _createCustomMarkerBitmap();
     print("logging user marker creation: ${user.name}");
 
@@ -731,8 +758,7 @@ class LocationCubit extends Cubit<LocationState> {
           markerId: markerId,
           position: markerPosition,
           infoWindow: InfoWindow(title: user.name ?? 'Anonymous'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              isLeader ? BitmapDescriptor.hueRed : BitmapDescriptor.hueOrange));
+          icon: BitmapDescriptor.fromBytes(markerIcon));
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position

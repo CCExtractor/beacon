@@ -215,7 +215,7 @@ class HikeScreenWidget {
         ),
         child: Container(
           width: size.width * 0.85, // Set a reasonable width
-          height: isSmallScreen ? size.height * 0.25 : size.height * 0.2,
+          height: isSmallScreen ? size.height * 0.45 : size.height * 0.4,
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _landmarkFormKey,
@@ -223,6 +223,10 @@ class HikeScreenWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                Text(
+                  'Create Landmark',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 Container(
                   height: 60,
                   decoration: BoxDecoration(

@@ -257,11 +257,13 @@ class _HikeScreenState extends State<HikeScreen>
             color: kYellow,
           );
         } else if (state is LoadedLocationState) {
+          print('Location State: ${state.locationMarkers.length}');
           return GoogleMap(
             circles: state.geofence,
             polylines: state.polyline,
+            trafficEnabled: true,
+            mapType: MapType.normal,
             onLongPress: (latlng) {
-              // share user info
               HikeScreenWidget.showCreateLandMarkDialogueDialog(
                 context,
                 widget.beacon.id!,

@@ -206,6 +206,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
+                
               }
               location {
                 lat
@@ -231,6 +232,7 @@ deleteBeacon(id: "$id")
             leader{
               _id
               name
+              imageUrl
               location{
               lat
               lon
@@ -312,6 +314,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
+                imageUrl
                 location {
                   lat
                   lon
@@ -324,6 +327,7 @@ deleteBeacon(id: "$id")
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -361,11 +365,13 @@ deleteBeacon(id: "$id")
         _id
         name
         email
+        imageUrl
         }
         inactiveuser{
         _id
         name
         email
+        imageUrl
         }
       }
     }
@@ -378,6 +384,7 @@ deleteBeacon(id: "$id")
          _id
          name
          email
+          imageUrl
          location{
             lat
             lon
