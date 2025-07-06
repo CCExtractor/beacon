@@ -28,8 +28,8 @@ class HikeRepositoryImplementatioin implements HikeRepository {
 
   @override
   Future<DataState<LandMarkModel>> createLandMark(
-      String id, String title, String lat, String lon) {
-    return remoteHikeApi.createLandMark(id, lat, lon, title);
+      String id, String title, String lat, String lon, String icon) {
+    return remoteHikeApi.createLandMark(id, lat, lon, title, icon);
   }
 
   @override

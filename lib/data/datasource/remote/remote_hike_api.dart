@@ -84,7 +84,7 @@ class RemoteHikeApi {
   }
 
   Future<DataState<LandMarkModel>> createLandMark(
-      String id, String lat, String lon, String title) async {
+      String id, String lat, String lon, String title, String icon) async {
     bool isConnected = await utils.checkInternetConnectivity();
 
     if (!isConnected) {
@@ -92,7 +92,8 @@ class RemoteHikeApi {
     }
 
     final result = await _authClient.mutate(MutationOptions(
-        document: gql(beaconQueries.createLandmark(id, lat, lon, title))));
+        document:
+            gql(beaconQueries.createLandmark(id, lat, lon, title, icon))));
 
     print("Result: ${result.data}");
 
@@ -101,6 +102,7 @@ class RemoteHikeApi {
         result.data!['createLandmark'] != null) {
       final newLandMark =
           LandMarkModel.fromJson(result.data!['createLandmark']);
+      print("result data: ${result.data!['createLandmark']}");
       return DataSuccess(newLandMark);
     } else {
       return DataFailed(encounteredExceptionOrError(result.exception!));

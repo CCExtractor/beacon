@@ -206,7 +206,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
-                
+
               }
               location {
                 lat
@@ -404,18 +404,21 @@ deleteBeacon(id: "$id")
     }
   ''');
 
-  String createLandmark(String? id, String lat, String lon, String? title) {
+  String createLandmark(
+      String? id, String lat, String lon, String? title, String icon) {
     return '''
       mutation{
         createLandmark(
           landmark:{
             location:{lat:"$lat", lon:"$lon"},
-            title:"$title"
+            title:"$title",
+            icon: "$icon"
           },
           beaconID:"$id")
         {
           _id
           title
+          icon
           location{
             lat
             lon

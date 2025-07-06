@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$LandMarkEntity {
   String? get id => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
+  String? get icon => throw _privateConstructorUsedError;
   LocationEntity? get location => throw _privateConstructorUsedError;
   UserEntity? get createdBy => throw _privateConstructorUsedError;
 
@@ -37,6 +38,7 @@ abstract class $LandMarkEntityCopyWith<$Res> {
   $Res call(
       {String? id,
       String? title,
+      String? icon,
       LocationEntity? location,
       UserEntity? createdBy});
 
@@ -61,6 +63,7 @@ class _$LandMarkEntityCopyWithImpl<$Res, $Val extends LandMarkEntity>
   $Res call({
     Object? id = freezed,
     Object? title = freezed,
+    Object? icon = freezed,
     Object? location = freezed,
     Object? createdBy = freezed,
   }) {
@@ -72,6 +75,10 @@ class _$LandMarkEntityCopyWithImpl<$Res, $Val extends LandMarkEntity>
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      icon: freezed == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
               as String?,
       location: freezed == location
           ? _value.location
@@ -124,6 +131,7 @@ abstract class _$$LandMarkEntityImplCopyWith<$Res>
   $Res call(
       {String? id,
       String? title,
+      String? icon,
       LocationEntity? location,
       UserEntity? createdBy});
 
@@ -148,6 +156,7 @@ class __$$LandMarkEntityImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? title = freezed,
+    Object? icon = freezed,
     Object? location = freezed,
     Object? createdBy = freezed,
   }) {
@@ -159,6 +168,10 @@ class __$$LandMarkEntityImplCopyWithImpl<$Res>
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      icon: freezed == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
               as String?,
       location: freezed == location
           ? _value.location
@@ -176,12 +189,14 @@ class __$$LandMarkEntityImplCopyWithImpl<$Res>
 
 class _$LandMarkEntityImpl implements _LandMarkEntity {
   const _$LandMarkEntityImpl(
-      {this.id, this.title, this.location, this.createdBy});
+      {this.id, this.title, this.icon, this.location, this.createdBy});
 
   @override
   final String? id;
   @override
   final String? title;
+  @override
+  final String? icon;
   @override
   final LocationEntity? location;
   @override
@@ -189,7 +204,7 @@ class _$LandMarkEntityImpl implements _LandMarkEntity {
 
   @override
   String toString() {
-    return 'LandMarkEntity(id: $id, title: $title, location: $location, createdBy: $createdBy)';
+    return 'LandMarkEntity(id: $id, title: $title, icon: $icon, location: $location, createdBy: $createdBy)';
   }
 
   @override
@@ -199,6 +214,7 @@ class _$LandMarkEntityImpl implements _LandMarkEntity {
             other is _$LandMarkEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.icon, icon) || other.icon == icon) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.createdBy, createdBy) ||
@@ -206,7 +222,8 @@ class _$LandMarkEntityImpl implements _LandMarkEntity {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, location, createdBy);
+  int get hashCode =>
+      Object.hash(runtimeType, id, title, icon, location, createdBy);
 
   /// Create a copy of LandMarkEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -222,6 +239,7 @@ abstract class _LandMarkEntity implements LandMarkEntity {
   const factory _LandMarkEntity(
       {final String? id,
       final String? title,
+      final String? icon,
       final LocationEntity? location,
       final UserEntity? createdBy}) = _$LandMarkEntityImpl;
 
@@ -229,6 +247,8 @@ abstract class _LandMarkEntity implements LandMarkEntity {
   String? get id;
   @override
   String? get title;
+  @override
+  String? get icon;
   @override
   LocationEntity? get location;
   @override

@@ -20,7 +20,11 @@ class LandMarkModel implements LandMarkEntity {
   @HiveField(3)
   UserModel? createdBy;
 
-  LandMarkModel({this.title, this.location, this.id, this.createdBy});
+  @HiveField(4)
+  String? icon;
+
+  LandMarkModel(
+      {this.title, this.location, this.id, this.createdBy, this.icon});
 
   @override
   $LandMarkEntityCopyWith<LandMarkEntity> get copyWith =>
@@ -34,12 +38,14 @@ class LandMarkModel implements LandMarkEntity {
   LandMarkModel copyWithModel(
       {String? id,
       String? title,
+      String? icon,
       LocationModel? location,
       UserModel? createdBy}) {
     return LandMarkModel(
         id: id,
         title: title ?? this.title,
         location: location ?? this.location,
+        icon: icon ?? this.icon,
         createdBy: createdBy ?? this.createdBy);
   }
 }

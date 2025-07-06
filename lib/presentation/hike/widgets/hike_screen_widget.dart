@@ -198,87 +198,186 @@ class HikeScreenWidget {
     );
   }
 
+// Updated static method to show the dialog
   static void showCreateLandMarkDialogueDialog(
     BuildContext context,
     String beaconId,
     LatLng loc,
   ) {
+    showDialog(
+      context: context,
+      builder: (context) => CreateLandmarkDialog(
+        beaconId: beaconId,
+        loc: loc,
+      ),
+    );
+  }
+}
+
+class CreateLandmarkDialog extends StatefulWidget {
+  final String beaconId;
+  final LatLng loc;
+
+  const CreateLandmarkDialog({
+    Key? key,
+    required this.beaconId,
+    required this.loc,
+  }) : super(key: key);
+
+  @override
+  State<CreateLandmarkDialog> createState() => _CreateLandmarkDialogState();
+}
+
+class _CreateLandmarkDialogState extends State<CreateLandmarkDialog> {
+  final _landmarkFormKey = GlobalKey<FormState>();
+  final _landMarkeController = TextEditingController();
+  String? _selectedIcon;
+
+  // List of available icons
+  final List<String> _iconOptions = [
+    'images/icons/camp.png',
+    'images/icons/wind.png',
+    'images/icons/location-marker.png',
+    'images/icons/rain.png',
+    'images/icons/forest.png',
+    'images/icons/destination.png',
+  ];
+
+  @override
+  void dispose() {
+    _landMarkeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.height < 800;
 
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.grey[100],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Container(
-          width: size.width * 0.85, // Set a reasonable width
-          height: isSmallScreen ? size.height * 0.45 : size.height * 0.4,
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _landmarkFormKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Create Landmark',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Dialog(
+      backgroundColor: Colors.grey[100],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Container(
+        width: size.width * 0.85,
+        height: isSmallScreen ? size.height * 0.45 : size.height * 0.4,
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _landmarkFormKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Select an icon',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
                 ),
-                Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: kLightBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: TextFormField(
-                    controller: _landMarkeController,
-                    style: TextStyle(fontSize: 18.0),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter title for landmark";
-                      }
-                      return null;
+              ),
+
+              // Icon selection row
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _iconOptions.map((iconPath) {
+                  final isSelected = _selectedIcon == iconPath;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIcon = iconPath;
+                      });
                     },
-                    decoration: InputDecoration(
-                      hintText: 'Enter Landmark Title',
-                      labelText: 'Title',
-                      labelStyle: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).primaryColor,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected
+                              ? Theme.of(context).primaryColor
+                              : Colors.transparent,
+                          width: 2,
+                        ),
+                        color: isSelected
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Colors.transparent,
                       ),
-                      hintStyle:
-                          TextStyle(fontSize: 16, color: Colors.grey[400]),
-                      alignLabelWithHint: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
+                      child: Image.asset(
+                        iconPath,
+                        width: 40,
+                        height: 40,
+                      ),
                     ),
+                  );
+                }).toList(),
+              ),
+
+              // Text input field
+              Container(
+                height: 60,
+                margin: const EdgeInsets.only(top: 16),
+                decoration: BoxDecoration(
+                  color: kLightBlue,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: TextFormField(
+                  controller: _landMarkeController,
+                  style: const TextStyle(fontSize: 18.0),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter title for landmark";
+                    }
+                    if (_selectedIcon == null) {
+                      return "Please select an icon";
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Enter Landmark Title',
+                    labelText: 'Title',
+                    labelStyle: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[400],
+                    ),
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
-                SizedBox(height: 16),
-                HikeButton(
-                  buttonHeight: 5.5.h,
-                  buttonWidth: 50.w,
-                  textSize: 14.0,
-                  textColor: Colors.white,
-                  onTap: () {
-                    if (!_landmarkFormKey.currentState!.validate()) return;
-                    appRouter.maybePop();
-                    locator<LocationCubit>().createLandmark(
-                        beaconId, _landMarkeController.text.trim(), loc);
-                    _landMarkeController.clear();
-                  },
-                  text: 'Create Landmark',
-                )
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Create button
+              HikeButton(
+                buttonHeight: 5.5.h,
+                buttonWidth: 50.w,
+                textSize: 14.0,
+                textColor: Colors.white,
+                onTap: () {
+                  if (!_landmarkFormKey.currentState!.validate()) return;
+                  appRouter.maybePop();
+                  locator<LocationCubit>().createLandmark(
+                      widget.beaconId,
+                      _landMarkeController.text.trim(),
+                      widget.loc,
+                      _selectedIcon!);
+                  _landMarkeController.clear();
+                },
+                text: 'Create Landmark',
+              )
+            ],
           ),
         ),
       ),

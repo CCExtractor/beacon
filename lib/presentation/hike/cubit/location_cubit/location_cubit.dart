@@ -50,6 +50,13 @@ class LocationCubit extends Cubit<LocationState> {
   LocationData? _lastLocation;
   Set<Circle> _geofence = {};
   MapType _mapType = MapType.normal;
+  List<String> infoMarkers = [
+    "location-marker",
+    "wind",
+    "rain",
+    "camp",
+  ];
+  String selectedInfoMarker = "location-marker";
 
   StreamSubscription<DataState<BeaconLocationsEntity>>?
       _beaconlocationsSubscription;
@@ -59,6 +66,11 @@ class LocationCubit extends Cubit<LocationState> {
   late Animation<double>? _animation;
   BuildContext? context;
   TickerProvider? vsync;
+
+  void setLandmarkIcon(String icon) {
+    selectedInfoMarker = icon;
+    // emit(InitialLocationState());
+  }
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -659,13 +671,13 @@ class LocationCubit extends Cubit<LocationState> {
 
   // update here
   Future<void> createLandmark(
-      String beaconId, String title, LatLng latlng) async {
+      String beaconId, String title, LatLng latlng, String icon) async {
+    print("Creating landmark with title: $title at $latlng");
     var dataState = await _hikeUseCase.createLandMark(beaconId, title,
-        latlng.latitude.toString(), latlng.longitude.toString());
-
+        latlng.latitude.toString(), latlng.longitude.toString(), icon);
+    print("Data state: $dataState");
     if (dataState is DataSuccess && dataState.data != null) {
-      print(
-          'Creating marker for landmark: 1: ${dataState.data!.createdBy?.imageUrl}');
+      print('result Creating marker for landmark: 1: ${dataState.data?.icon}');
       await _createLandMarkMarker(dataState.data!);
       emit(LoadedLocationState(
           polyline: _polyline,
@@ -721,7 +733,9 @@ class LocationCubit extends Cubit<LocationState> {
         _hikeMarkers.where((element) => element.markerId == markerId);
 
     if (existingMarkers.isEmpty) {
-      var newMarker = await createMarkerWithCircularNetworkImage(landMark);
+      var newMarker = await createMarkerWithCircularNetworkImage(
+        landMark,
+      );
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position
@@ -775,11 +789,11 @@ class LocationCubit extends Cubit<LocationState> {
       LandMarkEntity landmark) async {
     print("Creating marker for landmark: ${landmark.createdBy?.imageUrl}");
     final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
-      landmark.createdBy?.imageUrl ??
-          'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+      landmark.icon ?? 'assets/icons/location-marker.png',
       size: 80,
-      borderColor: Colors.deepPurple,
+      borderColor: Colors.teal,
       borderWidth: 4,
+      isUrl: false,
     );
 
     return Marker(
@@ -787,19 +801,30 @@ class LocationCubit extends Cubit<LocationState> {
       position: locationToLatLng(landmark.location!),
       icon: BitmapDescriptor.fromBytes(markerIcon),
       infoWindow: InfoWindow(
-        title: 'Created by: ${landmark.createdBy?.name ?? 'Anonymous'}',
+        title:
+            '${landmark.title} by ${landmark.createdBy?.name ?? 'Anonymous'}',
       ),
     );
   }
 
   Future<Uint8List> getCircularImageWithBorderAndPointer(
-    String imageUrl, {
+    String imagePath, {
     int size = 150,
     Color borderColor = Colors.red,
     double borderWidth = 6,
+    bool isUrl = true,
   }) async {
-    final http.Response response = await http.get(Uri.parse(imageUrl));
-    final Uint8List bytes = response.bodyBytes;
+    Uint8List bytes;
+
+    if (isUrl) {
+      // Handle URL images
+      final http.Response response = await http.get(Uri.parse(imagePath));
+      bytes = response.bodyBytes;
+    } else {
+      // Handle asset images
+      final ByteData byteData = await rootBundle.load(imagePath);
+      bytes = byteData.buffer.asUint8List();
+    }
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       bytes,
