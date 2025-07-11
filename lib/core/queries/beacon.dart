@@ -254,6 +254,7 @@ deleteBeacon(id: "$id")
             landmarks{
               _id
               title
+              icon
               location{
                 lat
                 lon

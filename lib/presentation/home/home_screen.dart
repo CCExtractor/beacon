@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget HomePage() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildHeader(),
         _buildList(),
@@ -365,7 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 50.w,
               height: 25.h,
             ),
-            SizedBox(height: 3.h),
+            SizedBox(height: 0.2.h),
             Text(
               'You haven\'t joined or created any group yet',
               textAlign: TextAlign.center,
@@ -374,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 14.sp,
               ),
             ),
-            SizedBox(height: 3.h),
+            SizedBox(height: 0.2.h),
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -396,6 +396,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            SizedBox(height: 3.h),
+            IconButton(
+              icon: Icon(Icons.refresh, size: 6.w, color: Colors.teal),
+              onPressed: () {
+                _homeCubit.fetchUserGroups();
+              },
+            )
           ],
         ),
       ),

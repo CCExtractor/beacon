@@ -174,6 +174,8 @@ class RemoteHikeApi {
     final result = await _authClient
         .mutate(MutationOptions(document: gql(beaconQueries.sos(id))));
 
+    print("result sos: ${result.data}");
+
     if (result.isConcrete &&
         result.data != null &&
         result.data!['sos'] != null) {

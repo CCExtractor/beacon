@@ -153,7 +153,7 @@ class _HikeScreenState extends State<HikeScreen>
                       body: Stack(
                         children: [
                           _mapScreen(),
-                          LocationSearchWidget(),
+                          LocationSearchWidget(widget.beacon.id!),
                           Positioned(
                             bottom: 200,
                             right: 10,
@@ -225,6 +225,10 @@ class _HikeScreenState extends State<HikeScreen>
                                       buttonWidth: 70.w,
                                       buttonHeight: 50,
                                       text: 'Send SOS',
+                                      onTap: () {
+                                        locator<LocationCubit>().sendSOS(
+                                            widget.beacon.id!, context);
+                                      },
                                       textSize: 18.0,
                                       buttonColor: Colors.red,
                                       textColor: Colors.white,
@@ -245,6 +249,7 @@ class _HikeScreenState extends State<HikeScreen>
   Widget _mapScreen() {
     return BlocConsumer<LocationCubit, LocationState>(
       listener: (context, state) {
+        
         if (state is LoadedLocationState) {
           state.message != null
               ? utils.showSnackBar(state.message!, context)

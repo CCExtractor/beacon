@@ -13,10 +13,10 @@ class AuthQueries {
     ''';
   }
 
-  String gAuth(String? name, String email) {
+  String gAuth(String? name, String email, String? imageUrl) {
     return '''
         mutation{
-          oAuth(userInput: {email: "$email", name: "$name"})
+          oAuth(userInput: {email: "$email", name: "$name", imageUrl: "$imageUrl"})
         }
     ''';
   }

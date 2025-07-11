@@ -9,9 +9,6 @@ environment:
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
-  animate_do:
-  flutter_map:
-  latlong2:
   flutter_typeahead: ^5.2.0
   connectivity_plus: any
   cupertino_icons: ^1.0.5

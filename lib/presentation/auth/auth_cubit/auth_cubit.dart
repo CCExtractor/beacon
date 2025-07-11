@@ -79,10 +79,12 @@ class AuthCubit extends Cubit<AuthState> {
     );
 
     final gAuth = await _googleSignIn.signIn();
+    print("Google Auth: ${gAuth}");
 
     if (gAuth != null && gAuth.displayName != null) {
+      // pass imageurl
       var dataState =
-          await authUseCase.oAuthUseCase(gAuth.displayName!, gAuth.email);
+          await authUseCase.oAuthUseCase(gAuth.displayName!, gAuth.email, gAuth.photoUrl);
 
       if (dataState is DataSuccess && dataState.data != null) {
         emit(SuccessState());

@@ -247,7 +247,7 @@ class LocationCubit extends Cubit<LocationState> {
 
         emit(LoadedLocationState(
           geofence: _geofence,
-          locationMarkers: _hikeMarkers,
+          locationMarkers: Set<Marker>.from(_hikeMarkers),
           polyline: _polyline,
           version: DateTime.now().millisecondsSinceEpoch,
           mapType: _mapType,
@@ -260,7 +260,7 @@ class LocationCubit extends Cubit<LocationState> {
     PolylinePoints polylinePoints = PolylinePoints();
     try {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          'AIzaSyBdIpiEfBE5DohHgBvwPTljZQAcNWcKwCs',
+          'AIzaSyC72TkXzQTsnbGdZy5ldeX64y0mofn_iUs',
           PointLatLng(_points.first.latitude, _points.first.longitude),
           PointLatLng(_points.last.longitude, _points.last.longitude));
 
@@ -363,18 +363,29 @@ class LocationCubit extends Cubit<LocationState> {
       if (dataState is DataSuccess && dataState.data != null) {
         BeaconLocationsEntity beaconLocationsEntity = dataState.data!;
 
+        print(
+            'Location update subscription: ${beaconLocationsEntity.toString()}');
+
+        // when new landmark is created
         // when new landmark is created
         if (beaconLocationsEntity.landmark != null) {
           LandMarkEntity newLandMark = beaconLocationsEntity.landmark!;
 
-          //  await _createLandMarkMarker(newLandMark);
+          print('Creating landmark marker for: ${newLandMark.title}');
+          print('Markers before: ${_hikeMarkers.length}');
+
+          await _createLandMarkMarker(newLandMark);
+
+          print('Markers after: ${_hikeMarkers.length}');
 
           emit(LoadedLocationState(
               polyline: _polyline,
-              locationMarkers: _hikeMarkers,
+              locationMarkers:
+                  Set<Marker>.from(_hikeMarkers), // Create new Set instance
               mapType: _mapType,
               geofence: _geofence,
-              version: DateTime.now().millisecond,
+              version: DateTime.now()
+                  .millisecondsSinceEpoch, // Use millisecondsSinceEpoch
               message:
                   'A landmark is created by ${beaconLocationsEntity.landmark!.createdBy!.name ?? 'Anonymous'}'));
         }
@@ -388,9 +399,9 @@ class LocationCubit extends Cubit<LocationState> {
           emit(LoadedLocationState(
               polyline: _polyline,
               geofence: _geofence,
-              locationMarkers: _hikeMarkers,
+              locationMarkers: Set<Marker>.from(_hikeMarkers),
               mapType: _mapType,
-              version: DateTime.now().microsecond));
+              version: DateTime.now().millisecondsSinceEpoch));
           // add marker for user
         }
 
@@ -460,10 +471,10 @@ class LocationCubit extends Cubit<LocationState> {
               calculateMapBoundsFromListOfLatLng(_points), 50));
 
           emit(LoadedLocationState(
-              geofence: _geofence,
-              locationMarkers: _hikeMarkers,
-              mapType: _mapType,
               polyline: _polyline,
+              geofence: _geofence,
+              locationMarkers: Set<Marker>.from(_hikeMarkers),
+              mapType: _mapType,
               version: DateTime.now().millisecondsSinceEpoch));
         } else if (beaconLocationsEntity.userSOS != null) {
           var user = beaconLocationsEntity.userSOS!;
@@ -669,21 +680,25 @@ class LocationCubit extends Cubit<LocationState> {
     return _address.isNotEmpty ? _address : null;
   }
 
-  // update here
   Future<void> createLandmark(
       String beaconId, String title, LatLng latlng, String icon) async {
-    print("Creating landmark with title: $title at $latlng");
     var dataState = await _hikeUseCase.createLandMark(beaconId, title,
         latlng.latitude.toString(), latlng.longitude.toString(), icon);
-    print("Data state: $dataState");
+
     if (dataState is DataSuccess && dataState.data != null) {
-      print('result Creating marker for landmark: 1: ${dataState.data?.icon}');
+      print('Local landmark created: ${dataState.data!.title}');
       await _createLandMarkMarker(dataState.data!);
+
+      await locationUpdateSubscription(beaconId);
+
       emit(LoadedLocationState(
           polyline: _polyline,
           geofence: _geofence,
           mapType: _mapType,
-          locationMarkers: Set<Marker>.from(_hikeMarkers),
+          locationMarkers:
+              Set<Marker>.from(_hikeMarkers), // Create new Set instance
+          version:
+              DateTime.now().millisecondsSinceEpoch, // Consistent versioning
           message: 'New marker created by ${dataState.data!.createdBy!.name}'));
     }
   }
@@ -733,7 +748,7 @@ class LocationCubit extends Cubit<LocationState> {
         _hikeMarkers.where((element) => element.markerId == markerId);
 
     if (existingMarkers.isEmpty) {
-      var newMarker = await createMarkerWithCircularNetworkImage(
+      var newMarker = await createMarkerWithLocalAsset(
         landMark,
       );
       _hikeMarkers.add(newMarker);
@@ -785,11 +800,44 @@ class LocationCubit extends Cubit<LocationState> {
     }
   }
 
+  Future<Marker> createMarkerWithLocalAsset(LandMarkEntity landmark) async {
+    Future<BitmapDescriptor> getResizedMarkerIcon(
+        String assetPath, int width) async {
+      final ByteData data = await rootBundle.load(assetPath);
+      final codec = await ui.instantiateImageCodec(
+        data.buffer.asUint8List(),
+        targetWidth: width,
+      );
+      final frame = await codec.getNextFrame();
+      final ui.Image image = frame.image;
+
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List resizedBytes = byteData!.buffer.asUint8List();
+
+      return BitmapDescriptor.fromBytes(resizedBytes);
+    }
+
+    BitmapDescriptor customIcon = await getResizedMarkerIcon(
+      landmark.icon ?? 'images/icons/location-marker.png',
+      80, // desired width in pixels
+    );
+
+    return Marker(
+      markerId: MarkerId(landmark.id!.toString()),
+      position: locationToLatLng(landmark.location!),
+      icon: customIcon,
+      infoWindow: InfoWindow(
+        title:
+            '${landmark.title} by ${landmark.createdBy?.name ?? 'Anonymous'}',
+      ),
+    );
+  }
+
   Future<Marker> createMarkerWithCircularNetworkImage(
       LandMarkEntity landmark) async {
     print("Creating marker for landmark: ${landmark.createdBy?.imageUrl}");
     final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
-      landmark.icon ?? 'assets/icons/location-marker.png',
+      landmark.icon ?? 'images/icons/location-marker.png',
       size: 80,
       borderColor: Colors.teal,
       borderWidth: 4,

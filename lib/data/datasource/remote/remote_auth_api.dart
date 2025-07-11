@@ -86,7 +86,7 @@ class RemoteAuthApi {
     }
   }
 
-  Future<DataState<UserEntity>> gAuth(String name, String email) async {
+  Future<DataState<UserEntity>> gAuth(String name, String email, String? imageUrl) async {
     log('name: $name');
     log('email: $email');
 
@@ -97,7 +97,7 @@ class RemoteAuthApi {
     }
 
     final QueryResult result = await clientNonAuth.mutate(
-        MutationOptions(document: gql(_authQueries.gAuth(name, email))));
+        MutationOptions(document: gql(_authQueries.gAuth(name, email, imageUrl))));
 
     log(result.toString());
 
