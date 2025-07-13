@@ -13,6 +13,7 @@ class GroupQueries {
         leader{
                _id
                name
+                imageUrl
         }
         members{
                _id
@@ -87,6 +88,7 @@ class GroupQueries {
             members {
               _id
               name
+              imageUrl
             }
             beacons{
               _id

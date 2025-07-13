@@ -8,64 +8,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class GroupCard extends StatelessWidget {
   final GroupEntity group;
-  GroupCard({super.key, required this.group});
+  const GroupCard({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "GroupCard member IDs: ${group.members?.map((m) => m?.imageUrl).toList()}");
-    String noMembers = group.members!.length.toString();
-    String noBeacons = group.beacons!.length.toString();
+    final memberCount = group.members?.length ?? 0;
+    final beaconCount = group.beacons?.length ?? 0;
+    final isMember =
+        group.members?.any((m) => m?.id == localApi.userModel.id) ?? false;
+    final isLeader = group.leader?.id == localApi.userModel.id;
 
     return GestureDetector(
-      onTap: () async {
-        bool isMember = false;
-        for (var member in group.members!) {
-          if (member!.id == localApi.userModel.id) {
-            isMember = true;
-          }
-        }
-        if (group.leader!.id == localApi.userModel.id || isMember) {
-          var homeCubit = locator<HomeCubit>();
-          homeCubit.updateCurrentGroupId(group.id!);
-          appRouter.push(GroupScreenRoute(group: group)).then((value) {
-            homeCubit.resetGroupActivity(groupId: group.id!);
-            homeCubit.updateCurrentGroupId(null);
-          });
-        } else {
-          HomeUseCase _homeUseCase = locator<HomeUseCase>();
-          DataState<GroupEntity> state =
-              await _homeUseCase.joinGroup(group.shortcode!);
-          if (state is DataSuccess && state.data != null) {
-            var homeCubit = locator<HomeCubit>();
-            homeCubit.updateCurrentGroupId(group.id!);
-            appRouter.push(GroupScreenRoute(group: state.data!)).then((value) {
-              homeCubit.resetGroupActivity(groupId: group.id);
-              homeCubit.updateCurrentGroupId(null);
-            });
-          }
-        }
-      },
+      onTap: () => _handleGroupTap(context, isLeader || isMember),
       child: Container(
-        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 14),
-        //padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Slidable(
-          key: ValueKey(group.id!.toString()),
+          key: ValueKey(group.id),
           endActionPane: ActionPane(
-            motion: ScrollMotion(),
+            motion: const ScrollMotion(),
             children: [
               SlidableAction(
-                padding: EdgeInsets.symmetric(horizontal: 0),
-                onPressed: (context) {
-                  context.read<HomeCubit>().changeShortCode(group);
-                },
+                padding: EdgeInsets.zero,
+                onPressed: (context) =>
+                    context.read<HomeCubit>().changeShortCode(group),
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
                 icon: Icons.code,
@@ -75,106 +48,123 @@ class GroupCard extends StatelessWidget {
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.h),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.groups_2_rounded, color: Colors.grey),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${group.title.toString().toUpperCase()} by ${group.leader!.name} ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    // Stack of profile circles
-                    // noMembers != "0"
-                    //     ? SizedBox(
-                    //         width: 30 * group.members!.length.toDouble(),
-                    //         // 30 is the width of each profile circle
-                    //         height: 30,
-                    //         child: Stack(
-                    //           children:
-                    //               (group.members != null && group.members!.length > 3
-                    //                       ? group.members!.sublist(0, 3)
-                    //                       : group.members ?? [])
-                    //                   .map((member) {
-                    //             if (member != null) {
-                    //               return Positioned(
-                    //                 left: group.members!.indexOf(member) * 20.0,
-                    //                 child: _buildProfileCircle(
-                    //                   member.id == localApi.userModel.id
-                    //                       ? Colors.teal
-                    //                       : Colors.grey,
-                    //                 ),
-                    //               );
-                    //             } else {
-                    //               return const SizedBox.shrink();
-                    //             }
-                    //           }).toList(),
-                    //         ),
-                    //       )
-                    //     : Container(),
-                    Text(
-                      'Group has $noMembers members ',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Group has $noBeacons ${noBeacons == '1' ? 'beacon' : 'beacons'} ',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      'Passkey: ${group.shortcode}',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        Clipboard.setData(
-                            ClipboardData(text: group.shortcode!));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Shortcode copied!'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.copy,
-                        size: 17,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
+                _buildGroupHeader(context),
+                SizedBox(height: 1.h),
+                _buildMemberInfo(context, memberCount),
+                SizedBox(height: 0.5.h),
+                _buildBeaconInfo(context, beaconCount),
+                SizedBox(height: 0.5.h),
+                _buildShortcodeRow(context),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGroupHeader(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.groups_rounded, color: Colors.grey, size: 20.sp),
+        SizedBox(width: 2.w),
+        Expanded(
+          child: Text(
+            '${group.title?.toUpperCase() ?? ''} by ${group.leader?.name ?? ''}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.sp,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMemberInfo(BuildContext context, int count) {
+    return Row(
+      children: [
+        Text(
+          'Group has $count ${count == 1 ? 'member' : 'members'}',
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 14.sp,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBeaconInfo(BuildContext context, int count) {
+    return Text(
+      'Group has $count ${count == 1 ? 'beacon' : 'beacons'}',
+      style: TextStyle(
+        color: Colors.black87,
+        fontSize: 14.sp,
+      ),
+    );
+  }
+
+  Widget _buildShortcodeRow(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Passkey: ${group.shortcode ?? ''}',
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 14.sp,
+          ),
+        ),
+        SizedBox(width: 2.w),
+        GestureDetector(
+          onTap: () => _copyShortcode(context),
+          child: Icon(
+            Icons.copy,
+            size: 16.sp,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleGroupTap(BuildContext context, bool hasAccess) async {
+    if (hasAccess) {
+      await _navigateToGroupScreen(context, group);
+    } else {
+      await _joinAndNavigateToGroup(context);
+    }
+  }
+
+  Future<void> _navigateToGroupScreen(
+      BuildContext context, GroupEntity group) async {
+    final homeCubit = locator<HomeCubit>();
+    homeCubit.updateCurrentGroupId(group.id!);
+    await appRouter.push(GroupScreenRoute(group: group));
+    homeCubit.resetGroupActivity(groupId: group.id!);
+    homeCubit.updateCurrentGroupId(null);
+  }
+
+  Future<void> _joinAndNavigateToGroup(BuildContext context) async {
+    final homeUseCase = locator<HomeUseCase>();
+    final state = await homeUseCase.joinGroup(group.shortcode!);
+
+    if (state is DataSuccess && state.data != null) {
+      await _navigateToGroupScreen(context, state.data!);
+    }
+  }
+
+  void _copyShortcode(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: group.shortcode!));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Shortcode copied!'),
+        duration: Duration(seconds: 2),
       ),
     );
   }

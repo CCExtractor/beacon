@@ -27,6 +27,7 @@ class BeaconQueries {
              leader {
                _id
                name
+               imageUrl
              }
              group{
               _id
@@ -39,6 +40,7 @@ class BeaconQueries {
              followers {
                _id
                name
+                imageUrl
              }
              startsAt
              expiresAt

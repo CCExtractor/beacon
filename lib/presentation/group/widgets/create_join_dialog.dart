@@ -539,6 +539,18 @@ class CreateJoinBeaconDialog {
                           ),
                         ),
                       ),
+
+                      GestureDetector(
+                        onTap: () => {},
+                        child: Text(
+                          "advanced options",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Theme.of(context).primaryColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 2.h),
                       Flexible(
                           flex: 2,
