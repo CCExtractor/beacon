@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:beacon/core/utils/validators.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
+import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/presentation/group/cubit/members_cubit/members_cubit.dart';
 import 'package:beacon/presentation/group/cubit/members_cubit/members_state.dart';
 import 'package:beacon/locator.dart';
@@ -30,97 +31,91 @@ class GroupWidgetUtils {
   }
 
   static void showMembers(BuildContext context) {
-    // Dialog for filtering beacons
     locator<MembersCubit>().loadMembers();
+
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (context) {
-        bool isSmallSized = 100.h < 800;
+        final bool isSmallSized = 100.h < 800;
+        final double dialogHeight = isSmallSized ? 30.h : 25.h;
+
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: Colors.white,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.group),
-              Gap(5),
+              Icon(Icons.group, color: Colors.black, size: 30),
+              Gap(8),
               Text(
                 'Members',
-                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               )
             ],
           ),
-          content: Container(
-              height: isSmallSized ? 30.h : 25.h,
-              width: isSmallSized ? 200 : 300,
-              child: BlocConsumer<MembersCubit, MembersState>(
-                listener: (context, state) {
-                  if (state is LoadedMemberState && state.message != null) {
-                    utils.showSnackBar(state.message!, context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state is LoadingMemberState) {
-                    return ShimmerWidget.getPlaceholder();
-                  } else if (state is LoadedMemberState) {
-                    var members = state.members;
-                    return members!.isEmpty
-                        ? Container(
-                            child:
-                                Text('Please check your internet connection'),
+          content: SizedBox(
+            height: dialogHeight,
+            width: isSmallSized ? 280 : 350,
+            child: BlocConsumer<MembersCubit, MembersState>(
+              listener: (context, state) {
+                if (state is LoadedMemberState && state.message != null) {
+                  utils.showSnackBar(state.message!, context);
+                }
+              },
+              builder: (context, state) {
+                if (state is LoadingMemberState) {
+                  return ShimmerWidget.getPlaceholder();
+                } else if (state is LoadedMemberState) {
+                  var members = state.members;
+
+                  if (members == null || members.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.wifi_off,
+                              size: 40, color: Colors.grey.shade500),
+                          const SizedBox(height: 8),
+                          Text(
+                            'No members found.\nCheck your internet connection.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                            ),
                           )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: members.length,
-                            itemBuilder: (context, index) {
-                              bool isLeader =
-                                  localApi.userModel.id! == members[0].id!;
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: kLightBlue,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: ListTile(
-                                  leading: index == 0
-                                      ? Icon(
-                                          Icons.star,
-                                          color: kYellow,
-                                        )
-                                      : Icon(Icons.person),
-                                  trailing: index == 0
-                                      ? Text('Leader')
-                                      : isLeader
-                                          ? IconButton(
-                                              onPressed: () {
-                                                context
-                                                    .read<MembersCubit>()
-                                                    .removeMember(
-                                                        members[index].id ??
-                                                            '');
-                                              },
-                                              icon: Icon(
-                                                Icons.person_remove_alt_1,
-                                                weight: 20,
-                                                color: const Color.fromARGB(
-                                                    255, 215, 103, 95),
-                                              ))
-                                          : null,
-                                  subtitle: localApi.userModel.id! ==
-                                          members[index].id!
-                                      ? Text(
-                                          '(YOU)',
-                                          style: TextStyle(fontSize: 12),
-                                        )
-                                      : null,
-                                  title:
-                                      Text(members[index].name ?? 'Anonymous'),
-                                ),
-                              );
-                            },
-                          );
+                        ],
+                      ),
+                    );
                   }
-                  return Container();
-                },
-              )),
+
+                  return ListView.separated(
+                    itemCount: members.length,
+                    separatorBuilder: (_, __) => Gap(8),
+                    itemBuilder: (context, index) {
+                      final member = members[index];
+                      final isCurrentUser = localApi.userModel.id == member.id;
+                      final isLeader =
+                          localApi.userModel.id == members.first.id;
+                      return _MemberTile(
+                        member: member,
+                        isLeader: index == 0,
+                        canRemove: isLeader && index != 0,
+                        isCurrentUser: isCurrentUser,
+                      );
+                    },
+                  );
+                }
+                return SizedBox.shrink();
+              },
+            ),
+          ),
         );
       },
     );
@@ -141,14 +136,15 @@ class GroupWidgetUtils {
         ),
         actions: <Widget>[
           HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
+            buttonHeight: 5.h,
+            buttonWidth: 20.w,
             onTap: () => appRouter.maybePop(false),
             text: 'No',
+            isDotted: true,
           ),
           HikeButton(
-            buttonHeight: 2.5.h,
-            buttonWidth: 8.w,
+            buttonHeight: 5.h,
+            buttonWidth: 20.w,
             onTap: () => appRouter.maybePop(true),
             text: 'Yes',
           ),
@@ -174,130 +170,136 @@ class GroupWidgetUtils {
   }
 
   static Future<void> reScheduleHikeDialog(
-      BuildContext context, BeaconEntity beacon) {
-    var startsAt = beacon.startsAt!;
-    var expiresAt = beacon.expiresAt!;
-    var previousStartDate = DateTime.fromMillisecondsSinceEpoch(startsAt);
-    var previousExpireDate = DateTime.fromMillisecondsSinceEpoch(expiresAt);
-
+    BuildContext context,
+    BeaconEntity beacon,
+  ) {
+    var previousStartDate =
+        DateTime.fromMillisecondsSinceEpoch(beacon.startsAt!);
+    var previousExpireDate =
+        DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!);
     var previousDuration = previousExpireDate.difference(previousStartDate);
 
-    DateTime? newstartDate = previousStartDate;
-    TextEditingController _dateController = TextEditingController(
-        text: DateFormat('yyyy-MM-dd').format(previousStartDate));
+    DateTime? newStartDate = previousStartDate;
+    var _dateController = TextEditingController(
+      text: DateFormat('yyyy-MM-dd').format(previousStartDate),
+    );
 
     TimeOfDay? startTime = TimeOfDay(
-        hour: previousStartDate.hour, minute: previousStartDate.minute);
-    TextEditingController _startTimeController = TextEditingController(
-        text: DateFormat('HH:mm').format(previousStartDate));
+      hour: previousStartDate.hour,
+      minute: previousStartDate.minute,
+    );
+    var _startTimeController = TextEditingController(
+      text: DateFormat('hh:mm a').format(previousStartDate),
+    );
 
     Duration? duration = previousDuration;
-    TextEditingController _durationController = TextEditingController(
-        text: previousDuration.inMinutes < 60
-            ? '${previousDuration.inMinutes} minutes'
-            : '${previousDuration.inHours} hours');
+    var _durationController = TextEditingController(
+      text: previousDuration.inHours > 0
+          ? '${previousDuration.inHours} hour${previousDuration.inHours > 1 ? 's' : ''} ${previousDuration.inMinutes % 60} minutes'
+          : '${previousDuration.inMinutes} minutes',
+    );
 
-    GlobalKey<FormState> _createFormKey = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
     bool isSmallSized = 100.h < 800;
 
-    bool isExpired = DateTime.now()
-        .isAfter(DateTime.fromMillisecondsSinceEpoch(beacon.expiresAt!));
+    bool isExpired = DateTime.now().isAfter(previousExpireDate);
+
     return showDialog(
       context: context,
       builder: (context) => GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Dialog(
+          backgroundColor: Colors.grey[100],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(16.0),
           ),
           child: SingleChildScrollView(
             child: Form(
-              key: _createFormKey,
+              key: _formKey,
               child: Container(
-                height: isSmallSized ? 68.h : 62.h,
+                height: isSmallSized ? 55.h : 50.h,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Column(
                     children: [
                       Text(
                         isExpired ? 'Activate Hike' : 'Reschedule Hike',
-                        style: TextStyle(fontSize: 30),
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(height: 2.h),
-                      // start date field
+
+                      /// Start Date
                       Container(
-                        height: isSmallSized ? 14.h : 12.h,
+                        height: isSmallSized ? 11.h : 9.h,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: InkWell(
                             onTap: () async {
-                              newstartDate = await showDatePicker(
+                              newStartDate = await showDatePicker(
                                 context: context,
-                                initialDate: newstartDate ?? DateTime.now(),
-                                firstDate: newstartDate ?? DateTime.now(),
+                                initialDate: newStartDate ?? DateTime.now(),
+                                firstDate: DateTime.now(),
                                 lastDate: DateTime(2100),
-                                // builder: (context, child) => Theme(
-                                //     data: ThemeData().copyWith(
-                                //       textTheme: Theme.of(context).textTheme,
-                                //       colorScheme: ColorScheme.light(
-                                //         primary: kLightBlue,
-                                //         onPrimary: Colors.grey,
-                                //         surface: kBlue,
-                                //       ),
-                                //     ),
-                                //     child: child!),
                               );
-                              if (newstartDate == null) return;
-                              _dateController.text = DateFormat('yyyy-MM-dd')
-                                  .format(newstartDate!);
+                              if (newStartDate != null) {
+                                _dateController.text = DateFormat('yyyy-MM-dd')
+                                    .format(newStartDate!);
+                              }
                             },
                             child: TextFormField(
                               validator: (value) =>
                                   Validator.validateDate(value),
                               controller: _dateController,
                               enabled: false,
-                              onEditingComplete: () {},
                               decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Choose Start Date',
-                                  labelStyle: TextStyle(
-                                      fontSize: labelsize, color: kYellow),
-                                  hintStyle: TextStyle(
-                                      fontSize: hintsize, color: hintColor),
-                                  labelText: 'Start Date',
-                                  alignLabelWithHint: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none),
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                border: InputBorder.none,
+                                hintText: 'Choose Start Date',
+                                labelStyle: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                hintStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                                labelText: 'Start Date',
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
-                        color: kLightBlue,
                       ),
-                      SizedBox(height: 2.h),
-                      // Start Time Field
+
+                      /// Start Time
                       Container(
-                        height: isSmallSized ? 14.h : 12.h,
+                        height: isSmallSized ? 11.h : 9.h,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: InkWell(
                             onTap: () async {
                               startTime = await showTimePicker(
-                                  context: context,
-                                  initialTime: startTime ??
-                                      TimeOfDay(
-                                          hour: DateTime.now().hour,
-                                          minute: DateTime.now().minute + 1));
+                                context: context,
+                                initialTime: startTime ??
+                                    TimeOfDay(
+                                      hour: DateTime.now().hour,
+                                      minute: DateTime.now().minute + 1,
+                                    ),
+                              );
                               if (startTime != null) {
-                                if (startTime!.minute < 10) {
-                                  _startTimeController.text =
-                                      '${startTime!.hour}:0${startTime!.minute} ${startTime!.period == DayPeriod.am ? 'AM' : 'PM'}';
-                                } else {
-                                  _startTimeController.text =
-                                      '${startTime!.hour}:${startTime!.minute} ${startTime!.period == DayPeriod.am ? 'AM' : 'PM'}';
-                                }
+                                _startTimeController.text =
+                                    startTime!.format(context);
                               }
                             },
                             child: TextFormField(
@@ -305,31 +307,35 @@ class GroupWidgetUtils {
                                   value, _dateController.text),
                               controller: _startTimeController,
                               enabled: false,
-                              onEditingComplete: () {},
                               decoration: InputDecoration(
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
                                 border: InputBorder.none,
-                                alignLabelWithHint: true,
-                                errorStyle: TextStyle(color: Colors.red[800]),
+                                hintText: 'Choose Start Time',
+                                labelStyle: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                hintStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                                labelText: 'Start Time',
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.always,
-                                labelText: 'Start Time',
-                                labelStyle: TextStyle(
-                                    fontSize: labelsize, color: kYellow),
-                                hintStyle: TextStyle(
-                                    fontSize: hintsize, color: hintColor),
-                                hintText: 'Choose start time',
                                 focusedBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                               ),
                             ),
                           ),
                         ),
-                        color: kLightBlue,
                       ),
-                      SizedBox(height: 2.h),
-                      // // Duration Field
+
+                      /// Duration
                       Container(
-                        height: isSmallSized ? 14.h : 12.h,
+                        height: isSmallSized ? 11.h : 9.h,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: InkWell(
@@ -338,77 +344,97 @@ class GroupWidgetUtils {
                                 context: context,
                                 initialTime: duration ?? Duration(minutes: 5),
                               );
-                              if (duration == null) return;
-                              if (duration!.inHours != 0 &&
-                                  duration!.inMinutes != 0) {
-                                _durationController.text =
-                                    '${duration!.inHours.toString()} hour ${(duration!.inMinutes % 60)} minutes';
-                              } else if (duration!.inMinutes != 0) {
-                                _durationController.text =
-                                    '${duration!.inMinutes.toString()} minutes';
+                              if (duration != null) {
+                                if (duration!.inHours > 0) {
+                                  _durationController.text =
+                                      '${duration!.inHours} hour${duration!.inHours > 1 ? 's' : ''} ${duration!.inMinutes % 60} minutes';
+                                } else {
+                                  _durationController.text =
+                                      '${duration!.inMinutes} minutes';
+                                }
                               }
                             },
                             child: TextFormField(
                               enabled: false,
                               controller: _durationController,
                               validator: (value) =>
-                                  Validator.validateDuration(value),
+                                  Validator.validateDuration(value.toString()),
                               decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  alignLabelWithHint: true,
-                                  errorStyle: TextStyle(color: Colors.red[800]),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  labelText: 'Duration',
-                                  labelStyle: TextStyle(
-                                      fontSize: labelsize, color: kYellow),
-                                  hintStyle: TextStyle(
-                                      fontSize: hintsize, color: hintColor),
-                                  hintText: 'Enter duration of hike',
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none),
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                border: InputBorder.none,
+                                hintText: 'Enter duration of hike',
+                                labelStyle: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                hintStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                                labelText: 'Duration',
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
-                        color: kLightBlue,
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 1.h),
+
+                      /// Button
                       Flexible(
                         flex: 2,
-                        child: HikeButton(
-                            text: 'Update',
-                            textSize: 18.0,
-                            textColor: Colors.white,
-                            buttonColor: kYellow,
-                            onTap: () async {
-                              if (!_createFormKey.currentState!.validate())
-                                return;
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
                               DateTime startsAt = DateTime(
-                                  newstartDate!.year,
-                                  newstartDate!.month,
-                                  newstartDate!.day,
-                                  startTime!.hour,
-                                  startTime!.minute);
+                                newStartDate!.year,
+                                newStartDate!.month,
+                                newStartDate!.day,
+                                startTime!.hour,
+                                startTime!.minute,
+                              );
 
                               final newStartsAt =
                                   startsAt.millisecondsSinceEpoch;
-
-                              final newExpiresAT = startsAt
-                                  .copyWith(
-                                      hour: startsAt.hour + duration!.inHours,
-                                      minute:
-                                          startsAt.minute + duration!.inMinutes)
+                              final newExpiresAt = startsAt
+                                  .add(duration!)
                                   .millisecondsSinceEpoch;
 
                               context.read<GroupCubit>().rescheduleHike(
-                                  newExpiresAT, newStartsAt, beacon.id!);
+                                  newExpiresAt, newStartsAt, beacon.id!);
+
                               _dateController.clear();
                               _startTimeController.clear();
                               _durationController.clear();
+
                               appRouter.maybePop();
-                              // }
-                            }),
-                      ),
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            minimumSize: Size(160, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                          ),
+                          child: Text(
+                            'Update',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -549,6 +575,89 @@ class GroupWidgetUtils {
           ),
         );
       },
+    );
+  }
+}
+
+Widget _buildProfileCircle(String? url) {
+  return Container(
+    width: 40,
+    height: 40,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Colors.grey[300],
+      border: Border.all(color: Colors.white, width: 2),
+      image: DecorationImage(
+        image: NetworkImage(url!),
+        fit: BoxFit.cover,
+      ),
+    ),
+  );
+}
+
+class _MemberTile extends StatelessWidget {
+  final UserEntity member;
+  final bool isLeader;
+  final bool canRemove;
+  final bool isCurrentUser;
+
+  const _MemberTile({
+    required this.member,
+    required this.isLeader,
+    required this.canRemove,
+    required this.isCurrentUser,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: kLightBlue,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        leading: _buildProfileCircle(member.imageUrl),
+        title: Text(
+          member.name ?? 'Anonymous',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        subtitle: isCurrentUser
+            ? Text(
+                '(YOU)',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade700,
+                ),
+              )
+            : null,
+        trailing: isLeader
+            ? Text(
+                'Leader',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade700,
+                ),
+              )
+            : canRemove
+                ? IconButton(
+                    onPressed: () {
+                      context
+                          .read<MembersCubit>()
+                          .removeMember(member.id ?? '');
+                    },
+                    icon: Icon(
+                      Icons.person_remove_alt_1,
+                      color: Colors.red.shade400,
+                    ),
+                  )
+                : null,
+      ),
     );
   }
 }

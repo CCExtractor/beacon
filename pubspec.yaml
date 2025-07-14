@@ -72,6 +72,7 @@ dependencies:
   dotted_border: ^2.1.0
   shimmer: ^3.0.0
 dev_dependencies:
+  auto_route_generator:
   build_runner: ^2.1.2
   flutter_launcher_icons: ^0.13.1
   flutter_test:

@@ -15,6 +15,17 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AdvancedOptionsScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<AdvancedOptionsScreenRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: AdvancedOptionsScreen(
+          key: args.key,
+          title: args.title,
+          durationController: args.durationController,
+        ),
+      );
+    },
     AuthScreenRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -25,7 +36,10 @@ abstract class _$AppRouter extends RootStackRouter {
       final args = routeData.argsAs<GroupScreenRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: GroupScreen(args.group),
+        child: GroupScreen(
+          args.group,
+          key: args.key,
+        ),
       );
     },
     HikeScreenRoute.name: (routeData) {
@@ -61,6 +75,50 @@ abstract class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
+/// [AdvancedOptionsScreen]
+class AdvancedOptionsScreenRoute
+    extends PageRouteInfo<AdvancedOptionsScreenRouteArgs> {
+  AdvancedOptionsScreenRoute({
+    Key? key,
+    required String title,
+    required TextEditingController durationController,
+    List<PageRouteInfo>? children,
+  }) : super(
+          AdvancedOptionsScreenRoute.name,
+          args: AdvancedOptionsScreenRouteArgs(
+            key: key,
+            title: title,
+            durationController: durationController,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'AdvancedOptionsScreenRoute';
+
+  static const PageInfo<AdvancedOptionsScreenRouteArgs> page =
+      PageInfo<AdvancedOptionsScreenRouteArgs>(name);
+}
+
+class AdvancedOptionsScreenRouteArgs {
+  const AdvancedOptionsScreenRouteArgs({
+    this.key,
+    required this.title,
+    required this.durationController,
+  });
+
+  final Key? key;
+
+  final String title;
+
+  final TextEditingController durationController;
+
+  @override
+  String toString() {
+    return 'AdvancedOptionsScreenRouteArgs{key: $key, title: $title, durationController: $durationController}';
+  }
+}
+
+/// generated route for
 /// [AuthScreen]
 class AuthScreenRoute extends PageRouteInfo<void> {
   const AuthScreenRoute({List<PageRouteInfo>? children})
@@ -79,10 +137,14 @@ class AuthScreenRoute extends PageRouteInfo<void> {
 class GroupScreenRoute extends PageRouteInfo<GroupScreenRouteArgs> {
   GroupScreenRoute({
     required GroupEntity group,
+    Key? key,
     List<PageRouteInfo>? children,
   }) : super(
           GroupScreenRoute.name,
-          args: GroupScreenRouteArgs(group: group),
+          args: GroupScreenRouteArgs(
+            group: group,
+            key: key,
+          ),
           initialChildren: children,
         );
 
@@ -93,13 +155,18 @@ class GroupScreenRoute extends PageRouteInfo<GroupScreenRouteArgs> {
 }
 
 class GroupScreenRouteArgs {
-  const GroupScreenRouteArgs({required this.group});
+  const GroupScreenRouteArgs({
+    required this.group,
+    this.key,
+  });
 
   final GroupEntity group;
 
+  final Key? key;
+
   @override
   String toString() {
-    return 'GroupScreenRouteArgs{group: $group}';
+    return 'GroupScreenRouteArgs{group: $group, key: $key}';
   }
 }
 

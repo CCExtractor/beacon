@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:beacon/config/router/router.dart';
 
 class CreateJoinGroupDialog {
   static GlobalKey<FormState> _groupKey = GlobalKey<FormState>();
@@ -541,7 +542,13 @@ class CreateJoinBeaconDialog {
                       ),
 
                       GestureDetector(
-                        onTap: () => {},
+                        onTap: () => {
+                          context.router.push(AdvancedOptionsScreenRoute(
+                              durationController: _durationController,
+                              title: title)),
+                          print("advanced options clicked"),
+                          print(_durationController.text),
+                        },
                         child: Text(
                           "advanced options",
                           style: TextStyle(
