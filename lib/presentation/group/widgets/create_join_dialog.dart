@@ -544,10 +544,16 @@ class CreateJoinBeaconDialog {
                       GestureDetector(
                         onTap: () => {
                           context.router.push(AdvancedOptionsScreenRoute(
+                              title: title,
                               durationController: _durationController,
-                              title: title)),
-                          print("advanced options clicked"),
-                          print(_durationController.text),
+                              isScheduled: !isInstant,
+                              startDate: startDate,
+                              startTime: startTime,
+                              groupId: groupID!)),
+                          _durationController.clear(),
+                          _startTimeController.clear(),
+                          _durationController.clear(),
+                          appRouter.maybePop(),
                         },
                         child: Text(
                           "advanced options",

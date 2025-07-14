@@ -21,8 +21,12 @@ abstract class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: AdvancedOptionsScreen(
           key: args.key,
-          title: args.title,
           durationController: args.durationController,
+          title: args.title,
+          isScheduled: args.isScheduled,
+          startDate: args.startDate,
+          startTime: args.startTime,
+          groupId: args.groupId,
         ),
       );
     },
@@ -80,15 +84,23 @@ class AdvancedOptionsScreenRoute
     extends PageRouteInfo<AdvancedOptionsScreenRouteArgs> {
   AdvancedOptionsScreenRoute({
     Key? key,
-    required String title,
     required TextEditingController durationController,
+    required String title,
+    required bool isScheduled,
+    DateTime? startDate,
+    TimeOfDay? startTime,
+    required String groupId,
     List<PageRouteInfo>? children,
   }) : super(
           AdvancedOptionsScreenRoute.name,
           args: AdvancedOptionsScreenRouteArgs(
             key: key,
-            title: title,
             durationController: durationController,
+            title: title,
+            isScheduled: isScheduled,
+            startDate: startDate,
+            startTime: startTime,
+            groupId: groupId,
           ),
           initialChildren: children,
         );
@@ -102,19 +114,31 @@ class AdvancedOptionsScreenRoute
 class AdvancedOptionsScreenRouteArgs {
   const AdvancedOptionsScreenRouteArgs({
     this.key,
-    required this.title,
     required this.durationController,
+    required this.title,
+    required this.isScheduled,
+    this.startDate,
+    this.startTime,
+    required this.groupId,
   });
 
   final Key? key;
 
+  final TextEditingController durationController;
+
   final String title;
 
-  final TextEditingController durationController;
+  final bool isScheduled;
+
+  final DateTime? startDate;
+
+  final TimeOfDay? startTime;
+
+  final String groupId;
 
   @override
   String toString() {
-    return 'AdvancedOptionsScreenRouteArgs{key: $key, title: $title, durationController: $durationController}';
+    return 'AdvancedOptionsScreenRouteArgs{key: $key, durationController: $durationController, title: $title, isScheduled: $isScheduled, startDate: $startDate, startTime: $startTime, groupId: $groupId}';
   }
 }
 
