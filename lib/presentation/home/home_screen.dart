@@ -5,6 +5,7 @@ import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_state.dart';
 import 'package:beacon/presentation/group/widgets/create_join_dialog.dart';
 import 'package:beacon/presentation/home/profile_screen.dart';
+import 'package:beacon/presentation/widgets/screen_template.dart';
 import 'package:beacon/presentation/widgets/shimmer.dart';
 import 'package:beacon/presentation/home/widgets/group_card.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
@@ -124,22 +125,20 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            body: SafeArea(
-              child: ModalProgressHUD(
+            body: BeaconScreenTemplate(
+              body: ModalProgressHUD(
                 inAsyncCall: state is LoadingHomeState,
                 progressIndicator: const LoadingScreen(),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
                   child: Column(
                     children: [
-                      // App bar
-                      _buildAppBar(),
                       SizedBox(height: 2.h),
                       Expanded(
                         child: _currentIndex == 0
                             ? _buildHomePage()
                             : _currentIndex == 1
-                                ? ProfileScreen(homeCubit: _homeCubit)
+                                ? ProfileScreen()
                                 : _buildSettingsPage(),
                       ),
                     ],
@@ -147,23 +146,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            bottomNavigationBar: _buildBottomNavigationBar(),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Image.asset('images/beacon_logo.png', height: 4.h),
-        IconButton(
-          icon: Icon(Icons.power_settings_new, color: Colors.grey, size: 20.sp),
-          onPressed: _showLogoutDialog,
-        ),
-      ],
     );
   }
 
@@ -335,73 +320,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         'Settings Page',
         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: (index) => setState(() => _currentIndex = index),
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home, size: 20.sp),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person, size: 20.sp),
-          label: 'Profile',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.hiking, size: 20.sp),
-          label: 'Hike',
-        ),
-      ],
-    );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-        title: Text(
-          'Logout',
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-        ),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(fontSize: 14.sp),
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              HikeButton(
-                buttonWidth: 25.w,
-                buttonHeight: 5.h,
-                isDotted: true,
-                onTap: () => AutoRouter.of(context).maybePop(false),
-                text: 'No',
-                textSize: 14.sp,
-              ),
-              HikeButton(
-                buttonWidth: 25.w,
-                buttonHeight: 5.h,
-                onTap: () {
-                  appRouter.replaceNamed('/auth');
-                  localApi.deleteUser();
-                  context.read<AuthCubit>().googleSignOut();
-                },
-                text: 'Yes',
-                textSize: 14.sp,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

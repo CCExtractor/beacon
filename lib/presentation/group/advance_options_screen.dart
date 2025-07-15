@@ -10,6 +10,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:beacon/data/models/landmark/location_suggestion.dart';
 
+import '../../core/utils/constants.dart';
+import '../widgets/hike_button.dart';
+import '../widgets/screen_template.dart';
+
 @RoutePage()
 class AdvancedOptionsScreen extends StatefulWidget {
   TextEditingController durationController;
@@ -104,7 +108,7 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
       const String apiKey = '03fe30be078c0bfb823d954404de6a6b';
 
       String apiUrl;
-      if (widget.isScheduled && widget.startDate != null) {
+      if (widget.isScheduled) {
         // Use forecast API for scheduled hikes
         apiUrl =
             'https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&appid=$apiKey&units=metric';
@@ -118,7 +122,7 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        if (widget.isScheduled && widget.startDate != null) {
+        if (widget.isScheduled) {
           // Process forecast data to find weather for the scheduled date
           final forecastWeather = _extractWeatherForScheduledDate(data);
           setState(() {
@@ -235,9 +239,8 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
         'visibility': 10000,
         'name': _selectedLocation?.name ?? 'Your Location',
         'isScheduled': widget.isScheduled,
-        'scheduledDate': widget.isScheduled && widget.startDate != null
-            ? widget.startDate!.toIso8601String()
-            : null,
+        'scheduledDate':
+            widget.isScheduled ? widget.startDate!.toIso8601String() : null,
       };
       isLoadingWeather = false;
     });
@@ -281,7 +284,7 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
   String _getWeatherTitle() {
     if (weatherData == null) return 'Weather';
 
-    if (widget.isScheduled && widget.startDate != null) {
+    if (widget.isScheduled) {
       final scheduledDate = widget.startDate!;
       final now = DateTime.now();
       final difference = scheduledDate.difference(now).inDays;
@@ -298,37 +301,69 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
     return 'Current Weather';
   }
 
-  Widget _buildAppBar(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.grey),
-          onPressed: () => context.router.maybePop(),
-        ),
-        Image.asset('images/beacon_logo.png', height: 4.h),
-        IconButton(
-          icon: const Icon(Icons.power_settings_new, color: Colors.grey),
-          onPressed: () {},
-        ),
-      ],
-    );
+  Color _getWeatherRecommendationColor() {
+    // Example logic: change color based on weather condition
+    if (weatherData != null && weatherData!['weather'] != null) {
+      String main = weatherData!['weather'][0]['main'].toString().toLowerCase();
+      if (main.contains('rain') || main.contains('storm')) {
+        return Colors.red;
+      } else if (main.contains('cloud')) {
+        return Colors.orange;
+      } else if (main.contains('clear')) {
+        return Colors.green;
+      }
+    }
+    return Colors.blue;
+  }
+
+  IconData _getWeatherRecommendationIcon() {
+    if (weatherData != null && weatherData!['weather'] != null) {
+      String main = weatherData!['weather'][0]['main'].toString().toLowerCase();
+      if (main.contains('rain') || main.contains('storm')) {
+        return Icons.warning;
+      } else if (main.contains('cloud')) {
+        return Icons.cloud;
+      } else if (main.contains('clear')) {
+        return Icons.wb_sunny;
+      }
+    }
+    return Icons.info;
+  }
+
+  String _getWeatherRecommendation() {
+    if (weatherData != null && weatherData!['weather'] != null) {
+      String main = weatherData!['weather'][0]['main'].toString().toLowerCase();
+      if (main.contains('rain') || main.contains('storm')) {
+        return 'It may be unsafe to hike due to rain or storm. Please check local advisories.';
+      } else if (main.contains('cloud')) {
+        return 'Cloudy weather. Stay alert and check for rain updates.';
+      } else if (main.contains('clear')) {
+        return 'Great weather for hiking! Enjoy your hike.';
+      }
+    }
+    return 'Check weather conditions before starting your hike.';
   }
 
   Widget _buildWeatherCard() {
     if (isLoadingWeather) {
       return Card(
-        elevation: 4,
-        margin: EdgeInsets.all(16),
+        elevation: 2,
+        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              CircularProgressIndicator(),
-              // SizedBox(width: 16),
-              Text(widget.isScheduled
-                  ? 'Loading weather forecast...'
-                  : 'Loading weather conditions...'),
+              CircularProgressIndicator(color: kYellow),
+              SizedBox(width: 4.w),
+              Text(
+                widget.isScheduled
+                    ? 'Loading weather forecast...'
+                    : 'Loading weather conditions...',
+                style: TextStyle(fontSize: 14.sp),
+              ),
             ],
           ),
         ),
@@ -337,21 +372,31 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
 
     if (weatherError != null) {
       return Card(
-        elevation: 4,
-        margin: EdgeInsets.all(16),
+        elevation: 2,
+        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(Icons.error, color: Colors.red),
-              SizedBox(width: 16),
-              Expanded(child: Text(weatherError!)),
+              Icon(Icons.error, color: Colors.red, size: 20.sp),
+              SizedBox(width: 4.w),
+              Expanded(
+                child: Text(
+                  weatherError!,
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+              ),
               IconButton(
-                icon: Icon(Icons.refresh),
+                icon: Icon(Icons.refresh, size: 20.sp),
                 onPressed: () {
                   if (_selectedLocation != null) {
-                    _fetchWeatherData(_selectedLocation!.latitude,
-                        _selectedLocation!.longitude);
+                    _fetchWeatherData(
+                      _selectedLocation!.latitude,
+                      _selectedLocation!.longitude,
+                    );
                   } else {
                     _fetchWeatherForCurrentLocation();
                   }
@@ -373,8 +418,11 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
     final location = weatherData!['name'];
 
     return Card(
-      elevation: 4,
-      margin: EdgeInsets.all(16),
+      elevation: 2,
+      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -386,17 +434,19 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                 Text(
                   _getWeatherTitle(),
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kBlack,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.refresh),
+                  icon: Icon(Icons.refresh, size: 20.sp),
                   onPressed: () {
                     if (_selectedLocation != null) {
-                      _fetchWeatherData(_selectedLocation!.latitude,
-                          _selectedLocation!.longitude);
+                      _fetchWeatherData(
+                        _selectedLocation!.latitude,
+                        _selectedLocation!.longitude,
+                      );
                     } else {
                       _fetchWeatherForCurrentLocation();
                     }
@@ -404,29 +454,29 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                 ),
               ],
             ),
-            // SizedBox(height: 8),
+            SizedBox(height: 1.h),
             Text(
               location,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: Colors.grey[600],
               ),
             ),
-            if (widget.isScheduled && widget.startDate != null) ...[
-              // SizedBox(height: 4),
+            if (widget.isScheduled) ...[
+              SizedBox(height: 1.h),
               Text(
                 'Scheduled for: ${widget.startDate!.day}/${widget.startDate!.month}/${widget.startDate!.year}' +
                     (widget.startTime != null
                         ? ' at ${widget.startTime!.format(context)}'
                         : ''),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: Colors.blue[600],
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ],
-            //      SizedBox(height: 12),
+            SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -436,14 +486,15 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                     Text(
                       '${temp.toStringAsFixed(1)}°C',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF673AB7),
                       ),
                     ),
                     Text(
                       'Feels like ${feelsLike.toStringAsFixed(1)}°C',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -455,15 +506,16 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                     Text(
                       description.toUpperCase(),
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
+                        color: kBlack,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -474,9 +526,9 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                     '${(weatherData!['visibility'] / 1000).toStringAsFixed(1)} km'),
               ],
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 2.h),
             Container(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(2.w),
               decoration: BoxDecoration(
                 color: _getWeatherRecommendationColor().withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -486,14 +538,14 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                   Icon(
                     _getWeatherRecommendationIcon(),
                     color: _getWeatherRecommendationColor(),
-                    size: 16,
+                    size: 16.sp,
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 2.w),
                   Expanded(
                     child: Text(
                       _getWeatherRecommendation(),
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: _getWeatherRecommendationColor(),
                       ),
                     ),
@@ -510,298 +562,260 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
   Widget _buildWeatherInfo(IconData icon, String label, String value) {
     return Column(
       children: [
-        Icon(icon, size: 20, color: Colors.grey[600]),
-        SizedBox(height: 4),
+        Icon(icon, size: 20.sp, color: Colors.grey[600]),
+        SizedBox(height: 1.h),
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 12.sp,
             color: Colors.grey[600],
           ),
         ),
         Text(
           value,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w500,
+            color: kBlack,
           ),
         ),
       ],
     );
   }
 
-  Color _getWeatherRecommendationColor() {
-    if (weatherData == null) return Colors.grey;
-
-    final temp = weatherData!['main']['temp'];
-    final windSpeed = weatherData!['wind']['speed'];
-    final description = weatherData!['weather'][0]['main'].toLowerCase();
-
-    if (description.contains('rain') || description.contains('storm')) {
-      return Colors.red;
-    } else if (temp < 10 || temp > 35 || windSpeed > 10) {
-      return Colors.orange;
-    } else {
-      return Colors.green;
-    }
+  Widget _buildLocationField() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: _locationController,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 4.w,
+                vertical: 2.h,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              labelText: 'Starting Location',
+              labelStyle: TextStyle(
+                fontSize: 16.sp,
+                color: kBlack,
+              ),
+              hintText: 'Search for a location to get weather',
+              hintStyle: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.grey,
+              ),
+              prefixIcon: Icon(
+                Icons.location_on,
+                color: kBlack,
+              ),
+              suffixIcon: _locationController.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        _locationController.clear();
+                        setState(() {
+                          _showLocationSuggestions = false;
+                          _selectedLocation = null;
+                        });
+                      },
+                    )
+                  : null,
+            ),
+            onChanged: (value) {
+              _searchLocations(value);
+            },
+          ),
+          if (_showLocationSuggestions && _locationSuggestions.isNotEmpty)
+            Container(
+              margin: EdgeInsets.only(top: 1.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _locationSuggestions.length,
+                itemBuilder: (context, index) {
+                  final suggestion = _locationSuggestions[index];
+                  return ListTile(
+                    leading: Icon(Icons.location_on, color: kBlack),
+                    title: Text(
+                      suggestion.name,
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
+                    onTap: () => _selectLocation(suggestion),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
-  IconData _getWeatherRecommendationIcon() {
-    Color color = _getWeatherRecommendationColor();
-    if (color == Colors.red) return Icons.warning;
-    if (color == Colors.orange) return Icons.info;
-    return Icons.check_circle;
+  Widget _buildTitleField() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      child: TextFormField(
+        initialValue: widget.title,
+        onChanged: (name) {
+          widget.title = name;
+        },
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.grey[200],
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 4.w,
+            vertical: 2.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          labelText: 'Title',
+          labelStyle: TextStyle(
+            fontSize: 16.sp,
+            color: kBlack,
+          ),
+          hintText: 'Enter your hike title',
+          hintStyle: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.grey,
+          ),
+          prefixIcon: Icon(
+            Icons.title,
+            color: kBlack,
+          ),
+        ),
+      ),
+    );
   }
 
-  String _getWeatherRecommendation() {
-    if (weatherData == null) return 'Weather data unavailable';
+  Widget _buildDurationField() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      child: InkWell(
+        onTap: () async {
+          final selectedDuration = await showDurationPicker(
+            context: context,
+            initialTime: duration ?? Duration(minutes: 5),
+          );
+          if (selectedDuration == null) return;
 
-    final temp = weatherData!['main']['temp'];
-    final windSpeed = weatherData!['wind']['speed'];
-    final description = weatherData!['weather'][0]['main'].toLowerCase();
+          setState(() {
+            duration = selectedDuration;
+          });
 
-    String baseRecommendation;
-    if (description.contains('rain') || description.contains('storm')) {
-      baseRecommendation = 'Not recommended for hiking due to rain/storms';
-    } else if (temp < 10) {
-      baseRecommendation =
-          'Cold weather - dress warmly and check trail conditions';
-    } else if (temp > 35) {
-      baseRecommendation =
-          'Very hot - bring extra water and consider early morning hikes';
-    } else if (windSpeed > 10) {
-      baseRecommendation = 'Strong winds - be cautious on exposed trails';
-    } else {
-      baseRecommendation = 'Good conditions for hiking - enjoy your adventure!';
-    }
-
-    if (widget.isScheduled && widget.startDate != null) {
-      final difference = widget.startDate!.difference(DateTime.now()).inDays;
-      if (difference > 3) {
-        baseRecommendation += ' (Forecast may change - check closer to date)';
-      }
-    }
-
-    return baseRecommendation;
+          // Format duration text
+          if (duration!.inHours != 0 && duration!.inMinutes != 0) {
+            widget.durationController.text =
+                '${duration!.inHours} hour ${(duration!.inMinutes % 60)} minutes';
+          } else if (duration!.inMinutes != 0) {
+            widget.durationController.text = '${duration!.inMinutes} minutes';
+          }
+        },
+        child: TextFormField(
+          enabled: false,
+          controller: widget.durationController,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey[200],
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 4.w,
+              vertical: 2.h,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            labelText: 'Duration',
+            labelStyle: TextStyle(
+              fontSize: 16.sp,
+              color: kBlack,
+            ),
+            hintText: 'Tap to select duration',
+            hintStyle: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.grey,
+            ),
+            prefixIcon: Icon(
+              Icons.timer,
+              color: kBlack,
+            ),
+            suffixIcon: Icon(
+              Icons.arrow_drop_down,
+              color: kBlack,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildAppBar(context),
-            SizedBox(height: 2.h),
-            SingleChildScrollView(
+    return BeaconScreenTemplate(
+      body: Column(
+        children: [
+          SizedBox(height: 2.h),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: _locationController,
-                          decoration: InputDecoration(
-                            fillColor: Colors.grey[200],
-                            filled: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
-                            ),
-                            labelText: 'Location',
-                            labelStyle: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            hintText: 'Search for a location to get weather',
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.location_on,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            suffixIcon: _locationController.text.isNotEmpty
-                                ? IconButton(
-                                    icon: Icon(Icons.clear),
-                                    onPressed: () {
-                                      _locationController.clear();
-                                      setState(() {
-                                        _showLocationSuggestions = false;
-                                        _selectedLocation = null;
-                                      });
-                                    },
-                                  )
-                                : null,
-                          ),
-                          onChanged: (value) {
-                            _searchLocations(value);
-                          },
-                        ),
-                        if (_showLocationSuggestions &&
-                            _locationSuggestions.isNotEmpty)
-                          Container(
-                            margin: EdgeInsets.only(top: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _locationSuggestions.length,
-                              itemBuilder: (context, index) {
-                                final suggestion = _locationSuggestions[index];
-                                return ListTile(
-                                  leading: Icon(Icons.location_on,
-                                      color: Theme.of(context).primaryColor),
-                                  title: Text(suggestion.name),
-                                  onTap: () => _selectLocation(suggestion),
-                                );
-                              },
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // Weather Card
+                  _buildLocationField(),
                   _buildWeatherCard(),
-
-                  // Form Fields
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Form(
-                      child: Column(
-                        children: [
-                          // Title Field
-                          Container(
-                            margin: EdgeInsets.only(bottom: 16),
-                            child: TextFormField(
-                              onChanged: (name) {
-                                widget.title = name;
-                              },
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey[200],
-                                filled: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 16),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide.none,
-                                ),
-                                labelText: 'Title',
-                                labelStyle: TextStyle(
-                                  fontSize: 16,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                hintText: 'Enter your hike title',
-                                hintStyle: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.title,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // Duration Field
-                          Container(
-                            margin: EdgeInsets.only(bottom: 16),
-                            child: InkWell(
-                              onTap: () async {
-                                final selectedDuration =
-                                    await showDurationPicker(
-                                  context: context,
-                                  initialTime: duration ?? Duration(minutes: 5),
-                                );
-                                if (selectedDuration == null) return;
-
-                                setState(() {
-                                  duration = selectedDuration;
-                                });
-
-                                // Format duration text
-                                if (duration!.inHours != 0 &&
-                                    duration!.inMinutes != 0) {
-                                  widget.durationController.text =
-                                      '${duration!.inHours} hour ${(duration!.inMinutes % 60)} minutes';
-                                } else if (duration!.inMinutes != 0) {
-                                  widget.durationController.text =
-                                      '${duration!.inMinutes} minutes';
-                                }
-                              },
-                              child: TextFormField(
-                                enabled: false,
-                                controller: widget.durationController,
-                                decoration: InputDecoration(
-                                  fillColor: Colors.grey[200],
-                                  filled: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 16),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  labelText: 'Duration',
-                                  labelStyle: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  hintText: 'Tap to select duration',
-                                  hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
-                                  prefixIcon: Icon(
-                                    Icons.timer,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  suffixIcon: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _buildTitleField(),
+                  _buildDurationField(),
+                  SizedBox(height: 2.h),
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+            child: HikeButton(
+              buttonHeight: 6.h,
+              buttonWidth: double.infinity,
+              text: !widget.isScheduled ? 'Start Hike' : 'Schedule Hike',
+              textSize: 16.sp,
+              onTap: () async {
                 var groupCubit = locator<GroupCubit>();
                 if (widget.isScheduled) {
-                  DateTime start = DateTime(startDate!.year, startDate!.month,
-                      startDate!.day, startTime!.hour, startTime!.minute);
+                  DateTime start = DateTime(
+                    startDate!.year,
+                    startDate!.month,
+                    startDate!.day,
+                    startTime!.hour,
+                    startTime!.minute,
+                  );
 
                   final startsAt = start.millisecondsSinceEpoch;
                   final expiresAt = start.add(duration!).millisecondsSinceEpoch;
 
                   groupCubit.createHike(
-                      widget.title, startsAt, expiresAt, widget.groupId, false);
+                    widget.title,
+                    startsAt,
+                    expiresAt,
+                    widget.groupId,
+                    false,
+                  );
 
                   widget.durationController.clear();
-
                   appRouter.maybePop();
                 } else {
                   int startsAt = DateTime.now().millisecondsSinceEpoch;
@@ -809,31 +823,20 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
                       DateTime.now().add(duration!).millisecondsSinceEpoch;
 
                   groupCubit.createHike(
-                      widget.title, startsAt, expiresAt, widget.groupId, true);
+                    widget.title,
+                    startsAt,
+                    expiresAt,
+                    widget.groupId,
+                    true,
+                  );
 
                   widget.durationController.clear();
                   appRouter.maybePop();
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: Size(160, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Text(
-                !widget.isScheduled ? 'Start' : 'Create',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

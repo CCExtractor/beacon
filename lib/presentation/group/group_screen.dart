@@ -8,6 +8,7 @@ import 'package:beacon/presentation/group/cubit/members_cubit/members_cubit.dart
 import 'package:beacon/presentation/group/widgets/create_join_dialog.dart';
 import 'package:beacon/presentation/group/widgets/beacon_card.dart';
 import 'package:beacon/presentation/group/widgets/group_widgets.dart';
+import 'package:beacon/presentation/widgets/screen_template.dart';
 import 'package:beacon/presentation/widgets/shimmer.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/widgets/loading_screen.dart';
@@ -68,40 +69,35 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: BlocConsumer<GroupCubit, GroupState>(
-          listener: (context, state) {
-            if (state is AllBeaconGroupState && state.message != null) {
-              utils.showSnackBar(state.message!, context);
-            }
-          },
-          builder: (context, state) {
-            return ModalProgressHUD(
-              inAsyncCall: state is LoadingGroupState,
-              progressIndicator: const LoadingScreen(),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                child: Column(
-                  children: [
-                    _buildAppBar(),
-                    SizedBox(height: 2.h),
-                    _buildGroupHeader(),
-                    SizedBox(height: 2.h),
-                    _buildMembersSection(),
-                    SizedBox(height: 3.h),
-                    _buildActionButtons(),
-                    SizedBox(height: 3.h),
-                    _buildBeaconsHeader(),
-                    SizedBox(height: 1.h),
-                    Expanded(child: _buildBeaconsList(state)),
-                  ],
-                ),
+    return BeaconScreenTemplate(
+      body: BlocConsumer<GroupCubit, GroupState>(
+        listener: (context, state) {
+          if (state is AllBeaconGroupState && state.message != null) {
+            utils.showSnackBar(state.message!, context);
+          }
+        },
+        builder: (context, state) {
+          return ModalProgressHUD(
+            inAsyncCall: state is LoadingGroupState,
+            progressIndicator: const LoadingScreen(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+              child: Column(
+                children: [
+                  _buildGroupHeader(),
+                  SizedBox(height: 2.h),
+                  _buildMembersSection(),
+                  SizedBox(height: 3.h),
+                  _buildActionButtons(),
+                  SizedBox(height: 3.h),
+                  _buildBeaconsHeader(),
+                  SizedBox(height: 1.h),
+                  Expanded(child: _buildBeaconsList(state)),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
