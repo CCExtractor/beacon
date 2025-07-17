@@ -141,7 +141,6 @@ class _GroupScreenState extends State<GroupScreen> {
 
   Widget _buildMembersSection() {
     final memberCount = (widget.group.members?.length ?? 0) + 1;
-    print("leaders image: ${widget.group.leader?.imageUrl}");
     return Row(
       children: [
         if (widget.group.members?.isNotEmpty ?? false)

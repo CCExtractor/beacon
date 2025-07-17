@@ -41,10 +41,12 @@ class GroupQueries {
             leader {
               _id
               name
+              imageUrl
             }
             members {
               _id
               name
+              imageUrl
             }
             beacons
             {
@@ -54,6 +56,7 @@ class GroupQueries {
               leader {
                 _id
                 name
+                imageUrl
               }
               location{
                 lat
@@ -62,6 +65,7 @@ class GroupQueries {
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -84,6 +88,7 @@ class GroupQueries {
             leader {
               _id
               name
+              imageUrl
             }
             members {
               _id
@@ -97,6 +102,7 @@ class GroupQueries {
               leader {
                 _id
                 name
+                imageUrl
               }
               location{
                 lat
@@ -105,6 +111,7 @@ class GroupQueries {
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -245,10 +252,12 @@ query{
           _id
           name
           email
+          imageUrl
         }
         followers {
           _id
           name
+          imageUrl
         }
         group{
         _id
@@ -298,6 +307,7 @@ query{
         _id
         name
         email
+        imageUrl
         }
       }
     ''';
@@ -307,6 +317,7 @@ query{
     subscription StreamNewlyJoinedGroups($id: ID!){
       groupJoined(id: $id){
         name
+        imageUrl
         location{
           lat
           lon

@@ -65,78 +65,161 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   Widget build(BuildContext context) {
-    print(
-      "_currentPage: $_currentPage",
-    );
-    Size screensize = MediaQuery.of(context).size;
+
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+
+    // Adaptive padding
+    double getHorizontalPadding() {
+      if (screenWidth < 360) return screenWidth * 0.05; // 5% for small phones
+      if (screenWidth < 400) return screenWidth * 0.06; // 6% for medium phones
+      if (screenWidth < 600) return screenWidth * 0.08; // 8% for large phones
+      return screenWidth * 0.12; // 12% for tablets
+    }
+
+    // Adaptive top spacing
+    double getTopSpacing() {
+      if (screenHeight < 600) return screenHeight * 0.08; // Small screens
+      if (screenHeight < 700) return screenHeight * 0.10; // Medium screens
+      if (screenHeight < 800) return screenHeight * 0.12; // Large screens
+      return screenHeight * 0.15; // Very large screens
+    }
+
+    // Adaptive logo size
+    double getLogoWidth() {
+      if (screenWidth < 360)
+        return screenWidth * 0.65; // Smaller logo for small phones
+      if (screenWidth < 400) return screenWidth * 0.68; // Medium phones
+      if (screenWidth < 600) return screenWidth * 0.70; // Large phones
+      return screenWidth * 0.60; // Tablets (smaller relative size)
+    }
+
+    // Adaptive spacing after logo
+    double getLogoBottomSpacing() {
+      if (screenHeight < 600) return screenHeight * 0.04; // Small screens
+      if (screenHeight < 700) return screenHeight * 0.06; // Medium screens
+      if (screenHeight < 800) return screenHeight * 0.07; // Large screens
+      return screenHeight * 0.08; // Very large screens
+    }
+
+    // Adaptive text size for welcome message
+    TextStyle getWelcomeTextStyle() {
+      final baseStyle = Theme.of(context).textTheme.headlineMedium;
+      if (screenWidth < 360) {
+        return baseStyle?.copyWith(fontSize: 20) ?? TextStyle(fontSize: 20);
+      }
+      if (screenWidth < 400) {
+        return baseStyle?.copyWith(fontSize: 22) ?? TextStyle(fontSize: 22);
+      }
+      return baseStyle ?? TextStyle(fontSize: 24);
+    }
+
+    final horizontalPadding = getHorizontalPadding();
+    final topSpacing = getTopSpacing();
+    final logoWidth = getLogoWidth();
+    final logoBottomSpacing = getLogoBottomSpacing();
+    final welcomeTextStyle = getWelcomeTextStyle();
 
     return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, Object? result) async {
-          if (didPop) {
-            return;
-          }
-
-          bool? popped = await onPopHome();
-          if (popped == true) {
-            await SystemNavigator.pop();
-          }
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        if (didPop) {
           return;
+        }
+
+        bool? popped = await onPopHome();
+        if (popped == true) {
+          await SystemNavigator.pop();
+        }
+        return;
+      },
+      child: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is SuccessState) {
+            appRouter.replaceNamed('/home');
+            state.message != null
+                ? utils.showSnackBar(state.message!, context)
+                : null;
+          } else if (state is AuthVerificationState) {
+            context.read<AuthCubit>().navigate();
+          } else if (state is AuthErrorState) {
+            utils.showSnackBar(
+              state.error!,
+              context,
+              duration: Duration(seconds: 2),
+            );
+          }
         },
-        child: BlocConsumer<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state is SuccessState) {
-              appRouter.replaceNamed('/home');
-              state.message != null
-                  ? utils.showSnackBar(state.message!, context)
-                  : null;
-            } else if (state is AuthVerificationState) {
-              context.read<AuthCubit>().navigate();
-            } else if (state is AuthErrorState) {
-              utils.showSnackBar(state.error!, context,
-                  duration: Duration(seconds: 2));
-            }
-          },
-          builder: (context, state) {
-            return state is AuthLoadingState
-                ? LoadingScreen()
-                : Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    body: SafeArea(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screensize.width * 0.08),
-                        child: Column(
-                          children: [
-                            SizedBox(height: screensize.height * 0.15),
-                            Text(
-                              'welcome to',
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            SizedBox(height: screensize.height * 0.01),
-                            Image.asset(
-                              'images/beacon_logo.png',
-                              width: screensize.width * 0.7,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(height: screensize.height * 0.08),
-                            Expanded(
-                              child: PageView(
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: _pageController,
-                                children: <Widget>[
-                                  _buildSignIn(context),
-                                  _buildSignUp(context),
+        builder: (context, state) {
+          return state is AuthLoadingState
+              ? LoadingScreen()
+              : Scaffold(
+                  resizeToAvoidBottomInset: true,
+                  body: SafeArea(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding,
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: topSpacing),
+                                  Text(
+                                    'welcome to',
+                                    style: welcomeTextStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 300, // Maximum logo width
+                                      minWidth: 200, // Minimum logo width
+                                    ),
+                                    child: Image.asset(
+                                      'images/beacon_logo.png',
+                                      width: logoWidth,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  SizedBox(height: logoBottomSpacing),
+                                  Expanded(
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            500, // Maximum form width for tablets
+                                      ),
+                                      child: PageView(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        controller: _pageController,
+                                        children: <Widget>[
+                                          _buildSignIn(context),
+                                          _buildSignUp(context),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  // Add some bottom padding for very small screens
+                                  if (screenHeight < 600) SizedBox(height: 20),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-          },
-        ));
+                  ),
+                );
+        },
+      ),
+    );
   }
 
   GlobalKey<FormState> _signInFormKey = GlobalKey<FormState>();
@@ -234,17 +317,61 @@ class _AuthScreenState extends State<AuthScreen>
 
   Widget _buildSignUp(BuildContext context) {
     final authCubit = BlocProvider.of<AuthCubit>(context);
-    Size screensize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+
+    // Adaptive padding based on screen size
+    double getHorizontalPadding() {
+      if (screenWidth < 360) return 20; // Small phones
+      if (screenWidth < 400) return 35; // Medium phones
+      if (screenWidth < 600) return 50; // Large phones
+      return 70; // Tablets
+    }
+
+    // Adaptive spacing
+    double getVerticalSpacing() {
+      if (screenHeight < 600) return 0.8.h; // Small screens
+      if (screenHeight < 800) return 1.2.h; // Medium screens
+      return 1.5.h; // Large screens
+    }
+
+    // Adaptive button height
+    double getButtonHeight() {
+      if (screenHeight < 600) return 40; // Small screens
+      if (screenHeight < 800) return 45; // Medium screens
+      return 50; // Large screens
+    }
+
+    // Adaptive font size
+    double getButtonFontSize() {
+      if (screenWidth < 360) return 14;
+      if (screenWidth < 400) return 15;
+      return 16;
+    }
+
+    final horizontalPadding = getHorizontalPadding();
+    final verticalSpacing = getVerticalSpacing();
+    final buttonHeight = getButtonHeight();
+    final buttonFontSize = getButtonFontSize();
+
     return Container(
-      width: screensize.width,
+      width: screenWidth,
+      padding:
+          EdgeInsets.symmetric(horizontal: 16), // Base padding for container
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Form(
               key: _registerFormKey,
               child: Container(
-                  width: screensize.width - 70,
-                  child: Column(children: <Widget>[
+                width: screenWidth - (horizontalPadding * 2),
+                constraints: BoxConstraints(
+                  maxWidth: 400, // Maximum width for tablets
+                  minWidth: 280, // Minimum width for small phones
+                ),
+                child: Column(
+                  children: <Widget>[
                     CustomTextField(
                       iconData: Icons.person_2_sharp,
                       hintText: 'Name',
@@ -253,9 +380,7 @@ class _AuthScreenState extends State<AuthScreen>
                       nextFocusNode: signUpEmailFocus,
                       validator: Validator.validateName,
                     ),
-                    SizedBox(
-                      height: 1.2.h,
-                    ),
+                    SizedBox(height: verticalSpacing),
                     CustomTextField(
                       iconData: Icons.mail,
                       hintText: 'Email Address',
@@ -264,55 +389,67 @@ class _AuthScreenState extends State<AuthScreen>
                       nextFocusNode: signUpPasswordFocus,
                       validator: Validator.validateEmail,
                     ),
-                    SizedBox(
-                      height: 1.2.h,
-                    ),
+                    SizedBox(height: verticalSpacing),
                     CustomTextField(
-                        iconData: Icons.lock,
-                        hintText: 'Password',
-                        controller: signUpPasswordController,
-                        focusNode: signUpPasswordFocus,
-                        showTrailing: true,
-                        validator: Validator.validatePassword),
-                  ])),
-            ),
-            SizedBox(
-              height: 1.2.h,
-            ),
-            Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      iconData: Icons.lock,
+                      hintText: 'Password',
+                      controller: signUpPasswordController,
+                      focusNode: signUpPasswordFocus,
+                      showTrailing: true,
+                      validator: Validator.validatePassword,
+                    ),
+                  ],
                 ),
-                child: BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (_registerFormKey.currentState!.validate()) {
-                          authCubit.register(
-                              signUpNameController.text.trim(),
-                              signUpEmailController.text.trim(),
-                              signUpPasswordController.text.trim());
-                        } else {
-                          utils.showSnackBar(
-                              'Please complete all the fields', context);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          minimumSize: Size(screensize.width - 70, 45)),
-                      child: const Text(
-                        'Continue with Email',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
+              ),
+            ),
+            SizedBox(height: verticalSpacing),
+            Container(
+              width: screenWidth - (horizontalPadding * 2),
+              constraints: BoxConstraints(
+                maxWidth: 400, // Maximum width for tablets
+                minWidth: 280, // Minimum width for small phones
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              ),
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (_registerFormKey.currentState!.validate()) {
+                        authCubit.register(
+                          signUpNameController.text.trim(),
+                          signUpEmailController.text.trim(),
+                          signUpPasswordController.text.trim(),
+                        );
+                      } else {
+                        utils.showSnackBar(
+                          'Please complete all the fields',
+                          context,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                    );
-                  },
-                )),
+                      minimumSize: Size(double.infinity, buttonHeight),
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: Text(
+                      'Continue with Email',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: buttonFontSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: verticalSpacing),
             _switchPageHelper(),
           ],
         ),

@@ -28,17 +28,6 @@ class HikeScreenWidget {
     Share.share('To join beacon follow this link: $url');
   }
 
-  static Widget sosButton(String id, BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'sos',
-      backgroundColor: kYellow,
-      onPressed: () {
-        locator<LocationCubit>().sendSOS(id, context);
-      },
-      child: Icon(Icons.sos),
-    );
-  }
-
   static Widget shareButton(
       BuildContext context, String? passkey, BeaconEntity beacon) {
     return FloatingActionButton(

@@ -10,6 +10,7 @@ class BeaconQueries {
             leader{
               _id
               name
+              imageUrl
             }
             startsAt
             expiresAt
@@ -67,6 +68,7 @@ deleteBeacon(id: "$id")
              leader {
                _id
                name
+                imageUrl
              }
              group{
               _id
@@ -79,6 +81,7 @@ deleteBeacon(id: "$id")
              followers {
                _id
                name
+                imageUrl
              }
              startsAt
              expiresAt
@@ -116,6 +119,7 @@ deleteBeacon(id: "$id")
               _id
               name
               email
+              imageUrl
               beacons{
               _id
               }
@@ -131,6 +135,7 @@ deleteBeacon(id: "$id")
             followers {
               _id
               name
+              imageUrl
             }
             startsAt
             expiresAt
@@ -208,7 +213,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
-
+                imageUrl
               }
               location {
                 lat
@@ -217,6 +222,7 @@ deleteBeacon(id: "$id")
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -397,10 +403,12 @@ deleteBeacon(id: "$id")
         landmark{
           _id
           title
+          icon
           location{
             lat 
             lon
           }
+
         }
 
       }
@@ -443,6 +451,7 @@ deleteBeacon(id: "$id")
           _id
           name
           email
+          imageUrl
           location{
             lat
             lon
@@ -455,6 +464,16 @@ deleteBeacon(id: "$id")
   final locationUpdateGQL = gql(r'''
     subscription StreamLocationUpdate($id: ID!){
       beaconLocations(id: $id){
+
+      userSOS {
+       _id
+       name
+       email
+       location{
+         lat
+         lon
+       }
+      }
 
       route{
        lat
@@ -474,6 +493,7 @@ deleteBeacon(id: "$id")
       landmark{
        _id
        title
+       icon
        location{
        lat
        lon
@@ -482,7 +502,7 @@ deleteBeacon(id: "$id")
        _id
        name
        email
-        imageUrl
+       imageUrl
        }
       }
 

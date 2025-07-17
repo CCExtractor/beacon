@@ -114,7 +114,6 @@ class LocationCubit extends Cubit<LocationState> {
     // // adding leader location
     if (beacon.leader != null) {
       _leader = beacon.leader!;
-      print('location state leader: ${_leader!.imageUrl}');
 
       // creating leader location
 
@@ -362,21 +361,10 @@ class LocationCubit extends Cubit<LocationState> {
         .listen((dataState) async {
       if (dataState is DataSuccess && dataState.data != null) {
         BeaconLocationsEntity beaconLocationsEntity = dataState.data!;
-
-        print(
-            'Location update subscription: ${beaconLocationsEntity.toString()}');
-
-        // when new landmark is created
         // when new landmark is created
         if (beaconLocationsEntity.landmark != null) {
           LandMarkEntity newLandMark = beaconLocationsEntity.landmark!;
-
-          print('Creating landmark marker for: ${newLandMark.title}');
-          print('Markers before: ${_hikeMarkers.length}');
-
           await _createLandMarkMarker(newLandMark);
-
-          print('Markers after: ${_hikeMarkers.length}');
 
           emit(LoadedLocationState(
               polyline: _polyline,
@@ -686,7 +674,6 @@ class LocationCubit extends Cubit<LocationState> {
         latlng.latitude.toString(), latlng.longitude.toString(), icon);
 
     if (dataState is DataSuccess && dataState.data != null) {
-      print('Local landmark created: ${dataState.data!.title}');
       await _createLandMarkMarker(dataState.data!);
 
       await locationUpdateSubscription(beaconId);
@@ -705,9 +692,7 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<void> sendSOS(String id, BuildContext context) async {
     final dataState = await _hikeUseCase.sos(id);
-
     if (dataState is DataSuccess) {
-      log('data coming from sos: ${dataState.data.toString()}');
       // // Ensure _hikeMarkers is a Set of marker objects
 
       var userId = localApi.userModel.id;
@@ -775,9 +760,6 @@ class LocationCubit extends Cubit<LocationState> {
       borderWidth: 4,
     );
 
-    // final bitmap = await _createCustomMarkerBitmap();
-    print("logging user marker creation: ${user.name}");
-
     final existingMarkers =
         _hikeMarkers.where((element) => element.markerId == markerId);
 
@@ -835,7 +817,6 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<Marker> createMarkerWithCircularNetworkImage(
       LandMarkEntity landmark) async {
-    print("Creating marker for landmark: ${landmark.createdBy?.imageUrl}");
     final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
       landmark.icon ?? 'images/icons/location-marker.png',
       size: 80,
