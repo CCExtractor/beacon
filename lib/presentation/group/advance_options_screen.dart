@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:beacon/config/enviornment_config.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/hike/services/geoapify_service.dart';
@@ -105,7 +106,8 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
     });
 
     try {
-      const String apiKey = '03fe30be078c0bfb823d954404de6a6b';
+      final String apiKey = EnvironmentConfig.openWeatherMapApiKey!;
+      // '03fe30be078c0bfb823d954404de6a6b';
 
       String apiUrl;
       if (widget.isScheduled) {

@@ -20,7 +20,8 @@ class AuthRepositoryImplementation implements AuthRepository {
   }
 
   @override
-  Future<DataState<UserEntity>> oAuth(String name, String email, String? imageUrl) {
+  Future<DataState<UserEntity>> oAuth(
+      String name, String email, String? imageUrl) {
     return remoteAuthApi.gAuth(name, email, imageUrl);
   }
 

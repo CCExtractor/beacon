@@ -17,7 +17,8 @@ class AuthUseCase {
     return authRepository.login(email, password);
   }
 
-  Future<DataState<UserEntity>> oAuthUseCase(String name, String email, String? imageUrl) async {
+  Future<DataState<UserEntity>> oAuthUseCase(
+      String name, String email, String? imageUrl) async {
     return authRepository.oAuth(name, email, imageUrl);
   }
 

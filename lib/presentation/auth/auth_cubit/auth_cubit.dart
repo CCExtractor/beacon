@@ -83,8 +83,8 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (gAuth != null && gAuth.displayName != null) {
       // pass imageurl
-      var dataState =
-          await authUseCase.oAuthUseCase(gAuth.displayName!, gAuth.email, gAuth.photoUrl);
+      var dataState = await authUseCase.oAuthUseCase(
+          gAuth.displayName!, gAuth.email, gAuth.photoUrl);
 
       if (dataState is DataSuccess && dataState.data != null) {
         emit(SuccessState());

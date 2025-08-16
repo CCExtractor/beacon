@@ -128,8 +128,14 @@ class RemoteHikeApi {
         if (stream.hasException) {
           yield DataFailed('Something went wrong');
         } else {
+          print('Stream data: ${stream.data}');
           var locations =
               BeaconLocationsModel.fromJson(stream.data!['beaconLocations']);
+          print('Locations: ${locations.user}');
+          print('Locations: ${locations.route}');
+          print('Locations: ${locations.userSOS}');
+          //print('Locations: ${locations.landmarks}');
+
           yield DataSuccess(locations);
         }
       }

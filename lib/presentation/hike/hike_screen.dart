@@ -1,28 +1,20 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:beacon/config/pip_manager.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/locator.dart';
-import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/hike_cubit/hike_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/hike_cubit/hike_state.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_state.dart';
-
 import 'package:beacon/presentation/hike/widgets/hike_screen_widget.dart';
 import 'package:beacon/presentation/hike/widgets/search_places.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/widgets/screen_template.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:simple_pip_mode/pip_widget.dart';
-import 'package:simple_pip_mode/simple_pip.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 @RoutePage()
 class HikeScreen extends StatefulWidget {
@@ -44,14 +36,12 @@ class _HikeScreenState extends State<HikeScreen>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _hikeCubit.startHike(widget.beacon.id!, this, context);
-    SimplePip().setAutoPipMode(aspectRatio: (2, 3));
     super.initState();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    PIPMode.disablePIPMode();
     _hikeCubit.clear();
     _locationCubit.clear();
     super.dispose();
@@ -60,126 +50,116 @@ class _HikeScreenState extends State<HikeScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.paused) {}
   }
 
   bool isSmallsized = 100.h < 800;
-  PanelController _panelController = PanelController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PipWidget(
-          onPipExited: () {
-            _panelController.open();
-          },
-          builder: (context) {
-            return BlocBuilder<HikeCubit, HikeState>(
-              builder: (context, state) {
-                if (state is InitialHikeState) {
-                  return Center(
-                      child: SpinKitWave(
-                    color: kYellow,
-                  ));
-                } else if (state is ErrorHikeState) {
-                  return Container(
-                    child: Center(child: Text('Restart beacon')),
-                  );
-                } else {
-                  return BeaconScreenTemplate(
-                      body: Stack(
+      body: BlocBuilder<HikeCubit, HikeState>(
+        builder: (context, state) {
+          if (state is InitialHikeState) {
+            return Center(
+                child: SpinKitWave(
+              color: kYellow,
+            ));
+          } else if (state is ErrorHikeState) {
+            return Container(
+              child: Center(child: Text('Restart beacon')),
+            );
+          } else {
+            return BeaconScreenTemplate(
+                body: Stack(
+              children: [
+                _mapScreen(),
+                LocationSearchWidget(widget.beacon.id!),
+                Positioned(
+                  bottom: 200,
+                  right: 10,
+                  child: Column(
                     children: [
-                      _mapScreen(),
-                      LocationSearchWidget(widget.beacon.id!),
-                      Positioned(
-                        bottom: 200,
-                        right: 10,
-                        child: Column(
-                          children: [
-                            FloatingActionButton(
-                              backgroundColor: Colors.white,
-                              mini: true,
-                              onPressed: () => _locationCubit.zoomIn(),
-                              child: Icon(Icons.add),
-                            ),
-                            //SizedBox(height: 2),
-                            FloatingActionButton(
-                              backgroundColor: Colors.white,
-                              mini: true,
-                              onPressed: () => _locationCubit.zoomOut(),
-                              child: Icon(Icons.remove),
-                            ),
-                            SizedBox(height: 2),
-                            FloatingActionButton(
-                              backgroundColor: Colors.white,
-                              mini: true,
-                              onPressed: () => _locationCubit.centerMap(),
-                              child: Icon(Icons.map),
-                            ),
-                          ],
+                      FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        mini: true,
+                        onPressed: () => _locationCubit.zoomIn(),
+                        child: Icon(Icons.add),
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        mini: true,
+                        onPressed: () => _locationCubit.zoomOut(),
+                        child: Icon(Icons.remove),
+                      ),
+                      SizedBox(height: 2),
+                      FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        mini: true,
+                        onPressed: () => _locationCubit.centerMap(),
+                        child: Icon(Icons.map),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 100,
+                    child: Container(
+                      height: 100,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
                       ),
-                      Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          height: 100,
-                          child: Container(
-                            height: 100,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[50],
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Left Circular Icon Button
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 4,
-                                        ),
-                                      ],
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://media.istockphoto.com/id/1253926432/vector/flashlight-warning-alarm-light-and-siren-light-flat-design-vector-design.jpg?s=612x612&w=0&k=20&c=yOj6Jpu7XDrPJCTfUIpQm-LWI9q9RWQB91s-N7CgQDQ="))),
-                                ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Left Circular Icon Button
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        "https://media.istockphoto.com/id/1253926432/vector/flashlight-warning-alarm-light-and-siren-light-flat-design-vector-design.jpg?s=612x612&w=0&k=20&c=yOj6Jpu7XDrPJCTfUIpQm-LWI9q9RWQB91s-N7CgQDQ="))),
+                          ),
 
-                                const SizedBox(width: 10),
+                          const SizedBox(width: 10),
 
-                                // Right Red SOS Button
-                                HikeButton(
-                                  buttonWidth: 70.w,
-                                  buttonHeight: 50,
-                                  text: 'Send SOS',
-                                  onTap: () {
-                                    locator<LocationCubit>()
-                                        .sendSOS(widget.beacon.id!, context);
-                                  },
-                                  textSize: 18.0,
-                                  buttonColor: Colors.red,
-                                  textColor: Colors.white,
-                                )
-                              ],
-                            ),
-                          )),
-                    ],
-                  ));
-                }
-              },
-            );
-          },
-          pipChild: _mapScreen()),
+                          // Right Red SOS Button
+                          HikeButton(
+                            buttonWidth: 70.w,
+                            buttonHeight: 50,
+                            text: 'Send SOS',
+                            onTap: () {
+                              locator<LocationCubit>()
+                                  .sendSOS(widget.beacon.id!, context);
+                            },
+                            textSize: 18.0,
+                            buttonColor: Colors.red,
+                            textColor: Colors.white,
+                          )
+                        ],
+                      ),
+                    )),
+              ],
+            ));
+          }
+        },
+      ),
     );
   }
 
