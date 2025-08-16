@@ -4,7 +4,6 @@ import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_cubit.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/core/utils/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
@@ -152,9 +151,6 @@ class HikeScreenWidget {
     );
   }
 
-  static TextEditingController _landMarkeController = TextEditingController();
-  static GlobalKey<FormState> _landmarkFormKey = GlobalKey<FormState>();
-
   static void selectionButton(
       BuildContext context, String beaconId, LatLng loc) {
     showDialog(
@@ -290,7 +286,9 @@ class _CreateLandmarkDialogState extends State<CreateLandmarkDialog> {
                           width: 2,
                         ),
                         color: isSelected
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            ? Theme.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.1)
                             : Colors.transparent,
                       ),
                       child: Image.asset(

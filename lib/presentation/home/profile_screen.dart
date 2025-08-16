@@ -1,5 +1,4 @@
 import 'package:auto_route/annotations.dart';
-import 'package:beacon/domain/entities/user/user_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/widgets/hike_button.dart';
@@ -7,7 +6,6 @@ import 'package:beacon/presentation/widgets/screen_template.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import '../../core/utils/constants.dart';
 
 @RoutePage()
 class ProfileScreen extends StatefulWidget {
@@ -133,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             border: Border.all(color: Colors.deepPurple, width: 2),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 spreadRadius: 2,
               ),
@@ -166,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.deepPurple,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 6,
                     spreadRadius: 1,
                   ),
@@ -232,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -341,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: (achievement['earned'] as bool
                             ? Colors.deepPurple
                             : Colors.grey[300]!)
-                        .withOpacity(0.3),
+                        .withValues(alpha: 0.3),
                     blurRadius: 8,
                     spreadRadius: 2,
                   ),

@@ -17,14 +17,14 @@ import '../widgets/screen_template.dart';
 
 @RoutePage()
 class AdvancedOptionsScreen extends StatefulWidget {
-  TextEditingController durationController;
-  String title;
-  bool isScheduled;
-  DateTime? startDate;
-  TimeOfDay? startTime;
-  String groupId;
+  final TextEditingController durationController;
+  final String title;
+  final bool isScheduled;
+  final DateTime? startDate;
+  final TimeOfDay? startTime;
+  final String groupId;
 
-  AdvancedOptionsScreen({
+  const AdvancedOptionsScreen({
     super.key,
     required this.durationController,
     required this.title,
@@ -107,7 +107,6 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
 
     try {
       final String apiKey = EnvironmentConfig.openWeatherMapApiKey!;
-      // '03fe30be078c0bfb823d954404de6a6b';
 
       String apiUrl;
       if (widget.isScheduled) {
@@ -220,32 +219,6 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
       'isScheduled': true,
       'scheduledDate': targetDateTime.toIso8601String(),
     };
-  }
-
-  Future<void> _loadMockWeatherData() async {
-    await Future.delayed(Duration(seconds: 1));
-
-    setState(() {
-      weatherData = {
-        'main': {
-          'temp': 22.5,
-          'feels_like': 24.0,
-          'humidity': 65,
-        },
-        'weather': [
-          {'main': 'Clear', 'description': 'clear sky', 'icon': '01d'}
-        ],
-        'wind': {
-          'speed': 3.2,
-        },
-        'visibility': 10000,
-        'name': _selectedLocation?.name ?? 'Your Location',
-        'isScheduled': widget.isScheduled,
-        'scheduledDate':
-            widget.isScheduled ? widget.startDate!.toIso8601String() : null,
-      };
-      isLoadingWeather = false;
-    });
   }
 
   Future<void> _searchLocations(String query) async {
@@ -532,7 +505,7 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
             Container(
               padding: EdgeInsets.all(2.w),
               decoration: BoxDecoration(
-                color: _getWeatherRecommendationColor().withOpacity(0.1),
+                color: _getWeatherRecommendationColor().withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -675,9 +648,7 @@ class _AdvancedOptionsScreenState extends State<AdvancedOptionsScreen> {
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
       child: TextFormField(
         initialValue: widget.title,
-        onChanged: (name) {
-          widget.title = name;
-        },
+        readOnly: true, // Make it read-only since title is now final
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.grey[200],

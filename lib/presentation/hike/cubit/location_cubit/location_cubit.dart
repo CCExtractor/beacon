@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -128,7 +127,7 @@ class LocationCubit extends Cubit<LocationState> {
             infoWindow: InfoWindow(
               title: 'this is ${_beacon!.leader?.name ?? 'Anonymous'}}',
             ),
-            icon: BitmapDescriptor.fromBytes(
+            icon: BitmapDescriptor.bytes(
                 await getCircularImageWithBorderAndPointer(
               _leader!.imageUrl ??
                   'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
@@ -421,7 +420,7 @@ class LocationCubit extends Cubit<LocationState> {
           if (markers.isEmpty) {
             _hikeMarkers.add(Marker(
                 markerId: MarkerId(_beacon!.leader!.id.toString()),
-                icon: BitmapDescriptor.fromBytes(
+                icon: BitmapDescriptor.bytes(
                     await getCircularImageWithBorderAndPointer(
                   _leader!.imageUrl ??
                       'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
@@ -769,7 +768,7 @@ class LocationCubit extends Cubit<LocationState> {
           markerId: markerId,
           position: markerPosition,
           infoWindow: InfoWindow(title: user.name ?? 'Anonymous'),
-          icon: BitmapDescriptor.fromBytes(markerIcon));
+          icon: BitmapDescriptor.bytes(markerIcon));
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position
@@ -796,7 +795,7 @@ class LocationCubit extends Cubit<LocationState> {
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final Uint8List resizedBytes = byteData!.buffer.asUint8List();
 
-      return BitmapDescriptor.fromBytes(resizedBytes);
+      return BitmapDescriptor.bytes(resizedBytes);
     }
 
     BitmapDescriptor customIcon = await getResizedMarkerIcon(
@@ -828,7 +827,7 @@ class LocationCubit extends Cubit<LocationState> {
     return Marker(
       markerId: MarkerId(landmark.id!.toString()),
       position: locationToLatLng(landmark.location!),
-      icon: BitmapDescriptor.fromBytes(markerIcon),
+      icon: BitmapDescriptor.bytes(markerIcon),
       infoWindow: InfoWindow(
         title:
             '${landmark.title} by ${landmark.createdBy?.name ?? 'Anonymous'}',

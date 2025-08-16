@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:auto_route/auto_route.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/hike/widgets/active_beacon.dart';
-import 'package:beacon/presentation/widgets/hike_button.dart';
 import 'package:beacon/presentation/group/widgets/timer.dart';
 import 'package:beacon/config/router/router.dart';
 import 'package:flutter/material.dart';

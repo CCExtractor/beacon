@@ -102,23 +102,6 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  Widget _buildAppBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.grey),
-          onPressed: () => context.router.maybePop(),
-        ),
-        Image.asset('images/beacon_logo.png', height: 4.h),
-        IconButton(
-          icon: const Icon(Icons.power_settings_new, color: Colors.grey),
-          onPressed: _showLogoutDialog,
-        ),
-      ],
-    );
-  }
-
   Widget _buildGroupHeader() {
     return Row(
       children: [

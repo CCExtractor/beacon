@@ -93,7 +93,7 @@ flutter:
     - images/
     - animations/
     - images/icons/
-    - .env
+    # - .env
 
   fonts:
     - family: Inter

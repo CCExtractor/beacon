@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
-import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_cubit.dart';
 import 'package:beacon/presentation/home/home_cubit/home_state.dart';
 import 'package:beacon/presentation/group/widgets/create_join_dialog.dart';

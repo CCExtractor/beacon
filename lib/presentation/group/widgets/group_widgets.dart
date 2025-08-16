@@ -606,7 +606,6 @@ class _MemberTile extends StatelessWidget {
     required this.isLeader,
     required this.canRemove,
     required this.isCurrentUser,
-    super.key,
   });
 
   @override
