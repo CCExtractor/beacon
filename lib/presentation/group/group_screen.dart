@@ -369,44 +369,4 @@ class _GroupScreenState extends State<GroupScreen> {
       ),
     );
   }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: Text('Logout', style: TextStyle(fontSize: 18.sp)),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(fontSize: 16.sp),
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              HikeButton(
-                buttonWidth: 25.w,
-                buttonHeight: 5.h,
-                isDotted: true,
-                onTap: () => context.router.maybePop(false),
-                text: 'No',
-                textSize: 14.sp,
-              ),
-              HikeButton(
-                buttonWidth: 25.w,
-                buttonHeight: 5.h,
-                onTap: () {
-                  context.router.replaceNamed('/auth');
-                  localApi.deleteUser();
-                  context.read<AuthCubit>().googleSignOut();
-                },
-                text: 'Yes',
-                textSize: 14.sp,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

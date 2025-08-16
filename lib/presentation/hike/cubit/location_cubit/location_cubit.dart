@@ -747,7 +747,7 @@ class LocationCubit extends Cubit<LocationState> {
     }
   }
 
-  void _createUserMarker(UserEntity user, {bool isLeader = false}) async {
+  void _createUserMarker(UserEntity user) async {
     final markerId = MarkerId(user.id!);
     final markerPosition = locationToLatLng(user.location!);
 
