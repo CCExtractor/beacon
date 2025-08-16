@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
-import 'package:beacon/presentation/auth/auth_cubit/auth_cubit.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_cubit.dart';
 import 'package:beacon/presentation/group/cubit/group_cubit/group_state.dart';
 import 'package:beacon/presentation/group/cubit/members_cubit/members_cubit.dart';
