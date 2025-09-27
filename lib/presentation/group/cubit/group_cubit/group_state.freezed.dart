@@ -151,6 +151,9 @@ class _$GroupStateCopyWithImpl<$Res, $Val extends GroupState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -167,6 +170,9 @@ class __$$InitialGroupStateImplCopyWithImpl<$Res>
   __$$InitialGroupStateImplCopyWithImpl(_$InitialGroupStateImpl _value,
       $Res Function(_$InitialGroupStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -348,6 +354,9 @@ class __$$LoadingGroupStateImplCopyWithImpl<$Res>
   __$$LoadingGroupStateImplCopyWithImpl(_$LoadingGroupStateImpl _value,
       $Res Function(_$LoadingGroupStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -529,6 +538,9 @@ class __$$ShrimmerGroupStateImplCopyWithImpl<$Res>
   __$$ShrimmerGroupStateImplCopyWithImpl(_$ShrimmerGroupStateImpl _value,
       $Res Function(_$ShrimmerGroupStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -719,6 +731,8 @@ class __$$AllBeaconGroupStateImplCopyWithImpl<$Res>
       $Res Function(_$AllBeaconGroupStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -823,7 +837,9 @@ class _$AllBeaconGroupStateImpl implements AllBeaconGroupState {
       const DeepCollectionEquality().hash(_beacons),
       version);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AllBeaconGroupStateImplCopyWith<_$AllBeaconGroupStateImpl> get copyWith =>
@@ -990,7 +1006,10 @@ abstract class AllBeaconGroupState implements GroupState {
   filters get type;
   List<BeaconEntity> get beacons;
   int get version;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AllBeaconGroupStateImplCopyWith<_$AllBeaconGroupStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1019,6 +1038,8 @@ class __$$NearbyBeaconGroupStateImplCopyWithImpl<$Res>
       $Res Function(_$NearbyBeaconGroupStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1105,7 +1126,9 @@ class _$NearbyBeaconGroupStateImpl implements NearbyBeaconGroupState {
   int get hashCode => Object.hash(runtimeType, message, type,
       const DeepCollectionEquality().hash(_beacons), radius, version);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$NearbyBeaconGroupStateImplCopyWith<_$NearbyBeaconGroupStateImpl>
@@ -1267,7 +1290,10 @@ abstract class NearbyBeaconGroupState implements GroupState {
   List<BeaconEntity> get beacons;
   double get radius;
   int get version;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$NearbyBeaconGroupStateImplCopyWith<_$NearbyBeaconGroupStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1297,6 +1323,8 @@ class __$$StatusFilterBeaconGroupStateImplCopyWithImpl<$Res>
       $Res Function(_$StatusFilterBeaconGroupStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1401,7 +1429,9 @@ class _$StatusFilterBeaconGroupStateImpl
       const DeepCollectionEquality().hash(_beacons),
       version);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$StatusFilterBeaconGroupStateImplCopyWith<
@@ -1569,7 +1599,10 @@ abstract class StatusFilterBeaconGroupState implements GroupState {
   filters? get type;
   List<BeaconEntity> get beacons;
   int get version;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$StatusFilterBeaconGroupStateImplCopyWith<
           _$StatusFilterBeaconGroupStateImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -1592,6 +1625,8 @@ class __$$ErrorGroupStateImplCopyWithImpl<$Res>
       _$ErrorGroupStateImpl _value, $Res Function(_$ErrorGroupStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1630,7 +1665,9 @@ class _$ErrorGroupStateImpl implements ErrorGroupState {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorGroupStateImplCopyWith<_$ErrorGroupStateImpl> get copyWith =>
@@ -1784,7 +1821,10 @@ abstract class ErrorGroupState implements GroupState {
       _$ErrorGroupStateImpl;
 
   String get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorGroupStateImplCopyWith<_$ErrorGroupStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

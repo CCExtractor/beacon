@@ -46,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login(String email, String password) async {
     emit(AuthLoadingState());
     final dataState = await authUseCase.loginUserCase(email, password);
-
+    print("Data State from login: ${dataState.data?.imageUrl}");
     if (dataState is DataSuccess && dataState.data != null) {
       if (dataState.data!.isVerified == false) {
         // show verification screen
@@ -79,10 +79,12 @@ class AuthCubit extends Cubit<AuthState> {
     );
 
     final gAuth = await _googleSignIn.signIn();
+    print("Google Auth: ${gAuth}");
 
     if (gAuth != null && gAuth.displayName != null) {
-      var dataState =
-          await authUseCase.oAuthUseCase(gAuth.displayName!, gAuth.email);
+      // pass imageurl
+      var dataState = await authUseCase.oAuthUseCase(
+          gAuth.displayName!, gAuth.email, gAuth.photoUrl);
 
       if (dataState is DataSuccess && dataState.data != null) {
         emit(SuccessState());

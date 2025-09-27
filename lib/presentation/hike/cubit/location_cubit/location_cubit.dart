@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui';
+import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:beacon/core/resources/data_state.dart';
 import 'package:beacon/core/utils/constants.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
@@ -13,7 +15,6 @@ import 'package:beacon/domain/usecase/hike_usecase.dart';
 import 'package:beacon/locator.dart';
 import 'package:beacon/presentation/hike/cubit/location_cubit/location_state.dart';
 import 'package:beacon/presentation/hike/cubit/panel_cubit/panel_cubit.dart';
-import 'package:beacon/presentation/widgets/custom_label_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:vibration/vibration.dart';
 
@@ -49,6 +49,13 @@ class LocationCubit extends Cubit<LocationState> {
   LocationData? _lastLocation;
   Set<Circle> _geofence = {};
   MapType _mapType = MapType.normal;
+  List<String> infoMarkers = [
+    "location-marker",
+    "wind",
+    "rain",
+    "camp",
+  ];
+  String selectedInfoMarker = "location-marker";
 
   StreamSubscription<DataState<BeaconLocationsEntity>>?
       _beaconlocationsSubscription;
@@ -59,8 +66,36 @@ class LocationCubit extends Cubit<LocationState> {
   BuildContext? context;
   TickerProvider? vsync;
 
+  void setLandmarkIcon(String icon) {
+    selectedInfoMarker = icon;
+    // emit(InitialLocationState());
+  }
+
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  void centerMap() {
+    Location location = new Location();
+    location.changeSettings(
+        interval: 5000, accuracy: LocationAccuracy.high, distanceFilter: 0);
+
+    _streamLocaitonData =
+        location.onLocationChanged.listen((LocationData newPosition) async {
+      var latLng = locationDataToLatLng(newPosition);
+
+      mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: latLng, zoom: 15),
+      ));
+    });
+  }
+
+  void zoomIn() {
+    mapController?.animateCamera(CameraUpdate.zoomIn());
+  }
+
+  void zoomOut() {
+    mapController?.animateCamera(CameraUpdate.zoomOut());
   }
 
   Future<void> loadBeaconData(
@@ -90,8 +125,16 @@ class LocationCubit extends Cubit<LocationState> {
             position: locationToLatLng(_leader!.location!),
             ripple: false,
             infoWindow: InfoWindow(
-              title: '${_beacon!.leader?.name ?? 'Anonymous'}}',
+              title: 'this is ${_beacon!.leader?.name ?? 'Anonymous'}}',
             ),
+            icon: BitmapDescriptor.bytes(
+                await getCircularImageWithBorderAndPointer(
+              _leader!.imageUrl ??
+                  'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+              size: 80,
+              borderColor: Colors.red,
+              borderWidth: 4,
+            )),
             onTap: () {
               log('${beacon.leader?.name}');
             }));
@@ -111,13 +154,13 @@ class LocationCubit extends Cubit<LocationState> {
     }
 
     if (beacon.route != null) {
-      var marker = Marker(
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-          markerId: MarkerId('leader initial position'),
-          position: locationToLatLng(beacon.route!.first!));
+      // var marker = Marker(
+      //     markerId: MarkerId('leader initial position'),
+      //     icon:
+      //         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+      //     position: locationToLatLng(beacon.route!.first!));
 
-      _hikeMarkers.add(marker);
+      // _hikeMarkers.add(marker);
 
       // handling polyline here
       for (var point in beacon.route!) {
@@ -202,7 +245,7 @@ class LocationCubit extends Cubit<LocationState> {
 
         emit(LoadedLocationState(
           geofence: _geofence,
-          locationMarkers: _hikeMarkers,
+          locationMarkers: Set<Marker>.from(_hikeMarkers),
           polyline: _polyline,
           version: DateTime.now().millisecondsSinceEpoch,
           mapType: _mapType,
@@ -215,7 +258,7 @@ class LocationCubit extends Cubit<LocationState> {
     PolylinePoints polylinePoints = PolylinePoints();
     try {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          'AIzaSyBdIpiEfBE5DohHgBvwPTljZQAcNWcKwCs',
+          'AIzaSyC72TkXzQTsnbGdZy5ldeX64y0mofn_iUs',
           PointLatLng(_points.first.latitude, _points.first.longitude),
           PointLatLng(_points.last.longitude, _points.last.longitude));
 
@@ -317,19 +360,19 @@ class LocationCubit extends Cubit<LocationState> {
         .listen((dataState) async {
       if (dataState is DataSuccess && dataState.data != null) {
         BeaconLocationsEntity beaconLocationsEntity = dataState.data!;
-
         // when new landmark is created
         if (beaconLocationsEntity.landmark != null) {
           LandMarkEntity newLandMark = beaconLocationsEntity.landmark!;
-
           await _createLandMarkMarker(newLandMark);
 
           emit(LoadedLocationState(
               polyline: _polyline,
-              locationMarkers: _hikeMarkers,
+              locationMarkers:
+                  Set<Marker>.from(_hikeMarkers), // Create new Set instance
               mapType: _mapType,
               geofence: _geofence,
-              version: DateTime.now().millisecond,
+              version: DateTime.now()
+                  .millisecondsSinceEpoch, // Use millisecondsSinceEpoch
               message:
                   'A landmark is created by ${beaconLocationsEntity.landmark!.createdBy!.name ?? 'Anonymous'}'));
         }
@@ -343,9 +386,9 @@ class LocationCubit extends Cubit<LocationState> {
           emit(LoadedLocationState(
               polyline: _polyline,
               geofence: _geofence,
-              locationMarkers: _hikeMarkers,
+              locationMarkers: Set<Marker>.from(_hikeMarkers),
               mapType: _mapType,
-              version: DateTime.now().microsecond));
+              version: DateTime.now().millisecondsSinceEpoch));
           // add marker for user
         }
 
@@ -377,6 +420,14 @@ class LocationCubit extends Cubit<LocationState> {
           if (markers.isEmpty) {
             _hikeMarkers.add(Marker(
                 markerId: MarkerId(_beacon!.leader!.id.toString()),
+                icon: BitmapDescriptor.bytes(
+                    await getCircularImageWithBorderAndPointer(
+                  _leader!.imageUrl ??
+                      'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+                  size: 80,
+                  borderColor: Colors.red,
+                  borderWidth: 4,
+                )),
                 position: _points.last));
           }
           var leaderRipplingMarker = markers.first;
@@ -396,6 +447,8 @@ class LocationCubit extends Cubit<LocationState> {
           if (initialMarkers.isEmpty) {
             _hikeMarkers.add(RippleMarker(
                 markerId: MarkerId('leader initial position'),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueYellow),
                 ripple: false,
                 infoWindow: InfoWindow(title: 'Leader initial position'),
                 position: _points.first));
@@ -405,10 +458,10 @@ class LocationCubit extends Cubit<LocationState> {
               calculateMapBoundsFromListOfLatLng(_points), 50));
 
           emit(LoadedLocationState(
-              geofence: _geofence,
-              locationMarkers: _hikeMarkers,
-              mapType: _mapType,
               polyline: _polyline,
+              geofence: _geofence,
+              locationMarkers: Set<Marker>.from(_hikeMarkers),
+              mapType: _mapType,
               version: DateTime.now().millisecondsSinceEpoch));
         } else if (beaconLocationsEntity.userSOS != null) {
           var user = beaconLocationsEntity.userSOS!;
@@ -615,26 +668,30 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> createLandmark(
-      String beaconId, String title, LatLng latlng) async {
+      String beaconId, String title, LatLng latlng, String icon) async {
     var dataState = await _hikeUseCase.createLandMark(beaconId, title,
-        latlng.latitude.toString(), latlng.longitude.toString());
+        latlng.latitude.toString(), latlng.longitude.toString(), icon);
 
     if (dataState is DataSuccess && dataState.data != null) {
       await _createLandMarkMarker(dataState.data!);
+
+      await locationUpdateSubscription(beaconId);
+
       emit(LoadedLocationState(
           polyline: _polyline,
           geofence: _geofence,
           mapType: _mapType,
-          locationMarkers: Set<Marker>.from(_hikeMarkers),
+          locationMarkers:
+              Set<Marker>.from(_hikeMarkers), // Create new Set instance
+          version:
+              DateTime.now().millisecondsSinceEpoch, // Consistent versioning
           message: 'New marker created by ${dataState.data!.createdBy!.name}'));
     }
   }
 
   Future<void> sendSOS(String id, BuildContext context) async {
     final dataState = await _hikeUseCase.sos(id);
-
     if (dataState is DataSuccess) {
-      log('data coming from sos: ${dataState.data.toString()}');
       // // Ensure _hikeMarkers is a Set of marker objects
 
       var userId = localApi.userModel.id;
@@ -675,7 +732,9 @@ class LocationCubit extends Cubit<LocationState> {
         _hikeMarkers.where((element) => element.markerId == markerId);
 
     if (existingMarkers.isEmpty) {
-      var newMarker = await createMarker(landMark);
+      var newMarker = await createMarkerWithLocalAsset(
+        landMark,
+      );
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position
@@ -688,11 +747,17 @@ class LocationCubit extends Cubit<LocationState> {
     }
   }
 
-  void _createUserMarker(UserEntity user, {bool isLeader = false}) async {
+  void _createUserMarker(UserEntity user) async {
     final markerId = MarkerId(user.id!);
     final markerPosition = locationToLatLng(user.location!);
 
-    // final bitmap = await _createCustomMarkerBitmap();
+    final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
+      user.imageUrl ??
+          'https://cdn.jsdelivr.net/gh/alohe/avatars/png/toon_5.png',
+      size: 80,
+      borderColor: Colors.deepPurple,
+      borderWidth: 4,
+    );
 
     final existingMarkers =
         _hikeMarkers.where((element) => element.markerId == markerId);
@@ -703,8 +768,7 @@ class LocationCubit extends Cubit<LocationState> {
           markerId: markerId,
           position: markerPosition,
           infoWindow: InfoWindow(title: user.name ?? 'Anonymous'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              isLeader ? BitmapDescriptor.hueRed : BitmapDescriptor.hueOrange));
+          icon: BitmapDescriptor.bytes(markerIcon));
       _hikeMarkers.add(newMarker);
     } else {
       // If the marker exists, update its position
@@ -717,23 +781,137 @@ class LocationCubit extends Cubit<LocationState> {
     }
   }
 
-  Future<Marker> createMarker(LandMarkEntity landmark) async {
-    final pictureRecorder = PictureRecorder();
-    final canvas = Canvas(pictureRecorder);
-    final customMarker = CustomMarker(text: landmark.title!);
-    customMarker.paint(canvas, Size(100, 100));
-    final picture = pictureRecorder.endRecording();
-    final image = await picture.toImage(100, 100);
-    final bytes = await image.toByteData(format: ImageByteFormat.png);
+  Future<Marker> createMarkerWithLocalAsset(LandMarkEntity landmark) async {
+    Future<BitmapDescriptor> getResizedMarkerIcon(
+        String assetPath, int width) async {
+      final ByteData data = await rootBundle.load(assetPath);
+      final codec = await ui.instantiateImageCodec(
+        data.buffer.asUint8List(),
+        targetWidth: width,
+      );
+      final frame = await codec.getNextFrame();
+      final ui.Image image = frame.image;
+
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List resizedBytes = byteData!.buffer.asUint8List();
+
+      return BitmapDescriptor.bytes(resizedBytes);
+    }
+
+    BitmapDescriptor customIcon = await getResizedMarkerIcon(
+      landmark.icon ?? 'images/icons/location-marker.png',
+      80, // desired width in pixels
+    );
 
     return Marker(
       markerId: MarkerId(landmark.id!.toString()),
       position: locationToLatLng(landmark.location!),
-      icon: BitmapDescriptor.bytes(bytes!.buffer.asUint8List()),
+      icon: customIcon,
       infoWindow: InfoWindow(
-        title: 'Created by: ${landmark.createdBy?.name ?? 'Anonymous'}',
+        title:
+            '${landmark.title} by ${landmark.createdBy?.name ?? 'Anonymous'}',
       ),
     );
+  }
+
+  Future<Marker> createMarkerWithCircularNetworkImage(
+      LandMarkEntity landmark) async {
+    final Uint8List markerIcon = await getCircularImageWithBorderAndPointer(
+      landmark.icon ?? 'images/icons/location-marker.png',
+      size: 80,
+      borderColor: Colors.teal,
+      borderWidth: 4,
+      isUrl: false,
+    );
+
+    return Marker(
+      markerId: MarkerId(landmark.id!.toString()),
+      position: locationToLatLng(landmark.location!),
+      icon: BitmapDescriptor.bytes(markerIcon),
+      infoWindow: InfoWindow(
+        title:
+            '${landmark.title} by ${landmark.createdBy?.name ?? 'Anonymous'}',
+      ),
+    );
+  }
+
+  Future<Uint8List> getCircularImageWithBorderAndPointer(
+    String imagePath, {
+    int size = 150,
+    Color borderColor = Colors.red,
+    double borderWidth = 6,
+    bool isUrl = true,
+  }) async {
+    Uint8List bytes;
+
+    if (isUrl) {
+      // Handle URL images
+      final http.Response response = await http.get(Uri.parse(imagePath));
+      bytes = response.bodyBytes;
+    } else {
+      // Handle asset images
+      final ByteData byteData = await rootBundle.load(imagePath);
+      bytes = byteData.buffer.asUint8List();
+    }
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      bytes,
+      targetWidth: size,
+      targetHeight: size,
+    );
+    final ui.FrameInfo frame = await codec.getNextFrame();
+    final ui.Image image = frame.image;
+
+    final double radius = size / 2;
+    final double triangleHeight = size * 0.35; // Increase triangle height here
+    final double totalHeight = size + triangleHeight;
+
+    final ui.PictureRecorder recorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(recorder);
+    final Paint paint = Paint()..isAntiAlias = true;
+
+    final Offset circleCenter = Offset(radius, radius);
+
+    // 1. Draw triangle FIRST (so it goes behind the circle)
+    paint
+      ..style = PaintingStyle.fill
+      ..color = borderColor;
+
+    final Path trianglePath = Path()
+      ..moveTo(radius - 25, size.toDouble() - 10) // narrower base
+      ..lineTo(radius + 25, size.toDouble() - 10)
+      ..lineTo(radius, size + triangleHeight - 10)
+      ..close();
+
+    canvas.drawPath(trianglePath, paint);
+
+    // 2. Draw white background circle
+    paint.color = Colors.white;
+    canvas.drawCircle(circleCenter, radius, paint);
+
+    // 3. Clip and draw circular image
+    Path clipPath = Path()
+      ..addOval(
+          Rect.fromCircle(center: circleCenter, radius: radius - borderWidth));
+    canvas.save();
+    canvas.clipPath(clipPath);
+    canvas.drawImage(image, Offset.zero, Paint());
+    canvas.restore();
+
+    // 4. Draw circular border
+    paint
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+    canvas.drawCircle(circleCenter, radius - borderWidth / 2, paint);
+
+    // 5. Convert to PNG bytes
+    final ui.Image finalImage =
+        await recorder.endRecording().toImage(size, totalHeight.toInt());
+    final ByteData? byteData =
+        await finalImage.toByteData(format: ui.ImageByteFormat.png);
+
+    return byteData!.buffer.asUint8List();
   }
 
   void changeGeofenceRadius(double radius, LatLng center) {

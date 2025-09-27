@@ -18,10 +18,7 @@ class LocalNotification {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     final DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-            onDidReceiveLocalNotification: (_, __, ___, ____) {}
-            // as Future<dynamic> Function(int, String?, String?, String?)?
-            );
+        DarwinInitializationSettings();
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,

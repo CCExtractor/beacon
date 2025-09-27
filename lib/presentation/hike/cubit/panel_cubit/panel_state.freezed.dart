@@ -99,6 +99,9 @@ class _$SlidingPanelStateCopyWithImpl<$Res, $Val extends SlidingPanelState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -115,6 +118,9 @@ class __$$InitialPanelStateImplCopyWithImpl<$Res>
   __$$InitialPanelStateImplCopyWithImpl(_$InitialPanelStateImpl _value,
       $Res Function(_$InitialPanelStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -255,6 +261,8 @@ class __$$LoadedPanelStateImplCopyWithImpl<$Res>
       $Res Function(_$LoadedPanelStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -293,6 +301,8 @@ class __$$LoadedPanelStateImplCopyWithImpl<$Res>
     ));
   }
 
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get leader {
@@ -371,7 +381,9 @@ class _$LoadedPanelStateImpl implements LoadedPanelState {
       const DeepCollectionEquality().hash(_followers),
       message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoadedPanelStateImplCopyWith<_$LoadedPanelStateImpl> get copyWith =>
@@ -486,7 +498,10 @@ abstract class LoadedPanelState implements SlidingPanelState {
   UserEntity? get leader;
   List<UserEntity?>? get followers;
   String? get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedPanelStateImplCopyWith<_$LoadedPanelStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -508,6 +523,8 @@ class __$$ErrorPanelStateImplCopyWithImpl<$Res>
       _$ErrorPanelStateImpl _value, $Res Function(_$ErrorPanelStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -546,7 +563,9 @@ class _$ErrorPanelStateImpl implements ErrorPanelState {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorPanelStateImplCopyWith<_$ErrorPanelStateImpl> get copyWith =>
@@ -647,7 +666,10 @@ abstract class ErrorPanelState implements SlidingPanelState {
   factory ErrorPanelState({final String? message}) = _$ErrorPanelStateImpl;
 
   String? get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SlidingPanelState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorPanelStateImplCopyWith<_$ErrorPanelStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

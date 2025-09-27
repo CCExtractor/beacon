@@ -12,7 +12,7 @@ class GraphQLConfig {
   WebSocketLink? _webSocketLink;
   static final HttpLink httpLink = HttpLink(
     EnvironmentConfig.httpEndpoint ??
-        'https://beacon-backend-25.onrender.com/graphql',
+        'https://beacon-backend-0kpr.onrender.com/graphql',
   );
 
   Future<AuthLink> _loadAuthLink() async {
@@ -24,7 +24,7 @@ class GraphQLConfig {
     await _getToken();
     _webSocketLink = WebSocketLink(
         EnvironmentConfig.websocketEndpoint ??
-            'ws://beacon-backend-25.onrender.com/graphql',
+            'wss://beacon-backend-0kpr.onrender.com/graphql',
         config: SocketClientConfig(
           autoReconnect: true,
           initialPayload: {"Authorization": token},

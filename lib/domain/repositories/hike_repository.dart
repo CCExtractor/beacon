@@ -12,7 +12,7 @@ abstract class HikeRepository {
       String beaconId, LatLng position);
   Future<DataState<BeaconEntity>> fetchBeaconDetails(String beaconId);
   Future<DataState<LandMarkEntity>> createLandMark(
-      String id, String title, String lat, String lon);
+      String id, String title, String lat, String lon, String icon);
   Future<DataState<UserEntity>> changeUserLocation(String id, LatLng latLng);
   Future<DataState<UserEntity>> sos(String beaconId);
   Stream<DataState<BeaconLocationsEntity>> beaconLocationsSubscription(

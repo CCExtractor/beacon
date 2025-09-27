@@ -79,6 +79,9 @@ class _$MembersStateCopyWithImpl<$Res, $Val extends MembersState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -95,6 +98,9 @@ class __$$InitialMemberStateImplCopyWithImpl<$Res>
   __$$InitialMemberStateImplCopyWithImpl(_$InitialMemberStateImpl _value,
       $Res Function(_$InitialMemberStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -204,6 +210,9 @@ class __$$LoadingMemberStateImplCopyWithImpl<$Res>
   __$$LoadingMemberStateImplCopyWithImpl(_$LoadingMemberStateImpl _value,
       $Res Function(_$LoadingMemberStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -316,6 +325,8 @@ class __$$LoadedMemberStateImplCopyWithImpl<$Res>
       $Res Function(_$LoadedMemberStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -372,7 +383,9 @@ class _$LoadedMemberStateImpl implements LoadedMemberState {
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_members), message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoadedMemberStateImplCopyWith<_$LoadedMemberStateImpl> get copyWith =>
@@ -456,7 +469,10 @@ abstract class LoadedMemberState implements MembersState {
 
   List<UserEntity>? get members;
   String? get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MembersState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedMemberStateImplCopyWith<_$LoadedMemberStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

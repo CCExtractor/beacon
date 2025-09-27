@@ -50,21 +50,23 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: '',
-    storageBucket: '',
+    apiKey: 'AIzaSyDhR4FOBzIkmS0Pz0gfqQISkcdFzomsxF4',
+    appId: '1:724090909650:android:33a605e98b134abe8f8e0b',
+    messagingSenderId: '724090909650',
+    projectId: 'beacon-b75bf',
+    storageBucket: 'beacon-b75bf.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: '',
-    storageBucket: '',
-    androidClientId: '',
-    iosClientId: '',
-    iosBundleId: '',
+    apiKey: 'AIzaSyCRbwD5ECjgrwYHok_naB2OKGAy3whA6SY',
+    appId: '1:724090909650:ios:7dfc01703caf03d48f8e0b',
+    messagingSenderId: '724090909650',
+    projectId: 'beacon-b75bf',
+    storageBucket: 'beacon-b75bf.firebasestorage.app',
+    androidClientId:
+        '724090909650-24e79l5pait1nhksbsh9260duvqps6ri.apps.googleusercontent.com',
+    iosClientId:
+        '724090909650-441i6sm3rleavnrcdibdgjn3n1j9lqot.apps.googleusercontent.com',
+    iosBundleId: 'com.ccextractor.beaconmobile',
   );
 }

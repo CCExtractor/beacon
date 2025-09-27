@@ -10,6 +10,7 @@ class BeaconQueries {
             leader{
               _id
               name
+              imageUrl
             }
             startsAt
             expiresAt
@@ -27,6 +28,7 @@ class BeaconQueries {
              leader {
                _id
                name
+               imageUrl
              }
              group{
               _id
@@ -39,6 +41,7 @@ class BeaconQueries {
              followers {
                _id
                name
+                imageUrl
              }
              startsAt
              expiresAt
@@ -65,6 +68,7 @@ deleteBeacon(id: "$id")
              leader {
                _id
                name
+                imageUrl
              }
              group{
               _id
@@ -77,6 +81,7 @@ deleteBeacon(id: "$id")
              followers {
                _id
                name
+                imageUrl
              }
              startsAt
              expiresAt
@@ -114,6 +119,7 @@ deleteBeacon(id: "$id")
               _id
               name
               email
+              imageUrl
               beacons{
               _id
               }
@@ -129,6 +135,7 @@ deleteBeacon(id: "$id")
             followers {
               _id
               name
+              imageUrl
             }
             startsAt
             expiresAt
@@ -206,6 +213,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
+                imageUrl
               }
               location {
                 lat
@@ -214,6 +222,7 @@ deleteBeacon(id: "$id")
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -231,6 +240,7 @@ deleteBeacon(id: "$id")
             leader{
               _id
               name
+              imageUrl
               location{
               lat
               lon
@@ -247,10 +257,12 @@ deleteBeacon(id: "$id")
                 lat
                 lon
               }
+              imageUrl
             }
             landmarks{
               _id
               title
+              icon
               location{
                 lat
                 lon
@@ -258,6 +270,7 @@ deleteBeacon(id: "$id")
               createdBy{
               _id
               name
+              imageUrl
               }
             }
             location{
@@ -310,6 +323,7 @@ deleteBeacon(id: "$id")
               leader {
                 _id
                 name
+                imageUrl
                 location {
                   lat
                   lon
@@ -322,6 +336,7 @@ deleteBeacon(id: "$id")
               followers {
                 _id
                 name
+                imageUrl
               }
               startsAt
               expiresAt
@@ -359,11 +374,13 @@ deleteBeacon(id: "$id")
         _id
         name
         email
+        imageUrl
         }
         inactiveuser{
         _id
         name
         email
+        imageUrl
         }
       }
     }
@@ -376,6 +393,7 @@ deleteBeacon(id: "$id")
          _id
          name
          email
+          imageUrl
          location{
             lat
             lon
@@ -385,28 +403,33 @@ deleteBeacon(id: "$id")
         landmark{
           _id
           title
+          icon
           location{
             lat 
             lon
           }
+
         }
 
       }
     }
   ''');
 
-  String createLandmark(String? id, String lat, String lon, String? title) {
+  String createLandmark(
+      String? id, String lat, String lon, String? title, String icon) {
     return '''
       mutation{
         createLandmark(
           landmark:{
             location:{lat:"$lat", lon:"$lon"},
-            title:"$title"
+            title:"$title",
+            icon: "$icon"
           },
           beaconID:"$id")
         {
           _id
           title
+          icon
           location{
             lat
             lon
@@ -414,6 +437,7 @@ deleteBeacon(id: "$id")
           createdBy{
           _id
           name
+          imageUrl
           }
         }
       }
@@ -427,6 +451,7 @@ deleteBeacon(id: "$id")
           _id
           name
           email
+          imageUrl
           location{
             lat
             lon
@@ -440,6 +465,16 @@ deleteBeacon(id: "$id")
     subscription StreamLocationUpdate($id: ID!){
       beaconLocations(id: $id){
 
+      userSOS {
+       _id
+       name
+       email
+       location{
+         lat
+         lon
+       }
+      }
+
       route{
        lat
        lon
@@ -448,6 +483,7 @@ deleteBeacon(id: "$id")
       updatedUser{
        _id
        name
+       imageUrl
        location{
          lat
          lon
@@ -457,6 +493,7 @@ deleteBeacon(id: "$id")
       landmark{
        _id
        title
+       icon
        location{
        lat
        lon
@@ -465,10 +502,24 @@ deleteBeacon(id: "$id")
        _id
        name
        email
+       imageUrl
        }
       }
 
       }
     }
   ''');
+
+  String updateUserImage(String? imageUrl) {
+    return '''
+      mutation{
+        updateUserImage(imageUrl: "$imageUrl"){
+          _id
+          name
+          email
+          imageUrl
+        }
+      }
+    ''';
+  }
 }

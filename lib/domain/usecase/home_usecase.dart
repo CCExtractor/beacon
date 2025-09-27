@@ -32,4 +32,8 @@ class HomeUseCase {
   Future<DataState<GroupEntity>> changeShortcode(String groupId) {
     return homeRepository.changeShortcode(groupId);
   }
+
+  Future<DataState<bool>> updateUserImage(String userId, String? imageUrl) {
+    return homeRepository.updateUserImage(userId, imageUrl);
+  }
 }

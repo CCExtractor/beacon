@@ -38,16 +38,21 @@ class UserModel implements UserEntity {
   @HiveField(8)
   bool? isVerified;
 
-  UserModel(
-      {this.authToken,
-      this.beacons,
-      this.email,
-      this.groups,
-      this.id,
-      this.isGuest,
-      this.location,
-      this.name,
-      this.isVerified});
+  @HiveField(9) // New field number (must be unique)
+  String? imageUrl; // Add this line
+
+  UserModel({
+    this.authToken,
+    this.beacons,
+    this.email,
+    this.groups,
+    this.id,
+    this.isGuest,
+    this.location,
+    this.name,
+    this.isVerified,
+    this.imageUrl, // Add this line
+  });
 
   @override
   $UserEntityCopyWith<UserEntity> get copyWith => throw UnimplementedError();
@@ -67,16 +72,19 @@ class UserModel implements UserEntity {
     List<GroupModel?>? groups,
     List<BeaconModel?>? beacons,
     LocationModel? location,
+    String? imageUrl, // Add this line
   }) {
     return UserModel(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        authToken: authToken ?? this.authToken,
-        email: email ?? this.email,
-        isGuest: isGuest ?? this.isGuest,
-        groups: groups ?? this.groups,
-        beacons: beacons ?? this.beacons,
-        location: location ?? this.location,
-        isVerified: isVerified ?? this.isVerified);
+      id: id ?? this.id,
+      name: name ?? this.name,
+      authToken: authToken ?? this.authToken,
+      email: email ?? this.email,
+      isGuest: isGuest ?? this.isGuest,
+      groups: groups ?? this.groups,
+      beacons: beacons ?? this.beacons,
+      location: location ?? this.location,
+      isVerified: isVerified ?? this.isVerified,
+      imageUrl: imageUrl ?? this.imageUrl, // Add this line
+    );
   }
 }

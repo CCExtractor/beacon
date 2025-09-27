@@ -10,4 +10,5 @@ abstract class HomeRepository {
   Stream<DataState<UpdatedGroupEntity>> groupUpdateSubscription(
       List<String> groupIds);
   Future<DataState<GroupEntity>> changeShortcode(String groupId);
+  Future<DataState<bool>> updateUserImage(String userId, String? imageUrl);
 }

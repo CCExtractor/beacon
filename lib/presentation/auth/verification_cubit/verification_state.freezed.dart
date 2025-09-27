@@ -97,6 +97,9 @@ class _$OTPVerificationStateCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -113,6 +116,9 @@ class __$$InitialOTPStateImplCopyWithImpl<$Res>
   __$$InitialOTPStateImplCopyWithImpl(
       _$InitialOTPStateImpl _value, $Res Function(_$InitialOTPStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -239,6 +245,9 @@ class __$$OTPSendingStateImplCopyWithImpl<$Res>
   __$$OTPSendingStateImplCopyWithImpl(
       _$OTPSendingStateImpl _value, $Res Function(_$OTPSendingStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -368,6 +377,8 @@ class __$$OTPSentStateImplCopyWithImpl<$Res>
       _$OTPSentStateImpl _value, $Res Function(_$OTPSentStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -406,7 +417,9 @@ class _$OTPSentStateImpl implements OTPSentState {
   @override
   int get hashCode => Object.hash(runtimeType, otp);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$OTPSentStateImplCopyWith<_$OTPSentStateImpl> get copyWith =>
@@ -503,7 +516,10 @@ abstract class OTPSentState implements OTPVerificationState {
   factory OTPSentState({final String? otp}) = _$OTPSentStateImpl;
 
   String? get otp;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OTPSentStateImplCopyWith<_$OTPSentStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -522,6 +538,9 @@ class __$$OTPVerifyingStateImplCopyWithImpl<$Res>
   __$$OTPVerifyingStateImplCopyWithImpl(_$OTPVerifyingStateImpl _value,
       $Res Function(_$OTPVerifyingStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -648,6 +667,9 @@ class __$$OTPVerifiedStateImplCopyWithImpl<$Res>
   __$$OTPVerifiedStateImplCopyWithImpl(_$OTPVerifiedStateImpl _value,
       $Res Function(_$OTPVerifiedStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -774,6 +796,9 @@ class __$$OTPFailureStateImplCopyWithImpl<$Res>
   __$$OTPFailureStateImplCopyWithImpl(
       _$OTPFailureStateImpl _value, $Res Function(_$OTPFailureStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of OTPVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc

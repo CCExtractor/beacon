@@ -7,15 +7,16 @@ class AuthQueries {
             _id
             name
             email
+            imageUrl
           }
         }
     ''';
   }
 
-  String gAuth(String? name, String email) {
+  String gAuth(String? name, String email, String? imageUrl) {
     return '''
         mutation{
-          oAuth(userInput: {email: "$email", name: "$name"})
+          oAuth(userInput: {email: "$email", name: "$name", imageUrl: "$imageUrl"})
         }
     ''';
   }
@@ -85,6 +86,7 @@ class AuthQueries {
           email
           name
           isVerified
+          imageUrl
           groups{
             _id
           }

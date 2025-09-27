@@ -33,6 +33,8 @@ class RemoteHikeApi {
     final result = await _authClient.mutate(MutationOptions(
         document: gql(beaconQueries.fetchBeaconDetail(beaconId))));
 
+    print("Result fetch beacon queries: ${result.data}");
+
     if (result.isConcrete && result.data != null) {
       final beaconJson = result.data!['beacon'];
 
@@ -82,7 +84,7 @@ class RemoteHikeApi {
   }
 
   Future<DataState<LandMarkModel>> createLandMark(
-      String id, String lat, String lon, String title) async {
+      String id, String lat, String lon, String title, String icon) async {
     bool isConnected = await utils.checkInternetConnectivity();
 
     if (!isConnected) {
@@ -90,13 +92,17 @@ class RemoteHikeApi {
     }
 
     final result = await _authClient.mutate(MutationOptions(
-        document: gql(beaconQueries.createLandmark(id, lat, lon, title))));
+        document:
+            gql(beaconQueries.createLandmark(id, lat, lon, title, icon))));
+
+    print("Result: ${result.data}");
 
     if (result.isConcrete &&
         result.data != null &&
         result.data!['createLandmark'] != null) {
       final newLandMark =
           LandMarkModel.fromJson(result.data!['createLandmark']);
+      print("result data: ${result.data!['createLandmark']}");
       return DataSuccess(newLandMark);
     } else {
       return DataFailed(encounteredExceptionOrError(result.exception!));
@@ -122,8 +128,14 @@ class RemoteHikeApi {
         if (stream.hasException) {
           yield DataFailed('Something went wrong');
         } else {
+          print('Stream data: ${stream.data}');
           var locations =
               BeaconLocationsModel.fromJson(stream.data!['beaconLocations']);
+          print('Locations: ${locations.user}');
+          print('Locations: ${locations.route}');
+          print('Locations: ${locations.userSOS}');
+          //print('Locations: ${locations.landmarks}');
+
           yield DataSuccess(locations);
         }
       }
@@ -167,6 +179,8 @@ class RemoteHikeApi {
 
     final result = await _authClient
         .mutate(MutationOptions(document: gql(beaconQueries.sos(id))));
+
+    print("result sos: ${result.data}");
 
     if (result.isConcrete &&
         result.data != null &&

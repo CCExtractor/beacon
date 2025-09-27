@@ -21,13 +21,14 @@ class LandMarkModelAdapter extends TypeAdapter<LandMarkModel> {
       location: fields[1] as LocationModel?,
       id: fields[2] as String?,
       createdBy: fields[3] as UserModel?,
+      icon: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LandMarkModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class LandMarkModelAdapter extends TypeAdapter<LandMarkModel> {
       ..writeByte(2)
       ..write(obj.id)
       ..writeByte(3)
-      ..write(obj.createdBy);
+      ..write(obj.createdBy)
+      ..writeByte(4)
+      ..write(obj.icon);
   }
 
   @override
@@ -63,6 +66,7 @@ LandMarkModel _$LandMarkModelFromJson(Map<String, dynamic> json) =>
       createdBy: json['createdBy'] == null
           ? null
           : UserModel.fromJson(json['createdBy'] as Map<String, dynamic>),
+      icon: json['icon'] as String?,
     );
 
 Map<String, dynamic> _$LandMarkModelToJson(LandMarkModel instance) =>
@@ -71,4 +75,5 @@ Map<String, dynamic> _$LandMarkModelToJson(LandMarkModel instance) =>
       'location': instance.location,
       '_id': instance.id,
       'createdBy': instance.createdBy,
+      'icon': instance.icon,
     };

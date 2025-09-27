@@ -86,18 +86,16 @@ class RemoteAuthApi {
     }
   }
 
-  Future<DataState<UserEntity>> gAuth(String name, String email) async {
-    log('name: $name');
-    log('email: $email');
-
+  Future<DataState<UserEntity>> gAuth(
+      String name, String email, String? imageUrl) async {
     final isConnected = await utils.checkInternetConnectivity();
 
     if (!isConnected) {
       return DataFailed('Beacon is trying to connect with internet...');
     }
 
-    final QueryResult result = await clientNonAuth.mutate(
-        MutationOptions(document: gql(_authQueries.gAuth(name, email))));
+    final QueryResult result = await clientNonAuth.mutate(MutationOptions(
+        document: gql(_authQueries.gAuth(name, email, imageUrl))));
 
     log(result.toString());
 

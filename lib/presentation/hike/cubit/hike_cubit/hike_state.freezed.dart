@@ -77,6 +77,9 @@ class _$HikeStateCopyWithImpl<$Res, $Val extends HikeState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -93,6 +96,9 @@ class __$$InitialHikeStateImplCopyWithImpl<$Res>
   __$$InitialHikeStateImplCopyWithImpl(_$InitialHikeStateImpl _value,
       $Res Function(_$InitialHikeStateImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -206,6 +212,8 @@ class __$$LoadedHikeStateImplCopyWithImpl<$Res>
       _$LoadedHikeStateImpl _value, $Res Function(_$LoadedHikeStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -224,6 +232,8 @@ class __$$LoadedHikeStateImplCopyWithImpl<$Res>
     ));
   }
 
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $BeaconEntityCopyWith<$Res>? get beacon {
@@ -264,7 +274,9 @@ class _$LoadedHikeStateImpl implements LoadedHikeState {
   @override
   int get hashCode => Object.hash(runtimeType, beacon, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoadedHikeStateImplCopyWith<_$LoadedHikeStateImpl> get copyWith =>
@@ -346,7 +358,10 @@ abstract class LoadedHikeState implements HikeState {
 
   BeaconEntity? get beacon;
   String? get message;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedHikeStateImplCopyWith<_$LoadedHikeStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -368,6 +383,8 @@ class __$$ErrorHikeStateImplCopyWithImpl<$Res>
       _$ErrorHikeStateImpl _value, $Res Function(_$ErrorHikeStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -407,7 +424,9 @@ class _$ErrorHikeStateImpl implements ErrorHikeState {
   @override
   int get hashCode => Object.hash(runtimeType, errmessage);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorHikeStateImplCopyWith<_$ErrorHikeStateImpl> get copyWith =>
@@ -487,7 +506,10 @@ abstract class ErrorHikeState implements HikeState {
   factory ErrorHikeState({final String? errmessage}) = _$ErrorHikeStateImpl;
 
   String? get errmessage;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of HikeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorHikeStateImplCopyWith<_$ErrorHikeStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

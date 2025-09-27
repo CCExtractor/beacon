@@ -19,7 +19,9 @@ mixin _$JoinLeaveBeaconEntity {
   UserEntity? get newfollower => throw _privateConstructorUsedError;
   UserEntity? get inactiveuser => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $JoinLeaveBeaconEntityCopyWith<JoinLeaveBeaconEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -47,6 +49,8 @@ class _$JoinLeaveBeaconEntityCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -65,6 +69,8 @@ class _$JoinLeaveBeaconEntityCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get newfollower {
@@ -77,6 +83,8 @@ class _$JoinLeaveBeaconEntityCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get inactiveuser {
@@ -116,6 +124,8 @@ class __$$JoinLeaveBeaconEntityImplCopyWithImpl<$Res>
       $Res Function(_$JoinLeaveBeaconEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -164,7 +174,9 @@ class _$JoinLeaveBeaconEntityImpl implements _JoinLeaveBeaconEntity {
   @override
   int get hashCode => Object.hash(runtimeType, newfollower, inactiveuser);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$JoinLeaveBeaconEntityImplCopyWith<_$JoinLeaveBeaconEntityImpl>
@@ -181,8 +193,11 @@ abstract class _JoinLeaveBeaconEntity implements JoinLeaveBeaconEntity {
   UserEntity? get newfollower;
   @override
   UserEntity? get inactiveuser;
+
+  /// Create a copy of JoinLeaveBeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$JoinLeaveBeaconEntityImplCopyWith<_$JoinLeaveBeaconEntityImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -23,8 +23,8 @@ class HikeUseCase {
   }
 
   Future<DataState<LandMarkEntity>> createLandMark(
-      String id, String title, String lat, String lon) {
-    return hikeRepository.createLandMark(id, title, lat, lon);
+      String id, String title, String lat, String lon, String icon) {
+    return hikeRepository.createLandMark(id, title, lat, lon, icon);
   }
 
   Future<DataState<UserEntity>> changeUserLocation(String id, LatLng latlng) {

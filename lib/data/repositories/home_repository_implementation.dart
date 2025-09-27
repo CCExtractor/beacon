@@ -40,4 +40,9 @@ class HomeRepostitoryImplementation implements HomeRepository {
   Future<DataState<GroupEntity>> changeShortcode(String groupId) {
     return remoteHomeApi.changeShortCode(groupId);
   }
+
+  @override
+  Future<DataState<bool>> updateUserImage(String userId, String? imageUrl) {
+    return remoteHomeApi.updateUserImage(userId, imageUrl);
+  }
 }

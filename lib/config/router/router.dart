@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beacon/domain/entities/group/group_entity.dart';
 import 'package:beacon/presentation/auth/verfication_screen.dart';
+import 'package:beacon/presentation/home/profile_screen.dart';
 import 'package:beacon/presentation/splash/splash_screen.dart';
 import 'package:beacon/presentation/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:beacon/presentation/auth/auth_screen.dart';
 import 'package:beacon/presentation/group/group_screen.dart';
+import 'package:beacon/presentation/group/advance_options_screen.dart';
 import 'package:beacon/presentation/hike/hike_screen.dart';
 import 'package:beacon/domain/entities/beacon/beacon_entity.dart';
 part 'router.gr.dart';
@@ -25,5 +27,10 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           page: VerificationScreenRoute.page,
         ),
+        AutoRoute(
+          page: ProfileScreenRoute.page,
+        ),
+        AutoRoute(
+            page: AdvancedOptionsScreenRoute.page, path: '/advanced-options'),
       ];
 }

@@ -1,4 +1,3 @@
-import 'package:beacon/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 
@@ -17,7 +16,7 @@ class HikeButton extends StatelessWidget {
   HikeButton(
       {this.onTap,
       this.borderColor = Colors.white,
-      this.buttonColor = kYellow,
+      this.buttonColor = Colors.teal,
       this.text,
       this.textColor = Colors.white,
       this.buttonWidth = 100,
@@ -50,7 +49,7 @@ class HikeButton extends StatelessWidget {
                   ? Colors.transparent
                   : isDisabled!
                       ? Colors.grey
-                      : Colors.teal,
+                      : buttonColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -65,7 +64,7 @@ class HikeButton extends StatelessWidget {
                       ? Colors.teal
                       : isDisabled!
                           ? Colors.white
-                          : Colors.black,
+                          : textColor,
                 ),
               ),
             ]),

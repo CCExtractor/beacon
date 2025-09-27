@@ -28,7 +28,9 @@ mixin _$BeaconEntity {
   LocationEntity? get location => throw _privateConstructorUsedError;
   GroupEntity? get group => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BeaconEntityCopyWith<BeaconEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -67,6 +69,8 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -130,6 +134,8 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
     ) as $Val);
   }
 
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserEntityCopyWith<$Res>? get leader {
@@ -142,6 +148,8 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
     });
   }
 
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LocationEntityCopyWith<$Res>? get location {
@@ -154,6 +162,8 @@ class _$BeaconEntityCopyWithImpl<$Res, $Val extends BeaconEntity>
     });
   }
 
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $GroupEntityCopyWith<$Res>? get group {
@@ -204,6 +214,8 @@ class __$$BeaconEntityImplCopyWithImpl<$Res>
       _$BeaconEntityImpl _value, $Res Function(_$BeaconEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -378,7 +390,9 @@ class _$BeaconEntityImpl implements _BeaconEntity {
       location,
       group);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BeaconEntityImplCopyWith<_$BeaconEntityImpl> get copyWith =>
@@ -421,8 +435,11 @@ abstract class _BeaconEntity implements BeaconEntity {
   LocationEntity? get location;
   @override
   GroupEntity? get group;
+
+  /// Create a copy of BeaconEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BeaconEntityImplCopyWith<_$BeaconEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

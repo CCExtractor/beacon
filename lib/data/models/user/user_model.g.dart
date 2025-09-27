@@ -26,13 +26,14 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       location: fields[7] as LocationModel?,
       name: fields[1] as String?,
       isVerified: fields[8] as bool?,
+      imageUrl: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(7)
       ..write(obj.location)
       ..writeByte(8)
-      ..write(obj.isVerified);
+      ..write(obj.isVerified)
+      ..writeByte(9)
+      ..write(obj.imageUrl);
   }
 
   @override
@@ -87,6 +90,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           : LocationModel.fromJson(json['location'] as Map<String, dynamic>),
       name: json['name'] as String?,
       isVerified: json['isVerified'] as bool?,
+      imageUrl: json['imageUrl'] as String?,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -99,4 +103,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'beacons': instance.beacons,
       'location': instance.location,
       'isVerified': instance.isVerified,
+      'imageUrl': instance.imageUrl,
     };

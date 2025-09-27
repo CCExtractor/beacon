@@ -42,7 +42,7 @@ extension AddExtension on Set<Marker> {
           infoWindow: labelMarker.infoWindow,
           rotation: labelMarker.rotation,
           visible: labelMarker.visible,
-          zIndex: labelMarker.zIndex,
+          zIndexInt: labelMarker.zIndex.toInt(),
           onTap: labelMarker.onTap,
           onDragStart: labelMarker.onDragStart,
           onDrag: labelMarker.onDrag,

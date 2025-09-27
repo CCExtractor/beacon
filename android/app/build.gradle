@@ -26,7 +26,6 @@ apply plugin: 'com.google.gms.google-services'
 // END: FlutterFire Configuration
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
@@ -36,11 +35,26 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
+    namespace "com.ccextractor.beaconmobile"
     compileSdkVersion 34
     buildToolsVersion '29.0.0'
 
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+     kotlinOptions {
+        jvmTarget = '17'  // Match the Java version
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     defaultConfig {
@@ -79,7 +93,18 @@ flutter {
     source '../..'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:multidex:1.0.3"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }

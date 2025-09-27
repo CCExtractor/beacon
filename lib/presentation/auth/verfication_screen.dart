@@ -95,6 +95,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   color: Colors.black45,
                 ),
               ),
+              // check spam folder
+              SizedBox(height: 2.h),
+              Text(
+                'Check your spam folder if you can\'t \nfind the email',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.redAccent,
+                ),
+              ),
+
               SizedBox(height: 5.h),
               // OTP input fields
               Row(
